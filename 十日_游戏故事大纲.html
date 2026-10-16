@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《十日》· 故事圣经 v0.1</title>
+<style>
+  :root{
+    --ink:#2a2521;
+    --ink-2:#5c534a;
+    --ink-3:#8d8278;
+    --paper:#faf7f1;
+    --paper-2:#ffffff;
+    --line:#e2dbcf;
+    --red:#8c2f2f;
+    --red-l:#f3e6e4;
+    --gold:#9c7526;
+    --gold-l:#f7f0e0;
+    --teal:#2f6b63;
+    --teal-l:#e6f1ef;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",system-ui,sans-serif;
+    font-size:15px;
+    line-height:1.9;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:56px 32px 120px;}
+
+  /* ---------- header ---------- */
+  .kicker{font-size:12px;letter-spacing:.32em;color:var(--gold);margin-bottom:14px;}
+  h1{
+    font-family:Georgia,"Songti SC","Noto Serif SC",serif;
+    font-size:46px;line-height:1.15;margin:0 0 8px;font-weight:600;letter-spacing:.06em;
+  }
+  .sub{font-size:16px;color:var(--ink-2);margin:0 0 28px;letter-spacing:.08em;}
+  .logline{
+    border-left:3px solid var(--red);
+    background:var(--red-l);
+    padding:18px 22px;border-radius:0 10px 10px 0;
+    font-size:16.5px;line-height:1.85;color:#5a2626;
+  }
+  .logline b{color:var(--red);}
+
+  /* ---------- section ---------- */
+  h2{
+    font-family:Georgia,"Songti SC",serif;
+    font-size:24px;margin:64px 0 6px;font-weight:600;letter-spacing:.04em;
+    padding-bottom:10px;border-bottom:2px solid var(--ink);
+  }
+  h2 .num{color:var(--gold);font-size:15px;letter-spacing:.2em;display:block;margin-bottom:4px;font-family:system-ui;}
+  h3{font-size:17px;margin:34px 0 8px;font-weight:600;color:var(--red);}
+  h4{font-size:15px;margin:22px 0 4px;font-weight:600;color:var(--ink);}
+  p{margin:10px 0;}
+  ul{padding-left:20px;margin:10px 0;}
+  li{margin:5px 0;}
+  em{font-style:normal;color:var(--ink-3);}
+  strong{color:var(--ink);}
+
+  /* ---------- cards ---------- */
+  .card{
+    background:var(--paper-2);border:1px solid var(--line);border-radius:12px;
+    padding:18px 22px;margin:16px 0;
+  }
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0;}
+  .grid .card{margin:0;}
+  @media(max-width:680px){.grid{grid-template-columns:1fr;}}
+
+  .reveal{
+    border:1px solid #e6c9c6;background:#fdf6f5;border-radius:12px;
+    padding:16px 20px;margin:14px 0;position:relative;
+  }
+  .reveal::before{
+    content:attr(data-tag);
+    position:absolute;top:-11px;left:16px;background:var(--red);color:#fff;
+    font-size:11px;letter-spacing:.16em;padding:2px 10px;border-radius:20px;
+  }
+
+  .hook{
+    border-left:3px solid var(--gold);background:var(--gold-l);
+    padding:12px 18px;margin:12px 0;border-radius:0 8px 8px 0;font-size:14.5px;
+  }
+  .hook b{color:var(--gold);}
+
+  .quote{
+    font-family:Georgia,"Songti SC",serif;font-size:17px;line-height:2;
+    color:#4a3f35;padding:6px 0 6px 20px;border-left:2px solid var(--line);margin:14px 0;
+  }
+  .quote .who{display:block;font-family:system-ui;font-size:12.5px;color:var(--ink-3);margin-top:6px;letter-spacing:.08em;}
+
+  /* ---------- table ---------- */
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;}
+  th{
+    background:var(--ink);color:#f7f3ec;text-align:left;padding:10px 12px;
+    font-weight:500;font-size:12.5px;letter-spacing:.06em;
+  }
+  td{border-bottom:1px solid var(--line);padding:10px 12px;vertical-align:top;line-height:1.7;}
+  tr:nth-child(even) td{background:#fdfbf7;}
+  td:first-child{font-weight:600;white-space:nowrap;}
+
+  /* ---------- misc ---------- */
+  .tag{
+    display:inline-block;font-size:11.5px;letter-spacing:.08em;
+    border:1px solid var(--line);border-radius:20px;padding:1px 10px;
+    color:var(--ink-2);background:#fff;margin-right:6px;
+  }
+  .tag.red{border-color:#dcb9b5;color:var(--red);background:var(--red-l);}
+  .tag.gold{border-color:#e0cfa4;color:var(--gold);background:var(--gold-l);}
+  .tag.teal{border-color:#b8d6d1;color:var(--teal);background:var(--teal-l);}
+  hr{border:0;border-top:1px solid var(--line);margin:44px 0;}
+  .end{
+    margin-top:70px;padding:24px;background:var(--ink);color:#efe9de;border-radius:12px;
+    text-align:center;font-family:Georgia,"Songti SC",serif;font-size:18px;letter-spacing:.1em;line-height:2;
+  }
+  .foot{margin-top:34px;font-size:12.5px;color:var(--ink-3);text-align:center;line-height:1.9;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kicker">肉鸽动作游戏 · 故事圣经 v0.1</div>
+  <h1>十日</h1>
+  <p class="sub">副题：九鼎 · 归墟 &nbsp;|&nbsp; 备选名《九鼎》《归墟》《射日》</p>
+
+  <div class="logline">
+    华夏九鼎沉入泗水那一年，宇宙的<b>排水口</b>漏了。<br>
+    北欧诸神是第一批发现这件事的神——因为他们是第一批<b>快饿死的神</b>。<br>
+    而你，是那个当年射落九颗太阳的人。四千年后，有人来问你：<b>你为什么要杀我的孩子？</b>
+  </div>
+
+  <h2><span class="num">01</span>一句话定位</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h4>给玩家的一句话</h4>
+      <p style="margin:6px 0;">你干成了一件救世的大事，回头发现世界没变好，家里人没了。然后你还得再来一次。<br><em>——这就是肉鸽。这就是人生。</em></p>
+    </div>
+    <div class="card">
+      <h4>给发行/漫剧的一句话</h4>
+      <p style="margin:6px 0;">中国创世神话和北欧创世神话，其实是<b>同一个死者</b>的两种说法。一方记作"他自愿"，一方记作"我们杀的"。这场战争的本质不是领土，是<b>记忆</b>。</p>
+    </div>
+  </div>
+
+  <h2><span class="num">02</span>核心设定：三层真相</h2>
+  <p>整个故事的驱动力是"玩家以为自己在做什么"和"实际上在做什么"之间的落差。分三层揭示，每层都重写前一层。</p>
+
+  <div class="reveal" data-tag="表层 · 玩家以为的">
+    <h4>抢碎片的正邪大战</h4>
+    <p>九鼎在两千年前沉入泗水，碎片散落九州。北欧诸神趁虚而入，抢夺碎片。你是后羿，一箭一箭把碎片收回来，救世界。<br><em>（这一层是用来让玩家上手的，也是用来在后面被彻底推翻的。）</em></p>
+  </div>
+
+  <div class="reveal" data-tag="第一层真相 · 第三章">
+    <h4>北欧诸神不是入侵者，是难民</h4>
+    <p>九鼎不是镇国重器，是<b>盖子</b>。它盖着"归墟"——《山海经》里那个无底的洞，万水归处，填不满的深渊。鼎一散，洞就开了。</p>
+    <p>而北欧的世界树尤克特拉希尔（Yggdrasil）的根，<b>扎在同一个洞里</b>。树在枯。所谓"芬布尔之冬"，不是诸神黄昏的前兆，是<b>饥荒</b>。</p>
+    <p class="hook"><b>爆点：</b>主角一行人第一次抓到活的北欧神，审问"你们为什么打过来"，对方回答的是：<em>"我们饿了多久，你们知道吗。"</em></p>
+  </div>
+
+  <div class="reveal" data-tag="第二层真相 · 第六章">
+    <h4>盘古和尤弥尔，是同一个神</h4>
+    <p>中国神话：盘古死后，气成风云，声为雷霆，左眼为日，右眼为月，四肢为四极，血液为江河。<br>
+    北欧神话：奥丁三兄弟杀死霜巨人尤弥尔，用他的肉造大地，血造海洋，骨造山，颅骨造天，脑髓造云。</p>
+    <p><strong>同一个事件，两种记法。</strong>中国记作"舍身"，北欧记作"谋杀"。所以——</p>
+    <ul>
+      <li>华夏诸神继承的是<strong>遗赠</strong>，他们活在一个爱他们的死者的身体里，所以他们的神话温暖、讲秩序、讲补天。</li>
+      <li>北欧诸神继承的是<strong>赃物</strong>，他们住在一个被自己杀掉的死者的身体里，所以他们的神话冷、讲预言、讲注定毁灭。</li>
+    </ul>
+    <p><strong>他们永远无法互相原谅，因为两边记的是同一件事，却是两个版本。</strong></p>
+  </div>
+
+  <div class="reveal" data-tag="终层真相 · 第九章">
+    <h4>九鼎是棺材。你收集的不是碎片，是尸块</h4>
+    <p>后羿射落的九颗太阳，是大禹把它们熔了，铸成九鼎——禹收九牧之金，铸鼎象物。<br>
+    <strong>九鼎，是九位古神的棺材，也是纪念碑。</strong></p>
+    <p>所以"重铸九鼎"意味着什么？意味着<strong>把九个死者重新拼回来</strong>。天会重新烧起来。世界会重启。而封神榜上的最后一个空位，就是新世界的第一条神律。</p>
+    <p class="hook"><b>爆点：</b>你以为是圣杯的东西，全片从头到尾其实是<strong>一场葬礼。而你是来把尸体挖出来的那个人。</strong></p>
+  </div>
+
+  <h2><span class="num">03</span>主题内核</h2>
+  <div class="card" style="text-align:center;padding:28px;">
+    <p class="quote" style="border:0;padding:0;font-size:21px;line-height:2.1;text-align:center;margin:0;">
+      这不是神打神。<br>
+      这是<b>两套记忆，在争夺同一具尸体的解释权</b>。
+    </p>
+  </div>
+  <p>配套的三组母题，贯穿全篇，用于给每一关定调：</p>
+  <ul>
+    <li><strong>母亲</strong> —— 女娲、羲和、弗丽嘉、弗蕾亚。真正的战争引擎不是野心，是丧子之痛。</li>
+    <li><strong>饥饿</strong> —— 北欧在饿，羲和在饿，首阳山上饿死了两个人，中国神话里唯一拒绝吃东西的圣人。</li>
+    <li><strong>看</strong> —— 首尾呼应：奥丁挖掉一只眼睛，不是献祭，是<strong>不敢再看</strong>。而游戏是第一人称，玩家从头到尾在用眼睛看这个世界。</li>
+  </ul>
+
+  <h2><span class="num">04</span>战争结构与规则（圣杯战争的"中国化"）</h2>
+  <p>把"圣杯战争"的每一个要素，换成一个中国神话里原生就存在的对应物——这样既熟悉又不违和。</p>
+
+  <table>
+    <tr><th>圣杯战争要素</th><th>本作的对应物</th><th>用法</th></tr>
+    <tr><td>圣杯</td><td><strong>封神榜上的最后一个空位</strong></td><td>《封神演义》里姜子牙封了三百六十五位正神。如果榜上还剩一席空白，谁被写上去，谁就"入编"。</td></tr>
+    <tr><td>御主 / 从者</td><td><strong>神降 / 附身</strong></td><td>神不能亲自降临。必须借一个"信他的人"的身体下来。</td></tr>
+    <tr><td>令咒</td><td><strong>一炷香</strong></td><td>一炷香 ＝ 一次神降的有效时间。香烧完，神就必须回去。<strong>这就是"一局"。</strong></td></tr>
+    <tr><td>愿望机</td><td><strong>重写第一条神律的权利</strong></td><td>不是许愿，是"重新写创世的第一句话"。</td></tr>
+    <tr><td>战场城市</td><td><strong>神话的废墟</strong></td><td>九张地图都是"传说发生过、现在只剩地名"的地方。玩家是在遗址上打仗。</td></tr>
+  </table>
+
+  <h3>为什么要用"抢编制"</h3>
+  <p>北欧诸神的真正目的不是抢食物，是<strong>抢编制</strong>——奥丁想把整个阿萨神族写进封神榜，因为中华神系是唯一一套"只要还有人记得、就永远不会消失"的秩序。<br>
+  这是一个中国玩家秒懂、且带黑色幽默的笑点：<em>连神，最后都要考编。</em></p>
+  <p>同时它带来了残酷的结构性冲突：<strong>空白位只有一席。</strong>所以中方诸神之间也必须互相厮杀。你的盟友，天然就是你的对手。</p>
+
+  <h2><span class="num">05</span>可玩角色</h2>
+  <p>每个角色不只是一种玩法，而是一个<strong>被肉鸽机制化了的主题</strong>。</p>
+
+  <h3>后羿 <span class="tag red">初始 · 弓</span></h3>
+  <p><strong>情感内核：</strong>一个凡人的尊严与不甘。<br>
+  <strong>设计爆点：</strong>后羿不是一个人，是一个<strong>称号</strong>。他死后不会复活——是"下一个相信后羿传说的人"接过弓。所以每一局，你的角色年龄、性别、出身都不一样，但都叫后羿。</p>
+  <div class="hook"><b>叙事 × 机制：</b>"传说是容器，谁信，谁就住进去。"——这句话直接解释了肉鸽随机角色的荒谬感，把它变成世界观。</div>
+  <div class="hook"><b>终极爆点：</b>后羿其实<strong>不是神</strong>。他是个没成仙的凡人。他真正的目的不是救世，是<strong>找回嫦娥</strong>。表面任务：收碎片拯救世界。隐藏任务：拼一条去月亮的路。</div>
+
+  <h3>盘古 <span class="tag gold">解锁 · 斧 / 自伤</span></h3>
+  <p><strong>情感内核：</strong>创世的代价，以及"死亡是一种创作"。<br>
+  <strong>设计爆点：</strong>盘古已经死了。世界是他的尸体。你每一次"复活"他，都在消耗世界本身。</p>
+  <div class="hook"><b>叙事 × 机制（反肉鸽设计）：</b>别的肉鸽死亡是"再来一次"。盘古线死亡是——<strong>地图上有一个地方，永久消失。</strong>进度不是积累，是损耗。玩家会在第十次死亡时开始心疼那张地图。</div>
+
+  <h3>女娲 <span class="tag teal">解锁 · 造人 / 召唤</span></h3>
+  <p><strong>情感内核：</strong>疲惫的母亲。她补了四千年的天。<br>
+  <strong>设计爆点：</strong>她的血量 = 天的血量。她受伤，天就裂。她的大招能补天，代价是<strong>忘掉一个她造过的人</strong>。</p>
+  <div class="hook"><b>爆点：</b>女娲知道一切真相，而且她<strong>一直在等一个能真正"结束"的人</strong>——等了四千年。她不阻止你重铸九鼎，她怕的是你放弃。她不是障碍，她是扣扳机前替你压住手的那个人。</div>
+
+  <h3>嫦娥 <span class="tag">隐藏 · 月 / 药</span></h3>
+  <p><strong>情感内核：</strong>逃跑不是背叛。<br>
+  <strong>设计爆点：</strong>她不是贪心偷药。是她知道逢蒙要来杀后羿夺药，她当着人的面把药吞了——<strong>她是替他去死的。只是她死得不太好，死得太长了。</strong></p>
+  <div class="hook"><b>全场泪点台词：</b>「我不是逃走的。我是替你去死的。只是死这件事，我做得不太好——我死得太长了。」</div>
+
+  <h3>共工 / 大禹 <span class="tag">解锁 · 后续开放</span></h3>
+  <ul>
+    <li><strong>共工</strong>——撞不周山不是发疯，是<strong>故意的</strong>。他要撞开一个洞，因为他在山下听见了敲门声。他是第一个知道真相的人。</li>
+    <li><strong>大禹</strong>——铸鼎的人，销赃的人。他一直活到今天。"三过家门而不入"，不是敬业，是<strong>不敢回家：他在家里藏了第十个太阳。</strong></li>
+  </ul>
+
+  <h2><span class="num">06</span>北欧阵营 · BOSS 图鉴</h2>
+  <p>原则：<strong>每一个北欧 BOSS 都有一个"中国神话里的镜像"</strong>，让玩家在战斗里感受到"我在打另一个版本的自己"。</p>
+
+  <table>
+    <tr><th>BOSS</th><th>定位</th><th>镜像 / 记忆点</th></tr>
+    <tr><td>索尔 Thor</td><td>第一关 · 爽快型</td><td>雷神之锤 vs 后羿的弓：都是"扔出去还会回来"的武器。他是唯一一个真心享受战争的北欧神。<strong>倒下时喊的不是"我输了"，是"妈妈"。</strong></td></tr>
+    <tr><td>海姆达尔 Heimdall</td><td>守门 · 昆仑</td><td>彩虹桥 Bifröst vs 昆仑天梯：两个世界的"轴"，一座连着，一座断了。他守着一个连不上去的楼梯。</td></tr>
+    <tr><td>耶梦加得 Jörmungandr</td><td>环境型 · 归墟</td><td>世界之蛇盘在海沟最深处 vs 中国被淹掉的仙山（岱舆、员峤）。整张地图就是它的身体。</td></tr>
+    <tr><td>海拉 Hel / 尼德霍格</td><td>幽都 · 信息关</td><td>被奥丁放逐的半死人 vs 中国地下名册。她手里有全片最关键的两份"死亡证明"。</td></tr>
+    <tr><td>芬里尔 Fenrir</td><td>可选杀/可选放</td><td>被众神用诡计绑住、嘴里插着剑、出卖他的是他父亲的朋友。<strong>他不是恶，他是一个被大人骗了的孩子。</strong>你可以放他——代价是北欧的末日提前降临到你的世界。</td></tr>
+    <tr><td>弗丽嘉 Frigg</td><td>情感关 · 首阳山</td><td>为了儿子巴德尔，让万物发誓不伤他，唯独漏了一株槲寄生。<strong>她因为一个"技术性疏忽"失去了儿子。</strong>她不打你，她只是饿，她问你："你的孩子饿的时候，你会怎么办？"</td></tr>
+    <tr><td>洛基 Loki</td><td>情报商 / 双面</td><td>卖真相给你，收的价钱是<strong>你的一段记忆</strong>。他会背叛你两次。第三次他告诉你最重要的那句话。</td></tr>
+    <tr><td>奥丁 Odin</td><td>最终 BOSS</td><td><strong>他不是想赢，他是拒绝被赦免。</strong></td></tr>
+  </table>
+
+  <h3>奥丁：一个不能接受"不是自己的错"的人</h3>
+  <p>他是第一桩谋杀的执行者。此后他一直在付代价：挖掉一只眼、吊在世界树上九天九夜、献出儿子。他拼命付账，是想把这笔账抹平。</p>
+  <p>但如果真相是"巨人自愿死的"——那他的罪就不存在。而如果罪不存在，他所有的牺牲就全是<strong>白费的</strong>。</p>
+  <div class="hook"><b>所以奥丁必须让"谋杀"这个版本成立，哪怕代价是全世界跟他一起沉下去。</b>这是他作为反派最锋利的地方：他维护假象，不是因为邪恶，是因为他没有勇气承认自己的半生是空转。</div>
+
+  <h2><span class="num">07</span>九图九鼎</h2>
+  <p>每一张地图 = 一处中国神话遗址 + 一枚碎片 + 一个北欧 BOSS + 一条情感线。<strong>九张图不是九个关卡，是九种"关于失去"。的变奏</strong></p>
+
+  <table>
+    <tr><th>地图</th><th>出处</th><th>碎片</th><th>BOSS</th><th>情绪主题</th></tr>
+    <tr><td>汤谷 · 扶桑</td><td>十日沐浴之地，后羿射日现场</td><td>日鼎</td><td>索尔</td><td>英雄回到故乡，发现没人记得自己</td></tr>
+    <tr><td>不周山</td><td>共工怒触，天柱折</td><td>山鼎</td><td>巨人族</td><td>为什么要故意把天撞破</td></tr>
+    <tr><td>归墟</td><td>无底之谷，众水归处</td><td>海鼎</td><td>耶梦加得</td><td>难民；饥荒不是说谎的借口</td></tr>
+    <tr><td>幽都 · 黄泉</td><td>地下冥府</td><td>幽鼎</td><td>海拉 / 尼德霍格</td><td>两份不同的死亡证明</td></tr>
+    <tr><td>昆仑</td><td>西王母之山，天梯</td><td>天鼎</td><td>海姆达尔</td><td>一段永远爬不上去的楼梯</td></tr>
+    <tr><td>涿鹿</td><td>黄帝战蚩尤</td><td>兵鼎</td><td>芬里尔</td><td>要不要放出一个受害的孩子</td></tr>
+    <tr><td>广寒宫</td><td>月宫，吴刚伐桂</td><td>月鼎</td><td>玛尼 / 哈提</td><td>回家</td></tr>
+    <tr><td>首阳山</td><td>伯夷叔齐不食周粟</td><td>食鼎</td><td>弗丽嘉</td><td>饿，与拒绝吃</td></tr>
+    <tr><td>洛水</td><td>洛神宓妃</td><td>水鼎</td><td>洛基</td><td>被卖掉的真相</td></tr>
+    <tr><td>泗水</td><td>九鼎沉没处</td><td>—</td><td>奥丁</td><td>终章 · 捞鼎</td></tr>
+  </table>
+
+  <h3>关于广寒宫的那一关</h3>
+  <p>吴刚犯了大错，被罚在月宫砍桂树。树随砍随合，永远砍不倒。<strong>他砍了四千年。</strong></p>
+  <p>当玩家打着打着，抬头看见一个还在砍树的人，他说：<em>"你也在砍树吧。"</em></p>
+  <div class="hook"><b>这是全片最好的一句"打破第四面墙"，但不需要真打破</b>——它同时是给玩家的：你也在砍同一棵树。这就是肉鸽的循环本身。</div>
+
+  <h3>关于首阳山那一关</h3>
+  <p>伯夷、叔齐是孤竹国君的儿子，周灭商后，他们"不食周粟"，躲进首阳山采薇而食，最后饿死。<strong>中国神话里唯一一对"主动绝食而死"的圣人。</strong></p>
+  <p>把这一关交给北欧的弗丽嘉——一个因为失去儿子而永远在饿的母亲。<strong>全片主题最重的一张图：关于"饿"这种最原始的绝望，和"不吃"这种最固执的尊严。</strong></p>
+
+  <h2><span class="num">08</span>主线章节大纲</h2>
+
+  <h3>序章 · 泗水</h3>
+  <p>一个孩子在水边捡到一块青铜碎片，碎片上有一只眼睛的形状。<br>镜头沉下去。<strong>第一人称，你醒来。箭袋里只剩一支箭。</strong></p>
+  <div class="hook"><b>爆点：</b>你照镜子。镜子里不是你的脸。你不知道"你"是谁——这个疑问会一直留到第九章。</div>
+
+  <h3>第一章 · 汤谷的九个名字</h3>
+  <p>你回到射日之地。你以为自己是英雄，回来受祭。但祠堂里供的不是你——是<strong>九个名字</strong>，你一个都不认识。</p>
+  <div class="hook"><b>章末爆点：</b>索尔倒下，最后一句是"妈妈"。（当时观众和玩家都会以为是普通的战死台词。第十章会回收。）</div>
+
+  <h3>第二章 · 不周山</h3>
+  <p>断柱，天漏之处，一路向上攀爬。遇见共工的残魂。他说：天不是自己破的，是我撞的。我撞它，是因为我听见底下有人在敲门。</p>
+  <div class="hook"><b>爆点：</b>在山的最高处，你贴近那个洞。洞里传来<strong>呼吸声</strong>。</div>
+
+  <h3>第三章 · 归墟（第一层真相）</h3>
+  <p>无底之谷，沉在水下的两座仙山。你在这里第一次见到北欧军队的后方——不是军营，是<strong>难民营</strong>。老人、孩子、冻僵的树苗。</p>
+  <div class="hook"><b>爆点：</b>北欧方第一次开口说话。他们不是来抢东西的，是来讨饭的。玩家在这里第一次动摇：<strong>我到底在打谁？</strong></div>
+
+  <h3>第四章 · 幽都</h3>
+  <p>地下名册。你要找两份死亡证明。</p>
+  <ul>
+    <li>盘古：档案类型是"失踪人口"。没有遗言，没有尸体，没有死因。</li>
+    <li>尤弥尔：档案类型是"他杀"。凶手一栏被人用墨涂掉了。</li>
+  </ul>
+  <div class="hook"><b>爆点：</b>两具尸体，一份档案。<strong>涂掉凶手名字的人，签的是奥丁自己的手写体。</strong></div>
+
+  <h3>第五章 · 昆仑</h3>
+  <p>西王母守着一座断掉的天梯。她说：上面还有东西，别上去。</p>
+  <div class="hook"><b>爆点：</b>站在昆仑山顶往下看——你能看见世界树。而世界树，<strong>长在这具尸体的脊椎上</strong>。这一眼，会作为一张全屏静态图，配一句无名的问题：<em>"你们住在哪儿？"</em></div>
+
+  <h3>第六章 · 涿鹿（第二层真相）</h3>
+  <p>被绑住的芬里尔。你可以杀他，也可以放他。</p>
+  <div class="hook"><b>爆点：</b>盘古与尤弥尔是同一个神。这个真相不是通过书籍揭示的，是通过<strong>两边的伤口形状完全吻合</strong>揭示的。</div>
+
+  <h3>第七章 · 广寒宫（全场泪点）</h3>
+  <p>四千年前那个替他吞下药的女人，还在这儿。她没老。她只是等了很久。</p>
+  <div class="hook"><b>爆点：</b>真相——她不是偷药，是替他死。<strong>而且她死得太长了。</strong></div>
+
+  <h3>第八章 · 首阳山</h3>
+  <p>弗丽嘉不主动攻击。她只是饿。她说：我的孩子死了以后，我就再也没吃饱过。</p>
+  <div class="hook"><b>爆点（全片最好的场景）：</b>羲和与弗丽嘉在战场中央相遇。<strong>两个敌对阵营的母亲，没有打起来。她们交换了各自孩子的名字。</strong></div>
+
+  <h3>第九章 · 洛水（终层真相）</h3>
+  <p>洛基卖给你最后一个真相。价钱是你的一段记忆——玩家真会失去一段已收集的传说文本。</p>
+  <div class="hook"><b>爆点：</b>九鼎不是印章，是棺材。你收集的不是碎片，是尸块。后羿射落的不是太阳，是神。<strong>你一路走来，是在把九个死人从土里挖出来。</strong></div>
+
+  <h3>第十章 · 羲和（独立情感章 · 无地图）</h3>
+  <p>她来了。没有武器，没有血条，没有战斗音乐。她只问一句话。</p>
+  <div class="quote">
+    「你为什么要杀我的孩子？」<br>
+    <span class="who">—— 玩家：游戏不给你任何选项。</span>
+  </div>
+  <div class="hook"><b>全片最大爆点：</b>不是"反派是她"这个反转，而是<strong>玩家在二周目才会反应过来的一件事</strong>——后羿找碎片，是为了接回自己的妻子；羲和找太阳，是为了接回自己的孩子。<strong>后羿和羲和是同一个人。唯一的区别是，后羿成功了九次。</strong></div>
+  <p>本章结尾：太阳落山。那不是物理现象。是<strong>一个母亲去把她最后一个孩子接回家</strong>。</p>
+
+  <h3>终章 · 泗水 · 捞鼎</h3>
+  <p>河底。奥丁一个人在这里捞了两千年。他不是来抢的，他是早就来了、一直没走。</p>
+  <h4>最终战的设计</h4>
+  <div class="hook">
+    <b>没有敌人。屏幕全黑。</b><br>
+    你需要按住一个键——<strong>睁开眼睛</strong>。
+  </div>
+  <p>因为巨人的最后一句话，两族都记错了两千年。<br>他们以为那是一句诅咒。</p>
+  <p class="quote">「替我看看。」</p>
+  <p>奥丁挖掉那只眼睛，不是献祭。是他<strong>不敢再看</strong>。<br>而整个游戏是第一人称——玩家从第一分钟起，就在用眼睛看这个世界。<strong>这个世界，是那个人留下的最后一个请求。</strong></p>
+
+  <h2><span class="num">09</span>结局：四个</h2>
+
+  <table>
+    <tr><th>结局</th><th>做法</th><th>后果</th></tr>
+    <tr><td>鼎成</td><td>重铸九鼎，复活九日</td><td>天重新烧起来，世界重启。北欧诸神获得食粮，签下和约，被写进封神榜。后羿成为新世界的第一根柴。<strong>代价：玩家的一切被清空——真·删档。</strong></td></tr>
+    <tr><td>鼎碎</td><td>彻底打碎九鼎</td><td>天空永远带着裂痕。北欧诸神在漫长的冬天里相继饿死，最后一个是奥丁——他坐在干枯的世界树下，把那只眼睛吃了。中国诸神失去神性，变回人。<strong>人开始自己造神，造出来的神越来越像人。</strong></td></tr>
+    <tr><td>不封</td><td>最后一箭射向封神榜的空白处，写上自己的名字</td><td>后羿成为新的"天"，一个<strong>凡人的天</strong>。他立下的第一条神律是："神不得再以人为食。"<strong>代价：他永远不能下凡，永远见不到嫦娥。</strong></td></tr>
+    <tr><td>奔月 <span class="tag gold">隐藏</span></td><td>集齐所有碎片，但<strong>一片都不用来铸鼎</strong>，全部拼成一条路</td><td>嫦娥从月亮上走下来。<strong>世界的问题一个都没解决。</strong>但这一局，后羿终于不是一个失败者了。</td></tr>
+  </table>
+  <p><strong>触发条件（隐藏结局）：</strong>全程不杀任何一位"母亲"类 BOSS；每次遇到嫦娥的幻影，都选择回头。</p>
+
+  <h2><span class="num">10</span>漫剧化：给短视频的三分钟</h2>
+  <p>漫剧不需要讲完整故事，只需要四个"必须截图"的瞬间。以下是我作为漫剧产线视角，最先要拍的四场。</p>
+
+  <div class="card">
+    <h4>Shot 01 · 钩子（第0集，15秒）</h4>
+    <p>一个小学生在课本上画后羿射日。画歪了的太阳，画得很难看。<br>镜头缓慢拉远——画纸边缘开始焦黑，火舌从课本的装订线里爬出来。<br>黑屏。字幕：<em>"妈妈说，他是英雄。"</em></p>
+  </div>
+
+  <div class="card">
+    <h4>Shot 02 · 反套路（第1集结尾）</h4>
+    <p>后羿一箭射穿索尔的胸口。雷神跪下去。<br>观众等着听一句挑衅或咒骂。<br>他抬起头，说的是：<em>"妈妈。"</em><br>——这句台词在第十章回收。第1集看到的人，第十集才会被这一句话打穿。</p>
+  </div>
+
+  <div class="card">
+    <h4>Shot 03 · 大爆点（第10集）</h4>
+    <p>羲和站在焦土上，手里没有武器，只有一件叠得整整齐齐的小孩衣服。<br><em>"你为什么要杀我的孩子？"</em><br>镜头切后羿——他没有回答。因为游戏不给他选项。<br>切羲和：<em>"我数过了。九个。你一个也没数错。"</em></p>
+  </div>
+
+  <div class="card">
+    <h4>Shot 04 · 结尾（最后一集）</h4>
+    <p>全黑画面。<br>观众以为手机坏了。<br>一行小字慢慢浮出来：<em>"按住屏幕，睁开眼睛。"</em></p>
+  </div>
+
+  <h3>中段可用的一句话悬念</h3>
+  <div class="quote">
+    「你们的神，是自愿死的。我们的神，是被杀的。<br>所以你们的神爱你们，我们的神恨我们。<br><em>这公平吗？</em>」<br>
+    <span class="who">—— 奥丁，泗水河底</span>
+  </div>
+  <div class="quote">
+    「我补的不是天。我补的是他的伤口。<br>你们所有人都住在一个死掉的人的胸腔里。」<br>
+    <span class="who">—— 女娲</span>
+  </div>
+  <div class="quote">
+    「我射了九个。留了一个。<br>这四千年，我一直以为那是仁慈。」<br>
+    <span class="who">—— 后羿</span>
+  </div>
+
+  <h2><span class="num">11</span>玩家共鸣：把肉鸽机制写成叙事</h2>
+  <p>这是本作最需要做扎实的地方——不是"加一段剧情解释为什么可以重开"，而是让机制本身变成情绪。</p>
+
+  <table>
+    <tr><th>机制</th><th>叙事解释</th><th>玩家感受</th></tr>
+    <tr><td>一局的时间限制</td><td>一炷香。香烧完神就回去。</td><td>每一次推进都有代价，不会无限刷</td></tr>
+    <tr><td>死亡不死，换人重开</td><td>"后羿"是一个称号，信徒是容器</td><td>随机角色有了世界观支撑，不是凑数</td></tr>
+    <tr><td>随机地图 / 随机词条</td><td>每次神降，传说都会被重新讲一遍，而讲错了</td><td>每一局都在读一个"版本不同"的故事</td></tr>
+    <tr><td>难度的层层递进</td><td>香越烧越短，因为天在漏</td><td>难度曲线变成一种压迫感，而不是数值</td></tr>
+    <tr><td>多周目 / 永久成长</td><td>你的名字离封神榜的空位越来越近</td><td>通关不是打赢，是"被记住"</td></tr>
+    <tr><td>收集品</td><td>每一片碎片对应一段"被传错的传说"</td><td>收集欲与"拼真相"的快感重合</td></tr>
+  </table>
+
+  <div class="hook" style="margin-top:26px;">
+    <b>一句话总结这个游戏的情感设计：</b><br>
+    玩家不是被剧情感动的。玩家是在第十次重开、第一百次捡起同一支箭的时候，突然意识到——<strong>他也在砍一棵砍不倒的树。</strong>
+  </div>
+
+  <h2><span class="num">12</span>为什么这个框架"能打"</h2>
+  <ul>
+    <li><strong>强差异化</strong>——市面上"中式神话 vs 北欧神话"的作品不少，但几乎都是皮肤层面的对打。本作给了一个真实的、服气的、可考的<strong>世界观咬合点</strong>（盘古 = 尤弥尔，同一具尸体、两种记忆）。这个点是原创的，而且经得起考据玩家挖。</li>
+    <li><strong>情感底盘稳</strong>——后羿的失败、嫦娥的替死、母亲的丧子、女娲的疲惫。四个母题各自独立，互相不抢戏。</li>
+    <li><strong>机制与叙事互锁</strong>——一炷香、称号、吴刚砍树、盘古的损耗，全都是"必须是肉鸽才能讲"的设计。换个品类这个故事讲不了。</li>
+    <li><strong>传播钩子密集</strong>——"你为什么要杀我的孩子"、"倒下时喊妈妈"、"按住键睁开眼睛"，三张可以被剪成短视频、被截图、被玩梗的画面。</li>
+    <li><strong>有得挖</strong>——九鼎沉泗水的考据、归墟五山与十五巨鳌、封神榜的365个空位、首阳山不食周粟。每一条都够玩家做视频。</li>
+  </ul>
+
+  <div class="end">
+    神不是被打败的。<br>
+    神是被遗忘的。<br>
+    ——所以这场仗，从头到尾都是在抢"被记住"的资格。
+  </div>
+
+  <p class="foot">
+    《十日》故事圣经 v0.1 · 为团队内部讨论准备<br>
+    可继续展开：分镜脚本 / 关卡流程图 / 每章的具体 Boss 战机制 / 漫剧 12 集分集大纲
+  </p>
+
+</div>
+</body>
+</html>

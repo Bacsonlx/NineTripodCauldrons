@@ -1,0 +1,39 @@
+{
+  "name": "nine-tripod-cauldrons",
+  "productName": "九鼎",
+  "version": "0.1.0",
+  "description": "九鼎 · 十日：单机动作肉鸽游戏技术验证工程",
+  "private": true,
+  "license": "UNLICENSED",
+  "author": "Bacsonlx",
+  "main": ".webpack/main",
+  "config": {
+    "forge": "./forge.config.cjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bacsonlx/NineTripodCauldrons.git"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "electron-forge start",
+    "check": "tsc --noEmit",
+    "package": "npm run check && electron-forge package",
+    "make": "npm run check && electron-forge make"
+  },
+  "dependencies": {
+    "phaser": "3.90.0"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "7.11.2",
+    "@electron-forge/maker-zip": "7.11.2",
+    "@electron-forge/plugin-webpack": "7.11.2",
+    "@types/node": "^22.0.0",
+    "electron": "44.8.0",
+    "ts-loader": "^9.5.0",
+    "typescript": "5.9.3",
+    "webpack": "^5.0.0"
+  }
+}
