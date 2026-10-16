@@ -10,11 +10,32 @@
     <title>九鼎 · 十日</title>
     <style>
       html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #171b1b; }
-      #game { width: 100%; height: 100%; }
+      body { display: grid; place-items: center; color: #dcc69b; font-family: 'Songti SC', SimSun, serif; }
+      #shell { position: relative; width: min(100vw, 177.7778vh); aspect-ratio: 16 / 9; }
+      #game { position: absolute; inset: 0; }
       canvas { display: block; }
+      .hud { position: absolute; inset: 0; pointer-events: none; }
+      header { position: absolute; top: 4%; left: 5%; right: 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #6b6349; padding-bottom: 1.3%; }
+      h1 { margin: 0; font-size: clamp(22px, 3.7vw, 48px); font-weight: 600; letter-spacing: .12em; }
+      h1 small { font-size: .35em; font-weight: 400; letter-spacing: .25em; margin-left: 1.2em; }
+      .chapter { font-size: clamp(13px, 1.55vw, 20px); text-align: right; line-height: 1.8; }
+      #version { display: block; color: #8b927e; font-size: .65em; letter-spacing: .15em; }
+      footer { position: absolute; bottom: 4%; left: 5%; right: 5%; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: clamp(10px, 1.2vw, 16px); color: #aaa88f; }
+      kbd { font: inherit; color: #e5c78f; padding: .1em .25em; }
+      .hits { color: #dcb570; white-space: nowrap; }
+      #hit-count { font-size: 1.7em; margin-left: .5em; }
+      #status { position: absolute; top: 47%; width: 100%; text-align: center; padding: 1.5em 0; background: #111b1cdd; color: #f3dbb3; font-size: clamp(16px, 2vw, 28px); letter-spacing: .15em; }
+      [hidden] { display: none !important; }
     </style>
   </head>
   <body>
-    <main id="game" aria-label="九鼎 · 十日"></main>
+    <main id="shell" aria-label="九鼎 · 十日 单房间弓箭练习">
+      <div id="game"></div>
+      <div class="hud">
+        <header><h1>九鼎<small>十日</small></h1><div class="chapter">汤谷 · 试弓庭<span id="version">MVP-01</span></div></header>
+        <footer><span><kbd>WASD</kbd> 跑动　鼠标瞄准　左键短按／按住射箭　<kbd>R</kbd> 重置　<kbd>Esc</kbd> 暂停</span><span class="hits">命中 <strong id="hit-count">0</strong></span></footer>
+        <div id="status" role="status">正在载入汤谷…</div>
+      </div>
+    </main>
   </body>
 </html>

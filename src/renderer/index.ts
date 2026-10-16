@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { BootScene } from '../game/BootScene';
+import { TrainingScene } from '../game/TrainingScene';
 
 async function start(): Promise<void> {
   const version = await window.desktop.getAppVersion();
@@ -14,8 +14,9 @@ async function start(): Promise<void> {
       width: 1280,
       height: 720,
     },
-    scene: [new BootScene(version)],
+    scene: [TrainingScene],
   });
+  document.getElementById('version')!.textContent = `MVP-01 · ${version}`;
 }
 
 void start().catch((error: unknown) => {

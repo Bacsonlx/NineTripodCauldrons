@@ -2,6 +2,7 @@ node_modules/
 .webpack/
 out/
 coverage/
+.test-build/
 *.log
 .DS_Store
 .env
