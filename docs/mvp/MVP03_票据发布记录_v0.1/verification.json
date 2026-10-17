@@ -1,0 +1,257 @@
+{
+  "date": "2026-10-18",
+  "parent": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/17",
+  "parentBodyTitleStateLabelsUnchanged": true,
+  "verifiedChildren": 15,
+  "verifiedNativeBlockingEdges": 16,
+  "tickets": [
+    {
+      "id": "T01",
+      "number": 18,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/18",
+      "databaseId": 5901279375,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": []
+    },
+    {
+      "id": "T02",
+      "number": 19,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/19",
+      "databaseId": 5901280053,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": [
+        18
+      ]
+    },
+    {
+      "id": "T03",
+      "number": 20,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/20",
+      "databaseId": 5901280765,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": []
+    },
+    {
+      "id": "T04",
+      "number": 21,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/21",
+      "databaseId": 5901281466,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": []
+    },
+    {
+      "id": "T05",
+      "number": 22,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/22",
+      "databaseId": 5901282002,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": []
+    },
+    {
+      "id": "T06",
+      "number": 23,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/23",
+      "databaseId": 5901282643,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": []
+    },
+    {
+      "id": "T07",
+      "number": 24,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/24",
+      "databaseId": 5901283255,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": [
+        19,
+        20,
+        21,
+        22,
+        23
+      ]
+    },
+    {
+      "id": "T08",
+      "number": 25,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/25",
+      "databaseId": 5901284271,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": [
+        24
+      ]
+    },
+    {
+      "id": "T09",
+      "number": 26,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/26",
+      "databaseId": 5901284900,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": [
+        25
+      ]
+    },
+    {
+      "id": "T10",
+      "number": 27,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/27",
+      "databaseId": 5901285596,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": [
+        25
+      ]
+    },
+    {
+      "id": "T11",
+      "number": 28,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/28",
+      "databaseId": 5901286196,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": [
+        24
+      ]
+    },
+    {
+      "id": "T12",
+      "number": 29,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/29",
+      "databaseId": 5901286771,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": [
+        26,
+        27
+      ]
+    },
+    {
+      "id": "T13",
+      "number": 30,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/30",
+      "databaseId": 5901287390,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": [
+        28,
+        29
+      ]
+    },
+    {
+      "id": "T14",
+      "number": 31,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/31",
+      "databaseId": 5901288054,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": [
+        30
+      ]
+    },
+    {
+      "id": "T15",
+      "number": 32,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/32",
+      "databaseId": 5901288726,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": [
+        31
+      ]
+    }
+  ],
+  "frontier": [
+    {
+      "id": "T01",
+      "number": 18,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/18",
+      "databaseId": 5901279375,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": []
+    },
+    {
+      "id": "T03",
+      "number": 20,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/20",
+      "databaseId": 5901280765,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": []
+    },
+    {
+      "id": "T04",
+      "number": 21,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/21",
+      "databaseId": 5901281466,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": []
+    },
+    {
+      "id": "T05",
+      "number": 22,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/22",
+      "databaseId": 5901282002,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": []
+    },
+    {
+      "id": "T06",
+      "number": 23,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/23",
+      "databaseId": 5901282643,
+      "parentVerified": true,
+      "state": "open",
+      "readyForAgent": true,
+      "bodyMatches": true,
+      "blockedBy": []
+    }
+  ]
+}

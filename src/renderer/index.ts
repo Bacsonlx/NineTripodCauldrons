@@ -15,7 +15,7 @@ async function start(): Promise<void> {
     },
     scene: [TrainingScene],
   });
-  document.getElementById('version')!.textContent = `MVP-02 · ${version}`;
+  document.getElementById('version')!.textContent = `MVP-03 · 动态小样 · ${version}`;
 }
 
 void start().catch((error: unknown) => {

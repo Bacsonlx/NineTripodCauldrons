@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { TrainingRoom, SKILL_COOLDOWNS, RAIN_RADIUS, type Point } from './TrainingRoom';
 import { TANGGU } from './Tanggu';
 import { cameraView, screenToWorld } from './CameraView';
+import { TangguBackdrop } from './TangguBackdrop';
+import { CombatEffects } from './CombatEffects';
 import upperUrl from '../../assets/mvp/child-upper-refined-v3.png';
 import oldFrames from '../../assets/mvp/child-refined-v3.frames.json';
 import bowUrl from '../../assets/mvp/bow-states-v3.png';
@@ -12,9 +14,12 @@ import skillsUrl from '../../assets/mvp02/child-skills-upper-v1.png';
 import enemyUrl from '../../assets/mvp02/shadow-puppet-v2.png';
 import enemyPaperUrl from '../../assets/mvp02/shadow-paper-v2.png';
 import enemyWoodUrl from '../../assets/mvp02/shadow-wood-v2.png';
-import groundUrl from '../../assets/mvp02/tanggu-ground-v1.png';
 import propsUrl from '../../assets/mvp02/tanggu-props-v1.png';
 import atlases from '../../assets/mvp02/atlases.json';
+import junctionUrl from '../../assets/mvp03/junction-ground-v1.png';
+import samplePropsUrl from '../../assets/mvp03/junction-props-v1.png';
+import vfxUrl from '../../assets/mvp03/combat-vfx-v1.png';
+import sampleFrames from '../../assets/mvp03/frames.json';
 
 type Frame = { name: string; x: number; y: number; width: number; height: number; originX: number; originY: number };
 const ENEMY_TEXTURES = { bird: 'enemy', paper: 'enemyPaper', wood: 'enemyWood' } as const;
@@ -50,12 +55,14 @@ export class TrainingScene extends Phaser.Scene {
   private crosshair!: Phaser.GameObjects.Graphics;
   private dust!: Phaser.GameObjects.Graphics;
   private lastPaused = false;
+  private backdrop!: TangguBackdrop;
+  private combatEffects!: CombatEffects;
 
   constructor() { super('training'); }
 
   preload(): void {
     this.load.on('loaderror', () => this.fail('素材加载失败，请关闭后重新启动。'));
-    for (const [key, url] of Object.entries({ upper: upperUrl, bow: bowUrl, arrow: arrowUrl, lower: lowerUrl, failed: failedUrl, skills: skillsUrl, enemy: enemyUrl, enemyPaper: enemyPaperUrl, enemyWood: enemyWoodUrl, ground: groundUrl, props: propsUrl })) this.load.image(key, url);
+    for (const [key, url] of Object.entries({ upper: upperUrl, bow: bowUrl, arrow: arrowUrl, lower: lowerUrl, failed: failedUrl, skills: skillsUrl, enemy: enemyUrl, enemyPaper: enemyPaperUrl, enemyWood: enemyWoodUrl, props: propsUrl, junctionGround: junctionUrl, sampleProps: samplePropsUrl, vfx: vfxUrl })) this.load.image(key, url);
   }
 
   private fail(message: string): void {
@@ -67,7 +74,7 @@ export class TrainingScene extends Phaser.Scene {
 
   create(): void {
     if (!this.loaded) return;
-    const sources: [string, readonly Frame[]][] = [['upper', oldFrames.upper], ['bow', oldFrames.bow], ...Object.entries(atlases).map(([key, atlas]) => [key, atlas.frames] as [string, Frame[]])];
+    const sources: [string, readonly Frame[]][] = [['upper', oldFrames.upper], ['bow', oldFrames.bow], ...Object.entries(atlases).map(([key, atlas]) => [key, atlas.frames] as [string, Frame[]]), ['sampleProps',sampleFrames.props], ['vfx',sampleFrames.vfx]];
     for (const [key, frames] of sources) {
       const texture = this.textures.get(key);
       const source = texture.getSourceImage() as HTMLImageElement;
@@ -76,15 +83,15 @@ export class TrainingScene extends Phaser.Scene {
         texture.add(f.name, 0, f.x, f.y, f.width, f.height);
       }
     }
-    this.add.image(TANGGU.width / 2, TANGGU.height / 2, 'ground').setDisplaySize(TANGGU.width, TANGGU.height).setDepth(-10);
+    this.backdrop = new TangguBackdrop(this);
     this.groundEffects = this.add.graphics().setDepth(2);
     this.dust = this.add.graphics().setDepth(4);
     for (const pillar of TANGGU.pillars) this.addProp(3, pillar.x, pillar.y, 0.28, 80, 120);
     const frameFor = { tree: 0, root: 1, wall: 2, altar: 4 } as const;
-    for (const p of TANGGU.obstacles) this.addProp(frameFor[p.kind], p.x, p.y, p.kind === 'tree' ? 0.44 : p.kind === 'altar' ? 0.4 : 0.46, p.halfWidth * 2 + 24, p.height);
-    // Distant woodland and small stones stay beyond the main combat route.
-    for (const p of [{x:240,y:360},{x:870,y:290},{x:1640,y:350},{x:2350,y:1130}]) this.addProp(0,p.x,p.y,0.42,170,220);
-    for (let i = 0; i < 16; i++) this.addProp(5, 200 + i * 141, i % 2 ? 1230 : 280, 0.10 + i % 3 * 0.015, 35, 25);
+    for (const p of TANGGU.obstacles) {
+      if(p.kind==='gate'||p.kind==='brazier'||p.kind==='waystone')continue;
+      this.addProp(frameFor[p.kind], p.x, p.y, p.kind === 'tree' ? 0.44 : p.kind === 'altar' ? 0.4 : 0.46, p.halfWidth * 2 + 24, p.height);
+    }
     this.shadow = this.add.ellipse(400, 820, 36, 13, 0x100e0d, 0.45).setDepth(3);
     this.legsTransition = this.add.sprite(400,820,'lower').setVisible(false);
     this.legs = this.add.sprite(400,820,'lower').setScale(0.20);
@@ -97,6 +104,7 @@ export class TrainingScene extends Phaser.Scene {
       shadow: this.add.ellipse(e.x,e.y,36,12,0x0c0b0a,0.45).setDepth(3).setVisible(false),
     });
     this.airEffects = this.add.graphics().setDepth(4000);
+    this.combatEffects = new CombatEffects(this,this.legs,this.torso);
     this.crosshair = this.add.graphics().setDepth(5000);
     this.installInput();
     this.updateCamera();
@@ -176,6 +184,7 @@ export class TrainingScene extends Phaser.Scene {
   }
 
   private retry(): void {
+    this.combatEffects.reset();
     this.room.reset();this.walkTime = 0;this.moveDirection = 0;this.motion = 0;this.gaitTime = 0;this.gaitMoving = false;this.gaitDirection = 0;this.legsTransition.setVisible(false);this.clearInput();this.updateCamera();
   }
 
@@ -241,6 +250,7 @@ export class TrainingScene extends Phaser.Scene {
     this.bow.setFrame(bow.name).setOrigin(bow.originX,bow.originY).setPosition(s.grip.x,s.grip.y+bob).setRotation(s.skill?.kind==='rain'&&s.skill.phase==='windup'?-Math.PI/2:p.angle).setDepth(p.y+0.3).setVisible(s.status!=='failed');
     this.nockedArrow.setPosition(s.grip.x,s.grip.y+bob).setRotation(p.angle).setDepth(p.y+0.4).setVisible(s.attack==='draw'||(s.skill?.kind==='pierce'&&s.skill.phase==='windup'));
     for (const prop of this.props) prop.image.setAlpha(p.y < prop.y && p.y > prop.y-prop.height && Math.abs(p.x-prop.x)<prop.width/2 ? 0.30 : 1);
+    this.backdrop.update(p,this.clock);
     const ground = this.groundEffects.clear(),air = this.airEffects.clear();
     for (const e of s.enemies) {
       const v = this.enemies.get(e.id)!;
@@ -265,13 +275,6 @@ export class TrainingScene extends Phaser.Scene {
     if (s.invalid) { const q=s.invalid;ground.lineStyle(2,0xe27d5a,0.9).strokeCircle(q.x,q.y,14).lineBetween(q.x-9,q.y-9,q.x+9,q.y+9).lineBetween(q.x+9,q.y-9,q.x-9,q.y+9); }
     for (const r of s.rains) {
       this.rainCircle(ground,r,Math.max(0,1-r.age/0.65),false);
-      for(let i=0;i<12;i++) {
-        const phase=(r.age+i*0.027)%0.18/0.18;
-        const angle=i*2.39996, radius=22+Math.sqrt(i/12)*80;
-        const x=r.x+Math.cos(angle)*radius,y=r.y+Math.sin(angle)*radius;
-        air.lineStyle(1.5,0xf5d18b,0.65).lineBetween(x-14*(1-phase),y-130*(1-phase),x,y-100*(1-phase));
-        if(phase>0.8)ground.lineStyle(1,0xd4ae67,(1-phase)*3).strokeEllipse(x,y,14,6);
-      }
     }
     const active = new Set(s.arrows.map(a=>a.id));
     for(const [id,image] of this.arrows) if(!active.has(id)){image.destroy();this.arrows.delete(id);}
@@ -279,18 +282,9 @@ export class TrainingScene extends Phaser.Scene {
       let image=this.arrows.get(a.id);
       if(!image){image=this.add.image(a.x,a.y,'arrow').setOrigin(1509/1536,0.5).setScale(a.kind==='pierce'?0.037:0.029);this.arrows.set(a.id,image);}
       image.setPosition(a.x,a.y).setRotation(a.angle).setDepth(a.y+52).setTint(a.kind==='pierce'?0xffd06c:0xffffff);
-      air.lineStyle(a.kind==='pierce'?3:1,0xe8bd6e,a.kind==='pierce'?0.65:0.35).lineBetween(a.x-Math.cos(a.angle)*(a.kind==='pierce'?65:24),a.y-Math.sin(a.angle)*(a.kind==='pierce'?65:24),a.x,a.y);
-    }
-    if (s.attack==='release'||(s.skill?.phase==='recover'&&s.skill.remaining>0.06)) {
-      air.lineStyle(1,0xf8ddb0,0.65);
-      for(let i=-1;i<=1;i++){const a=p.angle+i*0.35;air.lineBetween(s.grip.x+Math.cos(a)*7,s.grip.y+Math.sin(a)*7,s.grip.x+Math.cos(a)*14,s.grip.y+Math.sin(a)*14);}
     }
     if(s.hurt>0){air.lineStyle(1.5,0xc97c59,s.hurt/0.12);for(let i=0;i<5;i++){const a=i*Math.PI*2/5;air.lineBetween(p.x+Math.cos(a)*18,p.y-40+Math.sin(a)*18,p.x+Math.cos(a)*26,p.y-40+Math.sin(a)*26);}}
-    for(const e of s.effects) {
-      const life=e.remaining/0.15;air.lineStyle(e.enemy===undefined?1.2:2,0xf4d08a,life);
-      for(let i=0;i<7;i++){const a=i*Math.PI*2/7,r=(1-life)*16+4;air.lineBetween(e.x+Math.cos(a)*3,e.y+Math.sin(a)*3,e.x+Math.cos(a)*r,e.y+Math.sin(a)*r);}
-    }
-    if(s.dodge>0){for(let i=1;i<=4;i++){const a=Math.atan2(s.dodgeDirection.y,s.dodgeDirection.x);ground.fillStyle(0xe7c785,0.1*(1-i/5)).fillEllipse(p.x-Math.cos(a)*i*12,p.y-Math.sin(a)*i*12,28,12);}}
+    this.combatEffects.update(s,dt,this.clock);
     this.crosshair.clear();
     if(this.inside()&&!s.paused&&s.status!=='failed')this.crosshair.lineStyle(1.2,0xf5dbad,0.9).strokeCircle(aim.x,aim.y,6).lineBetween(aim.x-11,aim.y,aim.x-4,aim.y).lineBetween(aim.x+4,aim.y,aim.x+11,aim.y).lineBetween(aim.x,aim.y-11,aim.x,aim.y-4).lineBetween(aim.x,aim.y+4,aim.x,aim.y+11);
     this.dust.clear();
@@ -308,7 +302,8 @@ export class TrainingScene extends Phaser.Scene {
     (document.getElementById('health-fill') as HTMLElement).style.width=`${s.health}%`;
     const remaining=s.enemies.filter(e=>e.group===s.encounter&&e.phase!=='dead').length;
     document.getElementById('encounter')!.textContent=s.status==='complete'?'三庭肃清':`遭遇 ${Math.min(s.encounter+1,3)} / 3 · 影偶 ${remaining}`;
-    document.getElementById('region')!.textContent=s.player.x<950?'扶桑残径':s.player.x<1650?'断垣之道':'日鸟石庭';
+    document.getElementById('region')!.textContent=s.player.y<470&&s.player.x<1180?'碑林幽径':s.player.y>1040&&s.player.x>1400?'祭火林地':s.player.x<1160?'扶桑残径':s.player.x<1770?'断垣之道':'日鸟石庭';
+    document.getElementById('landmark')!.textContent=s.status==='complete'?'主路已肃清 · 可回头探索':`下一地标 · ${['扶桑石庭','断垣庭院','日鸟石庭'][Math.min(s.encounter,2)]}`;
     for(const key of ['pierce','rain','dodge'] as const){const max=SKILL_COOLDOWNS[key];const el=document.getElementById(key)!;const cd=s.cooldowns[key];el.dataset.cooling=String(cd>0);el.style.setProperty('--cooldown',`${cd/max*100}%`);el.querySelector('.seconds')!.textContent=cd>0?cd.toFixed(1):'';}
     const status=document.getElementById('status')!;
     status.hidden=!s.paused&&s.status!=='failed';

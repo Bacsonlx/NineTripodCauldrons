@@ -1,0 +1,28 @@
+{
+  "method": "Original renderer extracted from actual 0.3.0-sample.1 package; isolated Chromium fixture stubs only desktop window API; trusted keyboard/mouse and read-only scene observer. No game state/clock/focus/visibility overrides. Not native desktop acceptance.",
+  "durationSeconds": 37.115,
+  "visibility": {
+    "surface": "isolated headless Chromium; desktop window API stubbed, game rules unchanged",
+    "visibility": "visible",
+    "focus": true
+  },
+  "minimumHealth": 100,
+  "groupsSeen": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "skillsSeen": [
+    "rain",
+    "pierce"
+  ],
+  "dodgeSamples": 10,
+  "maxRainAreas": 1,
+  "impactKinds": [
+    "normal",
+    "rain",
+    "pierce"
+  ],
+  "notes": "Script reached complete and asserted ten R resets. Native desktop walkthrough separately interrupted by lock-screen; not counted."
+}

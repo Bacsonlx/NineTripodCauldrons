@@ -1,0 +1,162 @@
+{
+  "version": "0.3.0-sample.1",
+  "scope": "T01-T06 implemented; T07 candidate, user approval pending",
+  "baseline": "a3efff66f6f009a6e6655edfe078ea60b1c2f129",
+  "reviewSnapshot": "5bc96f071182f46a108d0eb0a9af1e431497495b",
+  "createdAt": "2026-10-17T18:32:02.859Z",
+  "packages": {
+    "mac": {
+      "path": "out/九鼎-darwin-arm64/九鼎.app/Contents/Resources/app.asar",
+      "bytes": 25366839,
+      "sha256": "1ee035c3e7c34d16997b7ab531a1c60751694d2e0dbf3e04a1cc2d54a0366893",
+      "version": "0.3.0-sample.1",
+      "rendererSHA256": "f2a01735f4cf331447340953aeb5072019c4530544a965df6b6ec90e6d87fdbb",
+      "assets": [
+        {
+          "name": "junction-ground-v1.png",
+          "bytes": 3502367,
+          "sha256": "501333d5e80eb71a37a2de1bb97bbe3a918d61bb4ccd4f022f843bbb81cbd9b5"
+        },
+        {
+          "name": "junction-props-v1.png",
+          "bytes": 1697598,
+          "sha256": "420a036142f995387296e09f8d391fd0f2d7bb59cdeb13c52aca0857a9140832"
+        },
+        {
+          "name": "combat-vfx-v1.png",
+          "bytes": 1448171,
+          "sha256": "566a29d714fd3c643f26489c007523c033a7d03bdc83e8feaf1bc38e0fbdbd31"
+        }
+      ],
+      "zipASARMatch": true
+    },
+    "windows": {
+      "path": "out/九鼎-win32-x64/resources/app.asar",
+      "bytes": 25366839,
+      "sha256": "1ee035c3e7c34d16997b7ab531a1c60751694d2e0dbf3e04a1cc2d54a0366893",
+      "version": "0.3.0-sample.1",
+      "rendererSHA256": "f2a01735f4cf331447340953aeb5072019c4530544a965df6b6ec90e6d87fdbb",
+      "assets": [
+        {
+          "name": "junction-ground-v1.png",
+          "bytes": 3502367,
+          "sha256": "501333d5e80eb71a37a2de1bb97bbe3a918d61bb4ccd4f022f843bbb81cbd9b5"
+        },
+        {
+          "name": "junction-props-v1.png",
+          "bytes": 1697598,
+          "sha256": "420a036142f995387296e09f8d391fd0f2d7bb59cdeb13c52aca0857a9140832"
+        },
+        {
+          "name": "combat-vfx-v1.png",
+          "bytes": 1448171,
+          "sha256": "566a29d714fd3c643f26489c007523c033a7d03bdc83e8feaf1bc38e0fbdbd31"
+        }
+      ],
+      "zipASARMatch": true
+    }
+  },
+  "windowsGameMachine": "0x8664 (x64)",
+  "artifacts": [
+    {
+      "path": "out/installer/NineTripodCauldrons-Setup-0.3.0-sample.1-x64.exe",
+      "bytes": 122768080,
+      "sha256": "bc119e526e6e8b79094888ee38750c2a36d2855b6fb2118975e234ff35ccb09e"
+    },
+    {
+      "path": "out/make/zip/win32/x64/九鼎-win32-x64-0.3.0-sample.1.zip",
+      "bytes": 182397701,
+      "sha256": "086eb5d4c20e5ad25ff8116dbd49938f8359bd15880d4a88b448a33852298889"
+    },
+    {
+      "path": "out/make/zip/darwin/arm64/九鼎-darwin-arm64-0.3.0-sample.1.zip",
+      "bytes": 152227083,
+      "sha256": "8469bbd486ef894abbe35ad2c88a95f0916112b6cc52de58849a467163372853"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "package.json",
+      "bytes": 1347,
+      "sha256": "fbdd69615d7254ec248bbbabcd5891bfc2a29b9c090c2c972a67e821ab4d20d4"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 369757,
+      "sha256": "668236557623b4cbf6288f52375e242a84506f689a94979ab8b9025038cdea12"
+    },
+    {
+      "path": "src/game/TrainingRoom.ts",
+      "bytes": 25743,
+      "sha256": "da31a0b714fce3e42d7dc31fbbc9a656d13edeee124438f172a31b8f3df73826"
+    },
+    {
+      "path": "src/game/Tanggu.ts",
+      "bytes": 2674,
+      "sha256": "b1dd9bbf8b01685e41019feeb09c35c87f3ac8d18d826d1c722aa5c33cb0dd4c"
+    },
+    {
+      "path": "src/game/TrainingScene.ts",
+      "bytes": 20893,
+      "sha256": "f855991bd714e7314f27493ea1ffe58b345f705b33559b8b0d43fc8299acbac6"
+    },
+    {
+      "path": "src/game/TangguBackdrop.ts",
+      "bytes": 4566,
+      "sha256": "6c13378b226c4d2f68898341745246fc2b79b226cc4d9091e4878fae674283b7"
+    },
+    {
+      "path": "src/game/CombatEffects.ts",
+      "bytes": 6522,
+      "sha256": "d6586dc5cc428e7813b9b547cbc58f7eba5da6dcea00c94be049f6bc0597d54b"
+    },
+    {
+      "path": "src/renderer/index.ts",
+      "bytes": 692,
+      "sha256": "3a57d91145c05e081683e26da6d9653c111b4b7bc1c6e2a95ea317de8ab7e9ef"
+    },
+    {
+      "path": "src/renderer/index.html",
+      "bytes": 6092,
+      "sha256": "8e4d0d19ce2c6bd18e9a5d02f4702cc2cd6eee696e50ed523fd32d27b4592963"
+    },
+    {
+      "path": "assets/mvp03/frames.json",
+      "bytes": 1309,
+      "sha256": "cead6df9b78ee90773a1d527c04ebe7eda9feb401fa4ad882d1839ecf6e7761a"
+    },
+    {
+      "path": "tests/TangguRoutes.test.cjs",
+      "bytes": 3723,
+      "sha256": "72776773fa0403a94b64cf4401c871b24f9424ca62571847a42c51b1867d5104"
+    }
+  ],
+  "recordings": {
+    "rendererSHA256": "55cb3c5f92febf025c10c85ef1c26a13659f9f3f3938f9709c4fd3e427b9d98d",
+    "timing": "VFR from captured timestamps; no speed-up or slow-frame removal",
+    "videos": [
+      {
+        "path": "output/mvp03-sample/九鼎_MVP03_动态小样.mp4",
+        "bytes": 3590390,
+        "sha256": "22498c93cf770fc276430185099bce7e42ee613ad1cd8e768491c990ce1b855d"
+      },
+      {
+        "path": "output/mvp03-sample/九鼎_MVP03_通路与战斗走访.mp4",
+        "bytes": 7322318,
+        "sha256": "fbcd72aa5a2a08ba773939f8a5bc54fbbc3bafc42b462aec70ab3b7c1f770657"
+      }
+    ],
+    "note": "Captured before review fixes. Final build changes gate collider/placeholder height and extracts equal attack timing constants; do not represent recordings as a final-build re-recording."
+  },
+  "verification": {
+    "tests": "39/39",
+    "typescript": "passed",
+    "standardsReview": "0 remaining",
+    "specReview": "0 remaining",
+    "macNative": "short attempt interrupted by OS lock; not passed",
+    "windowsNative": "pending user return",
+    "performance": "not sampled; user stopped repeated long runs",
+    "rendererOnly": "three encounters, two branches, ten resets; desktop window API fixture only; not native acceptance",
+    "zipIntegrity": "both ZIP archives passed unzip -t; embedded ASAR matches unpacked verified package"
+  }
+}

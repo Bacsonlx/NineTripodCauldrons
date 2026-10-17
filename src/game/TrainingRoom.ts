@@ -12,6 +12,7 @@ export type RoomInput = {
 
 export const SKILL_COOLDOWNS = { pierce: 4, rain: 8, dodge: 1 } as const;
 export const RAIN_RADIUS = 110;
+export const ATTACK_TIMING = { normalWindup: 0.08, pierceWindup: 0.18, rainWindup: 0.45, rainPulses: 3, rainInterval: 0.18 } as const;
 
 export const ROOM = {
   width: 1280,
@@ -41,6 +42,7 @@ export type RoomLayout = {
   readonly shoulderHeight: number; readonly grips: typeof ROOM.grips;
   readonly pillarBody: readonly (readonly [number, number, number])[]; readonly targetFace: typeof ROOM.targetFace;
   readonly spawn?: Point; readonly obstacles?: readonly Obstacle[]; readonly encounters?: readonly Encounter[];
+  readonly walkableAreas?: readonly { left: number; top: number; right: number; bottom: number }[];
 };
 
 type Arrow = Point & { id: number; angle: number; age: number; kind: 'normal' | 'pierce'; initialStep?: number; hitEnemies: number[] };
@@ -86,7 +88,8 @@ function targetContact(from: Point, to: Point, target: Point, face = ROOM.target
 export class TrainingRoom {
   private player = { x: 400, y: 440, moving: false, angle: 0, facing: 0 };
   private arrows: Arrow[] = [];
-  private effects: (Hit & { remaining: number })[] = [];
+  private effects: (Hit & { id: number; kind: 'normal' | 'pierce' | 'rain'; remaining: number })[] = [];
+  private nextEffectId = 0;
   private flashes = [0, 0];
   private hits = 0;
   private cooldown = 0;
@@ -174,6 +177,7 @@ export class TrainingRoom {
     this.player = { ...(this.layout.spawn ?? { x: 400, y: 440 }), moving: false, angle: 0, facing: 0 };
     this.arrows = [];
     this.effects = [];
+    this.nextEffectId = 0;
     this.flashes = this.layout.targets.map(() => 0);
     this.health = 100; this.hurt = 0; this.protection = 0; this.status = 'running';
     this.encounter = 0; this.createEnemies();
@@ -254,11 +258,11 @@ export class TrainingRoom {
     const canStart = !dashing && this.hurt === 0 && this.windup === null && this.piercing === null && this.raining === null
       && this.skillRecovery === 0 && !(this.attackReleased && this.cooldown > 0.12);
     if (canStart && piercePressed && this.pierceCooldown === 0 && input.pointerInside) {
-      this.piercing = 0.18; this.pierceCooldown = SKILL_COOLDOWNS.pierce; this.lastSkill = 'pierce'; this.attackReleased = false;
+      this.piercing = ATTACK_TIMING.pierceWindup; this.pierceCooldown = SKILL_COOLDOWNS.pierce; this.lastSkill = 'pierce'; this.attackReleased = false;
     }
     if (canStart && this.piercing === null && rainPressed && this.rainCooldown === 0 && input.pointerInside) {
       if (Math.hypot(input.aim.x - this.player.x, input.aim.y - this.player.y) <= 480 && this.canWalk(input.aim.x, input.aim.y)) {
-        this.raining = { remaining: 0.45, point: { ...input.aim } }; this.rainCooldown = SKILL_COOLDOWNS.rain; this.lastSkill = 'rain'; this.attackReleased = false; this.invalid = null;
+        this.raining = { remaining: ATTACK_TIMING.rainWindup, point: { ...input.aim } }; this.rainCooldown = SKILL_COOLDOWNS.rain; this.lastSkill = 'rain'; this.attackReleased = false; this.invalid = null;
       } else this.invalid = { ...input.aim, remaining: 0.35 };
     }
     if (this.raining !== null) {
@@ -272,7 +276,7 @@ export class TrainingRoom {
       if (this.piercing <= 0) { this.launch('pierce', -this.piercing); this.piercing = null; this.skillRecovery = 0.12; }
     }
     if (!dashing && this.piercing === null && this.raining === null && this.skillRecovery === 0 && this.hurt <= 0 && input.fire && !this.needsRelease && this.cooldown <= 0.000001 && input.pointerInside) {
-      this.windup = 0.08; this.lastSkill = null;
+      this.windup = ATTACK_TIMING.normalWindup; this.lastSkill = null;
       this.attackReleased = false;
       this.cooldown = 0.35;
     }
@@ -292,7 +296,7 @@ export class TrainingRoom {
       const next = { x: arrow.x + Math.cos(arrow.angle) * speed * elapsed, y: arrow.y + Math.sin(arrow.angle) * speed * elapsed };
       let hit = this.contact(arrow, next, arrow.hitEnemies);
       while (hit) {
-        this.impact(hit, arrow.kind === 'pierce' ? 40 : 15);
+        this.impact(hit, arrow.kind === 'pierce' ? 40 : 15, arrow.kind);
         if (arrow.kind !== 'pierce' || hit.enemy === undefined) return false;
         arrow.hitEnemies.push(hit.enemy);
         hit = this.contact(arrow, next, arrow.hitEnemies);
@@ -303,9 +307,9 @@ export class TrainingRoom {
     });
     this.rains = this.rains.filter(rain => {
       rain.age += seconds;
-      while (rain.pulse < 3 && rain.age >= rain.pulse * 0.18) {
+      while (rain.pulse < ATTACK_TIMING.rainPulses && rain.age >= rain.pulse * ATTACK_TIMING.rainInterval) {
         for (const e of this.enemies) {
-          if (e.phase !== 'inactive' && e.phase !== 'dead' && Math.hypot(e.x - rain.x, e.y - rain.y) <= RAIN_RADIUS) this.impact({ x: e.x, y: e.y - 35, target: null, enemy: e.id });
+          if (e.phase !== 'inactive' && e.phase !== 'dead' && Math.hypot(e.x - rain.x, e.y - rain.y) <= RAIN_RADIUS) this.impact({ x: e.x, y: e.y - 35, target: null, enemy: e.id },15,'rain');
         }
         rain.pulse++;
       }
@@ -319,7 +323,7 @@ export class TrainingRoom {
     const blocked = this.contact({ x: this.player.x, y: this.player.y - this.layout.shoulderHeight }, muzzle);
     const hitEnemies: number[] = [];
     if (blocked) {
-      this.impact(blocked, kind === 'pierce' ? 40 : 15);
+      this.impact(blocked, kind === 'pierce' ? 40 : 15,kind);
       if (kind !== 'pierce' || blocked.enemy === undefined) return;
       hitEnemies.push(blocked.enemy);
     }
@@ -426,14 +430,14 @@ export class TrainingRoom {
     }
   }
 
-  private impact(hit: Hit, damage = 15): void {
+  private impact(hit: Hit, damage = 15, kind: 'normal' | 'pierce' | 'rain' = 'normal'): void {
     if (hit.target !== null) { this.hits++; this.flashes[hit.target] = 0.1; }
     if (hit.enemy !== undefined) {
       const enemy = this.enemies.find(e => e.id === hit.enemy)!;
       enemy.health = Math.max(0, enemy.health - damage); enemy.flash = 0.12; this.hits++;
       if (enemy.health === 0) { enemy.phase = 'dead'; enemy.timer = 0.6; }
     }
-    this.effects.push({ ...hit, remaining: 0.15 });
+    this.effects.push({ ...hit, id: this.nextEffectId++, kind, remaining: 0.15 });
   }
 
   private contact(from: Point, to: Point, ignored: number[] = []): Hit | null {
@@ -474,6 +478,7 @@ export class TrainingRoom {
   }
 
   private canWalk(x: number, y: number): boolean {
+    if (this.layout.walkableAreas && !this.layout.walkableAreas.some(a => x >= a.left + 12 && x <= a.right - 12 && y >= a.top + 12 && y <= a.bottom - 12)) return false;
     for (let i = 0; i < this.layout.floor.length; i++) {
       const a = this.layout.floor[i];
       const b = this.layout.floor[(i + 1) % this.layout.floor.length];

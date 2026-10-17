@@ -1,0 +1,23 @@
+{
+  "surface": "isolated Chromium renderer; desktop API stub only; actual source and game rules; not native desktop acceptance",
+  "viewport": [
+    1280,
+    720
+  ],
+  "shots": [
+    "08-dodge",
+    "06-rain-preview",
+    "09-normal-impact",
+    "07-rain-impact",
+    "05-pierce-charge",
+    "10-courtyard"
+  ],
+  "errors": [],
+  "seconds": 22.119,
+  "sampleCount": 411,
+  "dodgeSamples": 51,
+  "skills": [
+    "rain",
+    "pierce"
+  ]
+}

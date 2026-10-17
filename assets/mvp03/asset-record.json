@@ -1,0 +1,55 @@
+{
+  "source": "built-in image_gen; prompts.json retains full prompts; no pixel edits",
+  "sampleOnly": true,
+  "assets": [
+    {
+      "file": "junction-ground-v1.png",
+      "width": 1536,
+      "height": 1024,
+      "alphaRange": [
+        0,
+        254
+      ],
+      "fullyTransparentPercent": 30.45,
+      "sha256": "501333d5e80eb71a37a2de1bb97bbe3a918d61bb4ccd4f022f843bbb81cbd9b5"
+    },
+    {
+      "file": "junction-props-v1.png",
+      "width": 1254,
+      "height": 1254,
+      "alphaRange": [
+        0,
+        255
+      ],
+      "fullyTransparentPercent": 64.78,
+      "sha256": "420a036142f995387296e09f8d391fd0f2d7bb59cdeb13c52aca0857a9140832",
+      "registeredFrames": [
+        "brazier",
+        "waystone",
+        "bank",
+        "edging"
+      ]
+    },
+    {
+      "file": "combat-vfx-v1.png",
+      "width": 1774,
+      "height": 887,
+      "alphaRange": [
+        0,
+        255
+      ],
+      "fullyTransparentPercent": 61.49,
+      "sha256": "566a29d714fd3c643f26489c007523c033a7d03bdc83e8feaf1bc38e0fbdbd31",
+      "registeredFrames": [
+        "streak",
+        "spark",
+        "ring",
+        "dust",
+        "halo",
+        "embers",
+        "feather",
+        "shards"
+      ]
+    }
+  ]
+}
