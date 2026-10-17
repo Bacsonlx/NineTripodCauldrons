@@ -1,0 +1,99 @@
+{
+  "checks": "Both ASAR versions and all ten required PNGs match final sources byte for byte",
+  "results": [
+    {
+      "platform": "macOS",
+      "version": "0.2.0",
+      "asarSHA256": "7717f76540a73bcdf90f9f243f8d551e088222ca02770c6ba6d9a611f6419eff",
+      "assets": [
+        {
+          "name": "arrow-refined-v2.png",
+          "sha256": "c9332ac79650977afb132c4615bb369ac478d619d1cd3604864ae9b29bee185e"
+        },
+        {
+          "name": "bow-states-v3.png",
+          "sha256": "92cee3343dd0c86cee01f4cddacc22af9a2bfc6e7ac0e62893a5d45407f330ca"
+        },
+        {
+          "name": "child-failed-v1.png",
+          "sha256": "287c54106f20018a0df38fb47f0808056b0f7365dda328f07b6a4044d0e00dc1"
+        },
+        {
+          "name": "child-idle-legs-v1.png",
+          "sha256": "58b34a725534eb4fc5a998a381701e8885b303465cba25e9b9078a9a4ae1f50c"
+        },
+        {
+          "name": "child-run-legs-v1.png",
+          "sha256": "8d749f0da167254b74ada4afd702eb0fda5545ec89945cf4f97fc76bd5f69074"
+        },
+        {
+          "name": "child-skills-upper-v1.png",
+          "sha256": "400cea6ef879542e1dbbd27782109333bbee715232efbc6b0f4d5c6b448147e3"
+        },
+        {
+          "name": "child-upper-refined-v3.png",
+          "sha256": "1b08ed48d6eb324a07d64babc20241854d6d12a55d0135a4167ed835b72d36f9"
+        },
+        {
+          "name": "shadow-puppet-v2.png",
+          "sha256": "2acd6f3bc075a89097d853afa84fb60494e1214a39ebece04a144d092bbf4658"
+        },
+        {
+          "name": "tanggu-ground-v1.png",
+          "sha256": "593eda404fd45865df8579d0b082171f978a04b25465bc5f089b16f8086dc190"
+        },
+        {
+          "name": "tanggu-props-v1.png",
+          "sha256": "d793edf3c4ec7c621d22e650e86957e10fa8dab2150bf66401f90deff7a094be"
+        }
+      ]
+    },
+    {
+      "platform": "Windows",
+      "version": "0.2.0",
+      "asarSHA256": "7717f76540a73bcdf90f9f243f8d551e088222ca02770c6ba6d9a611f6419eff",
+      "assets": [
+        {
+          "name": "arrow-refined-v2.png",
+          "sha256": "c9332ac79650977afb132c4615bb369ac478d619d1cd3604864ae9b29bee185e"
+        },
+        {
+          "name": "bow-states-v3.png",
+          "sha256": "92cee3343dd0c86cee01f4cddacc22af9a2bfc6e7ac0e62893a5d45407f330ca"
+        },
+        {
+          "name": "child-failed-v1.png",
+          "sha256": "287c54106f20018a0df38fb47f0808056b0f7365dda328f07b6a4044d0e00dc1"
+        },
+        {
+          "name": "child-idle-legs-v1.png",
+          "sha256": "58b34a725534eb4fc5a998a381701e8885b303465cba25e9b9078a9a4ae1f50c"
+        },
+        {
+          "name": "child-run-legs-v1.png",
+          "sha256": "8d749f0da167254b74ada4afd702eb0fda5545ec89945cf4f97fc76bd5f69074"
+        },
+        {
+          "name": "child-skills-upper-v1.png",
+          "sha256": "400cea6ef879542e1dbbd27782109333bbee715232efbc6b0f4d5c6b448147e3"
+        },
+        {
+          "name": "child-upper-refined-v3.png",
+          "sha256": "1b08ed48d6eb324a07d64babc20241854d6d12a55d0135a4167ed835b72d36f9"
+        },
+        {
+          "name": "shadow-puppet-v2.png",
+          "sha256": "2acd6f3bc075a89097d853afa84fb60494e1214a39ebece04a144d092bbf4658"
+        },
+        {
+          "name": "tanggu-ground-v1.png",
+          "sha256": "593eda404fd45865df8579d0b082171f978a04b25465bc5f089b16f8086dc190"
+        },
+        {
+          "name": "tanggu-props-v1.png",
+          "sha256": "d793edf3c4ec7c621d22e650e86957e10fa8dab2150bf66401f90deff7a094be"
+        }
+      ]
+    }
+  ]
+}

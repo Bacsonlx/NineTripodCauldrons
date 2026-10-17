@@ -1,0 +1,83 @@
+{
+  "checks": "actual dimensions / bounds / nonempty frames",
+  "results": [
+    {
+      "atlas": "failed",
+      "source": "child-failed-v1.png",
+      "size": [
+        2172,
+        724
+      ],
+      "frames": 4,
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    {
+      "atlas": "idle",
+      "source": "child-idle-legs-v1.png",
+      "size": [
+        2172,
+        724
+      ],
+      "frames": 4,
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    {
+      "atlas": "run",
+      "source": "child-run-legs-v1.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "frames": 28,
+      "alpha": [
+        0,
+        254
+      ]
+    },
+    {
+      "atlas": "enemy",
+      "source": "shadow-puppet-v2.png",
+      "size": [
+        1659,
+        948
+      ],
+      "frames": 28,
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    {
+      "atlas": "skills",
+      "source": "child-skills-upper-v1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 16,
+      "alpha": [
+        0,
+        255
+      ]
+    },
+    {
+      "atlas": "props",
+      "source": "tanggu-props-v1.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "frames": 6,
+      "alpha": [
+        0,
+        254
+      ]
+    }
+  ]
+}

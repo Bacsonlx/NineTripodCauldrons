@@ -1,41 +1,64 @@
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'none'"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>九鼎 · 十日</title>
-    <style>
-      html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #171b1b; }
-      body { display: grid; place-items: center; color: #dcc69b; font-family: 'Songti SC', SimSun, serif; }
-      #shell { position: relative; width: min(100vw, 177.7778vh); aspect-ratio: 16 / 9; }
-      #game { position: absolute; inset: 0; }
-      canvas { display: block; }
-      .hud { position: absolute; inset: 0; pointer-events: none; }
-      header { position: absolute; top: 4%; left: 5%; right: 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #6b6349; padding-bottom: 1.3%; }
-      h1 { margin: 0; font-size: clamp(22px, 3.7vw, 48px); font-weight: 600; letter-spacing: .12em; }
-      h1 small { font-size: .35em; font-weight: 400; letter-spacing: .25em; margin-left: 1.2em; }
-      .chapter { font-size: clamp(13px, 1.55vw, 20px); text-align: right; line-height: 1.8; }
-      #version { display: block; color: #8b927e; font-size: .65em; letter-spacing: .15em; }
-      footer { position: absolute; bottom: 4%; left: 5%; right: 5%; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: clamp(10px, 1.2vw, 16px); color: #aaa88f; }
-      kbd { font: inherit; color: #e5c78f; padding: .1em .25em; }
-      .hits { color: #dcb570; white-space: nowrap; }
-      #hit-count { font-size: 1.7em; margin-left: .5em; }
-      #status { position: absolute; top: 47%; width: 100%; text-align: center; padding: 1.5em 0; background: #111b1cdd; color: #f3dbb3; font-size: clamp(16px, 2vw, 28px); letter-spacing: .15em; }
-      [hidden] { display: none !important; }
-    </style>
-  </head>
-  <body>
-    <main id="shell" aria-label="九鼎 · 十日 单房间弓箭练习">
-      <div id="game"></div>
-      <div class="hud">
-        <header><h1>九鼎<small>十日</small></h1><div class="chapter">汤谷 · 试弓庭<span id="version">MVP-01</span></div></header>
-        <footer><span><kbd>WASD</kbd> 跑动　鼠标瞄准　左键短按／按住射箭　<kbd>R</kbd> 重置　<kbd>Esc</kbd> 暂停</span><span class="hits">命中 <strong id="hit-count">0</strong></span></footer>
-        <div id="status" role="status">正在载入汤谷…</div>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'none'" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>九鼎 · 十日</title>
+  <style>
+    :root { color-scheme: dark; font-family: 'Songti SC', SimSun, serif; color: #eedbb5; background: #191813; }
+    * { box-sizing: border-box; }
+    html, body, #shell, #game { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+    #game, .hud { position: absolute; inset: 0; }
+    canvas { display: block; }
+    .hud { pointer-events: none; background: linear-gradient(#15171499,transparent 19%,transparent 82%,#121510b8); }
+    header { position: absolute; inset: 22px 30px auto; display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+    h1 { margin: 0 0 8px; font-size: clamp(24px,3.5vh,40px); font-weight: 600; letter-spacing: .12em; text-shadow: 0 2px 9px #090c09; }
+    h1 small { font-size: .4em; font-weight: 400; letter-spacing: .25em; margin-left: 12px; }
+    .life { display: flex; align-items: center; gap: 10px; font: 12px system-ui; color: #d9cba9; }
+    .life-track { width: clamp(100px,15vw,200px); height: 5px; background: #24291c; box-shadow: 0 0 0 1px #786b4c66; }
+    #health-fill { height: 100%; background: #d4ae66; }
+    .chapter { text-align: right; font-size: clamp(14px,1.8vh,20px); text-shadow: 0 1px 6px #070b08; line-height: 1.7; }
+    #version { display: block; font: 10px system-ui; letter-spacing: .15em; color: #b8b59f; }
+    .controls { margin-top: 12px; }
+    button { pointer-events: auto; font: 12px system-ui; color: #e6d2a7; background: #1c221add; border: 1px solid #9b855055; padding: 7px 12px; cursor: pointer; }
+    button:hover { background: #393929; }
+    button:focus-visible { outline: 2px solid #e2c58a; outline-offset: 3px; }
+    footer { position: absolute; left: 28px; right: 28px; bottom: 18px; display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
+    .hint { max-width: 28em; font-size: clamp(10px,1.45vh,14px); color: #d0c4a4; line-height: 1.8; text-shadow: 0 1px 5px #000; }
+    kbd { font: 11px system-ui; color: #f5dfad; }
+    .skills { display: flex; gap: 10px; }
+    .skill { --cooldown: 0%; width: 66px; height: 70px; position: relative; border: 1px solid #b1975d88; background: #171e17ed; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; overflow: hidden; }
+    .skill::before { content: ''; position: absolute; inset: 0 0 auto; height: var(--cooldown); background: #060a08bc; }
+    .skill svg { width: 25px; height: 25px; stroke: #ead096; stroke-width: 1.3; fill: none; }
+    .skill span, .skill kbd { position: relative; font-size: 10px; }
+    .seconds { position: absolute !important; top: 6px; right: 5px; font: 11px system-ui !important; color: #fff2ce; }
+    #status { position: absolute; top: 43%; width: 100%; text-align: center; padding: 25px 20px; background: #11170fe8; border-block: 1px solid #ab925c55; color: #f3dbb3; font-size: clamp(16px,2.3vw,28px); letter-spacing: .15em; }
+    #complete { position: absolute; left: 50%; top: 22%; transform: translateX(-50%); text-align: center; color: #f6dda2; letter-spacing: .15em; font-size: 22px; text-shadow: 0 2px 10px #000; }
+    #complete small { display: block; font-size: 12px; margin-top: 8px; color: #dacba8; }
+    [hidden] { display: none !important; }
+    @media (max-width: 820px) { header { inset: 16px 18px auto; } footer { left: 18px; right: 18px; bottom: 12px; } .skill { width: 55px; height: 62px; } .hint { max-width: 20em; } }
+  </style>
+</head>
+<body>
+<main id="shell" aria-label="九鼎 · 十日 汤谷弓箭战斗切片">
+  <div id="game"></div>
+  <div class="hud">
+    <header>
+      <div><h1>九鼎<small>十日</small></h1><div class="life" aria-label="玩家生命"><div class="life-track"><div id="health-fill"></div></div><span><strong id="health">100</strong> / 100</span></div></div>
+      <div class="chapter">汤谷 · <span id="region">扶桑残径</span><div id="encounter">遭遇 1 / 3 · 影偶 2</div><span id="version">MVP-02</span><div class="controls"><button id="fullscreen" type="button" aria-label="进入全屏">全屏</button></div></div>
+    </header>
+    <footer>
+      <div class="hint"><kbd>WASD</kbd> 跑动 · 鼠标瞄准 · 左键射箭<br><kbd>Q</kbd> 穿透箭 · <kbd>E</kbd> 箭雨 · <kbd>空格</kbd> 闪避<br><kbd>R</kbd> 重试 · <kbd>Esc</kbd> 暂停</div>
+      <div class="skills" aria-label="技能冷却">
+        <div class="skill" id="pierce" aria-label="Q 穿透箭，冷却四秒"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 27 27 4m-8 0h8v8M6 17l9 9M3 22l7 7M10 8l14 14"/></svg><span>穿透箭 <kbd>Q</kbd></span><span class="seconds"></span></div>
+        <div class="skill" id="rain" aria-label="E 箭雨，冷却八秒"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m8 3-2 17m-3-5 3 5 4-4M18 4l-2 17m-3-5 3 5 4-4M28 5l-2 17m-3-5 3 5 4-4"/><ellipse cx="16" cy="26" rx="13" ry="4"/></svg><span>箭雨 <kbd>E</kbd></span><span class="seconds"></span></div>
+        <div class="skill" id="dodge" aria-label="空格 闪避，冷却一秒"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="m12 8 9 8-9 8m8-16 9 8-9 8M2 10h5M1 16h9M2 22h5"/></svg><span>闪避 <kbd>空格</kbd></span><span class="seconds"></span></div>
       </div>
-    </main>
-  </body>
+    </footer>
+    <div id="complete" hidden>汤谷暂息<small>三组影偶已清除 · 可继续探索或按 R 重试</small></div>
+    <div id="status" role="status" aria-live="polite">正在载入汤谷…</div>
+  </div>
+</main>
+</body>
 </html>

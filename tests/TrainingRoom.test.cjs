@@ -102,7 +102,7 @@ test('反复重置清除箭、反馈、计数和待发攻击，暂停时重置�
   const room = new TrainingRoom();
   advance(room, 1, { ...idle, aim: { x: 920, y: 387 }, fire: true });
   for (let i = 0; i < 20; i++) room.reset();
-  assert.deepEqual(room.snapshot.player, { x: 400, y: 440, angle: 0, moving: false });
+  assert.deepEqual(room.snapshot.player, { x: 400, y: 440, angle: 0, facing: 0, moving: false });
   assert.equal(room.snapshot.hits, 0);
   assert.equal(room.snapshot.arrows.length, 0);
   assert.equal(room.snapshot.effects.length, 0);
@@ -122,16 +122,16 @@ test('箭能命中可见靶面的上沿，而不是只检测靶下方', () => {
   assert.equal(room.snapshot.hits, 1);
 });
 
-test('精修人物的箭从肩部参考沿准星方向释放，近零瞄准保留原方向', () => {
+test('精修人物的箭从持弓握点释放，肩部近零瞄准保留原方向', () => {
   const room = new TrainingRoom();
   const aim = { x: 920, y: 375 };
   advance(room, 0.09, { ...idle, aim, fire: true });
   const { player, arrows } = room.snapshot;
   assert.equal(arrows.length, 1);
-  const originY = player.y - ROOM.shoulderHeight;
-  assert.ok(Math.abs(Math.atan2(aim.y - originY, aim.x - player.x) - arrows[0].angle) < 0.0001);
-  assert.ok(Math.abs((arrows[0].x - player.x) * Math.sin(player.angle) - (arrows[0].y - originY) * Math.cos(player.angle)) < 0.001);
-  room.update({ ...idle, aim: { x: player.x, y: originY } }, 0);
+  const grip = room.snapshot.grip;
+  assert.ok(Math.abs(Math.atan2(aim.y - grip.y, aim.x - grip.x) - arrows[0].angle) < 0.0001);
+  assert.ok(Math.abs((arrows[0].x - grip.x) * Math.sin(player.angle) - (arrows[0].y - grip.y) * Math.cos(player.angle)) < 0.001);
+  room.update({ ...idle, aim: { x: player.x, y: player.y - ROOM.shoulderHeight } }, 0);
   assert.equal(room.snapshot.player.angle, player.angle);
 });
 
@@ -152,5 +152,36 @@ test('大步长箭路仍只命中最早接触，不越过靶或柱', () => {
     room.update({ ...idle, aim }, 1);
     assert.equal(room.snapshot.hits, expected);
     assert.equal(room.snapshot.arrows.length, 0);
+  }
+});
+
+test('攻击显示依次拉弦、放箭、收势；取消前摇后不显示虚假的放箭动作', () => {
+  const room = new TrainingRoom();
+  room.update({ ...idle, fire: true }, 0.01);
+  assert.equal(room.snapshot.attack, 'draw');
+  advance(room, 0.08);
+  assert.equal(room.snapshot.attack, 'release');
+  advance(room, 0.08);
+  assert.equal(room.snapshot.attack, 'recover');
+  advance(room, 0.1);
+  assert.equal(room.snapshot.attack, 'idle');
+  room.reset();
+  room.update(idle, 0);
+  room.update({ ...idle, fire: true }, 0.01);
+  room.update({ ...idle, pointerInside: false }, 0);
+  assert.equal(room.snapshot.attack, 'idle');
+});
+
+test('四向持弓使用对应手部握点，箭从可见握点沿准星方向飞行', () => {
+  const aims = [{ x: 1000, y: 388 }, { x: 400, y: 650 }, { x: 100, y: 388 }, { x: 400, y: 130 }];
+  for (let facing = 0; facing < 4; facing++) {
+    const room = new TrainingRoom();
+    advance(room, 0.09, { ...idle, aim: aims[facing], fire: true });
+    const state = room.snapshot;
+    assert.equal(state.player.facing, facing);
+    assert.equal(state.grip.x, state.player.x + ROOM.grips[facing].x);
+    assert.equal(state.grip.y, state.player.y + ROOM.grips[facing].y);
+    assert.equal(state.arrows.length, 1);
+    assert.ok(Math.abs(Math.atan2(aims[facing].y - state.grip.y, aims[facing].x - state.grip.x) - state.arrows[0].angle) < 0.0001);
   }
 });

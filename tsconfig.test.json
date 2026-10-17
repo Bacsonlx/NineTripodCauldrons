@@ -6,5 +6,9 @@
     "rootDir": "src/game",
     "outDir": ".test-build"
   },
-  "include": ["src/game/TrainingRoom.ts"]
+  "include": [
+    "src/game/TrainingRoom.ts",
+    "src/game/Tanggu.ts",
+    "src/game/CameraView.ts"
+  ]
 }

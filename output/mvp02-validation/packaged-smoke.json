@@ -1,0 +1,41 @@
+{
+  "scope": "Offline packaged-app load only. Not foreground, artwork, functionality or performance acceptance.",
+  "renderer": {
+    "url": "file:///Users/linxin/Developer/GAME/%E5%8D%81%E6%97%A5/out/%E4%B9%9D%E9%BC%8E-darwin-arm64/%E4%B9%9D%E9%BC%8E.app/Contents/Resources/app.asar/.webpack/renderer/main_window/index.html",
+    "version": "MVP-02 · 0.2.0",
+    "canvas": true,
+    "canvasSize": [
+      1280,
+      720
+    ],
+    "focus": false,
+    "visibility": "visible",
+    "status": "正在载入汤谷…",
+    "statusVisible": false,
+    "bridge": [
+      "getAppVersion",
+      "toggleFullscreen",
+      "getWindowState",
+      "onWindowStateChange"
+    ],
+    "nodeAvailable": false,
+    "assetRequests": []
+  },
+  "native": {
+    "version": "0.2.0",
+    "packaged": true,
+    "focused": false,
+    "maximized": true,
+    "bounds": {
+      "x": 61,
+      "y": 66,
+      "width": 1451,
+      "height": 916
+    },
+    "security": {
+      "contextIsolation": true,
+      "nodeIntegration": false,
+      "sandbox": true
+    }
+  }
+}

@@ -9,14 +9,13 @@ async function start(): Promise<void> {
     parent: 'game',
     backgroundColor: '#171b1b',
     scale: {
-      mode: Phaser.Scale.FIT,
-      autoCenter: Phaser.Scale.CENTER_BOTH,
-      width: 1280,
-      height: 720,
+      mode: Phaser.Scale.RESIZE,
+      width: window.innerWidth,
+      height: window.innerHeight,
     },
     scene: [TrainingScene],
   });
-  document.getElementById('version')!.textContent = `MVP-01 · ${version}`;
+  document.getElementById('version')!.textContent = `MVP-02 · ${version}`;
 }
 
 void start().catch((error: unknown) => {

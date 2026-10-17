@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "sourceFingerprint": "9ee7bbdd965b76f00cc5a098e3b7b7f73a948909ae41b039b8950b61b0377f37",
+  "artifacts": [
+    {
+      "file": "out/make/zip/darwin/arm64/九鼎-darwin-arm64-0.2.0.zip",
+      "bytes": 147715379,
+      "sha256": "4e82cc32dbb8b0003963c9a90152cba7de33236681fc26d900d16ee8f72c0f4f",
+      "zipCRC": "passed",
+      "includesAcceptanceMaterials": true
+    },
+    {
+      "file": "out/make/zip/win32/x64/九鼎-win32-x64-0.2.0.zip",
+      "bytes": 177881759,
+      "sha256": "57e3b2be521a4c7c85754e03d274694618c808e5c3050eb5e5288ea6b3334443",
+      "zipCRC": "passed",
+      "includesAcceptanceMaterials": true
+    }
+  ],
+  "macOSForegroundAcceptance": "pending: Mac locked",
+  "WindowsAcceptance": "pending: user returns results"
+}
