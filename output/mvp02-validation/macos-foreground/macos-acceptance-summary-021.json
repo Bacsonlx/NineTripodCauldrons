@@ -1,0 +1,228 @@
+{
+  "version": "0.2.1",
+  "runtimeCommit": "bea8534",
+  "performance": {
+    "valid": true,
+    "startWall": 1792250632776.5999,
+    "endWall": 1792250692779.9,
+    "lockEventsWithinSample": [],
+    "summary": {
+      "valid": true,
+      "averageFPS": 120.1329328902238,
+      "percentUnder20": 100,
+      "sampledMilliseconds": 60000.19999999995,
+      "acceptance": "须结合 compositor trace、有效操作与平台记录复核；回调指标不自动等于验收通过",
+      "rafThresholdMet": true
+    },
+    "memory": [
+      {
+        "time": 1792250628779,
+        "heapBytes": 7604468,
+        "nodes": 186
+      },
+      {
+        "time": 1792250638807,
+        "heapBytes": 5938168,
+        "nodes": 116
+      },
+      {
+        "time": 1792250648842,
+        "heapBytes": 8437688,
+        "nodes": 148
+      },
+      {
+        "time": 1792250658891,
+        "heapBytes": 6983440,
+        "nodes": 198
+      },
+      {
+        "time": 1792250668947,
+        "heapBytes": 7311896,
+        "nodes": 167
+      },
+      {
+        "time": 1792250679024,
+        "heapBytes": 7945460,
+        "nodes": 126
+      },
+      {
+        "time": 1792250689113,
+        "heapBytes": 7816348,
+        "nodes": 137
+      }
+    ],
+    "presented": "presented-frames-021.json",
+    "clock": "trace-clock-021.json"
+  },
+  "stability": {
+    "passed": false,
+    "reason": [
+      "真实失焦",
+      "未保持前台可见",
+      "暂停、失败或加载提示可见",
+      "未采满连续帧"
+    ],
+    "continuousRafMilliseconds": 63543.09999999998,
+    "wallMilliseconds": 302794.1000000119,
+    "lockSecondsAfterStart": [
+      63.38760004882811
+    ],
+    "memory": [
+      {
+        "time": 1792250741990,
+        "heapBytes": 6449204,
+        "nodes": 124
+      },
+      {
+        "time": 1792250752022,
+        "heapBytes": 5995600,
+        "nodes": 128
+      },
+      {
+        "time": 1792250762069,
+        "heapBytes": 8582672,
+        "nodes": 127
+      },
+      {
+        "time": 1792250772128,
+        "heapBytes": 8013844,
+        "nodes": 119
+      },
+      {
+        "time": 1792250782180,
+        "heapBytes": 8821160,
+        "nodes": 132
+      },
+      {
+        "time": 1792250792254,
+        "heapBytes": 6849712,
+        "nodes": 162
+      },
+      {
+        "time": 1792250802330,
+        "heapBytes": 10644800,
+        "nodes": 164
+      },
+      {
+        "time": 1792250812418,
+        "heapBytes": 10460292,
+        "nodes": 137
+      },
+      {
+        "time": 1792250822508,
+        "heapBytes": 6326436,
+        "nodes": 116
+      },
+      {
+        "time": 1792250832600,
+        "heapBytes": 6326916,
+        "nodes": 116
+      },
+      {
+        "time": 1792250842687,
+        "heapBytes": 6327396,
+        "nodes": 116
+      },
+      {
+        "time": 1792250852774,
+        "heapBytes": 6327876,
+        "nodes": 116
+      },
+      {
+        "time": 1792250862867,
+        "heapBytes": 6328356,
+        "nodes": 116
+      },
+      {
+        "time": 1792250872960,
+        "heapBytes": 6328836,
+        "nodes": 116
+      },
+      {
+        "time": 1792250883044,
+        "heapBytes": 6329316,
+        "nodes": 116
+      },
+      {
+        "time": 1792250893138,
+        "heapBytes": 6329796,
+        "nodes": 116
+      },
+      {
+        "time": 1792250903218,
+        "heapBytes": 6330276,
+        "nodes": 116
+      },
+      {
+        "time": 1792250913311,
+        "heapBytes": 6330756,
+        "nodes": 116
+      },
+      {
+        "time": 1792250923411,
+        "heapBytes": 6331236,
+        "nodes": 116
+      },
+      {
+        "time": 1792250933507,
+        "heapBytes": 6331716,
+        "nodes": 116
+      },
+      {
+        "time": 1792250943594,
+        "heapBytes": 6332196,
+        "nodes": 116
+      },
+      {
+        "time": 1792250953721,
+        "heapBytes": 6332676,
+        "nodes": 116
+      },
+      {
+        "time": 1792250963825,
+        "heapBytes": 6333156,
+        "nodes": 116
+      },
+      {
+        "time": 1792250973955,
+        "heapBytes": 6333636,
+        "nodes": 116
+      },
+      {
+        "time": 1792250984068,
+        "heapBytes": 6336988,
+        "nodes": 116
+      },
+      {
+        "time": 1792250994189,
+        "heapBytes": 6336940,
+        "nodes": 116
+      },
+      {
+        "time": 1792251004320,
+        "heapBytes": 6337420,
+        "nodes": 116
+      },
+      {
+        "time": 1792251014451,
+        "heapBytes": 6337900,
+        "nodes": 116
+      },
+      {
+        "time": 1792251024577,
+        "heapBytes": 6338380,
+        "nodes": 116
+      },
+      {
+        "time": 1792251034708,
+        "heapBytes": 6338860,
+        "nodes": 116
+      },
+      {
+        "time": 1792251044817,
+        "heapBytes": 6339796,
+        "nodes": 116
+      }
+    ]
+  }
+}

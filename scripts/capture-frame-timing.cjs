@@ -20,33 +20,44 @@ if (!Number.isFinite(seconds)||seconds<1||seconds>600||!Number.isFinite(delay)||
   if(!target)throw new Error('未找到九鼎游戏窗口，请先使用 --remote-debugging-port 参数启动游戏');
   const socket = new WebSocket(target.webSocketDebuggerUrl);
   await new Promise((resolve,reject)=>{socket.addEventListener('open',resolve,{once:true});socket.addEventListener('error',reject,{once:true});});
-  let sequence=0;
-  const pending=new Map();
+  const sender = connection => {
+    let sequence=0;
+    const pending=new Map();
+    connection.addEventListener('message',event=>{
+      const message=JSON.parse(event.data);
+      if(message.id){const p=pending.get(message.id);if(p){clearTimeout(p.timeout);pending.delete(message.id);message.error?p.reject(new Error(message.error.message)):p.resolve(message.result);}}
+    });
+    return (method,params={})=>new Promise((resolve,reject)=>{
+      const id=++sequence;
+      const timeout=setTimeout(()=>{pending.delete(id);reject(new Error(`${method} timeout`));},15000);
+      pending.set(id,{resolve,reject,timeout});connection.send(JSON.stringify({id,method,params}));
+    });
+  };
+  const send=sender(socket);
   let traceComplete;
-  socket.addEventListener('message',event=>{
-    const message=JSON.parse(event.data);
-    if(message.id){const p=pending.get(message.id);if(p){clearTimeout(p.timeout);pending.delete(message.id);message.error?p.reject(new Error(message.error.message)):p.resolve(message.result);}}
-    else if(message.method==='Tracing.tracingComplete')traceComplete?.(message.params);
-  });
-  const send=(method,params={})=>new Promise((resolve,reject)=>{
-    const id=++sequence;
-    const timeout=setTimeout(()=>{pending.delete(id);reject(new Error(`${method} timeout`));},15000);
-    pending.set(id,{resolve,reject,timeout});socket.send(JSON.stringify({id,method,params}));
-  });
   const evaluate=async expression=>{
     const response=await send('Runtime.evaluate',{expression,returnByValue:true});
     if(response.exceptionDetails)throw new Error(response.exceptionDetails.text);
     return response.result.value;
   };
+  // Tracing streams belong to the browser connection, not the renderer target.
+  const browserTarget = await(await fetch(`http://127.0.0.1:${port}/json/version`)).json();
+  const browserSocket = new WebSocket(browserTarget.webSocketDebuggerUrl);
+  await new Promise((resolve,reject)=>{browserSocket.addEventListener('open',resolve,{once:true});browserSocket.addEventListener('error',reject,{once:true});});
+  browserSocket.addEventListener('message',event=>{
+    const message=JSON.parse(event.data);
+    if(message.method==='Tracing.tracingComplete')traceComplete?.(message.params);
+  });
+  const traceSend=sender(browserSocket);
   let tracing=false;
   try {
     await send('Performance.enable');
-    await send('Tracing.start',{categories:'benchmark,cc,viz,disabled-by-default-devtools.timeline.frame',transferMode:'ReturnAsStream'});
+    await traceSend('Tracing.start',{categories:'benchmark,cc,viz,disabled-by-default-devtools.timeline.frame',transferMode:'ReturnAsStream'});
     tracing=true;
     await evaluate(`(()=>{
       if(!document.getElementById('version')?.textContent.includes('MVP-02'))throw new Error('该窗口不是 MVP-02');
       if(window.__jiudingTiming)throw new Error('已有采样正在运行，请等待或重新启动游戏');
-      const result={done:false,valid:true,interruptions:[],intervals:[],start:null,end:null,viewport:{css:[innerWidth,innerHeight],dpr:devicePixelRatio,canvas:[document.querySelector('canvas').width,document.querySelector('canvas').height]}};
+      const result={done:false,valid:true,interruptions:[],intervals:[],start:null,end:null,timeOrigin:performance.timeOrigin,viewport:{css:[innerWidth,innerHeight],dpr:devicePixelRatio,canvas:[document.querySelector('canvas').width,document.querySelector('canvas').height]}};
       window.__jiudingTiming=result;
       let recording=false;
       const invalid=reason=>{if(!recording)return;result.valid=false;if(!result.interruptions.includes(reason))result.interruptions.push(reason);};
@@ -78,17 +89,17 @@ if (!Number.isFinite(seconds)||seconds<1||seconds>600||!Number.isFinite(delay)||
     while(Date.now()<deadline){
       await new Promise(r=>setTimeout(r,1000));
       data=await evaluate('window.__jiudingTiming');
-      if(memory.length===0||Date.now()-memory.at(-1).time>=10000){const metrics=await send('Performance.getMetrics');memory.push({time:Date.now(),metrics:metrics.metrics.filter(m=>['JSHeapUsedSize','JSHeapTotalSize','Nodes','Documents'].includes(m.name))});}
+      if(memory.length===0||Date.now()-memory.at(-1).time>=10000){const metrics=await send('Performance.getMetrics');memory.push({time:Date.now(),metrics:metrics.metrics.filter(m=>['JSHeapUsedSize','JSHeapTotalSize','Nodes','Documents','Timestamp','NavigationStart'].includes(m.name))});}
       if(data.done)break;
     }
     if(!data?.done)throw new Error('采样超时；不能将未完成记录认定为通过');
     const traceReady=new Promise(resolve=>{traceComplete=resolve;});
-    await send('Tracing.end');tracing=false;
+    await traceSend('Tracing.end');tracing=false;
     const trace=await traceReady;
     const tracePath=output.replace(/\.json$/i,'')+'.trace.json';
     fs.mkdirSync(path.dirname(output),{recursive:true});
     const fd=fs.openSync(tracePath,'w');
-    try{while(true){const part=await send('IO.read',{handle:trace.stream});fs.writeSync(fd,part.base64Encoded?Buffer.from(part.data,'base64'):part.data);if(part.eof)break;}}finally{fs.closeSync(fd);await send('IO.close',{handle:trace.stream});}
+    try{while(true){const part=await traceSend('IO.read',{handle:trace.stream,size:1024*1024});fs.writeSync(fd,part.base64Encoded?Buffer.from(part.data,'base64'):part.data);if(part.eof)break;}}finally{fs.closeSync(fd);await traceSend('IO.close',{handle:trace.stream});}
     const sum=data.intervals.reduce((a,b)=>a+b,0);
     const averageFPS=data.intervals.length*1000/sum;
     const percentUnder20=data.intervals.filter(ms=>ms<=20).length/Math.max(1,data.intervals.length)*100;
@@ -97,8 +108,9 @@ if (!Number.isFinite(seconds)||seconds<1||seconds>600||!Number.isFinite(delay)||
     await evaluate('delete window.__jiudingTiming');
     console.log(JSON.stringify({output,tracePath,...summary},null,2));
   } finally {
-    if(tracing)await send('Tracing.end').catch(()=>{});
+    if(tracing)await traceSend('Tracing.end').catch(()=>{});
     await evaluate('delete window.__jiudingTiming').catch(()=>{});
+    browserSocket.close();
     socket.close();
   }
 })().catch(error=>{console.error(error.message);process.exitCode=1;});

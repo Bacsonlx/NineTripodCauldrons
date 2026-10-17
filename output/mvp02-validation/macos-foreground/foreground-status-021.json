@@ -3,10 +3,17 @@
   "nativeDInput": "passed during successful native CUA action",
   "startupWindowAndRendererChecks": 3,
   "eventLevelCombatAnd20Resets": "passed",
-  "fullForegroundAcceptance": "pending",
-  "fullscreen": "not completed; locked at native verification",
-  "performance60Seconds": "pending; no valid sample",
-  "stability5Minutes": "pending; no valid sample",
-  "blocker": "The Mac is locked and automatic unlock is paused because physical input was detected.",
-  "WindowsActualInstallAndRun": "pending user return"
+  "fullForegroundAcceptance": "partial: fullscreen and 60-second performance passed; five-minute stability pending",
+  "fullscreen": "passed: native CUA button enter/exit and BrowserWindow state",
+  "performance60Seconds": "passed on Apple M4: presented 120.13 FPS; 100% intervals <=20ms; physical output 1920x1080, internal canvas 960x540",
+  "stability5Minutes": "pending: separate sample interrupted by powerMonitor lock-screen event and real blur/pause",
+  "blocker": "macOS locks during extended unattended automation; user must remain physically active for five-minute run",
+  "WindowsActualInstallAndRun": "pending user return",
+  "evidence": [
+    "fullscreen-021.json",
+    "performance-021-retest.json",
+    "presented-frames-021.json",
+    "trace-clock-021.json",
+    "performance-input-summary-021.json"
+  ]
 }

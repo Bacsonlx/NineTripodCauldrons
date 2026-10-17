@@ -1,0 +1,26 @@
+[
+  {
+    "source": "performance-021-retest.trace.json",
+    "sourceBytes": 452459155,
+    "sourceSHA256": "df08b62a17318ec0a7a95765e48eb194d74fbd478bbc084d1e1b58934fee85f3",
+    "archive": "/Users/linxin/Developer/GAME/\u5341\u65e5/out/validation/performance-021-retest.trace.json.gz",
+    "archiveSHA256": "c3fb098f40f7c7b6d4680982181de3bf249f3258fce9bcdc6f152fa77e74e9ba",
+    "losslessVerified": true
+  },
+  {
+    "source": "stability-021.trace.json",
+    "sourceBytes": 445110139,
+    "sourceSHA256": "18a8988bfc06f52a639fd660afcf7087cb2315de1a39c97bef14f7e7ba784020",
+    "archive": "/Users/linxin/Developer/GAME/\u5341\u65e5/out/validation/stability-021.trace.json.gz",
+    "archiveSHA256": "91326fceacb6e2c01e0756b4eb2e9af44021d2ad6034d9ce1ffe89acbf5afb27",
+    "losslessVerified": true
+  },
+  {
+    "source": "sampler-export-regression-021.trace.json",
+    "sourceBytes": 62166,
+    "sourceSHA256": "03618034de60ed822822345997e2f2515d3beea3cbce3b07787e31584e23d551",
+    "archive": "/Users/linxin/Developer/GAME/\u5341\u65e5/out/validation/sampler-export-regression-021.trace.json.gz",
+    "archiveSHA256": "6d6bade99bdf92a12f0e165d74117121a2225f5cd7c80b46eb352e4f66c0eec5",
+    "losslessVerified": true
+  }
+]

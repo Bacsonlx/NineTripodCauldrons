@@ -1,0 +1,76 @@
+{
+  "device": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "os": "25.0.0",
+    "cpu": "Apple M4",
+    "memoryBytes": 17179869184
+  },
+  "conditions": {
+    "seconds": 2,
+    "delay": 0,
+    "traceEnabled": true,
+    "measurement": "requestAnimationFrame 显示回调间隔；附原始 Chromium compositor trace 复核，非 JS 单段执行耗时；未覆写焦点或丢弃慢帧"
+  },
+  "done": true,
+  "valid": false,
+  "interruptions": [
+    "未采满连续帧"
+  ],
+  "intervals": [],
+  "start": null,
+  "end": 777622,
+  "timeOrigin": 1792250313154.2,
+  "viewport": {
+    "css": [
+      960,
+      540
+    ],
+    "dpr": 2,
+    "canvas": [
+      960,
+      540
+    ]
+  },
+  "memory": [
+    {
+      "time": 1792251087540,
+      "metrics": [
+        {
+          "name": "Timestamp",
+          "value": 342419.766259
+        },
+        {
+          "name": "Documents",
+          "value": 1
+        },
+        {
+          "name": "Nodes",
+          "value": 116
+        },
+        {
+          "name": "JSHeapUsedSize",
+          "value": 6348512
+        },
+        {
+          "name": "JSHeapTotalSize",
+          "value": 7602176
+        },
+        {
+          "name": "NavigationStart",
+          "value": 341645.380705
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "valid": false,
+    "averageFPS": null,
+    "percentUnder20": 0,
+    "sampledMilliseconds": 0,
+    "acceptance": "须结合 compositor trace、有效操作与平台记录复核；回调指标不自动等于验收通过",
+    "rafThresholdMet": false
+  },
+  "trace": "/Users/linxin/Developer/GAME/十日/out/validation/sampler-export-regression-021.trace.json.gz",
+  "traceCompression": "gzip; original SHA256 in trace-archives-021.json"
+}

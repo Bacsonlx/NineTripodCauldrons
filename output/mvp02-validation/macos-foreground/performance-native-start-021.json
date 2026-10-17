@@ -1,0 +1,29 @@
+{
+  "at": 1792250654107,
+  "lockEvents": [
+    {
+      "event": "lock",
+      "at": 1792250488170
+    },
+    {
+      "event": "lock",
+      "at": 1792250502716
+    }
+  ],
+  "bounds": {
+    "x": 305,
+    "y": 160,
+    "width": 960,
+    "height": 540
+  },
+  "fullscreen": false,
+  "display": {
+    "frequency": 120.0006103515625,
+    "scale": 2,
+    "size": {
+      "width": 1512,
+      "height": 982
+    }
+  },
+  "focused": true
+}

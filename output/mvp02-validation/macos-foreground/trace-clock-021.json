@@ -1,0 +1,153 @@
+{
+  "metrics": [
+    {
+      "name": "Timestamp",
+      "value": 342103.557578
+    },
+    {
+      "name": "AudioHandlers",
+      "value": 3
+    },
+    {
+      "name": "AudioWorkletProcessors",
+      "value": 0
+    },
+    {
+      "name": "Documents",
+      "value": 1
+    },
+    {
+      "name": "Frames",
+      "value": 1
+    },
+    {
+      "name": "JSEventListeners",
+      "value": 78
+    },
+    {
+      "name": "LayoutObjects",
+      "value": 174
+    },
+    {
+      "name": "MediaKeySessions",
+      "value": 0
+    },
+    {
+      "name": "MediaKeys",
+      "value": 0
+    },
+    {
+      "name": "Nodes",
+      "value": 202
+    },
+    {
+      "name": "Resources",
+      "value": 17
+    },
+    {
+      "name": "ContextLifecycleStateObservers",
+      "value": 2
+    },
+    {
+      "name": "V8PerContextDatas",
+      "value": 2
+    },
+    {
+      "name": "WorkerGlobalScopes",
+      "value": 0
+    },
+    {
+      "name": "UACSSResources",
+      "value": 0
+    },
+    {
+      "name": "RTCPeerConnections",
+      "value": 0
+    },
+    {
+      "name": "ResourceFetchers",
+      "value": 1
+    },
+    {
+      "name": "AdSubframes",
+      "value": 0
+    },
+    {
+      "name": "DetachedScriptStates",
+      "value": 0
+    },
+    {
+      "name": "ArrayBufferContents",
+      "value": 35
+    },
+    {
+      "name": "LayoutCount",
+      "value": 0
+    },
+    {
+      "name": "RecalcStyleCount",
+      "value": 0
+    },
+    {
+      "name": "LayoutDuration",
+      "value": 0
+    },
+    {
+      "name": "RecalcStyleDuration",
+      "value": 0
+    },
+    {
+      "name": "DevToolsCommandDuration",
+      "value": 0.000004
+    },
+    {
+      "name": "ScriptDuration",
+      "value": 0
+    },
+    {
+      "name": "V8CompileDuration",
+      "value": 0
+    },
+    {
+      "name": "TaskDuration",
+      "value": 0.000007
+    },
+    {
+      "name": "TaskOtherDuration",
+      "value": 0.000003
+    },
+    {
+      "name": "ThreadTime",
+      "value": 0.000037
+    },
+    {
+      "name": "ProcessTime",
+      "value": 100.340213
+    },
+    {
+      "name": "JSHeapUsedSize",
+      "value": 8659984
+    },
+    {
+      "name": "JSHeapTotalSize",
+      "value": 15613952
+    },
+    {
+      "name": "FirstMeaningfulPaint",
+      "value": 341645.710039
+    },
+    {
+      "name": "DomContentLoaded",
+      "value": 341645.810225
+    },
+    {
+      "name": "NavigationStart",
+      "value": 341645.380705
+    }
+  ],
+  "clock": {
+    "now": 458178,
+    "timeOrigin": 1792250313154.2,
+    "wall": 1792250771332
+  }
+}

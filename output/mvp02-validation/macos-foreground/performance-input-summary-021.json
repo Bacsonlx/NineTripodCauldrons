@@ -1,0 +1,12 @@
+{
+  "samples": 554,
+  "activeMin": 2,
+  "healthMin": 100,
+  "skills": [
+    "rain",
+    "pierce"
+  ],
+  "rainMax": 1,
+  "arrowMax": 7,
+  "maxObservedMovementSpeed": 589.3199999999665
+}

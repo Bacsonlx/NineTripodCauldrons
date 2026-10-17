@@ -1,0 +1,14 @@
+{
+  "entered": true,
+  "exited": true,
+  "method": "CUA native click on in-game fullscreen button; native BrowserWindow state verified",
+  "fullscreen": false,
+  "focused": false,
+  "bounds": {
+    "x": 63,
+    "y": 66,
+    "width": 1449,
+    "height": 916
+  },
+  "lockEvents": []
+}
