@@ -1,0 +1,227 @@
+[
+  {
+    "name": "character-idle-0",
+    "player": {
+      "x": 400,
+      "y": 820,
+      "moving": false,
+      "angle": -0.005181270546604679,
+      "facing": 0
+    },
+    "visual": {
+      "legs": {
+        "texture": "lower",
+        "frame": "lower-0-0",
+        "x": 400,
+        "y": 820,
+        "scale": 0.19736842105263158
+      },
+      "upper": {
+        "texture": "upper",
+        "frame": "upper-0-0",
+        "x": 400,
+        "y": 790
+      }
+    }
+  },
+  {
+    "name": "character-idle-1",
+    "player": {
+      "x": 400,
+      "y": 820,
+      "moving": false,
+      "angle": 1.681453558532444,
+      "facing": 1
+    },
+    "visual": {
+      "legs": {
+        "texture": "lower",
+        "frame": "lower-0-1",
+        "x": 400,
+        "y": 820,
+        "scale": 0.1986754966887417
+      },
+      "upper": {
+        "texture": "upper",
+        "frame": "upper-0-1",
+        "x": 400,
+        "y": 790
+      }
+    }
+  },
+  {
+    "name": "character-idle-2",
+    "player": {
+      "x": 400,
+      "y": 820,
+      "moving": false,
+      "angle": -3.1214948869448267,
+      "facing": 2
+    },
+    "visual": {
+      "legs": {
+        "texture": "lower",
+        "frame": "lower-0-2",
+        "x": 400,
+        "y": 820,
+        "scale": 0.2
+      },
+      "upper": {
+        "texture": "upper",
+        "frame": "upper-0-2",
+        "x": 400,
+        "y": 790
+      }
+    }
+  },
+  {
+    "name": "character-idle-3",
+    "player": {
+      "x": 400,
+      "y": 820,
+      "moving": false,
+      "angle": -1.4706756056673644,
+      "facing": 3
+    },
+    "visual": {
+      "legs": {
+        "texture": "lower",
+        "frame": "lower-0-3",
+        "x": 400,
+        "y": 820,
+        "scale": 0.19607843137254902
+      },
+      "upper": {
+        "texture": "upper",
+        "frame": "upper-0-3",
+        "x": 400,
+        "y": 790
+      }
+    }
+  },
+  {
+    "name": "character-run",
+    "player": {
+      "x": 455.03520000000003,
+      "y": 820,
+      "moving": true,
+      "angle": -1.7205132386297501,
+      "facing": 3
+    },
+    "visual": {
+      "legs": {
+        "texture": "lower",
+        "frame": "lower-3-0",
+        "x": 455.03520000000003,
+        "y": 820.4059993482437,
+        "scale": 0.19230769230769232
+      },
+      "upper": {
+        "texture": "upper",
+        "frame": "upper-0-3",
+        "x": 455.03520000000003,
+        "y": 790.4059993482437
+      }
+    }
+  },
+  {
+    "name": "character-draw",
+    "player": {
+      "x": 469.66300000000115,
+      "y": 820,
+      "moving": false,
+      "angle": -0.5642021200979044,
+      "facing": 0
+    },
+    "visual": {
+      "legs": {
+        "texture": "lower",
+        "frame": "lower-0-0",
+        "x": 469.66300000000115,
+        "y": 819.9366444369531,
+        "scale": 0.19736842105263158
+      },
+      "upper": {
+        "texture": "upper",
+        "frame": "upper-1-0",
+        "x": 469.66300000000115,
+        "y": 789.9366444369531
+      }
+    }
+  },
+  {
+    "name": "character-q",
+    "player": {
+      "x": 469.66300000000115,
+      "y": 820,
+      "moving": false,
+      "angle": -0.689892176617259,
+      "facing": 0
+    },
+    "visual": {
+      "legs": {
+        "texture": "lower",
+        "frame": "lower-0-0",
+        "x": 469.66300000000115,
+        "y": 819.9999418164523,
+        "scale": 0.19736842105263158
+      },
+      "upper": {
+        "texture": "skills",
+        "frame": "skills-0-0",
+        "x": 469.66300000000115,
+        "y": 789.9999418164523
+      }
+    }
+  },
+  {
+    "name": "character-rain",
+    "player": {
+      "x": 469.66300000000115,
+      "y": 820,
+      "moving": false,
+      "angle": 0.35049663552868215,
+      "facing": 0
+    },
+    "visual": {
+      "legs": {
+        "texture": "lower",
+        "frame": "lower-0-0",
+        "x": 469.66300000000115,
+        "y": 819.9999999923672,
+        "scale": 0.19736842105263158
+      },
+      "upper": {
+        "texture": "skills",
+        "frame": "skills-1-0",
+        "x": 469.66300000000115,
+        "y": 789.9999999923672
+      }
+    }
+  },
+  {
+    "name": "character-dodge",
+    "player": {
+      "x": 503.26721821254364,
+      "y": 829.9064460995695,
+      "moving": true,
+      "angle": 0.2448916219273583,
+      "facing": 0
+    },
+    "visual": {
+      "legs": {
+        "texture": "lower",
+        "frame": "lower-0-0",
+        "x": 503.26721821254364,
+        "y": 829.5131814034288,
+        "scale": 0.19736842105263158
+      },
+      "upper": {
+        "texture": "skills",
+        "frame": "skills-2-0",
+        "x": 503.26721821254364,
+        "y": 799.5131814034288
+      }
+    }
+  }
+]

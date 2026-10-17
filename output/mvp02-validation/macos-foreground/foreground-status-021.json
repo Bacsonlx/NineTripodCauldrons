@@ -1,0 +1,12 @@
+{
+  "version": "0.2.1",
+  "nativeDInput": "passed during successful native CUA action",
+  "startupWindowAndRendererChecks": 3,
+  "eventLevelCombatAnd20Resets": "passed",
+  "fullForegroundAcceptance": "pending",
+  "fullscreen": "not completed; locked at native verification",
+  "performance60Seconds": "pending; no valid sample",
+  "stability5Minutes": "pending; no valid sample",
+  "blocker": "The Mac is locked and automatic unlock is paused because physical input was detected.",
+  "WindowsActualInstallAndRun": "pending user return"
+}

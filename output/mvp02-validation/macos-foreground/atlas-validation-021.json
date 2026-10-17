@@ -1,0 +1,96 @@
+{
+  "checks": "actual dimensions / frame bounds / nonempty alpha",
+  "entries": [
+    {
+      "key": "failed",
+      "source": "child-failed-v1.png",
+      "size": [
+        2172,
+        724
+      ],
+      "frames": 4,
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "key": "lower",
+      "source": "child-lower-unified-v2.png",
+      "size": [
+        1024,
+        1536
+      ],
+      "frames": 28,
+      "alphaExtrema": [
+        0,
+        254
+      ]
+    },
+    {
+      "key": "enemy",
+      "source": "shadow-puppet-v2.png",
+      "size": [
+        1659,
+        948
+      ],
+      "frames": 28,
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "key": "enemyPaper",
+      "source": "shadow-paper-v2.png",
+      "size": [
+        1659,
+        948
+      ],
+      "frames": 28,
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "key": "enemyWood",
+      "source": "shadow-wood-v2.png",
+      "size": [
+        1659,
+        948
+      ],
+      "frames": 28,
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "key": "skills",
+      "source": "child-skills-upper-v1.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "frames": 16,
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "key": "props",
+      "source": "tanggu-props-v1.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "frames": 6,
+      "alphaExtrema": [
+        0,
+        254
+      ]
+    }
+  ]
+}

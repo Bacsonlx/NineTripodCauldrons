@@ -1,0 +1,32 @@
+{
+  "version": "0.2.1",
+  "scope": "Runtime event-level check; not full foreground/performance acceptance",
+  "method": "Read-only snapshot observer; CDP trusted keyboard/mouse input only. No health/enemy/cooldown edits.",
+  "result": "complete",
+  "groupsObserved": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "appearances": [
+    "bird",
+    "paper",
+    "wood"
+  ],
+  "maximumActiveEnemies": 5,
+  "reset": {
+    "health": 100,
+    "encounter": 0,
+    "arrows": 0,
+    "rains": 0,
+    "objects": {
+      "children": 94,
+      "arrowViews": 0,
+      "enemyViews": 12
+    }
+  },
+  "rawRecordingSHA256": "478c1609e3fdb657a63ed18f0e16ae4fb2b5692cf60a43a704f07bc8139d2264",
+  "rawRecordingFile": "combat-functional.json.gz",
+  "rawRecordingCompression": "gzip; SHA256 applies to uncompressed JSON bytes"
+}

@@ -29,15 +29,6 @@ def describe(name, file, xs, ys, anchor):
                                originX=(ax-x)/(r-x), originY=(ay-y)/(b-y)))
     result[name] = dict(source=file, size=list(image.size), frames=frames)
 
-def legs(col, row, box, mask, offset):
-    # Bronze belt buckle lies at the top of every lower-body pose.
-    left, top = offset
-    samples = [(x, y) for y in range(min(28, mask.height)) for x in range(mask.width) if mask.getpixel((x,y))]
-    belt_y = min(y for x,y in samples)
-    belt_xs = [x for x,y in samples if y <= belt_y + 8]
-    ax = left + (min(belt_xs) + max(belt_xs))/2
-    return ax, top + belt_y + 5 + 30/0.235
-
 def upper(col, row, box, mask, offset):
     # Individually inspected belt centers; the floating scarf is not a waist anchor.
     anchors = [
@@ -49,11 +40,41 @@ def upper(col, row, box, mask, offset):
     return anchors[row][col]
 
 describe('failed','child-failed-v1.png',[0,568,1100,1671,2172],[0,724],lambda c,r,b,m,o: ((b[0]+b[2])/2,b[3]-3))
-describe('idle','child-idle-legs-v1.png',[0,543,1086,1629,2172],[0,724],lambda c,r,b,m,o: ((b[0]+b[2])/2,b[1]+8+30/0.07))
-describe('run','child-run-legs-v1.png',[140,470,770,1110,1400],[[0,150,281,419,542,680,827,1024],[0,150,282,419,543,681,828,1024],[0,151,282,419,542,680,828,1024],[0,154,283,419,542,677,827,1024]],legs)
+def lower_anchor(col, row, box, mask, offset):
+    left, top = offset
+    strong = mask.getbbox()
+    belt_top = strong[1]
+    xs = [x for y in range(belt_top, belt_top + 14) for x in range(mask.width) if mask.getpixel((x,y))]
+    return left + (min(xs) + max(xs))/2, box[3]-3
+
+describe('lower','child-lower-unified-v2.png',[0,300,524,784,1024],[0,205,390,576,772,970,1174,1415],lower_anchor)
+for f in result['lower']['frames']:
+    # Upper-body origin is the lower edge of its belt. Hide the lower image's
+    # duplicate belt and join the continuous tunic hem at that exact edge.
+    belt_bottom = f['y'] + 3 + 22
+    foot = f['y'] + f['originY'] * f['height']
+    origin_x = f['originX'] * f['width']
+    bottom = f['y'] + f['height']
+    f['y'] = belt_bottom - 2
+    f['height'] = bottom - f['y']
+    f['originX'] = origin_x / f['width']
+    f['originY'] = (foot-f['y'])/f['height']
+    f['scale'] = 30 / (foot-belt_bottom)
+result['lower']['runFramesPerDirection'] = 6
 describe('enemy','shadow-puppet-v2.png',[0,245,480,710,911,1208,1420,1659],[0,249,490,714,948],lambda c,r,b,m,o: ([122,360,600,830,1055,1305,1550][c],[230,470,696,930][r]))
 result['enemy']['frames'] = [result['enemy']['frames'][facing*7+action] for action in range(7) for facing in range(4)]
 result['enemy']['scale'] = 0.46
+
+def enemy_foot(col, row, box, mask, offset):
+    left, top = offset
+    foot_y = box[3]-3
+    xs = [x for y in range(max(0,foot_y-top-18),min(mask.height,foot_y-top+1)) for x in range(mask.width) if mask.getpixel((x,y))]
+    return left+(min(xs)+max(xs))/2, foot_y
+
+for key, file in [('enemyPaper','shadow-paper-v2.png'),('enemyWood','shadow-wood-v2.png')]:
+    describe(key,file,[0,245,480,710,911,1208,1420,1659],[0,249,490,714,948],enemy_foot)
+    result[key]['frames'] = [result[key]['frames'][facing*7+action] for action in range(7) for facing in range(4)]
+    result[key]['scale'] = 85/max(f['height'] for f in result[key]['frames'][:4])
 describe('skills','child-skills-upper-v1.png',[0,353,630,954,1254],[[0,360,667,908,1254],[0,360,668,924,1254],[0,360,674,919,1254],[0,367,676,940,1254]],upper)
 # Prop layout is intentionally irregular; these splits were checked on the actual output.
 describe('props','tanggu-props-v1.png',[0,486,1055,1536],[0,540,1024],lambda c,r,b,m,o: ((b[0]+b[2])/2,b[3]-4))

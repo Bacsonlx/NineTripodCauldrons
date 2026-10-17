@@ -17,9 +17,9 @@ export const TANGGU = {
     { x: 2040, y: 1030, halfWidth: 38, halfHeight: 26, height: 232, kind: 'tree' },
   ],
   encounters: [
-    { x: 800, y: 790, enemies: [{ x: 980, y: 690 }, { x: 1030, y: 880 }] },
-    { x: 1330, y: 720, enemies: [{ x: 1500, y: 580 }, { x: 1530, y: 730 }, { x: 1480, y: 860 }] },
-    { x: 1830, y: 750, enemies: [{ x: 2000, y: 660 }, { x: 2080, y: 740 }, { x: 2000, y: 860 }, { x: 2180, y: 850 }] },
+    { x: 800, y: 790, enemies: [{ x: 980, y: 690, appearance: 'bird' }, { x: 1030, y: 880, appearance: 'paper' }, { x: 1110, y: 960, appearance: 'wood' }] },
+    { x: 1330, y: 720, enemies: [{ x: 1500, y: 580, appearance: 'paper' }, { x: 1530, y: 730, appearance: 'wood' }, { x: 1480, y: 860, appearance: 'bird' }, { x: 1600, y: 800, appearance: 'paper' }] },
+    { x: 1830, y: 750, enemies: [{ x: 2000, y: 660, appearance: 'bird' }, { x: 2080, y: 740, appearance: 'paper' }, { x: 2000, y: 860, appearance: 'wood' }, { x: 2180, y: 850, appearance: 'paper' }, { x: 2290, y: 760, appearance: 'wood' }] },
   ],
   shoulderHeight: ROOM.shoulderHeight,
   grips: ROOM.grips,

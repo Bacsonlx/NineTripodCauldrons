@@ -33,7 +33,8 @@ const SKILL_GRIPS = {
 };
 
 export type Obstacle = Point & { halfWidth: number; halfHeight: number; height: number; kind: string };
-export type Encounter = Point & { readonly enemies: readonly Point[] };
+export type EnemyAppearance = 'bird' | 'paper' | 'wood';
+export type Encounter = Point & { readonly enemies: readonly (Point & { readonly appearance?: EnemyAppearance })[] };
 export type RoomLayout = {
   readonly width: number; readonly height: number;
   readonly floor: readonly Point[]; readonly pillars: readonly Point[]; readonly targets: readonly Point[];
@@ -45,7 +46,7 @@ export type RoomLayout = {
 type Arrow = Point & { id: number; angle: number; age: number; kind: 'normal' | 'pierce'; initialStep?: number; hitEnemies: number[] };
 type Hit = Point & { target: number | null; enemy?: number };
 type Enemy = Point & {
-  id: number; group: number; health: number; phase: 'inactive' | 'chase' | 'warn' | 'swing' | 'recover' | 'dead';
+  id: number; group: number; appearance: EnemyAppearance; health: number; phase: 'inactive' | 'chase' | 'warn' | 'swing' | 'recover' | 'dead';
   timer: number; angle: number; struck: boolean; flash: number; route: Point[]; repath: number;
 };
 
@@ -124,7 +125,7 @@ export class TrainingRoom {
 
   private createEnemies(): void {
     this.enemies = (this.layout.encounters ?? []).flatMap((g, group) => g.enemies.map((p, i) => ({
-      ...p, id: group * 100 + i, group, health: 60, phase: 'inactive' as const,
+      ...p, id: group * 100 + i, group, appearance: p.appearance ?? 'bird', health: 60, phase: 'inactive' as const,
       timer: 0, angle: 0, struck: false, flash: 0, route: [], repath: 0,
     })));
   }

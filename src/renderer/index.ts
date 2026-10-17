@@ -10,8 +10,8 @@ async function start(): Promise<void> {
     backgroundColor: '#171b1b',
     scale: {
       mode: Phaser.Scale.RESIZE,
-      width: window.innerWidth,
-      height: window.innerHeight,
+      width: '100%',
+      height: '100%',
     },
     scene: [TrainingScene],
   });

@@ -6,16 +6,18 @@ import upperUrl from '../../assets/mvp/child-upper-refined-v3.png';
 import oldFrames from '../../assets/mvp/child-refined-v3.frames.json';
 import bowUrl from '../../assets/mvp/bow-states-v3.png';
 import arrowUrl from '../../assets/mvp/arrow-refined-v2.png';
-import runUrl from '../../assets/mvp02/child-run-legs-v1.png';
-import idleUrl from '../../assets/mvp02/child-idle-legs-v1.png';
+import lowerUrl from '../../assets/mvp02/child-lower-unified-v2.png';
 import failedUrl from '../../assets/mvp02/child-failed-v1.png';
 import skillsUrl from '../../assets/mvp02/child-skills-upper-v1.png';
 import enemyUrl from '../../assets/mvp02/shadow-puppet-v2.png';
+import enemyPaperUrl from '../../assets/mvp02/shadow-paper-v2.png';
+import enemyWoodUrl from '../../assets/mvp02/shadow-wood-v2.png';
 import groundUrl from '../../assets/mvp02/tanggu-ground-v1.png';
 import propsUrl from '../../assets/mvp02/tanggu-props-v1.png';
 import atlases from '../../assets/mvp02/atlases.json';
 
 type Frame = { name: string; x: number; y: number; width: number; height: number; originX: number; originY: number };
+const ENEMY_TEXTURES = { bird: 'enemy', paper: 'enemyPaper', wood: 'enemyWood' } as const;
 type EnemyView = { body: Phaser.GameObjects.Sprite; shadow: Phaser.GameObjects.Ellipse };
 
 export class TrainingScene extends Phaser.Scene {
@@ -53,7 +55,7 @@ export class TrainingScene extends Phaser.Scene {
 
   preload(): void {
     this.load.on('loaderror', () => this.fail('素材加载失败，请关闭后重新启动。'));
-    for (const [key, url] of Object.entries({ upper: upperUrl, bow: bowUrl, arrow: arrowUrl, run: runUrl, idle: idleUrl, failed: failedUrl, skills: skillsUrl, enemy: enemyUrl, ground: groundUrl, props: propsUrl })) this.load.image(key, url);
+    for (const [key, url] of Object.entries({ upper: upperUrl, bow: bowUrl, arrow: arrowUrl, lower: lowerUrl, failed: failedUrl, skills: skillsUrl, enemy: enemyUrl, enemyPaper: enemyPaperUrl, enemyWood: enemyWoodUrl, ground: groundUrl, props: propsUrl })) this.load.image(key, url);
   }
 
   private fail(message: string): void {
@@ -84,14 +86,14 @@ export class TrainingScene extends Phaser.Scene {
     for (const p of [{x:240,y:360},{x:870,y:290},{x:1640,y:350},{x:2350,y:1130}]) this.addProp(0,p.x,p.y,0.42,170,220);
     for (let i = 0; i < 16; i++) this.addProp(5, 200 + i * 141, i % 2 ? 1230 : 280, 0.10 + i % 3 * 0.015, 35, 25);
     this.shadow = this.add.ellipse(400, 820, 36, 13, 0x100e0d, 0.45).setDepth(3);
-    this.legsTransition = this.add.sprite(400,820,'idle').setVisible(false);
-    this.legs = this.add.sprite(400,820,'idle').setScale(0.07);
+    this.legsTransition = this.add.sprite(400,820,'lower').setVisible(false);
+    this.legs = this.add.sprite(400,820,'lower').setScale(0.20);
     this.torso = this.add.sprite(400,790,'upper').setScale(0.20);
     this.failedBody = this.add.sprite(400,820,'failed').setScale(atlases.failed.scale).setVisible(false);
     this.bow = this.add.image(427,769,'bow').setScale(0.04);
     this.nockedArrow = this.add.image(427,769,'arrow').setOrigin(1509 / 1536,0.5).setScale(0.029).setVisible(false);
     for (const e of this.room.snapshot.enemies) this.enemies.set(e.id, {
-      body: this.add.sprite(e.x,e.y,'enemy').setScale(atlases.enemy.scale).setVisible(false),
+      body: this.add.sprite(e.x,e.y,ENEMY_TEXTURES[e.appearance]).setScale(atlases[ENEMY_TEXTURES[e.appearance]].scale).setVisible(false),
       shadow: this.add.ellipse(e.x,e.y,36,12,0x0c0b0a,0.45).setDepth(3).setVisible(false),
     });
     this.airEffects = this.add.graphics().setDepth(4000);
@@ -204,18 +206,19 @@ export class TrainingScene extends Phaser.Scene {
     if (p.moving && !s.paused) { this.walkTime += dt;this.moveDirection = this.direction(s.dodge > 0 ? Math.atan2(s.dodgeDirection.y,s.dodgeDirection.x) : Math.atan2(moveY,moveX)); }
     if (!s.paused) this.motion = Phaser.Math.Linear(this.motion,p.moving ? 1 : 0,Math.min(1,dt*18));
     const moving = p.moving && s.dodge <= 0;
-    if (!s.paused && (moving !== this.gaitMoving || this.moveDirection !== this.gaitDirection)) {
+    const legDirection = moving ? this.moveDirection : p.facing;
+    if (!s.paused && (moving !== this.gaitMoving || legDirection !== this.gaitDirection)) {
       this.legsTransition.setTexture(this.legs.texture.key,this.legs.frame.name).setOrigin(this.legs.originX,this.legs.originY).setScale(this.legs.scaleX,this.legs.scaleY);
       this.gaitTime = 0.08;
       if (moving && !this.gaitMoving) this.walkTime = 0;
-      this.gaitMoving = moving;this.gaitDirection = this.moveDirection;
+      this.gaitMoving = moving;this.gaitDirection = legDirection;
     }
     if (!s.paused) this.gaitTime = Math.max(0,this.gaitTime-dt);
-    const step = Math.floor(this.walkTime * 12) % 7;
-    const leg = moving ? atlases.run.frames[step*4+this.moveDirection] : atlases.idle.frames[this.moveDirection];
+    const step = Math.floor(this.walkTime * 12) % atlases.lower.runFramesPerDirection;
+    const leg = atlases.lower.frames[(moving ? (step+1)*4 : 0)+legDirection];
     const bob = Math.sin(this.walkTime*Math.PI*24/7)*this.motion*0.8;
-    this.pose(this.legs,moving?'run':'idle',leg,p.x,p.y+bob);
-    this.legs.setScale(moving ? 0.235 : 0.07);
+    this.pose(this.legs,'lower',leg,p.x,p.y+bob);
+    this.legs.setScale(leg.scale);
     const attackPose = {idle:0,draw:1,release:2,recover:3}[s.attack];
     let texture = 'upper',upper: Frame = oldFrames.upper[attackPose*4+p.facing];
     if (s.status === 'failed' || s.hurt > 0) { texture='skills';upper=atlases.skills.frames[12+p.facing]; }
@@ -245,7 +248,8 @@ export class TrainingScene extends Phaser.Scene {
       v.body.setVisible(visible);v.shadow.setVisible(visible);
       if (!visible) continue;
       const row = e.phase==='dead'?6:e.flash>0?5:e.phase==='warn'?3:e.phase==='swing'?4:e.phase==='recover'?(e.timer<0.18?0:5):e.phase==='chase'?1+Math.floor(this.clock*8)%2:0;
-      this.pose(v.body,'enemy',atlases.enemy.frames[row*4+this.direction(e.angle)],e.x,e.y);
+      const texture = ENEMY_TEXTURES[e.appearance];
+      this.pose(v.body,texture,atlases[texture].frames[row*4+this.direction(e.angle)],e.x,e.y);
       v.body.setDepth(e.y+0.1).setAlpha(e.phase==='dead'?e.timer/0.6:1).setTint(e.flash>0?0xffd89b:0xffffff);v.shadow.setPosition(e.x,e.y).setAlpha(e.phase==='dead'?e.timer*0.5:0.35);
       if (e.phase !== 'dead') {
         air.fillStyle(0x151714,0.85).fillRect(e.x-20,e.y-88,40,4);

@@ -100,7 +100,7 @@ test('影偶会绕过长残墙追击，不长期卡在直线路径上', () => {
 
 test('三组按死亡推进，完成后仍可操作，重试清空全部技能和进度', () => {
   const full = new TrainingRoom(TANGGU);
-  assert.deepEqual([0,1,2].map(g => full.snapshot.enemies.filter(e => e.group === g).length), [2,3,4]);
+  assert.deepEqual([0,1,2].map(g => full.snapshot.enemies.filter(e => e.group === g).length), [3,4,5]);
   const room = new TrainingRoom({ ...duel, encounters: [0,1,2].map(() => ({ x: 400, y: 820, enemies: [{ x: 620, y: 820 }] })) });
   room.update(idle, 0);
   assert.deepEqual(room.snapshot.enemies.map(e => e.phase), ['chase','inactive','inactive']);
@@ -231,4 +231,13 @@ test('挥击结束后才进入范围不会被追溯扣血，长短帧结果一�
     assert.equal(room.snapshot.health,100);
     assert.equal(room.snapshot.enemies[0].phase,'recover');
   }
+});
+
+
+test('三组共十二只影偶混合三种外观，外观不改变近战基础属性', () => {
+  const room = new TrainingRoom(TANGGU);
+  const enemies = room.snapshot.enemies;
+  assert.equal(enemies.length,12);
+  assert.deepEqual([...new Set(enemies.map(e=>e.appearance))].sort(),['bird','paper','wood']);
+  assert.ok(enemies.every(e=>e.health===60&&e.phase==='inactive'));
 });

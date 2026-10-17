@@ -1,0 +1,9 @@
+{
+  "version": "0.2.1",
+  "installerType": "NSIS Unicode, per-user x64 application",
+  "unsigned": true,
+  "payloadAsarSHA256": "fb4cfb81676a0f1e655c42e26a0a4b0eef97da0d2339777640df3600b3bf53c9",
+  "forgeAsarSHA256": "fb4cfb81676a0f1e655c42e26a0a4b0eef97da0d2339777640df3600b3bf53c9",
+  "samePayload": true,
+  "actualWindowsRun": "pending user return"
+}

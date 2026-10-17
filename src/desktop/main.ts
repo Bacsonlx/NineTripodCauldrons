@@ -26,7 +26,9 @@ function createWindow(): void {
   const notifyState = () => window.webContents.send(WINDOW_STATE_CHANNEL, { fullscreen: window.isFullScreen() });
   window.on('enter-full-screen', notifyState);
   window.on('leave-full-screen', notifyState);
-  window.once('ready-to-show', () => { window.maximize(); window.show(); });
+  // Establish the real visible viewport before Phaser boots in the renderer.
+  window.maximize();
+  window.show();
   void window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 }
 

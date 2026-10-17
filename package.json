@@ -1,7 +1,7 @@
 {
   "name": "nine-tripod-cauldrons",
   "productName": "九鼎",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "九鼎 · 十日：单机动作肉鸽游戏技术验证工程",
   "private": true,
   "license": "UNLICENSED",
@@ -23,7 +23,8 @@
     "test:build": "tsc -p tsconfig.test.json",
     "test": "npm run test:build && node --test tests/*.test.cjs",
     "package": "npm run check && electron-forge package",
-    "make": "npm run check && electron-forge make"
+    "make": "npm run check && electron-forge make",
+    "make:win-exe": "npm run make -- --platform=win32 --arch=x64 && electron-builder --win nsis --x64 --prepackaged out/九鼎-win32-x64 --config electron-builder.config.cjs --publish never"
   },
   "dependencies": {
     "phaser": "3.90.0"
@@ -34,6 +35,7 @@
     "@electron-forge/plugin-webpack": "7.11.2",
     "@types/node": "^22.0.0",
     "electron": "44.8.0",
+    "electron-builder": "26.15.3",
     "ts-loader": "^9.5.0",
     "typescript": "5.9.3",
     "webpack": "^5.0.0"

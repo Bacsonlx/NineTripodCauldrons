@@ -1,0 +1,27 @@
+{
+  "version": "0.2.1",
+  "sourceFingerprint": "b14b7d1c7501ed3355d16fbc20ea72aa74429521ee88434ce8af08b00a175e67",
+  "artifacts": [
+    {
+      "file": "out/installer/NineTripodCauldrons-Setup-0.2.1-x64.exe",
+      "bytes": 120230660,
+      "sha256": "426e3da3b0865eff5bc6673b994995c6bd83151eaeb93a317c06a27c99443056",
+      "type": "NSIS current-user installer; x64 payload",
+      "unsigned": true
+    },
+    {
+      "file": "out/make/zip/darwin/arm64/九鼎-darwin-arm64-0.2.1.zip",
+      "bytes": 149741210,
+      "sha256": "ae8ee84c5945b64f0ff25b84bddcc8e2a81971469d6d56747af47ea1b1385dfb",
+      "zipCRC": "passed"
+    },
+    {
+      "file": "out/make/zip/win32/x64/九鼎-win32-x64-0.2.1.zip",
+      "bytes": 179907594,
+      "sha256": "b0a873d32ea05eec2cc5c145c793e5bbeb101f1fe26daa6a91d931f6ec57e465",
+      "zipCRC": "passed"
+    }
+  ],
+  "WindowsActualInstallAndRun": "pending user return",
+  "macOSFullForegroundFullscreenAndPerformance": "pending: locked again"
+}

@@ -1,0 +1,107 @@
+{
+  "checks": "11 runtime PNGs exactly match final source and macOS/Windows ASARs are identical",
+  "results": [
+    {
+      "platform": "macOS",
+      "version": "0.2.1",
+      "asarSHA256": "fb4cfb81676a0f1e655c42e26a0a4b0eef97da0d2339777640df3600b3bf53c9",
+      "assets": [
+        {
+          "filename": "arrow-refined-v2.png",
+          "sha256": "c9332ac79650977afb132c4615bb369ac478d619d1cd3604864ae9b29bee185e"
+        },
+        {
+          "filename": "bow-states-v3.png",
+          "sha256": "92cee3343dd0c86cee01f4cddacc22af9a2bfc6e7ac0e62893a5d45407f330ca"
+        },
+        {
+          "filename": "child-failed-v1.png",
+          "sha256": "287c54106f20018a0df38fb47f0808056b0f7365dda328f07b6a4044d0e00dc1"
+        },
+        {
+          "filename": "child-lower-unified-v2.png",
+          "sha256": "b5431c80309bebb1c10f03a35073916ebe26553f6c0643afe5d98befc260fa7f"
+        },
+        {
+          "filename": "child-skills-upper-v1.png",
+          "sha256": "400cea6ef879542e1dbbd27782109333bbee715232efbc6b0f4d5c6b448147e3"
+        },
+        {
+          "filename": "child-upper-refined-v3.png",
+          "sha256": "1b08ed48d6eb324a07d64babc20241854d6d12a55d0135a4167ed835b72d36f9"
+        },
+        {
+          "filename": "shadow-paper-v2.png",
+          "sha256": "b0172d992a8ea35e8ea051935ebd170e5bf91c91e4fd7fbafa2d05c541a81197"
+        },
+        {
+          "filename": "shadow-puppet-v2.png",
+          "sha256": "2acd6f3bc075a89097d853afa84fb60494e1214a39ebece04a144d092bbf4658"
+        },
+        {
+          "filename": "shadow-wood-v2.png",
+          "sha256": "ba92c9f909e3cf8c75fa31517a97912a7f15ff545a2ebb2c75f7aca8c96c1784"
+        },
+        {
+          "filename": "tanggu-ground-v1.png",
+          "sha256": "593eda404fd45865df8579d0b082171f978a04b25465bc5f089b16f8086dc190"
+        },
+        {
+          "filename": "tanggu-props-v1.png",
+          "sha256": "d793edf3c4ec7c621d22e650e86957e10fa8dab2150bf66401f90deff7a094be"
+        }
+      ]
+    },
+    {
+      "platform": "Windows",
+      "version": "0.2.1",
+      "asarSHA256": "fb4cfb81676a0f1e655c42e26a0a4b0eef97da0d2339777640df3600b3bf53c9",
+      "assets": [
+        {
+          "filename": "arrow-refined-v2.png",
+          "sha256": "c9332ac79650977afb132c4615bb369ac478d619d1cd3604864ae9b29bee185e"
+        },
+        {
+          "filename": "bow-states-v3.png",
+          "sha256": "92cee3343dd0c86cee01f4cddacc22af9a2bfc6e7ac0e62893a5d45407f330ca"
+        },
+        {
+          "filename": "child-failed-v1.png",
+          "sha256": "287c54106f20018a0df38fb47f0808056b0f7365dda328f07b6a4044d0e00dc1"
+        },
+        {
+          "filename": "child-lower-unified-v2.png",
+          "sha256": "b5431c80309bebb1c10f03a35073916ebe26553f6c0643afe5d98befc260fa7f"
+        },
+        {
+          "filename": "child-skills-upper-v1.png",
+          "sha256": "400cea6ef879542e1dbbd27782109333bbee715232efbc6b0f4d5c6b448147e3"
+        },
+        {
+          "filename": "child-upper-refined-v3.png",
+          "sha256": "1b08ed48d6eb324a07d64babc20241854d6d12a55d0135a4167ed835b72d36f9"
+        },
+        {
+          "filename": "shadow-paper-v2.png",
+          "sha256": "b0172d992a8ea35e8ea051935ebd170e5bf91c91e4fd7fbafa2d05c541a81197"
+        },
+        {
+          "filename": "shadow-puppet-v2.png",
+          "sha256": "2acd6f3bc075a89097d853afa84fb60494e1214a39ebece04a144d092bbf4658"
+        },
+        {
+          "filename": "shadow-wood-v2.png",
+          "sha256": "ba92c9f909e3cf8c75fa31517a97912a7f15ff545a2ebb2c75f7aca8c96c1784"
+        },
+        {
+          "filename": "tanggu-ground-v1.png",
+          "sha256": "593eda404fd45865df8579d0b082171f978a04b25465bc5f089b16f8086dc190"
+        },
+        {
+          "filename": "tanggu-props-v1.png",
+          "sha256": "d793edf3c4ec7c621d22e650e86957e10fa8dab2150bf66401f90deff7a094be"
+        }
+      ]
+    }
+  ]
+}
