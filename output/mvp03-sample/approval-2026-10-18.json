@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-18",
+  "timezone": "Asia/Taipei",
+  "sampleVersion": "0.3.0-sample.1",
+  "implementationCommit": "049a81c",
+  "userSampleAnswer": "小样通过",
+  "steleVersion": "v0.1",
+  "userSteleAnswer": "短文通过",
+  "issue": {
+    "number": 24,
+    "title": "[MVP-03 T07] 整合动态小样并取得用户画面确认",
+    "state": "CLOSED",
+    "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/24"
+  },
+  "checkedCriteria": 6,
+  "issueBodySHA256": "87ff1934cec0d9f91ebcff6210f90fe8acd3b725b89f89acd6a2c74d73513638",
+  "nativePlatformAcceptance": "unchanged; not approved by visual confirmation",
+  "nextStage": "T08-T15 not implemented in this stage"
+}
