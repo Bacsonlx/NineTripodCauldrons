@@ -1,0 +1,31 @@
+{
+  "surface": "isolated actual-package renderer; desktop window API stub only; not native acceptance",
+  "passed": true,
+  "healing": {
+    "before": 80,
+    "after": 100
+  },
+  "reset": {
+    "steleRead": false,
+    "altarUsed": false,
+    "gateOpen": false
+  },
+  "errors": [],
+  "seconds": 41.07,
+  "samples": 900,
+  "groupsObserved": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "minimumHealth": 80,
+  "readingObserved": false,
+  "steleReadObserved": true,
+  "altarUsedObserved": true,
+  "gateOpenObserved": true,
+  "viewport": [
+    1280,
+    720
+  ]
+}

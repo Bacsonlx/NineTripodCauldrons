@@ -1,0 +1,32 @@
+{
+  "state": {
+    "visibility": "hidden",
+    "focus": true,
+    "width": 1451,
+    "height": 916,
+    "status": "正在载入汤谷…",
+    "desktop": {
+      "idle": "idle",
+      "visible": true,
+      "focused": true,
+      "fullscreen": false,
+      "version": "0.3.0"
+    }
+  },
+  "nativeInputAcceptance": "not established; do not count as passed",
+  "fullscreen": {
+    "enter": "native green button and true Electron fullscreen readback",
+    "exit": {
+      "fullscreen": false,
+      "visible": true,
+      "bounds": {
+        "x": 61,
+        "y": 34,
+        "width": 1451,
+        "height": 948
+      }
+    },
+    "scope": "window toggle only; gameplay still not accepted"
+  },
+  "attemptBuild": "early 0.3.0 build before final input/spawn fixes; window checks only, not final package gameplay acceptance"
+}

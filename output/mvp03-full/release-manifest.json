@@ -1,0 +1,190 @@
+{
+  "version": "0.3.0",
+  "baseline": "a3efff66f6f009a6e6655edfe078ea60b1c2f129",
+  "reviewSnapshot": "f96b5948d70ab449097ce7596df71442a4633277",
+  "createdAt": "2026-10-18T04:02:22.173Z",
+  "sourceFiles": [
+    {
+      "path": "package.json",
+      "bytes": 1338,
+      "sha256": "8c91e9fad2f49cbd134692deaea21cdd961fb4bb85308a3c00591d875f52978c"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 369739,
+      "sha256": "9a1b6b8070d27ffdb391379431a91985f2e02fa00bfb46cf3922233f9f159dc2"
+    },
+    {
+      "path": "src/game/TrainingRoom.ts",
+      "bytes": 29999,
+      "sha256": "e781d2758d423efa65ad75cba64d982c6aa2fbd50132f9530c838eed3664643d"
+    },
+    {
+      "path": "src/game/Tanggu.ts",
+      "bytes": 3559,
+      "sha256": "93102133434af3d78ca82f77b2a0bb8ec6c9db041a95c7206c664c7402b9cb63"
+    },
+    {
+      "path": "src/game/TangguBackdrop.ts",
+      "bytes": 6194,
+      "sha256": "f8ae5327df3eea50550526a9d11713d56ae64a1523fd5edcef71ea1db329434a"
+    },
+    {
+      "path": "src/game/TrainingScene.ts",
+      "bytes": 22550,
+      "sha256": "1158643ed53c9ba763a1e31d5d710cfaf9cf5b31fbd38c554f1e2ad76034744e"
+    },
+    {
+      "path": "src/game/CombatEffects.ts",
+      "bytes": 6522,
+      "sha256": "d6586dc5cc428e7813b9b547cbc58f7eba5da6dcea00c94be049f6bc0597d54b"
+    },
+    {
+      "path": "src/renderer/index.html",
+      "bytes": 7770,
+      "sha256": "17ce95460783a7edb874c05aa69beab6e35d3eb8e4e2792c216d07b6e5f80166"
+    },
+    {
+      "path": "src/renderer/index.ts",
+      "bytes": 692,
+      "sha256": "3ea99aecdb81ceb043717287599965a57ccf1f990dbe62332f6f85f7193cbe2a"
+    },
+    {
+      "path": "tests/Exploration.test.cjs",
+      "bytes": 6425,
+      "sha256": "95c09d2770f7c062c30bb063c57274ddaab2b97c845fa0e3d760951807595064"
+    },
+    {
+      "path": "assets/mvp03/full/frames.json",
+      "bytes": 1250,
+      "sha256": "db564e77e413500dd9cc44204fa4bd7d5c96b571a9aa9d907b07e12cf8394495"
+    }
+  ],
+  "packages": {
+    "mac": {
+      "path": "out/九鼎-darwin-arm64/九鼎.app/Contents/Resources/app.asar",
+      "bytes": 31686028,
+      "sha256": "0908a5b7389247b9450826d5f624467b4f37dc87dbb24499ad6d96a34223d02c",
+      "version": "0.3.0",
+      "rendererSHA256": "aaf5cae687750bde20c5aaa2af79e8d141bd1128a4c31b024af8403493b685dc",
+      "assets": [
+        {
+          "path": "assets/mvp03/junction-ground-v1.png",
+          "bytes": 3502367,
+          "sha256": "501333d5e80eb71a37a2de1bb97bbe3a918d61bb4ccd4f022f843bbb81cbd9b5",
+          "packagedPath": ".webpack/renderer/assets/junction-ground-v1.png"
+        },
+        {
+          "path": "assets/mvp03/junction-props-v1.png",
+          "bytes": 1697598,
+          "sha256": "420a036142f995387296e09f8d391fd0f2d7bb59cdeb13c52aca0857a9140832",
+          "packagedPath": ".webpack/renderer/assets/junction-props-v1.png"
+        },
+        {
+          "path": "assets/mvp03/combat-vfx-v1.png",
+          "bytes": 1448171,
+          "sha256": "566a29d714fd3c643f26489c007523c033a7d03bdc83e8feaf1bc38e0fbdbd31",
+          "packagedPath": ".webpack/renderer/assets/combat-vfx-v1.png"
+        },
+        {
+          "path": "assets/mvp03/full/exploration-props-v1.png",
+          "bytes": 1922685,
+          "sha256": "673f7e690567bfdd6310da211bc4107b0bdea7bf1e522ba61b492955bc51ae69",
+          "packagedPath": ".webpack/renderer/assets/exploration-props-v1.png"
+        },
+        {
+          "path": "assets/mvp03/full/terrain-materials-v1.png",
+          "bytes": 4387312,
+          "sha256": "9c3e195fa90cfed3458e00641ff79006de44dd48308231d0aa9470b6245106f5",
+          "packagedPath": ".webpack/renderer/assets/terrain-materials-v1.png"
+        }
+      ],
+      "zipASARMatch": true
+    },
+    "windows": {
+      "path": "out/九鼎-win32-x64/resources/app.asar",
+      "bytes": 31686028,
+      "sha256": "0908a5b7389247b9450826d5f624467b4f37dc87dbb24499ad6d96a34223d02c",
+      "version": "0.3.0",
+      "rendererSHA256": "aaf5cae687750bde20c5aaa2af79e8d141bd1128a4c31b024af8403493b685dc",
+      "assets": [
+        {
+          "path": "assets/mvp03/junction-ground-v1.png",
+          "bytes": 3502367,
+          "sha256": "501333d5e80eb71a37a2de1bb97bbe3a918d61bb4ccd4f022f843bbb81cbd9b5",
+          "packagedPath": ".webpack/renderer/assets/junction-ground-v1.png"
+        },
+        {
+          "path": "assets/mvp03/junction-props-v1.png",
+          "bytes": 1697598,
+          "sha256": "420a036142f995387296e09f8d391fd0f2d7bb59cdeb13c52aca0857a9140832",
+          "packagedPath": ".webpack/renderer/assets/junction-props-v1.png"
+        },
+        {
+          "path": "assets/mvp03/combat-vfx-v1.png",
+          "bytes": 1448171,
+          "sha256": "566a29d714fd3c643f26489c007523c033a7d03bdc83e8feaf1bc38e0fbdbd31",
+          "packagedPath": ".webpack/renderer/assets/combat-vfx-v1.png"
+        },
+        {
+          "path": "assets/mvp03/full/exploration-props-v1.png",
+          "bytes": 1922685,
+          "sha256": "673f7e690567bfdd6310da211bc4107b0bdea7bf1e522ba61b492955bc51ae69",
+          "packagedPath": ".webpack/renderer/assets/exploration-props-v1.png"
+        },
+        {
+          "path": "assets/mvp03/full/terrain-materials-v1.png",
+          "bytes": 4387312,
+          "sha256": "9c3e195fa90cfed3458e00641ff79006de44dd48308231d0aa9470b6245106f5",
+          "packagedPath": ".webpack/renderer/assets/terrain-materials-v1.png"
+        }
+      ],
+      "zipASARMatch": true
+    }
+  },
+  "windowsMachine": "0x8664 x64",
+  "recordedRendererSHA256": "aaf5cae687750bde20c5aaa2af79e8d141bd1128a4c31b024af8403493b685dc",
+  "artifacts": [
+    {
+      "path": "out/installer/NineTripodCauldrons-Setup-0.3.0-x64.exe",
+      "bytes": 128537553,
+      "sha256": "7d9cd4f6f6854fb83db46cb3042e908f1253ca5c14c64955d37ae1b8e341c8e2"
+    },
+    {
+      "path": "out/make/zip/win32/x64/九鼎-win32-x64-0.3.0.zip",
+      "bytes": 188501072,
+      "sha256": "494eccf9f67dea54f1260d011bca5d3c6f588df560c18b0c154a258b8e5fa123"
+    },
+    {
+      "path": "out/make/zip/darwin/arm64/九鼎-darwin-arm64-0.3.0.zip",
+      "bytes": 158330435,
+      "sha256": "b3c4f68d59e586ee90caddcd545cafce288f59f7076e305a0dd9cd247f11cf92"
+    }
+  ],
+  "verification": {
+    "tests": "46/46 passed",
+    "typescript": "passed",
+    "standards": "0 remaining",
+    "spec": "0 remaining",
+    "nativeMac": "startup/image and fullscreen enter/exit only; complete native gameplay pending",
+    "nativeWindows": "pending user return",
+    "performance": "not sampled; no repeated stability loops",
+    "zipIntegrity": "both passed; embedded ASAR matches verified package",
+    "rendererFunctional": "passed: all three encounters, read, natural 80->100 heal, inside gate, post-complete reading, R",
+    "viewport": "800x450 and 1920x720 panel and prompt within viewport",
+    "focus": "headless tab switch did not emit blur; real reading focus cycle pending",
+    "mainOnly": "passed: encounter3 complete, health100, steleRead/altarUsed/gateOpen all false"
+  },
+  "approvals": {
+    "sample": "0.3.0-sample.1 approved",
+    "stele": "v0.1 separately approved",
+    "record": "docs/mvp/MVP03_小样与碑文确认记录.md"
+  },
+  "fixture": "Original game JS and assets from actual Mac package. Fixture HTML adds one external script for low-frequency desktop window API only. No health/AI/time/focus/visibility/game-state overrides. Not native platform acceptance.",
+  "recording": {
+    "path": "output/mvp03-full/九鼎_MVP03_汤谷探索演示.mp4",
+    "bytes": 28296630,
+    "sha256": "88d53b1e1095fdee12898e39c1d86802273cdfcbc72e57e1fc39b141ca638627",
+    "method": "VFR concat from captured timestamps, full successful run, no acceleration or slow-frame removal"
+  }
+}

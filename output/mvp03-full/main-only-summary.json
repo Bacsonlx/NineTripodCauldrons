@@ -1,0 +1,13 @@
+{
+  "surface": "isolated renderer, not native acceptance",
+  "passed": true,
+  "seconds": 17.975,
+  "encounter": 3,
+  "health": 100,
+  "exploration": {
+    "steleRead": false,
+    "altarUsed": false,
+    "gateOpen": false
+  },
+  "errors": []
+}

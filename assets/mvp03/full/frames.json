@@ -1,0 +1,78 @@
+{
+  "exploration": [
+    {
+      "name": "stele",
+      "x": 93,
+      "y": 83,
+      "width": 488,
+      "height": 530,
+      "originX": 0.5,
+      "originY": 1
+    },
+    {
+      "name": "altarLit",
+      "x": 678,
+      "y": 151,
+      "width": 514,
+      "height": 475,
+      "originX": 0.5,
+      "originY": 1
+    },
+    {
+      "name": "altarSpent",
+      "x": 80,
+      "y": 743,
+      "width": 513,
+      "height": 449,
+      "originX": 0.5,
+      "originY": 1
+    },
+    {
+      "name": "gate",
+      "x": 663,
+      "y": 738,
+      "width": 564,
+      "height": 432,
+      "originX": 0.5,
+      "originY": 1
+    }
+  ],
+  "terrain": [
+    {
+      "name": "stone",
+      "x": 0,
+      "y": 0,
+      "width": 627,
+      "height": 627,
+      "originX": 0.5,
+      "originY": 0.9
+    },
+    {
+      "name": "path",
+      "x": 627,
+      "y": 0,
+      "width": 627,
+      "height": 627,
+      "originX": 0.5,
+      "originY": 0.9
+    },
+    {
+      "name": "forest",
+      "x": 0,
+      "y": 627,
+      "width": 627,
+      "height": 627,
+      "originX": 0.5,
+      "originY": 0.9
+    },
+    {
+      "name": "paving",
+      "x": 627,
+      "y": 627,
+      "width": 627,
+      "height": 627,
+      "originX": 0.5,
+      "originY": 0.9
+    }
+  ]
+}

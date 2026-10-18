@@ -5,6 +5,7 @@ export type RoomInput = {
   aim: Point;
   fire: boolean;
   pointerInside: boolean;
+  interact?: boolean;
   dodge?: boolean;
   pierce?: boolean;
   rain?: boolean;
@@ -36,12 +37,14 @@ const SKILL_GRIPS = {
 export type Obstacle = Point & { halfWidth: number; halfHeight: number; height: number; kind: string };
 export type EnemyAppearance = 'bird' | 'paper' | 'wood';
 export type Encounter = Point & { readonly enemies: readonly (Point & { readonly appearance?: EnemyAppearance })[] };
+export type ExplorationPoint = Point & { readonly id: 'stele' | 'altar' | 'gate' };
 export type RoomLayout = {
   readonly width: number; readonly height: number;
   readonly floor: readonly Point[]; readonly pillars: readonly Point[]; readonly targets: readonly Point[];
   readonly shoulderHeight: number; readonly grips: typeof ROOM.grips;
   readonly pillarBody: readonly (readonly [number, number, number])[]; readonly targetFace: typeof ROOM.targetFace;
   readonly spawn?: Point; readonly obstacles?: readonly Obstacle[]; readonly encounters?: readonly Encounter[];
+  readonly exploration?: readonly ExplorationPoint[];
   readonly walkableAreas?: readonly { left: number; top: number; right: number; bottom: number }[];
 };
 
@@ -98,6 +101,11 @@ export class TrainingRoom {
   private nextArrowId = 0;
   private needsRelease = false;
   private paused = false;
+  private reading = false;
+  private gateOpening = 0;
+  private interactHeld = false;
+  private exploration = { steleRead: false, altarUsed: false, gateOpen: false };
+  private feedback: { text: string; remaining: number; healed: boolean } | null = null;
   private health = 100;
   private hurt = 0;
   private protection = 0;
@@ -148,7 +156,8 @@ export class TrainingRoom {
 
   get snapshot() {
     return {
-      player: { ...this.player }, grip: this.grip, hits: this.hits, windup: this.windup, paused: this.paused,
+      player: { ...this.player }, grip: this.grip, hits: this.hits, windup: this.windup, paused: this.paused || this.reading,
+      reading: this.reading, gateOpening: this.gateOpening, exploration: { ...this.exploration }, interaction: this.nearestInteraction(), feedback: this.feedback ? { ...this.feedback } : null,
       attack: this.attackPhase, health: this.health, hurt: this.hurt, protection: this.protection, status: this.status,
       dodge: this.dodgeTime, dodgeDirection: { ...this.dodgeDirection }, dodgeInvulnerability: this.dodgeInvulnerability, cooldowns: { dodge: this.dodgeCooldown, pierce: this.pierceCooldown, rain: this.rainCooldown },
       skill: this.raining ? { kind: 'rain' as const, phase: 'windup' as const, remaining: this.raining.remaining }
@@ -173,7 +182,9 @@ export class TrainingRoom {
   }
 
   reset(): void {
-    if (this.paused) return;
+    if (this.paused || this.reading) return;
+    this.exploration = { steleRead: false, altarUsed: false, gateOpen: false };
+    this.feedback = null; this.interactHeld = true; this.gateOpening = 0;
     this.player = { ...(this.layout.spawn ?? { x: 400, y: 440 }), moving: false, angle: 0, facing: 0 };
     this.arrows = [];
     this.effects = [];
@@ -191,7 +202,61 @@ export class TrainingRoom {
     this.needsRelease = true;
   }
 
+  closeReading(): void {
+    this.reading = false;
+    this.needsRelease = true; this.pierceHeld = true; this.rainHeld = true; this.dodgeHeld = true;
+  }
+
+  private get obstacles(): readonly Obstacle[] {
+    return (this.layout.obstacles ?? []).filter(p => p.kind !== 'gate' || !this.exploration.gateOpen);
+  }
+
+  private nearestInteraction() {
+    const candidates = (this.layout.exploration ?? []).map(p => {
+      const gate = this.layout.obstacles?.find(o => o.kind === 'gate');
+      const outside = p.id === 'gate' && gate && this.player.y <= gate.y;
+      const point = outside ? { x: p.x, y: gate.y - gate.halfHeight - 40 } : p;
+      return { ...p, point, outside, distance: Math.hypot(this.player.x - point.x, this.player.y - point.y) };
+    }).filter(p => p.distance <= 80).sort((a,b) => a.distance - b.distance);
+    const candidate = candidates.find(p => this.canWalk(p.point.x,p.point.y) && this.clearPath(this.player,p.point));
+    if (!candidate) return null;
+    const labels = { stele: this.exploration.steleRead ? '再读残碑 · 已读' : '阅读残碑', altar: '祭火恢复', gate: '开启栅门' };
+    const reason = this.status === 'failed' ? '影散后无法互动' : this.paused ? '暂停中无法互动'
+      : this.enemies.some(e => e.phase !== 'inactive' && e.phase !== 'dead') ? '先清除已苏醒的影偶'
+      : candidate.outside ? '需从祭坛支路内侧开启'
+      : candidate.id === 'altar' && this.exploration.altarUsed ? '祭火已熄灭'
+      : candidate.id === 'gate' && this.gateOpening > 0 ? '栅门正在开启'
+      : candidate.id === 'gate' && this.exploration.gateOpen ? '栅门已开启' : null;
+    return { id: candidate.id, point: { x: candidate.point.x, y: candidate.point.y }, label: labels[candidate.id], reason };
+  }
+
+  private interact(): void {
+    const target = this.nearestInteraction();
+    if (!target) return;
+    if (target.reason) { this.feedback = { text: target.reason, remaining: 1.6, healed: false }; return; }
+    if (target.id === 'stele') {
+      this.reading = true; this.exploration.steleRead = true; this.player.moving = false;
+      this.dodgeTime = 0; this.dodgeInvulnerability = 0;
+      this.windup = null; this.piercing = null; this.raining = null; this.attackReleased = false;
+      this.needsRelease = true;
+    } else if (target.id === 'altar') {
+      if (this.health === 100) this.feedback = { text: '无需恢复', remaining: 1.6, healed: false };
+      else {
+        const amount = Math.min(40,100-this.health); this.health += amount; this.exploration.altarUsed = true;
+        this.feedback = { text: `生命恢复 +${amount}`, remaining: 1.6, healed: true };
+      }
+    } else {
+      this.gateOpening = 0.28;
+      this.feedback = { text: '栅门正在开启', remaining: 1.6, healed: false };
+    }
+  }
+
   update(input: RoomInput, seconds: number): void {
+    const pressed = !!input.interact && !this.interactHeld;
+    this.interactHeld = !!input.interact;
+    if (pressed && this.reading) { this.closeReading(); return; }
+    if (pressed) { this.interact(); if (this.reading) return; }
+    if (this.reading) return;
     // Movement and combat share short steps so a long rendered frame cannot
     // test a past swing against a future player position.
     const steps = Math.max(1, Math.ceil(seconds / 0.01));
@@ -200,6 +265,15 @@ export class TrainingRoom {
 
   private step(input: RoomInput, seconds: number): void {
     if (this.paused || this.status === 'failed') return;
+    if (this.feedback && (this.feedback.remaining -= seconds) <= 0) this.feedback = null;
+    if(this.gateOpening>0){
+      this.gateOpening=Math.max(0,this.gateOpening-seconds);
+      if(this.gateOpening===0){
+        this.exploration.gateOpen=true;
+        for(const e of this.enemies){e.route=[];e.repath=0;}
+        this.feedback={text:'栅门已开启 · 可返回主路',remaining:1.6,healed:false};
+      }
+    }
     const protectionAtStart = this.protection;
     this.hurt = Math.max(0, this.hurt - seconds);
     this.protection = Math.max(0, this.protection - seconds);
@@ -450,7 +524,7 @@ export class TrainingRoom {
         if (t !== null && t < first) { first = t; target = null; }
       }
     }
-    for (const p of this.layout.obstacles ?? []) {
+    for (const p of this.obstacles) {
       const t = rectangleContact(from, to, p.x - p.halfWidth, p.y - p.height, p.x + p.halfWidth, p.y + p.halfHeight);
       if (t !== null && t < first) { first = t; target = null; }
     }
@@ -487,6 +561,6 @@ export class TrainingRoom {
       if (dx * (y - a.y) - dy * (x - a.x) < 12 * Math.hypot(dx, dy)) return false;
     }
     return !this.layout.pillars.some(p => Math.abs(x - p.x) < 40 && Math.abs(y - p.y) < 30)
-      && !(this.layout.obstacles ?? []).some(p => Math.abs(x - p.x) < p.halfWidth + 12 && Math.abs(y - p.y) < p.halfHeight + 12);
+      && !this.obstacles.some(p => Math.abs(x - p.x) < p.halfWidth + 12 && Math.abs(y - p.y) < p.halfHeight + 12);
   }
 }

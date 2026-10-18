@@ -15,7 +15,7 @@ async function start(): Promise<void> {
     },
     scene: [TrainingScene],
   });
-  document.getElementById('version')!.textContent = `MVP-03 · 动态小样 · ${version}`;
+  document.getElementById('version')!.textContent = `MVP-03 · 汤谷探索 · ${version}`;
 }
 
 void start().catch((error: unknown) => {

@@ -1,0 +1,27 @@
+[
+  {
+    "file": "exploration-props-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGBA",
+    "sha256": "673f7e690567bfdd6310da211bc4107b0bdea7bf1e522ba61b492955bc51ae69",
+    "alphaRange": [
+      0,
+      255
+    ],
+    "sourceTool": "built-in image_gen",
+    "sourcePath": "/Users/linxin/.codex/generated_images/01a13fec-16a6-7cb2-a9b5-2a788331ed56/exec-f400fa99-699e-489e-8d92-2ba5f8c4c75b.png",
+    "pixelEdits": false
+  },
+  {
+    "file": "terrain-materials-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGB",
+    "sha256": "9c3e195fa90cfed3458e00641ff79006de44dd48308231d0aa9470b6245106f5",
+    "alphaRange": null,
+    "sourceTool": "built-in image_gen",
+    "sourcePath": "/Users/linxin/.codex/generated_images/01a13fec-16a6-7cb2-a9b5-2a788331ed56/exec-0fe7ec0c-ee85-457a-9d04-dfad1cba9c0a.png",
+    "pixelEdits": false
+  }
+]

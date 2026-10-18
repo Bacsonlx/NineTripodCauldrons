@@ -1,0 +1,41 @@
+{
+  "passed": false,
+  "note": "Automated operation route attempt; not counted as main-only pass",
+  "player": {
+    "x": 669.8994659946284,
+    "y": 998.8482993279692,
+    "moving": false,
+    "angle": -1.0582139235186976,
+    "facing": 0
+  },
+  "health": 0,
+  "encounter": 0,
+  "active": [
+    {
+      "x": 719.4047430920884,
+      "y": 951.8570325123472,
+      "appearance": "paper",
+      "id": 1,
+      "group": 0,
+      "health": 60,
+      "phase": "warn",
+      "timer": 0.3416650000000025,
+      "angle": 2.382241451209301,
+      "struck": false,
+      "flash": 0
+    },
+    {
+      "x": 697.8202713945444,
+      "y": 936.0771069468339,
+      "appearance": "wood",
+      "id": 2,
+      "group": 0,
+      "health": 15,
+      "phase": "swing",
+      "timer": 0.09170499999999313,
+      "angle": 1.98931990541453,
+      "struck": true,
+      "flash": 0
+    }
+  ]
+}

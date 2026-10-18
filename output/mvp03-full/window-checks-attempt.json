@@ -1,0 +1,44 @@
+{
+  "surface": "isolated Chromium; not native desktop window acceptance",
+  "viewport": [
+    {
+      "width": 800,
+      "height": 450,
+      "panel": {
+        "left": 130,
+        "top": 74.5,
+        "right": 670,
+        "bottom": 375.5,
+        "width": 800,
+        "height": 450
+      },
+      "prompt": {
+        "left": 325.6328125,
+        "top": 126.046875,
+        "right": 475.9921875,
+        "bottom": 160.046875
+      }
+    },
+    {
+      "width": 1920,
+      "height": 720,
+      "panel": {
+        "left": 690,
+        "top": 195.96875,
+        "right": 1230,
+        "bottom": 524.015625,
+        "width": 1920,
+        "height": 720
+      },
+      "prompt": {
+        "left": 764.8203125,
+        "top": 261.078125,
+        "right": 915.1796875,
+        "bottom": 295.078125
+      }
+    }
+  ],
+  "focus": "not yet tested",
+  "passed": false,
+  "error": "real browser tab focus cycle must remain paused after closing reading\n\nfalse !== true\n"
+}

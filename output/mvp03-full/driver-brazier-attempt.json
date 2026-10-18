@@ -1,0 +1,8 @@
+{
+  "surface": "isolated actual-package renderer; desktop window API stub only; not native acceptance",
+  "passed": false,
+  "error": "Player failed",
+  "errors": [],
+  "seconds": 34.218,
+  "samples": 729
+}

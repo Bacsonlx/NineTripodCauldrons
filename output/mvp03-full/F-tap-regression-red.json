@@ -1,0 +1,8 @@
+{
+  "surface": "isolated actual-package renderer; desktop window API stub only; not native acceptance",
+  "passed": false,
+  "error": "short F tap must open reading\n\nfalse !== true\n",
+  "errors": [],
+  "seconds": 12.481,
+  "samples": 294
+}
