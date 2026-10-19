@@ -6,7 +6,21 @@ Windows／macOS 单机动作肉鸽游戏的技术验证工程，采用固定等�
 
 各版本内容与验证状态见 [更新日志](CHANGELOG.md)。
 
-## 开发
+## Godot 迁移
+
+后续开发已确定采用 **Godot 原生 2D＋带类型的 GDScript**，面向 PC／Steam，保持现有二维战斗平面、固定俯视／等距表现与离线图集。决策见 [ADR-0010](docs/adr/0010-godot-migration-direction.md)，完整范围与验收标准见 [Godot 迁移落地方案](docs/九鼎_Godot架构评估与迁移落地方案_2026-10-19.md)。
+
+**Godot 动态小样已在 `godot/` 建立，旧版主入口仍为 Electron＋TypeScript＋Phaser。** 引擎固定为 Godot 4.7.2 official，Compatibility 为候选渲染器，匹配官方模板与校验见 [Godot 开发说明](godot/README.md)。小样已接入跑射、单影偶近战、遮挡、相机和操作中断；Mac 原生启动与部分操作已检查，Windows 实机及用户试玩确认仍待验。
+
+- 首个交付覆盖当前汤谷的战斗、探索、镜头、反馈、键鼠操作，以及 Windows x64／Apple Silicon Mac 原生运行。
+- 先交付移动、独立瞄准、普通射箭、一个影偶、遮挡物和跟随镜头的可玩动态小样；试玩确认画面与手感后，再铺完整汤谷。
+- 保持已确认的玩法规则与数值，允许经确认的表现改进。用户在 Godot 编辑器调整道路、障碍、出生点和互动点并验收，AI 负责脚本与批量配置。
+- 指定两平台实机在 1080p 下连续跑射 60 秒：平均 ≥58 FPS，至少 95% 帧间隔 ≤20ms；另做 5 分钟稳定性检查。双平台验收通过后切换主入口，商业版最低配置后续验证。
+- 手柄、随机房间、Boss、成长、正式存档和 Steam 完整功能进入后续商业闭环；迁移早期先核实 Steam 接入路径与兼容性。
+
+M0—M4 的实施规格已发布为 [GitHub Spec #33](https://github.com/Bacsonlx/NineTripodCauldrons/issues/33)，本地镜像见 [Godot 迁移 Spec](docs/mvp/九鼎_Godot迁移_Spec.md)。18 个 Task 已发布为 #34—#51；当前实现、试玩包、检查与待验项见 [Godot 实施记录](docs/migration/Godot迁移_实施记录.md)。用户确认动态小样后继续技能、完整地图与探索，最后按双平台验收切入口。
+
+## 当前工程开发
 
 使用 Node.js 22 或更新版本；当前工程使用 npm 和 `package-lock.json`。
 

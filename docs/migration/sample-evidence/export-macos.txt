@@ -1,0 +1,58 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started 專案初始化中 (5 steps)
+[   0% ] first_scan_filesystem | 正在掃描檔案結構…
+[  16% ] first_scan_filesystem | 正在載入全域類別名稱…
+[  33% ] first_scan_filesystem | 正在驗證 GDExtension…
+[  50% ] first_scan_filesystem | 正在建立自動載入腳本…
+[  66% ] first_scan_filesystem | 初始化外掛程式...
+[  83% ] first_scan_filesystem | 開始掃描檔案...
+[ DONE ] first_scan_filesystem
+
+[   0% ] update_scripts_classes | Started 註冊全域類別中... (3 steps)
+[   0% ] update_scripts_classes | SampleRoom
+[  25% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[ DONE ] update_scripts_classes
+
+[   0% ] export | Started 正在為 macOS 匯出 (3 steps)
+[   0% ] export | 正在建立應用程式套件
+[  25% ] export | 正在製作 PKG
+[   0% ] savepack | Started 打包中 (102 steps)
+[   1% ] savepack | 儲存檔案：res://.godot/imported/arrow.png-44afecee2c156005cc8e9654118da9e8.ctex
+[   1% ] savepack | 儲存檔案：res://assets/generated/arrow.png.import
+[   7% ] savepack | 儲存檔案：res://assets/generated/atlas.json
+[  14% ] savepack | 儲存檔案：res://.godot/imported/bow.png-a45546cd8d91ba05f66f4d8e494533f3.ctex
+[  14% ] savepack | 儲存檔案：res://assets/generated/bow.png.import
+[  21% ] savepack | 儲存檔案：res://.godot/imported/enemy.png-bac9ba1acc51193fddef13ed76b4348b.ctex
+[  21% ] savepack | 儲存檔案：res://assets/generated/enemy.png.import
+[  27% ] savepack | 儲存檔案：res://.godot/imported/failed.png-fda290b22c02b939e59339efbf50e4a9.ctex
+[  27% ] savepack | 儲存檔案：res://assets/generated/failed.png.import
+[  33% ] savepack | 儲存檔案：res://.godot/imported/ground.png-4ee94c3229f7188d4806fc332383d24e.ctex
+[  33% ] savepack | 儲存檔案：res://assets/generated/ground.png.import
+[  40% ] savepack | 儲存檔案：res://.godot/imported/lower.png-1953fec96fe7ccf738999841d418695d.ctex
+[  40% ] savepack | 儲存檔案：res://assets/generated/lower.png.import
+[  46% ] savepack | 儲存檔案：res://.godot/imported/props.png-9669751ce13d1ad3feedfb6231527b0d.ctex
+[  46% ] savepack | 儲存檔案：res://assets/generated/props.png.import
+[  53% ] savepack | 儲存檔案：res://.godot/imported/skills.png-fb505bcf3e32e274d93f732a8a824024.ctex
+[  53% ] savepack | 儲存檔案：res://assets/generated/skills.png.import
+[  60% ] savepack | 儲存檔案：res://.godot/imported/upper.png-65b69883f30a2ec8842d849372223559.ctex
+[  60% ] savepack | 儲存檔案：res://assets/generated/upper.png.import
+[  66% ] savepack | 儲存檔案：res://.godot/exported/133200997/export-497309c8bf0867bd651bdc1e5a4f36b6-sample.scn
+[  72% ] savepack | 儲存檔案：res://scripts/combat/sample_room.gdc
+[  79% ] savepack | 儲存檔案：res://scripts/input/sample_controls.gdc
+[  85% ] savepack | 儲存檔案：res://scripts/presentation/sample_scene.gdc
+[  92% ] savepack | 儲存檔案：res://THIRD_PARTY_NOTICES.txt
+[  92% ] savepack | 儲存檔案：res://scenes/sample.tscn.remap
+[  92% ] savepack | 儲存檔案：res://scripts/combat/sample_room.gd.remap
+[  92% ] savepack | 儲存檔案：res://scripts/input/sample_controls.gd.remap
+[  92% ] savepack | 儲存檔案：res://scripts/presentation/sample_scene.gd.remap
+[  92% ] savepack | 儲存檔案：res://.godot/global_script_class_cache.cfg
+[  92% ] savepack | 儲存檔案：res://.godot/uid_cache.bin
+[  92% ] savepack | 儲存檔案：res://project.binary
+[ DONE ] savepack
+
+[  50% ] export | 程式碼簽名套件
+[  75% ] export | 正在製作 ZIP
+[ DONE ] export
+
