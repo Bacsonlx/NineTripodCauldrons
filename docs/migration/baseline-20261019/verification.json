@@ -52,5 +52,20 @@
     "60秒性能采样",
     "5分钟稳定性采样"
   ],
-  "review": "随后按 Standards 与 Spec 双轴复核；本文件不预写审查结论"
+  "review": {
+    "fixed_point": "8f7fe1bdce638e9549abd8a1f81f61e73a22391a",
+    "reviewed_commit": "17befd9",
+    "standards": {
+      "findings": 0,
+      "smells": 0,
+      "independent_restore_verified_files": 233
+    },
+    "spec": {
+      "findings": 0,
+      "independent_restore_verified_files": 233,
+      "active_assets_verified": 19,
+      "behavior_cases_verified": 64
+    },
+    "evidence_scope": "两名独立只读审查者；复核本票提交，不把其他用户 dirty 改动作为审查变更。"
+  }
 }
