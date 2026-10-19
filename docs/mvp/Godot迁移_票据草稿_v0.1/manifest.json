@@ -1,0 +1,340 @@
+{
+  "source_issue": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/33",
+  "status": "published",
+  "publication_policy": "用户要求继续完成所有 Task 后发布；父规格正文和状态保持不变。",
+  "tickets": [
+    {
+      "id": "T01",
+      "title": "固定可还原参照、行为清单与测试设备",
+      "file": "01-baseline.md",
+      "blocked_by": [],
+      "acceptance_coverage": [
+        "AC-01",
+        "AC-26"
+      ],
+      "status": "published",
+      "issue_number": 34,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/34"
+    },
+    {
+      "id": "T02",
+      "title": "在双平台启动 Godot 跑动、瞄准与跟随镜头切片",
+      "file": "02-native-movement.md",
+      "blocked_by": [
+        "T01"
+      ],
+      "acceptance_coverage": [
+        "AC-02",
+        "AC-03",
+        "AC-06",
+        "AC-21",
+        "AC-22",
+        "AC-27"
+      ],
+      "status": "published",
+      "issue_number": 35,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/35"
+    },
+    {
+      "id": "T03",
+      "title": "跑通普通射箭、影偶受击与实体阻箭",
+      "file": "03-normal-arrow.md",
+      "blocked_by": [
+        "T02"
+      ],
+      "acceptance_coverage": [
+        "AC-07",
+        "AC-08",
+        "AC-12",
+        "AC-13",
+        "AC-22"
+      ],
+      "status": "published",
+      "issue_number": 36,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/36"
+    },
+    {
+      "id": "T04",
+      "title": "完成单个影偶近战、玩家受击与死亡重试",
+      "file": "04-enemy-melee.md",
+      "blocked_by": [
+        "T03"
+      ],
+      "acceptance_coverage": [
+        "AC-10",
+        "AC-11",
+        "AC-12",
+        "AC-13",
+        "AC-19",
+        "AC-22"
+      ],
+      "status": "published",
+      "issue_number": 37,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/37"
+    },
+    {
+      "id": "T05",
+      "title": "跑通暂停、失焦、全屏与窗口变化后的安全操作",
+      "file": "05-window-input.md",
+      "blocked_by": [
+        "T03"
+      ],
+      "acceptance_coverage": [
+        "AC-07",
+        "AC-20",
+        "AC-21"
+      ],
+      "status": "published",
+      "issue_number": 38,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/38"
+    },
+    {
+      "id": "T06",
+      "title": "整合动态小样并取得用户画面与手感确认",
+      "file": "06-playable-sample.md",
+      "blocked_by": [
+        "T04",
+        "T05"
+      ],
+      "acceptance_coverage": [
+        "AC-04",
+        "AC-05",
+        "AC-22"
+      ],
+      "status": "published",
+      "issue_number": 39,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/39"
+    },
+    {
+      "id": "T07",
+      "title": "接入 Q 穿透箭的完整战斗与反馈",
+      "file": "07-piercing-arrow.md",
+      "blocked_by": [
+        "T06"
+      ],
+      "acceptance_coverage": [
+        "AC-08",
+        "AC-12",
+        "AC-13",
+        "AC-20",
+        "AC-22"
+      ],
+      "status": "published",
+      "issue_number": 40,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/40"
+    },
+    {
+      "id": "T08",
+      "title": "接入 E 固定落点箭雨的完整战斗与反馈",
+      "file": "08-arrow-rain.md",
+      "blocked_by": [
+        "T06"
+      ],
+      "acceptance_coverage": [
+        "AC-09",
+        "AC-12",
+        "AC-13",
+        "AC-20",
+        "AC-22"
+      ],
+      "status": "published",
+      "issue_number": 41,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/41"
+    },
+    {
+      "id": "T09",
+      "title": "接入闪避位移、无敌窗与动作反馈",
+      "file": "09-dodge.md",
+      "blocked_by": [
+        "T06"
+      ],
+      "acceptance_coverage": [
+        "AC-10",
+        "AC-13",
+        "AC-20",
+        "AC-22"
+      ],
+      "status": "published",
+      "issue_number": 42,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/42"
+    },
+    {
+      "id": "T10",
+      "title": "接入完整汤谷主路、两支路与三组战斗",
+      "file": "10-full-tanggu.md",
+      "blocked_by": [
+        "T06"
+      ],
+      "acceptance_coverage": [
+        "AC-11",
+        "AC-14",
+        "AC-19",
+        "AC-21",
+        "AC-22"
+      ],
+      "status": "published",
+      "issue_number": 43,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/43"
+    },
+    {
+      "id": "T11",
+      "title": "接入安全 F 互动与残碑阅读闭环",
+      "file": "11-stele-reading.md",
+      "blocked_by": [
+        "T07",
+        "T08",
+        "T09",
+        "T10"
+      ],
+      "acceptance_coverage": [
+        "AC-15",
+        "AC-16",
+        "AC-19",
+        "AC-20"
+      ],
+      "status": "published",
+      "issue_number": 44,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/44"
+    },
+    {
+      "id": "T12",
+      "title": "接入自然受伤后的一次性回血祭坛",
+      "file": "12-healing-altar.md",
+      "blocked_by": [
+        "T11"
+      ],
+      "acceptance_coverage": [
+        "AC-15",
+        "AC-17",
+        "AC-19"
+      ],
+      "status": "published",
+      "issue_number": 45,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/45"
+    },
+    {
+      "id": "T13",
+      "title": "接入内侧开门与可往返捷径",
+      "file": "13-shortcut-gate.md",
+      "blocked_by": [
+        "T11"
+      ],
+      "acceptance_coverage": [
+        "AC-08",
+        "AC-14",
+        "AC-15",
+        "AC-18",
+        "AC-19"
+      ],
+      "status": "published",
+      "issue_number": 46,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/46"
+    },
+    {
+      "id": "T14",
+      "title": "在编辑器调整四类布局并验证试玩与导出",
+      "file": "14-editor-authoring.md",
+      "blocked_by": [
+        "T12",
+        "T13"
+      ],
+      "acceptance_coverage": [
+        "AC-02",
+        "AC-23"
+      ],
+      "status": "published",
+      "issue_number": 47,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/47"
+    },
+    {
+      "id": "T15",
+      "title": "复验完整汤谷并生成可追溯的双平台候选包",
+      "file": "15-integration-package.md",
+      "blocked_by": [
+        "T14"
+      ],
+      "acceptance_coverage": [
+        "AC-02",
+        "AC-03",
+        "AC-05",
+        "AC-06",
+        "AC-07",
+        "AC-08",
+        "AC-09",
+        "AC-10",
+        "AC-11",
+        "AC-12",
+        "AC-13",
+        "AC-14",
+        "AC-15",
+        "AC-16",
+        "AC-17",
+        "AC-18",
+        "AC-19",
+        "AC-20",
+        "AC-21",
+        "AC-22",
+        "AC-23",
+        "AC-26"
+      ],
+      "status": "published",
+      "issue_number": 48,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/48"
+    },
+    {
+      "id": "T16",
+      "title": "验收 Mac 原生功能、性能与稳定性",
+      "file": "16-macos-acceptance.md",
+      "blocked_by": [
+        "T15"
+      ],
+      "acceptance_coverage": [
+        "AC-03",
+        "AC-20",
+        "AC-21",
+        "AC-22",
+        "AC-24",
+        "AC-25"
+      ],
+      "status": "published",
+      "issue_number": 49,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/49"
+    },
+    {
+      "id": "T17",
+      "title": "验收 Windows 原生功能、性能与稳定性",
+      "file": "17-windows-acceptance.md",
+      "blocked_by": [
+        "T15"
+      ],
+      "acceptance_coverage": [
+        "AC-03",
+        "AC-20",
+        "AC-21",
+        "AC-22",
+        "AC-24",
+        "AC-25"
+      ],
+      "status": "published",
+      "issue_number": 50,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/50"
+    },
+    {
+      "id": "T18",
+      "title": "双平台通过后切换主入口并完成迁移交接",
+      "file": "18-cutover.md",
+      "blocked_by": [
+        "T16",
+        "T17"
+      ],
+      "acceptance_coverage": [
+        "AC-26",
+        "AC-27",
+        "AC-28"
+      ],
+      "status": "published",
+      "issue_number": 51,
+      "issue_url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/51"
+    }
+  ]
+}

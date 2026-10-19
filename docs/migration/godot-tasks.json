@@ -1,0 +1,153 @@
+{
+  "parent": 33,
+  "tickets": [
+    {
+      "id": "T01",
+      "number": 34,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/34",
+      "blocked_by": []
+    },
+    {
+      "id": "T02",
+      "number": 35,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/35",
+      "blocked_by": [
+        "T01"
+      ]
+    },
+    {
+      "id": "T03",
+      "number": 36,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/36",
+      "blocked_by": [
+        "T02"
+      ]
+    },
+    {
+      "id": "T04",
+      "number": 37,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/37",
+      "blocked_by": [
+        "T03"
+      ]
+    },
+    {
+      "id": "T05",
+      "number": 38,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/38",
+      "blocked_by": [
+        "T03"
+      ]
+    },
+    {
+      "id": "T06",
+      "number": 39,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/39",
+      "blocked_by": [
+        "T04",
+        "T05"
+      ]
+    },
+    {
+      "id": "T07",
+      "number": 40,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/40",
+      "blocked_by": [
+        "T06"
+      ]
+    },
+    {
+      "id": "T08",
+      "number": 41,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/41",
+      "blocked_by": [
+        "T06"
+      ]
+    },
+    {
+      "id": "T09",
+      "number": 42,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/42",
+      "blocked_by": [
+        "T06"
+      ]
+    },
+    {
+      "id": "T10",
+      "number": 43,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/43",
+      "blocked_by": [
+        "T06"
+      ]
+    },
+    {
+      "id": "T11",
+      "number": 44,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/44",
+      "blocked_by": [
+        "T07",
+        "T08",
+        "T09",
+        "T10"
+      ]
+    },
+    {
+      "id": "T12",
+      "number": 45,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/45",
+      "blocked_by": [
+        "T11"
+      ]
+    },
+    {
+      "id": "T13",
+      "number": 46,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/46",
+      "blocked_by": [
+        "T11"
+      ]
+    },
+    {
+      "id": "T14",
+      "number": 47,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/47",
+      "blocked_by": [
+        "T12",
+        "T13"
+      ]
+    },
+    {
+      "id": "T15",
+      "number": 48,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/48",
+      "blocked_by": [
+        "T14"
+      ]
+    },
+    {
+      "id": "T16",
+      "number": 49,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/49",
+      "blocked_by": [
+        "T15"
+      ]
+    },
+    {
+      "id": "T17",
+      "number": 50,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/50",
+      "blocked_by": [
+        "T15"
+      ]
+    },
+    {
+      "id": "T18",
+      "number": 51,
+      "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/51",
+      "blocked_by": [
+        "T16",
+        "T17"
+      ]
+    }
+  ]
+}
