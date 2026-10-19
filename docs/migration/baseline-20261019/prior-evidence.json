@@ -1,0 +1,18 @@
+{
+  "source_evidence": "output/architecture-fixes-20261019/",
+  "source_hashes_match_current": true,
+  "mismatched_sources": [],
+  "copied_in_restore_overlay": true,
+  "scope": "历史 macOS 构建与 Chromium 真实输入／画面证据；不是原生 Mac／Windows 完整体验或性能通过。",
+  "historical_package_version": "0.3.0",
+  "latest_windows_packages_include_current_changes": false,
+  "native_macos_full_validation": "pending",
+  "native_windows_validation": "pending",
+  "performance_validation": "pending",
+  "known_limitations": [
+    "旧 combat-feedback 私有观察器与新反馈结构不兼容，不能用于验证此基线。",
+    "既有长时采样被中止的记录仍为中止；本票不重启采样。",
+    "当前没有正式存档、肉鸽结算或 Godot 工程。",
+    "没有在本票验证新的玩法缺陷；既有行为仍需迁移后的原生验证。"
+  ]
+}

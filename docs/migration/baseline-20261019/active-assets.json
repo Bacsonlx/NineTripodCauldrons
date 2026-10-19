@@ -1,0 +1,158 @@
+{
+  "scope": "当前 TypeScript 入口静态导入的图片与图集元数据，全部源资产另由 source-manifest 固定",
+  "assets": [
+    {
+      "path": "assets/mvp/arrow-refined-v2.png",
+      "sha256": "c9332ac79650977afb132c4615bb369ac478d619d1cd3604864ae9b29bee185e",
+      "bytes": 849676,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp/bow-states-v3.png",
+      "sha256": "92cee3343dd0c86cee01f4cddacc22af9a2bfc6e7ac0e62893a5d45407f330ca",
+      "bytes": 969405,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp/child-refined-v3.frames.json",
+      "sha256": "9f5d70550538e919bc7053381f2905701df97d6ecca35ad03b196530d6e317bb",
+      "bytes": 5737,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp/child-upper-refined-v3.png",
+      "sha256": "1b08ed48d6eb324a07d64babc20241854d6d12a55d0135a4167ed835b72d36f9",
+      "bytes": 2203836,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp02/atlases.json",
+      "sha256": "e878647a97548383ef8098844c71841bdd9b5320b5dc280010be3e243ec5de2b",
+      "bytes": 30055,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp02/child-failed-v1.png",
+      "sha256": "287c54106f20018a0df38fb47f0808056b0f7365dda328f07b6a4044d0e00dc1",
+      "bytes": 1507944,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp02/child-lower-unified-v2.png",
+      "sha256": "b5431c80309bebb1c10f03a35073916ebe26553f6c0643afe5d98befc260fa7f",
+      "bytes": 2368346,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp02/child-skills-upper-v1.png",
+      "sha256": "400cea6ef879542e1dbbd27782109333bbee715232efbc6b0f4d5c6b448147e3",
+      "bytes": 2119549,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp02/shadow-paper-v2.png",
+      "sha256": "b0172d992a8ea35e8ea051935ebd170e5bf91c91e4fd7fbafa2d05c541a81197",
+      "bytes": 1490525,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp02/shadow-puppet-v2.png",
+      "sha256": "2acd6f3bc075a89097d853afa84fb60494e1214a39ebece04a144d092bbf4658",
+      "bytes": 1916504,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp02/shadow-wood-v2.png",
+      "sha256": "ba92c9f909e3cf8c75fa31517a97912a7f15ff545a2ebb2c75f7aca8c96c1784",
+      "bytes": 1423969,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp02/tanggu-props-v1.png",
+      "sha256": "d793edf3c4ec7c621d22e650e86957e10fa8dab2150bf66401f90deff7a094be",
+      "bytes": 2589278,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp03/combat-vfx-v1.png",
+      "sha256": "566a29d714fd3c643f26489c007523c033a7d03bdc83e8feaf1bc38e0fbdbd31",
+      "bytes": 1448171,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp03/frames.json",
+      "sha256": "cead6df9b78ee90773a1d527c04ebe7eda9feb401fa4ad882d1839ecf6e7761a",
+      "bytes": 1309,
+      "used_by": [
+        "src/game/TangguBackdrop.ts",
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp03/full/exploration-props-v1.png",
+      "sha256": "673f7e690567bfdd6310da211bc4107b0bdea7bf1e522ba61b492955bc51ae69",
+      "bytes": 1922685,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp03/full/frames.json",
+      "sha256": "db564e77e413500dd9cc44204fa4bd7d5c96b571a9aa9d907b07e12cf8394495",
+      "bytes": 1250,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp03/full/terrain-materials-v1.png",
+      "sha256": "9c3e195fa90cfed3458e00641ff79006de44dd48308231d0aa9470b6245106f5",
+      "bytes": 4387312,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp03/junction-ground-v1.png",
+      "sha256": "501333d5e80eb71a37a2de1bb97bbe3a918d61bb4ccd4f022f843bbb81cbd9b5",
+      "bytes": 3502367,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    },
+    {
+      "path": "assets/mvp03/junction-props-v1.png",
+      "sha256": "420a036142f995387296e09f8d391fd0f2d7bb59cdeb13c52aca0857a9140832",
+      "bytes": 1697598,
+      "used_by": [
+        "src/game/TrainingScene.ts"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "macos": {
+    "id": "MAC-01",
+    "status": "开发机硬件已读取；是否作为最终验收设备及游戏输出条件待 T02 确认",
+    "architecture": "arm64",
+    "os_version": "26.0",
+    "hardware": {
+      "machine_model": "Mac16,1",
+      "chip_type": "Apple M4",
+      "number_processors": "proc 10:4:6",
+      "physical_memory": "16 GB"
+    },
+    "gpu": [
+      "Apple M4"
+    ],
+    "display_refresh_hz": null,
+    "display_scaling": null,
+    "game_output": null,
+    "missing": [
+      "显示刷新率",
+      "系统显示缩放",
+      "游戏实际输出",
+      "最终验收设备确认"
+    ],
+    "native_godot_validation": "未执行"
+  },
+  "windows": {
+    "id": "WIN-01",
+    "status": "待用户提供可用 Windows x64 实机记录；T02 原生启动前补齐",
+    "architecture": "x64（目标）",
+    "os_version": null,
+    "cpu": null,
+    "gpu": null,
+    "memory": null,
+    "display_refresh_hz": null,
+    "display_scaling": null,
+    "game_output": null,
+    "native_godot_validation": "未执行"
+  },
+  "privacy": "仅保留测试所需硬件与显示条件，不保存序列号、硬件 UUID、用户名或设备自定义名称。"
+}

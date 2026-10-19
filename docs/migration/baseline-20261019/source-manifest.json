@@ -1,0 +1,1439 @@
+{
+  "baseline_id": "godot-t01-20261019",
+  "captured_at": "2026-10-19T11:59:29.811462+00:00",
+  "base_commit": "8f7fe1bdce638e9549abd8a1f81f61e73a22391a",
+  "branch": "main",
+  "archive_paths": [
+    "src",
+    "assets",
+    "tests",
+    "scripts",
+    "docs",
+    ".gitignore",
+    "AGENTS.md",
+    "CHANGELOG.md",
+    "GLOSSARY.md",
+    "README.md",
+    "electron-builder.config.cjs",
+    "forge.config.cjs",
+    "package-lock.json",
+    "package.json",
+    "tsconfig.json",
+    "tsconfig.test.json",
+    "webpack.main.config.cjs",
+    "webpack.renderer.config.cjs",
+    "十日_世界观与故事框架_v1.2.pdf",
+    "十日_游戏故事大纲.html"
+  ],
+  "excluded": [
+    "dependencies and build caches",
+    "local packaged applications",
+    "unrelated output directories",
+    "paseo.json and agent/private configuration",
+    "this baseline directory"
+  ],
+  "restore_artifacts": {
+    "untracked.tar.gz": "8a5ac221c55817144409e6e887f28a6583baaf36819defad4b21951a7e103d7f",
+    "tracked.patch.gz": "e0ece17516438f538b236f2dc00cb2c001ef4c662a00842df500bca2b75ae541"
+  },
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 94,
+      "sha256": "832c049dade72dbaee242698f7eb76ed8d2823f6d35f8fa4f918a5839968dede",
+      "git_state": "tracked"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 2530,
+      "sha256": "714a8d2782ccc3308892d59fb8bdc6e31462da92e1f59de3ffcf7fc7ddc8e6dd",
+      "git_state": "tracked"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 5687,
+      "sha256": "095a1bb5588425332dd0bbe0c84ffa42793e739a36ce0dc3e9885a41de74868c",
+      "git_state": "tracked"
+    },
+    {
+      "path": "GLOSSARY.md",
+      "bytes": 5355,
+      "sha256": "fc1b4327a99b04a7200d1dfcdf4dcd053236ba7372afbf9b2c66718cf7f96d8a",
+      "git_state": "tracked"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6521,
+      "sha256": "cd9b4ec427178e916fd389d53d9735ff6256985eb02d446fdf129a13be04c0b4",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/arrow-refined-v2.png",
+      "bytes": 849676,
+      "sha256": "c9332ac79650977afb132c4615bb369ac478d619d1cd3604864ae9b29bee185e",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/arrow.svg",
+      "bytes": 244,
+      "sha256": "ad05e600260f59a2f516326de127bc4805735abdd4d633d50e0d08980e8d1068",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/bow-refined-v2.png",
+      "bytes": 446022,
+      "sha256": "043b9309aec7dbb263e77e5c34dd2c01d4d97c8202c11c251f541c50ced47539",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/bow-states-v3.png",
+      "bytes": 969405,
+      "sha256": "92cee3343dd0c86cee01f4cddacc22af9a2bfc6e7ac0e62893a5d45407f330ca",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/bow.svg",
+      "bytes": 474,
+      "sha256": "1f422c67d88187ce8dd62bdbb31c1958caa2b58d47cd5dc549c9edae6043c42b",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/child-legs-refined-v3.png",
+      "bytes": 1175146,
+      "sha256": "18013ae356da7ead895fd700a4ca62ffbc7b19d4f79b7f0dc1eb571ca38ff9f7",
+      "git_state": "untracked"
+    },
+    {
+      "path": "assets/mvp/child-legs.svg",
+      "bytes": 17697,
+      "sha256": "38dbde052f249b20fec8d6f0ccb174520a8032fc7f958cccc3246f0287b55096",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/child-refined-v2.frames.json",
+      "bytes": 2536,
+      "sha256": "9413010f2fa42c5a04fe4972d3809dfe89a62d28eb11713e79c3b1cf5f118774",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/child-refined-v2.png",
+      "bytes": 1992157,
+      "sha256": "4236839eba24571c000b86bc0dd95b1c193793033fd2c9b48c2b9c9e0b31f634",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/child-refined-v3.frames.json",
+      "bytes": 5737,
+      "sha256": "9f5d70550538e919bc7053381f2905701df97d6ecca35ad03b196530d6e317bb",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/child-torso.svg",
+      "bytes": 15897,
+      "sha256": "f217aabe3440347da332f088b9e01db45e40c35fca8da986cf3f2c8ffc1adae5",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/child-upper-refined-v3.png",
+      "bytes": 2203836,
+      "sha256": "1b08ed48d6eb324a07d64babc20241854d6d12a55d0135a4167ed835b72d36f9",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/pillar.svg",
+      "bytes": 1052,
+      "sha256": "60f8b6fa972b83945625fa6ba52132f2bd160b0193ce0d8fa7255c2b07bcdccc",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/tanggu-floor.svg",
+      "bytes": 71088,
+      "sha256": "6aa8dbaf391f06da3d40becb7a659ca6574387fda411381964a329ec536d99c7",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/target.svg",
+      "bytes": 524,
+      "sha256": "7364b916e8a7454f8afbfdffd717c8db8316e5765e93df7275a5864cf422f06d",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/精修制作说明_v2.md",
+      "bytes": 6092,
+      "sha256": "06a8261b419961b8291bc1a56d53de6769bf2759e46c2e9f246d6d4ddb712717",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp/精修制作说明_v3.md",
+      "bytes": 5613,
+      "sha256": "91e5303faff73bd76634ccae0cf26d5aa67ffd6671c04aeba30553e7dfdcb912",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/atlases.json",
+      "bytes": 30055,
+      "sha256": "e878647a97548383ef8098844c71841bdd9b5320b5dc280010be3e243ec5de2b",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/child-failed-v1.png",
+      "bytes": 1507944,
+      "sha256": "287c54106f20018a0df38fb47f0808056b0f7365dda328f07b6a4044d0e00dc1",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/child-idle-legs-v1.png",
+      "bytes": 1210618,
+      "sha256": "58b34a725534eb4fc5a998a381701e8885b303465cba25e9b9078a9a4ae1f50c",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/child-lower-unified-v2.png",
+      "bytes": 2368346,
+      "sha256": "b5431c80309bebb1c10f03a35073916ebe26553f6c0643afe5d98befc260fa7f",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/child-run-legs-v1.png",
+      "bytes": 1983836,
+      "sha256": "8d749f0da167254b74ada4afd702eb0fda5545ec89945cf4f97fc76bd5f69074",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/child-skills-upper-v1.png",
+      "bytes": 2119549,
+      "sha256": "400cea6ef879542e1dbbd27782109333bbee715232efbc6b0f4d5c6b448147e3",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/prompts-v0.2.1.json",
+      "bytes": 7657,
+      "sha256": "4f436712f32eb82b9682dee8dbf29de91f13491c971d72b8f4a25ba439ba6112",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/prompts.json",
+      "bytes": 11296,
+      "sha256": "23a73a151e5af03a4441e1e035b9c5819a01b45e4459f09c8d9c8c86e3ff0269",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/shadow-paper-v1.png",
+      "bytes": 2279794,
+      "sha256": "6719fecc215858e65b6f644ca19a4830a97b1d0df9eac5f1615b5b1be99f0693",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/shadow-paper-v2.png",
+      "bytes": 1490525,
+      "sha256": "b0172d992a8ea35e8ea051935ebd170e5bf91c91e4fd7fbafa2d05c541a81197",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/shadow-puppet-v1.png",
+      "bytes": 1866879,
+      "sha256": "6be3f8d2065fc692ec4169bb70d9f7a7e9286e754acbcadb5f4d84fd3b8bc254",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/shadow-puppet-v2.png",
+      "bytes": 1916504,
+      "sha256": "2acd6f3bc075a89097d853afa84fb60494e1214a39ebece04a144d092bbf4658",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/shadow-wood-v1.png",
+      "bytes": 2236495,
+      "sha256": "b8c7974d0cfeb25d359539235020cf9b71999474d3fc1e042a7f8901a7a60acd",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/shadow-wood-v2.png",
+      "bytes": 1423969,
+      "sha256": "ba92c9f909e3cf8c75fa31517a97912a7f15ff545a2ebb2c75f7aca8c96c1784",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/tanggu-ground-v1.png",
+      "bytes": 4023464,
+      "sha256": "593eda404fd45865df8579d0b082171f978a04b25465bc5f089b16f8086dc190",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/tanggu-props-v1.png",
+      "bytes": 2589278,
+      "sha256": "d793edf3c4ec7c621d22e650e86957e10fa8dab2150bf66401f90deff7a094be",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp02/制作与接入记录.md",
+      "bytes": 6939,
+      "sha256": "90f9d2cce2d075670a0736de0a52ab5e5fda3cee71525eac9bf7c3fb5ca88f03",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp03/asset-record.json",
+      "bytes": 1223,
+      "sha256": "bba9a04c16e62a588d00c0be043e6b8815c782420162e2e59e9f209ade63ad28",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp03/combat-vfx-v1.png",
+      "bytes": 1448171,
+      "sha256": "566a29d714fd3c643f26489c007523c033a7d03bdc83e8feaf1bc38e0fbdbd31",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp03/frames.json",
+      "bytes": 1309,
+      "sha256": "cead6df9b78ee90773a1d527c04ebe7eda9feb401fa4ad882d1839ecf6e7761a",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp03/full/asset-record.json",
+      "bytes": 864,
+      "sha256": "96d75d00b8772e67130b6073271b4e6675f65eb6a4db2fb48fb9ab19dcd1eaf2",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp03/full/exploration-props-v1.png",
+      "bytes": 1922685,
+      "sha256": "673f7e690567bfdd6310da211bc4107b0bdea7bf1e522ba61b492955bc51ae69",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp03/full/frames.json",
+      "bytes": 1250,
+      "sha256": "db564e77e413500dd9cc44204fa4bd7d5c96b571a9aa9d907b07e12cf8394495",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp03/full/prompts.json",
+      "bytes": 3121,
+      "sha256": "472a56f76c9ad935d9282156d9a44360dbe56eb1663532eacf7ca7c0480a1f11",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp03/full/terrain-materials-v1.png",
+      "bytes": 4387312,
+      "sha256": "9c3e195fa90cfed3458e00641ff79006de44dd48308231d0aa9470b6245106f5",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp03/full/制作与接入记录.md",
+      "bytes": 2478,
+      "sha256": "1fbaa6f6af619a491aa642de40e5003765f7ede78ff9ab51642d9b3c0f7c1047",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp03/junction-ground-v1.png",
+      "bytes": 3502367,
+      "sha256": "501333d5e80eb71a37a2de1bb97bbe3a918d61bb4ccd4f022f843bbb81cbd9b5",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp03/junction-props-v1.png",
+      "bytes": 1697598,
+      "sha256": "420a036142f995387296e09f8d391fd0f2d7bb59cdeb13c52aca0857a9140832",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp03/prompts.json",
+      "bytes": 5172,
+      "sha256": "84f0533a006219ec885dba9ec9aac9f7cffaa7b93519396779035e6d0c339102",
+      "git_state": "tracked"
+    },
+    {
+      "path": "assets/mvp03/制作与接入记录.md",
+      "bytes": 1760,
+      "sha256": "322f9392fc360ef4722a2223691a7ba25e192f55936be129b6699ac4e450b1e6",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/adr/0001-fixed-isometric-2d-world.md",
+      "bytes": 610,
+      "sha256": "019cfaccf2f6b93ef5a49464672c9bb8c47dec0e8e8b7b25b8fabb49d006c33c",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/adr/0002-offline-desktop-scope.md",
+      "bytes": 568,
+      "sha256": "368a845f35bc3b936db2a4b715b4bd04feaea276b5652865b9acbffa4457f39f",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/adr/0003-room-checkpoint-resume.md",
+      "bytes": 845,
+      "sha256": "4b2d9dcbe32c70299920524308b1521485fe76614dba01156ee3a403b217f455",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/adr/0004-continuous-child-identity.md",
+      "bytes": 649,
+      "sha256": "21b28bf9e88c7765bc13d6a89d0c0129a400a78fca12f227b66512ab6cf9c554",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/adr/0005-world-changes-next-run.md",
+      "bytes": 580,
+      "sha256": "06b2c57294dfc076f63153258a79e955758d3223c3ba9c5b29e2a2abb7d7956e",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/adr/0006-validation-toolchain.md",
+      "bytes": 669,
+      "sha256": "9e05f0efb5c431c1ad694443e5c8a9be87798d6ddd88f8d1c026e70390307878",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/adr/0007-offline-animation-atlases.md",
+      "bytes": 558,
+      "sha256": "5c3e4a514040184a5c708e8e41cde94c5411b1350d0d5c8fe2ffcecd0840c161",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/adr/0008-ending-reset-boundary.md",
+      "bytes": 597,
+      "sha256": "4cbf8535bc4c9c4bd090d68797313d9361d0d81240599d8c29e8c24ae35a9369",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/adr/0009-mvp02-follow-camera-world-space.md",
+      "bytes": 938,
+      "sha256": "1591068d303e0c6825f5a2ac73f2a7defb57c1624a408f7bfe3f4c8a7b099853",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/adr/0010-godot-migration-direction.md",
+      "bytes": 1792,
+      "sha256": "f877049248e19b43ee3d5d92d03ab4a70e7291ef9946cf83e91aceb2df170163",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/art/美术资产库_v0.1/README.md",
+      "bytes": 5866,
+      "sha256": "11a6f05364bb4449acfe7ce90cefcf9e76fe5af55f96f8bfa2bf991c4a095ad9",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/art/美术资产库_v0.1/动作与状态需求.md",
+      "bytes": 6061,
+      "sha256": "0dd15e17395bea7df4c80f7808889baf44536c355ae6ffd1e572f2d1a3b1bd0b",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/art/美术资产库_v0.1/来源与待定项.md",
+      "bytes": 5986,
+      "sha256": "e5fa0b211e007b837d9aa28526cc6a365231f2f41b111c8c45c653578b264010",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/art/美术资产库_v0.1/资产分类目录.md",
+      "bytes": 65707,
+      "sha256": "0a0c1b138b203c20670adc13d0f204379f0231f486b5a1601111806da0fa4326",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/art/美术资产库_v0.1/资产总表.csv",
+      "bytes": 110599,
+      "sha256": "a70f50376803c941bb4cc2e64d11a0f5cedf8ad6b7c7efa840c11a96210d9994",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/art/美术资产库_v0.1/资产总表.json",
+      "bytes": 253674,
+      "sha256": "a6558cbe9794256a7a495629763d018a1b07081f50d4f76fb62a1a201b7ff627",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/balance/九鼎_战斗数值方案_v0.1.md",
+      "bytes": 13615,
+      "sha256": "94bdf1a2495356a2146084e8d19d2dfb5fbd737982c272f6c8b109925d0dc96b",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/balance/技能数值表.csv",
+      "bytes": 709,
+      "sha256": "a6c6bc24f6a2d06e4ba94b08d8e5f7840370eed49f15be8dbaff147250715b7c",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/balance/角色与怪物数值表.csv",
+      "bytes": 826,
+      "sha256": "a9c0cbaabcc5fadc7bb12e1df3d76e167405f0c0d961db7a63b0e120ee361d3e",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/01-baseline.md",
+      "bytes": 1226,
+      "sha256": "2f42bafb41ef9c4b763712e13cddf22b7d6a0a8d590dd112f8bd5c37bb7b377f",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/02-native-movement.md",
+      "bytes": 1737,
+      "sha256": "d159393218c7c2a8164d09bf31b966befff27a87d839769a0c3f5ec3e47a7f31",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/03-normal-arrow.md",
+      "bytes": 1186,
+      "sha256": "acc21c2e39ca434e3b14a5c6f6d43268d72e3516b5052eb8e57567bc16abffb7",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/04-enemy-melee.md",
+      "bytes": 1191,
+      "sha256": "b3baadb53e751757eda3febc556d125337694ce767ce38cbfad18469d198863c",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/05-window-input.md",
+      "bytes": 1296,
+      "sha256": "e70b2cdd38a7087265c83909383c699c30d7d31c6b489d638b596fdd454e7805",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/06-playable-sample.md",
+      "bytes": 1318,
+      "sha256": "19997d5b3b96e028e703eb85857be57d6eca7651d2e76b1aaf7dec7390763187",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/07-piercing-arrow.md",
+      "bytes": 1142,
+      "sha256": "b8a73e85978f79e4dd8eeca86f5847d99581a019a88e77df7043d64047de43f0",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/08-arrow-rain.md",
+      "bytes": 1109,
+      "sha256": "706d483a781afee0550c2784f694338e030b24ad28b9719a15981e5c95dcef81",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/09-dodge.md",
+      "bytes": 1104,
+      "sha256": "b978881ba287e25a04a3fd8690478195358b4f75569cdd6a7de0214321379ae9",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/10-full-tanggu.md",
+      "bytes": 1404,
+      "sha256": "0458ed3f6fbd8a7ef5d2df79ee78dd6edd767dbb13d8e226b62183794f2e386c",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/11-stele-reading.md",
+      "bytes": 1536,
+      "sha256": "6642f180a889eca5fba2710eed4d05aa85c689255081ea18174de53830104dc9",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/12-healing-altar.md",
+      "bytes": 1093,
+      "sha256": "ec590180a82c03b28742bac75fe2f0b7646a31506f92dc930135c5c9f6626d69",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/13-shortcut-gate.md",
+      "bytes": 1165,
+      "sha256": "10b577734639309930b0f13da2128728836c75a5ced739e87d6ff32f1402ee2d",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/14-editor-authoring.md",
+      "bytes": 1396,
+      "sha256": "87fd32f13ed826249e362b67b779c751dc3de40ebff4263b5b1ae26b4a4a6d92",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/15-integration-package.md",
+      "bytes": 1742,
+      "sha256": "6983143f5c6380a15f05b0778523d531c0059124caffe5fdf9c7cc20bd81b2d2",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/16-macos-acceptance.md",
+      "bytes": 1405,
+      "sha256": "5d83c056c64209716471bf554ce2f21276625c39164963c0d28609bb6f67ad79",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/17-windows-acceptance.md",
+      "bytes": 1507,
+      "sha256": "686ff7cb4369ad9e9e9ac0a486bc89d8b6be76cbe758947c83e657812c2ceb3a",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/18-cutover.md",
+      "bytes": 1605,
+      "sha256": "3ad3a1f3431ce86352a45e52f9ad4fa188a7b2ae1729aa4aba67fa3377b02ff7",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/README.md",
+      "bytes": 7193,
+      "sha256": "65a0fe6812bd7ea67e764edef91411158d1919f199b7ac79a3926b7f20f75bd0",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/Godot迁移_票据草稿_v0.1/manifest.json",
+      "bytes": 6724,
+      "sha256": "0d626d7967029701c376addc48aeff19326ff6400ed40603931a7295bc7dd4d0",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP01_实现与验收记录.md",
+      "bytes": 4704,
+      "sha256": "31b78c77b9c8335becad7d712d264c04312c662f4b3afd1d187aa327df98d3e5",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_0.2.1_人物与小怪修订.md",
+      "bytes": 6640,
+      "sha256": "913f4d8bbb7b3955872e339b7d73cca9bf1b834ddebbc1b8a5cbaa866d9d620b",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_0.2.1_补验说明.md",
+      "bytes": 1571,
+      "sha256": "142e870bfaeaaf5f80f5f5bbf81de235d677623f698d1d7ad319924d706980fd",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_实现与验收记录.md",
+      "bytes": 9568,
+      "sha256": "44ba95ade5ab0fd80c2f0abf7172d68eb219accf0e376a40ad084bf5f6bf06df",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/01-playable-baseline.md",
+      "bytes": 2041,
+      "sha256": "e52b85ac1f940ed358090bcaea08ec575c9c92e18955253573cb830fc566942b",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/02-world-camera-aim.md",
+      "bytes": 2093,
+      "sha256": "d82f86fb70bf72be370fce6e615dae90b9efd87d67b55c3c0bfbb4708408dbcd",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/03-window-fullscreen-resize.md",
+      "bytes": 1892,
+      "sha256": "c37646eb2e4cabd2d53ec7cc5a052cd87d63ab21dc220affb5bac85040db818b",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/04-enemy-melee-health.md",
+      "bytes": 2202,
+      "sha256": "e67c6834200962a643529b0c6e89ebad6585c16b79f43439ea89a59fe9e9c9b6",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/05-dodge-interruption.md",
+      "bytes": 2078,
+      "sha256": "40dad8095cd87e66e5f7cead0184132be1feae83d3d9ad566492253373593135",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/06-piercing-arrow.md",
+      "bytes": 2072,
+      "sha256": "563d1eb26fea21796f55e6236bb95c5b401f12b9d3a872cd63914b29bedadc19",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/07-arrow-rain.md",
+      "bytes": 2182,
+      "sha256": "04332956a29c9c36c245b11a137c334007af436810b21bc4c01afee8a27d7d58",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/08-encounters-completion-retry.md",
+      "bytes": 2122,
+      "sha256": "671a240b6b134224f98bf22af2afa50f4b97c78675139629241608b83ddf07a3",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/09-player-animation-weapons.md",
+      "bytes": 2523,
+      "sha256": "2659924239e4bcfd92a38fcccd1eadc611d65df87ec8b63443468ecc2db113ea",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/10-enemy-animation.md",
+      "bytes": 2100,
+      "sha256": "99847d69963fd1e6694181a7132fe3b52497448b7ab29411b160dd5e32c18d38",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/11-tanggu-environment.md",
+      "bytes": 2370,
+      "sha256": "ecd67bb777cd3dad22a8cce429118119f34dc30a256cd5609d1d3f4ecc40de75",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/12-vfx-hud-integration.md",
+      "bytes": 3168,
+      "sha256": "b1c434af430918e13cf0e7d3285d193fe39d8f201faec23df1b7fa3b5adb5e82",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/13-zips-macos-acceptance.md",
+      "bytes": 2426,
+      "sha256": "d3621ee8c7f4cda1c07fc0b925afd448e68bceee5c3db5e4de49ec08eeb02e15",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/14-windows-acceptance.md",
+      "bytes": 2205,
+      "sha256": "7ba410c9c5a6b033f78b49caa3c3a7f16f3558e8f1035ca796bdd7f8e4233666",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/README.md",
+      "bytes": 12341,
+      "sha256": "b8d5f1ab1a2363cbbb21cc92a9887b2d4744218aec05237e765c3dbe09841df2",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP02_票据草稿_v0.1/拆分清单.json",
+      "bytes": 6887,
+      "sha256": "2dbd527301ae9b9234bfb3262c5447e2f6a4c40439ff037c19ef8abec924bc4e",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_动态小样_交付说明.md",
+      "bytes": 3876,
+      "sha256": "6265c3ad8a125dd924e5ec4938a128935349baf1d300466ffdd7c714b85eee3d",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_动态小样_代码审查.md",
+      "bytes": 1719,
+      "sha256": "133586a2e8a7956e85fb2609f7bbb8e184fb5ea58cdecb9f996fc979064610e6",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_后续票据交付状态.md",
+      "bytes": 2221,
+      "sha256": "50d92576697fa8c5c3f240998118ebdd3b936e6071557cf861566351e14d8636",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_完整探索_代码审查.md",
+      "bytes": 1687,
+      "sha256": "a6ed2728d2a8a0bd33f02d5c916eb9cc40ec3f3551269fb43be06ac0db97aef6",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_完整探索_实现与验收记录.md",
+      "bytes": 4317,
+      "sha256": "1ce450e1ad2cc0c20722f2cfef8b6b110afc3f1898209dbf5bd0c428fc27b69f",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_完整探索_验收覆盖.md",
+      "bytes": 3554,
+      "sha256": "65408f4aacfd697ff5c7d146eafe9bf1fa2fcb1648732a8fa5b411f1b01c245e",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_小样与碑文确认记录.md",
+      "bytes": 1660,
+      "sha256": "3e21590ff167c1e54fc7fc8fac1e6d43c5cd1f46358c3d12caca4f9ce9757aae",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_残碑短文候选_v0.1.md",
+      "bytes": 629,
+      "sha256": "504fbc4513ec679cb0d9899af548feee8c037bbefdbad39cca264a8a3e8bb83f",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/README.md",
+      "bytes": 3378,
+      "sha256": "3e9ecb62cea6f1a68882f41ddb6a9ab461036a52295607c28c20504c2a5d7075",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T01-walkable-route.md",
+      "bytes": 2273,
+      "sha256": "b20b4ed411bd51542a829f34cd55cb4f7f87d06ac24f1fc8915fd2ba12a85425",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T02-junction-art-sample.md",
+      "bytes": 1698,
+      "sha256": "42861607cb01fc3a58bc871dcc2faac6219eed81ec5b9aa8f613e8f49bc29d5c",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T03-normal-arrow-vfx.md",
+      "bytes": 1653,
+      "sha256": "328d24c8ffe937895113bb49459c50b80a145eb079fc989167709a7049d8251c",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T04-piercing-arrow-vfx.md",
+      "bytes": 1534,
+      "sha256": "b1733d4893f78728f11f52ad83c32d8cc6f5a2c8a1e40f85edcc102ce4b5b808",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T05-rain-vfx.md",
+      "bytes": 1513,
+      "sha256": "e9e987d2bf5097d372b0186dfa1dcfb5860bbc7ecd4ce50e5e718f3ae89a07f6",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T06-dodge-vfx.md",
+      "bytes": 1434,
+      "sha256": "86bdb6f39e319c3b6effb1c179752764ecb3fa82a493ffb8acd5edf01af06743",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T07-sample-approval.md",
+      "bytes": 1657,
+      "sha256": "9dfbbe80cf1f01cc8b09af187f78f7ad312397fb11eea71f428c0276a359e063",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T08-stele-interaction.md",
+      "bytes": 2309,
+      "sha256": "709b161dec9a902344826791664fe07f2cc6c662e86ae7bbf4cc831b210f389b",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T09-healing-altar.md",
+      "bytes": 1662,
+      "sha256": "9ff4358abdc01251f61031b75ffd7e1907c8f31a13b11ce396cf0059c104f530",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T10-shortcut-gate.md",
+      "bytes": 1764,
+      "sha256": "d79ab9a2c50e44d2c8bfed91b79cd05af29a4b89bb8046f04a290810da56932c",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T11-main-route-final.md",
+      "bytes": 1764,
+      "sha256": "bd0bb35060886d89d4f72df16f3c8cd01e169d9b2964e4eead84423e8ee4eede",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T12-branches-final.md",
+      "bytes": 2010,
+      "sha256": "d423a6e9e7f6fe1f8478b52bc0898e3e01b02c32263fec7ea784ef356d172706",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T13-full-loop-regression.md",
+      "bytes": 2313,
+      "sha256": "51ec0e911652f5bb913ab9e3f7e777cfef5585cd59be187589ec9e8cb05363ba",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T14-desktop-delivery.md",
+      "bytes": 1717,
+      "sha256": "811920fea0d8470c8a719109e9cf710ee991d3e644f0906f92415bee85378f42",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/T15-windows-acceptance.md",
+      "bytes": 1783,
+      "sha256": "f2392fbb487686a429e566e6cd016fce3965270abbe5fa50c11ff6e6a13114a7",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/manifest.json",
+      "bytes": 7061,
+      "sha256": "1b9b86429a3f45306e61fd50590f7834cf7276c88b66e79421b1df56ed612411",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据发布记录_v0.1/verification.json",
+      "bytes": 6281,
+      "sha256": "686cae83ca1a2ff5253f54732782f644532c663887caed37a767da4d0a7da927",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/README.md",
+      "bytes": 6920,
+      "sha256": "eaa4e63120fa353a7eddfca24dba75675874bc289f6ee3e2a6ababee52d9b087",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T01-walkable-route.md",
+      "bytes": 2583,
+      "sha256": "440523523ca2fe44b393c6e3242f0787165fbef5092f0626644bd3ebf2fa9bdc",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T02-junction-art-sample.md",
+      "bytes": 1981,
+      "sha256": "a69402ae9764afb5aa8eace64c093bdca78470cdc40aa873829f5f3a4a21cd53",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T03-normal-arrow-vfx.md",
+      "bytes": 1957,
+      "sha256": "edbfe584ca451a2312156a67cc9b46ef7d76ce9b0fe8959915e3d162396f69fe",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T04-piercing-arrow-vfx.md",
+      "bytes": 1841,
+      "sha256": "da7d970ed00043d74de2c731b96522e72e3e5fceec422223bcea1600a12d9fcc",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T05-rain-vfx.md",
+      "bytes": 1817,
+      "sha256": "55e0b22c48775becbd9af5a52addd313b8e94448ca8d7bbc5f1fb0ad76520448",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T06-dodge-vfx.md",
+      "bytes": 1732,
+      "sha256": "b038d8a46483bd2406dc56cd3715a68e38a4f5d10fbb3983fdf2a2aee18a2c95",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T07-sample-approval.md",
+      "bytes": 1958,
+      "sha256": "a910eb103e9b53951b7e5f22e1991d08c8fd39861467ff8efcb9f3abf2200c95",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T08-stele-interaction.md",
+      "bytes": 2512,
+      "sha256": "eee2793c037b6bd53d1e1353c351e5e035105de4df4573f9903ffea04b517fad",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T09-healing-altar.md",
+      "bytes": 1939,
+      "sha256": "7234c53815392555718cfbca8c5555226ee709364a3d5255244813e9809918cd",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T10-shortcut-gate.md",
+      "bytes": 2035,
+      "sha256": "d3325ee9a14b2d28389fda1953197a98042f3ad6e9c348ec77ef077c15281f33",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T11-main-route-final.md",
+      "bytes": 2041,
+      "sha256": "8f437c7ae8511c21259c13d14dd90480e195a4e62534763b99763773c4bb4801",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T12-branches-final.md",
+      "bytes": 2231,
+      "sha256": "fac1cd3f3f7c8f86bf932e6eb88d5425ede935156c09f8510ac1279f941380b3",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T13-full-loop-regression.md",
+      "bytes": 2602,
+      "sha256": "ba46692227894fb925ebbee9950464969d41ed99624c5716e0026da2c15ff592",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T14-desktop-delivery.md",
+      "bytes": 2001,
+      "sha256": "e415ae356d6997ad46201dcae2d68687ad2b0d8c0c5cb21a3d44e91c3509a9c0",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/T15-windows-acceptance.md",
+      "bytes": 1998,
+      "sha256": "962bc7f141019adbe249a158ad76b238ff53931bb20a285bf264050b26d578f5",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_票据草稿_v0.1/manifest.json",
+      "bytes": 26823,
+      "sha256": "b2cab38656d2a3933ed46cb4c33fcabef5e047ad2a3b16e3192895d5782dd675",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/MVP03_规格发布记录.md",
+      "bytes": 1258,
+      "sha256": "d68c5f9e7f0859dca92438ccff7799798bde067b09ba2fe218ea2509896bed80",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/九鼎_Godot迁移_Spec.md",
+      "bytes": 26350,
+      "sha256": "e072bfd5dded67507086206874129a4a3c07fa9c285bae5d99b1344701edb848",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/九鼎_MVP01_Spec.md",
+      "bytes": 22664,
+      "sha256": "bf0fa0dd3fd266954ef87e39e2c5c62f14d0bcdc271843ed10fbb19c7af5d6e3",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/九鼎_MVP01_最小资产清单_v0.1.csv",
+      "bytes": 5875,
+      "sha256": "8a1bfdfc28b81a714a36bf6da76581c26bea6ecd1a2f14d27ac41e3d77ea512c",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/九鼎_MVP01_跑动与射箭需求_v0.1.md",
+      "bytes": 36316,
+      "sha256": "2d150557ce7749c0275ee437670434f81710709b550fe803024b70eb06e63e52",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/九鼎_MVP02_Spec.md",
+      "bytes": 34317,
+      "sha256": "34ed4554b0cb78dc7f15aa6d20fcc3be65cffaac5676df49bc43649f63feda8a",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/九鼎_MVP02_范围讨论_v0.1.md",
+      "bytes": 16137,
+      "sha256": "089becd32759f96e37e5f3c1b4b301b53203d9c7f6ef324f9c3869d6c4b23ea2",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/九鼎_MVP03_Spec.md",
+      "bytes": 29643,
+      "sha256": "8e5b3e44d02ec175f52a3ef8328af7b3dd08d4e3134f99bf12b5a143c0dd91b8",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/九鼎_MVP03_范围讨论_v0.1.md",
+      "bytes": 7538,
+      "sha256": "0a30f52f88a820354fd2b1b0fbabfe8496a98e470e225c1bb5d3840f4fcb650b",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/mvp/票据草稿_v0.1/01-room-move-aim.md",
+      "bytes": 2348,
+      "sha256": "45436c01de2701d0fb0337087b494035be37ec13c075145a0ea1be7d818c5d26",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/票据草稿_v0.1/02-arrow-first-hit.md",
+      "bytes": 2544,
+      "sha256": "9a714ce34626c38566956962dbdd724e0638e9e328fd7bc9f8aab96d0ff8da75",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/票据草稿_v0.1/03-hold-pause-reset.md",
+      "bytes": 2331,
+      "sha256": "65756b8077b7756410c5d9216f254fcec59cc881547bc8c46f85295845c4ab05",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/票据草稿_v0.1/04-placeholder-cross-platform.md",
+      "bytes": 2442,
+      "sha256": "801aca54a087212300b3535d8c6672f06d5d14b87b20db68864ba0ce636727bf",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/票据草稿_v0.1/05-character-motion-sample.md",
+      "bytes": 2229,
+      "sha256": "8833954845178b9a8924bd0fa6d0782c34f21c8b01caee307c4c21579eca6aa0",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/票据草稿_v0.1/06-character-gameplay-integration.md",
+      "bytes": 2235,
+      "sha256": "5d1e94c6543e3e4dca9e6d0299671ccbc1bdcb1256cd38811171111b6c45a082",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/票据草稿_v0.1/07-tanggu-scene-feedback.md",
+      "bytes": 2378,
+      "sha256": "48e1b6d0eb31e7da7f6d0cd7aec42a2cc854e9899338ee596956fe661c65337c",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/票据草稿_v0.1/08-final-dual-platform-acceptance.md",
+      "bytes": 3184,
+      "sha256": "3951abf2c859f4584c7202b12118cee7c28a2d9a39884aa42740b8fd689e5597",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/票据草稿_v0.1/README.md",
+      "bytes": 4661,
+      "sha256": "35a7931a21aae5e679b91260b2e3aabcf0c516e9ad4480f99d6510ac0df2606c",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/mvp/票据草稿_v0.1/拆分清单.json",
+      "bytes": 19538,
+      "sha256": "10b2f933c69007c51cf5f63fa4e89ce7e2d4b986f0148c8b825e004bea55eb08",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/research/九鼎_社区游戏Skills评估_2026-10-19.md",
+      "bytes": 23038,
+      "sha256": "b92ae5a32c58ebd35aed063cc590bb5876e26f67fb51556950dff965c29f9ebb",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/九鼎_Godot架构评估与迁移落地方案_2026-10-19.md",
+      "bytes": 43308,
+      "sha256": "066f556bc124c65235fe2f6518376925978abcf67cdbac3ac33b32d962db98bb",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/九鼎_故事基线_v1.2与架构影响.md",
+      "bytes": 8259,
+      "sha256": "492a20d5582ffbb35649610062dd455ddcecb88db2f21297927ee8abc2769dc2",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/九鼎_架构深化修复记录_2026-10-19.md",
+      "bytes": 4708,
+      "sha256": "1be7bd0fa7166c1aaf2007b2c624306095e6c9617196e28b82c70c198e5280bd",
+      "git_state": "untracked"
+    },
+    {
+      "path": "docs/九鼎_架构选型结论.md",
+      "bytes": 11104,
+      "sha256": "6f3d986e60b104d9091e3e982be1982d85ef4a10b4d02ecefc11cf9ee5f14f5b",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/十日_技术架构与实现风险评估.md",
+      "bytes": 19026,
+      "sha256": "f27784169558be7bb7c58f8a3f300a73082e046d4c4cea1310c33c047ba7e5e5",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/十日_玩法与运行规则.md",
+      "bytes": 8562,
+      "sha256": "b7af7379b0cade9580b022602d6139bf76256c93214efa9fef4f37f4026b0ff0",
+      "git_state": "tracked"
+    },
+    {
+      "path": "docs/工程初始化记录.md",
+      "bytes": 2211,
+      "sha256": "47e8cda53420af7527abc66e868e05995b3315b4a4ee8b73fabf354128d5da26",
+      "git_state": "tracked"
+    },
+    {
+      "path": "electron-builder.config.cjs",
+      "bytes": 694,
+      "sha256": "8f29a926d501f1518535f021c93edc87972cdde93af67fda3421b97b06810684",
+      "git_state": "tracked"
+    },
+    {
+      "path": "forge.config.cjs",
+      "bytes": 961,
+      "sha256": "776b74a225391d6a93d314944c16e242508fc1846d4ffac668c88093e982e674",
+      "git_state": "tracked"
+    },
+    {
+      "path": "output/architecture-fixes-20261019/01-courtyard.png",
+      "bytes": 1901074,
+      "sha256": "3ccee574495d32cd66f14aa305f2db017370193b65e5216f5054701b663f6796",
+      "git_state": "untracked"
+    },
+    {
+      "path": "output/architecture-fixes-20261019/README.md",
+      "bytes": 1609,
+      "sha256": "217131c8cef9a23c6969cbe59f5dca2e77948c2afecef5ac7afcfab89b62d16f",
+      "git_state": "untracked"
+    },
+    {
+      "path": "output/architecture-fixes-20261019/capture-hits.cjs",
+      "bytes": 1597,
+      "sha256": "511b5423749d27547646831db76cdb593c2952012b63ebce6af0751523dab932",
+      "git_state": "untracked"
+    },
+    {
+      "path": "output/architecture-fixes-20261019/dom-checks.json",
+      "bytes": 827,
+      "sha256": "8a88e63ea48dab38433b291ce48902bfeb0d5dace16c0eff58db9ae10cab5c24",
+      "git_state": "untracked"
+    },
+    {
+      "path": "output/architecture-fixes-20261019/manifest.json",
+      "bytes": 1125,
+      "sha256": "1d68b72001ce6dcc35e81552f6f754be383eba3044a1bcb8aac0b365c87f5c4b",
+      "git_state": "untracked"
+    },
+    {
+      "path": "output/architecture-fixes-20261019/normal-live.png",
+      "bytes": 2043809,
+      "sha256": "e67a9df956d9d730c3681b5d3bab1c6528a1cefb7f80b6975d5ee96d329a8d4f",
+      "git_state": "untracked"
+    },
+    {
+      "path": "output/architecture-fixes-20261019/normal-reset.png",
+      "bytes": 2044474,
+      "sha256": "b8e9474bd2656e1f0c07fff11eb45afd383b8c945f2fc4acaef733be76bcfc9f",
+      "git_state": "untracked"
+    },
+    {
+      "path": "output/architecture-fixes-20261019/pierce-live.png",
+      "bytes": 2043004,
+      "sha256": "6124aa8913975e268c160098f3670786719cbf68cad63402c2ff796759f35cb4",
+      "git_state": "untracked"
+    },
+    {
+      "path": "output/architecture-fixes-20261019/pierce-reset.png",
+      "bytes": 2044725,
+      "sha256": "5c509065cff8780242888207dcba8f62a13e176b070979d7209f07dc8fb28828",
+      "git_state": "untracked"
+    },
+    {
+      "path": "output/architecture-fixes-20261019/rain-live.png",
+      "bytes": 2042371,
+      "sha256": "7bb4a673f2c1037b4d831d2cdb6005d7cddedf6cdbde0b5604d1e79131a4d74f",
+      "git_state": "untracked"
+    },
+    {
+      "path": "output/architecture-fixes-20261019/rain-reset.png",
+      "bytes": 2044743,
+      "sha256": "fd07a0f062590a037a4ac3a96898feab16097558d25ca5fccd77e590a4989dcc",
+      "git_state": "untracked"
+    },
+    {
+      "path": "output/architecture-fixes-20261019/render-checks.json",
+      "bytes": 240,
+      "sha256": "39cdc490d344dfc6ebb211da71fe4f6da4acccb9c21d5e3cd81edec8f37d87a4",
+      "git_state": "untracked"
+    },
+    {
+      "path": "output/architecture-fixes-20261019/verify-dom.cjs",
+      "bytes": 1861,
+      "sha256": "f1edaa02b5b496e6f466f2cfd85f10e0c5ddc2311f9f69ecaaef313c216f473b",
+      "git_state": "untracked"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 369739,
+      "sha256": "9a1b6b8070d27ffdb391379431a91985f2e02fa00bfb46cf3922233f9f159dc2",
+      "git_state": "tracked"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1338,
+      "sha256": "8c91e9fad2f49cbd134692deaea21cdd961fb4bb85308a3c00591d875f52978c",
+      "git_state": "tracked"
+    },
+    {
+      "path": "scripts/capture-frame-timing.cjs",
+      "bytes": 7945,
+      "sha256": "13b6a93fcdea920505383820aaf1257eef2ca489354f54ddfae79d1aec6f822a",
+      "git_state": "tracked"
+    },
+    {
+      "path": "scripts/check-viewport.cjs",
+      "bytes": 1993,
+      "sha256": "3235085a853a707eee5a9ea8f787aa18b1a0426be4620fb6db4d1c80c0b3fd76",
+      "git_state": "tracked"
+    },
+    {
+      "path": "scripts/describe-mvp02-atlases.py",
+      "bytes": 4542,
+      "sha256": "deaadb975607ad5f12a95db7b1e0902580420a69062dbf21a3d13cd1680aafbe",
+      "git_state": "tracked"
+    },
+    {
+      "path": "scripts/generate-mvp-art.cjs",
+      "bytes": 6752,
+      "sha256": "86322837706bb9feddea222e1e45f7b2e468fa058d0872dfc7a3304f8e2cc904",
+      "git_state": "tracked"
+    },
+    {
+      "path": "src/desktop/main.ts",
+      "bytes": 1991,
+      "sha256": "8ebea1a56f4f3073d8a592266ad2426d765476bb9eccb027c45803725d3b68e4",
+      "git_state": "tracked"
+    },
+    {
+      "path": "src/desktop/preload.ts",
+      "bytes": 736,
+      "sha256": "f0e75888cceda8f4bc391fb1ae566d22c5465791d4d980314c96492d70858f61",
+      "git_state": "tracked"
+    },
+    {
+      "path": "src/game/CameraView.ts",
+      "bytes": 694,
+      "sha256": "619ded4b262cdeae62928c35f178ce903d4c2d52ebb02cb64b8bbe5b18e1b53e",
+      "git_state": "tracked"
+    },
+    {
+      "path": "src/game/CombatBalance.ts",
+      "bytes": 594,
+      "sha256": "3f36373dbc2e1c29ff31423206408d63a0be1409ea76a17c9bf84141c129bd81",
+      "git_state": "untracked"
+    },
+    {
+      "path": "src/game/CombatEffects.ts",
+      "bytes": 7885,
+      "sha256": "b67200321bb4655854a8d606dc6e0d6c9acb9fea0f11e2d8bf2d003d5214fac4",
+      "git_state": "tracked"
+    },
+    {
+      "path": "src/game/HitFeedback.ts",
+      "bytes": 1888,
+      "sha256": "0cab2b40c12c7ee021528fabf0f6cd8cf299c70828b6c852ffa1de3150a83ea1",
+      "git_state": "untracked"
+    },
+    {
+      "path": "src/game/PlayerControls.ts",
+      "bytes": 2567,
+      "sha256": "46997c2458f1ee993f7a0e1320a591b57f81860b38c60c3a7438766fdb6102db",
+      "git_state": "untracked"
+    },
+    {
+      "path": "src/game/Tanggu.ts",
+      "bytes": 5282,
+      "sha256": "f3add7df4eb03d01604e0d43d361fcd0cf551729df648194850c27fe8471a847",
+      "git_state": "tracked"
+    },
+    {
+      "path": "src/game/TangguBackdrop.ts",
+      "bytes": 6204,
+      "sha256": "b4912544e605a1e3f69185352685a0d2505f1d452fd395786d401c6e71951ad3",
+      "git_state": "tracked"
+    },
+    {
+      "path": "src/game/TrainingRoom.ts",
+      "bytes": 32024,
+      "sha256": "7d2980a942481a3f11f0efa5f6ef57d80e6f8f0e76d6ac046b26dbbe45f1409c",
+      "git_state": "tracked"
+    },
+    {
+      "path": "src/game/TrainingScene.ts",
+      "bytes": 20682,
+      "sha256": "cfa5b1ab3a244d8b9c537ee63d8011432e79f93b3e3040a339e49e9e69f3f412",
+      "git_state": "tracked"
+    },
+    {
+      "path": "src/renderer/assets.d.ts",
+      "bytes": 140,
+      "sha256": "0bf66c372a2a454f2c641e5a237510330b584ff78f5f46e98c58de13ec2556e9",
+      "git_state": "tracked"
+    },
+    {
+      "path": "src/renderer/global.d.ts",
+      "bytes": 127,
+      "sha256": "b13bd3ed2165146626ef931ab5be5b44ebde11e9882b6d7db6e1e315a200f143",
+      "git_state": "tracked"
+    },
+    {
+      "path": "src/renderer/index.html",
+      "bytes": 7770,
+      "sha256": "17ce95460783a7edb874c05aa69beab6e35d3eb8e4e2792c216d07b6e5f80166",
+      "git_state": "tracked"
+    },
+    {
+      "path": "src/renderer/index.ts",
+      "bytes": 692,
+      "sha256": "3ea99aecdb81ceb043717287599965a57ccf1f990dbe62332f6f85f7193cbe2a",
+      "git_state": "tracked"
+    },
+    {
+      "path": "src/shared/desktop-api.ts",
+      "bytes": 415,
+      "sha256": "55f743d29ff7b5211f57536c8d835bc72b8e2b5f235b308e00c225d22bc26cc9",
+      "git_state": "tracked"
+    },
+    {
+      "path": "tests/CameraView.test.cjs",
+      "bytes": 993,
+      "sha256": "bf352ceb4ba63245c221fc157c468edcb0b55d00f19eb893c8d57c4112e0867a",
+      "git_state": "tracked"
+    },
+    {
+      "path": "tests/CombatFeedback.test.cjs",
+      "bytes": 4990,
+      "sha256": "d0750c2408b7da1694f39591f265d755c62fea7c307dce3c9bee32f743f7880a",
+      "git_state": "untracked"
+    },
+    {
+      "path": "tests/Exploration.test.cjs",
+      "bytes": 6425,
+      "sha256": "95c09d2770f7c062c30bb063c57274ddaab2b97c845fa0e3d760951807595064",
+      "git_state": "tracked"
+    },
+    {
+      "path": "tests/HitFeedback.test.cjs",
+      "bytes": 2884,
+      "sha256": "f1bef762a8504f5df36a6727389cc33c9f0b116d32d10f122a1faa3dff4375cf",
+      "git_state": "untracked"
+    },
+    {
+      "path": "tests/PlayerControls.test.cjs",
+      "bytes": 3411,
+      "sha256": "5f5316e3fdc3f20052f2f6e6eb8f947b89dc528cd53485a5546cfdb7acc437d3",
+      "git_state": "untracked"
+    },
+    {
+      "path": "tests/Tanggu.test.cjs",
+      "bytes": 11864,
+      "sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034",
+      "git_state": "tracked"
+    },
+    {
+      "path": "tests/TangguGuidance.test.cjs",
+      "bytes": 1671,
+      "sha256": "9b0b06beb915ee6220e727e3afdca04f3efdc3c7604421ad4faabbdd180e5825",
+      "git_state": "untracked"
+    },
+    {
+      "path": "tests/TangguRoutes.test.cjs",
+      "bytes": 3723,
+      "sha256": "72776773fa0403a94b64cf4401c871b24f9424ca62571847a42c51b1867d5104",
+      "git_state": "tracked"
+    },
+    {
+      "path": "tests/TrainingRoom.test.cjs",
+      "bytes": 7819,
+      "sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c",
+      "git_state": "tracked"
+    },
+    {
+      "path": "tsconfig.json",
+      "bytes": 321,
+      "sha256": "110bd2752210f80af072855017f9bea42e110c1918b8b3e0e84663cfe09057b4",
+      "git_state": "tracked"
+    },
+    {
+      "path": "tsconfig.test.json",
+      "bytes": 335,
+      "sha256": "5a1a73255bbba918bc6b2f481733b043de783173b23c5620510b8af0137fada3",
+      "git_state": "tracked"
+    },
+    {
+      "path": "webpack.main.config.cjs",
+      "bytes": 371,
+      "sha256": "f2f62a7e31149bd0baf5d1f1e81e3e26f289a02f3ef29c46ee761279e5388cb0",
+      "git_state": "tracked"
+    },
+    {
+      "path": "webpack.renderer.config.cjs",
+      "bytes": 308,
+      "sha256": "e5c3665e40b90cf2f79646d23469d37a81cc5adf52bc668e3e2e173826890c82",
+      "git_state": "tracked"
+    },
+    {
+      "path": "十日_世界观与故事框架_v1.2.pdf",
+      "bytes": 1619292,
+      "sha256": "aa0867ee95fc0bf3560899696dea9f9e68b5da06c6d3cd54de80feb340624984",
+      "git_state": "tracked"
+    },
+    {
+      "path": "十日_游戏故事大纲.html",
+      "bytes": 32391,
+      "sha256": "9e68712edb6e34d85845d2315472c2a3dc9da4615bbe2da3f570bcdefb900265",
+      "git_state": "tracked"
+    }
+  ]
+}

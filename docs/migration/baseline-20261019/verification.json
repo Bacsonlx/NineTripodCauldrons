@@ -1,0 +1,56 @@
+{
+  "task": "Godot migration T01 baseline",
+  "status": "complete-with-explicit-device-and-native-validation-followups",
+  "source_files": 233,
+  "source_matches_capture": true,
+  "restore_check": {
+    "status": "passed",
+    "verified_files": 233,
+    "base_commit": "8f7fe1bdce638e9549abd8a1f81f61e73a22391a",
+    "restored_in_new_temporary_directory": true
+  },
+  "negative_checks": {
+    "existing_target_rejected_without_changes": true,
+    "corrupted_patch_rejected_before_extraction": true
+  },
+  "checks": {
+    "current_npm_run_check": {
+      "exit_code": 0,
+      "log": "current-check.txt"
+    },
+    "restored_npm_run_check": {
+      "exit_code": 0,
+      "log": "restored-check.txt"
+    },
+    "restored_npm_test": {
+      "exit_code": 0,
+      "tests": 64,
+      "pass": 64,
+      "fail": 0,
+      "log": "restored-tests.txt"
+    }
+  },
+  "environment": {
+    "platform": "Darwin",
+    "architecture": "arm64",
+    "node": "v24.14.1",
+    "npm": "11.11.0",
+    "dependencies": "复用本机现有 node_modules；不是干净依赖安装证明"
+  },
+  "pending": [
+    "MAC-01显示／缩放／游戏实际输出和最终验收设备确认",
+    "WIN-01实际设备配置与显示条件",
+    "Godot双平台原生启动／完整玩法／性能；分别由T02、T16、T17完成"
+  ],
+  "warning": [
+    "npm 用户级 always-auth 配置产生已有警告，本票未修改全局 npm 配置。"
+  ],
+  "not_run": [
+    "游戏启动",
+    "引擎安装",
+    "应用打包",
+    "60秒性能采样",
+    "5分钟稳定性采样"
+  ],
+  "review": "随后按 Standards 与 Spec 双轴复核；本文件不预写审查结论"
+}

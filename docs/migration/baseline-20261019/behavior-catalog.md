@@ -1,0 +1,70 @@
+# T01 行为对照目录
+
+64 项既有行为，9 个测试文件。输入、时间与预期断言原文保存在同目录 behavior-catalog.json；辅助布局和推进函数位于已冻结、可还原的测试源码中。条目是迁移参照，不是 Godot 已通过的测试。
+
+| 编号 | 场景与可观察预期 | 冻结源码位置 |
+| --- | --- | --- |
+| B001 | 固定屏幕指针随跟随镜头重新映射世界坐标 | tests/CameraView.test.cjs:4 |
+| B002 | 超宽窗口多显示横向世界，边缘镜头保持在地图内且比例一致 | tests/CameraView.test.cjs:10 |
+| B003 | 普通箭与Q分别造成15和40伤害，沿来箭方向击退14和36，且不取消敌方预警 | tests/CombatFeedback.test.cjs:21 |
+| B004 | 击退遇到薄墙、关闭栅门或地图边缘均停止，长帧不会穿过实体 | tests/CombatFeedback.test.cjs:37 |
+| B005 | 致死箭飘字只报告剩余生命，不重复扣血；重试清除事件和击退状态 | tests/CombatFeedback.test.cjs:50 |
+| B006 | 命中墙体只有火花，无伤害飘字或小怪击退 | tests/CombatFeedback.test.cjs:70 |
+| B007 | 暂停冻结击退与反馈，恢复后继续，同一穿透箭对每只怪只产生一次伤害 | tests/CombatFeedback.test.cjs:80 |
+| B008 | 箭雨每段各产生15点伤害反馈，沿落点向外击退且不合并成虚假大伤害 | tests/CombatFeedback.test.cjs:94 |
+| B009 | 靠近残碑按F阅读，长按不反复开关，游戏时间冻结，释放再按关闭且可重读 | tests/Exploration.test.cjs:10 |
+| B010 | 互动只选可达最近对象，不隔墙、不越80距离，未激活敌人不阻止阅读 | tests/Exploration.test.cjs:28 |
+| B011 | 已激活影偶禁止互动且不冻结战斗；暂停中F不补发；阅读失焦后关闭仍需手动恢复 | tests/Exploration.test.cjs:38 |
+| B012 | 祭坛满血不消耗；自然受伤清敌后只恢复一次40点并封顶，R全部复原 | tests/Exploration.test.cjs:61 |
+| B013 | 栅门只能内侧安全F开启；关闭挡移动/箭/闪避，开启同步放行并保持到R | tests/Exploration.test.cjs:72 |
+| B014 | 阅读中断闪避位移但保留冷却，关闭后没有新输入不会滑行 | tests/Exploration.test.cjs:86 |
+| B015 | 三组所有影偶从正式出生点激活后均能正常追击，不困在灯火或实体内部 | tests/Exploration.test.cjs:93 |
+| B016 | 同一命中快照重复读取不重复播放，飘字位置来自命中记录而非当前敌人坐标 | tests/HitFeedback.test.cjs:8 |
+| B017 | 房间多次重试后低序号命中自动重新播放，无需调用显示reset且旧反馈清空 | tests/HitFeedback.test.cjs:18 |
+| B018 | 暂停及失败冻结反馈寿命，恢复后自然结束；碰撞火花不产生正伤害数字 | tests/HitFeedback.test.cjs:33 |
+| B019 | 多目标箭雨超过32个飘字时只复用32个槽位，结束后新命中仍能播放 | tests/HitFeedback.test.cjs:42 |
+| B020 | 同帧前按下又松开的F只互动一次，长按与系统重复不反复开关残碑 | tests/PlayerControls.test.cjs:10 |
+| B021 | 失焦叠加阅读后Esc只关闭阅读，仍暂停；恢复不续射，新的点按立即生效 | tests/PlayerControls.test.cjs:19 |
+| B022 | 视口变化取消前摇但不暂停，清除移动与技能脉冲且不退款冷却 | tests/PlayerControls.test.cjs:28 |
+| B023 | 鼠标离开只取消攻击，不清除WASD；回来按住不会续射，新点击可射箭 | tests/PlayerControls.test.cjs:37 |
+| B024 | 暂停时按F/R和技能不积压，R重试清空移动和所有点按状态 | tests/PlayerControls.test.cjs:46 |
+| B025 | 汤谷从安全起点进入扩大后的地图，松键立即停止且不会走出世界边缘 | tests/Tanggu.test.cjs:10 |
+| B026 | 影偶接触不伤人，预警后挥击一次，失败冻结并可从起点重试 | tests/Tanggu.test.cjs:22 |
+| B027 | 闪避穿过影偶、挡在实体前，短暂无敌且不能同时射箭 | tests/Tanggu.test.cjs:44 |
+| B028 | Q 穿透多个影偶每只一次，并由中间实体阻断，按住不连发 | tests/Tanggu.test.cjs:59 |
+| B029 | E 锁定合法地面点，前摇无伤害，三段落箭；无效点不扣冷却 | tests/Tanggu.test.cjs:74 |
+| B030 | 影偶会绕过长残墙追击，不长期卡在直线路径上 | tests/Tanggu.test.cjs:95 |
+| B031 | 三组按死亡推进，完成后仍可操作，重试清空全部技能和进度 | tests/Tanggu.test.cjs:101 |
+| B032 | 受击取消未发箭雨且不退冷却，硬直中不能发起技能或闪避 | tests/Tanggu.test.cjs:122 |
+| B033 | 暂停取消未释放技能但保留冷却，已生效箭雨与敌人状态冻结，恢复后继续 | tests/Tanggu.test.cjs:140 |
+| B034 | 跨越箭雨前摇的长帧只推进生效后的余量，不提前结算后续段 | tests/Tanggu.test.cjs:162 |
+| B035 | 释放箭的长帧只推进离弦后的时间，不额外增加射程 | tests/Tanggu.test.cjs:169 |
+| B036 | 跨越闪避结束的长帧保留剩余普通移动时间 | tests/Tanggu.test.cjs:176 |
+| B037 | 闪避无敌窗结束后仍处于有效挥击区域会受伤，不能多保护一个长帧 | tests/Tanggu.test.cjs:183 |
+| B038 | 敌人跨越预警和挥击边界保留余量，闪避不会因长帧多受一次伤 | tests/Tanggu.test.cjs:190 |
+| B039 | 箭寿命结束后的长帧不再延长穿透箭射程 | tests/Tanggu.test.cjs:202 |
+| B040 | 暂停中断闪避位移且保留冷却，恢复后没有新输入不会滑行 | tests/Tanggu.test.cjs:215 |
+| B041 | 挥击结束后才进入范围不会被追溯扣血，长短帧结果一致 | tests/Tanggu.test.cjs:226 |
+| B042 | 三组共十二只影偶混合三种外观，外观不改变近战基础属性 | tests/Tanggu.test.cjs:237 |
+| B043 | 汤谷主路、两支路与捷径按通路区域给出地标名，支路重叠处优先显示探索区域 | tests/TangguGuidance.test.cjs:6 |
+| B044 | 下一地标使用遭遇自身名称和实际遭遇数，完成后允许回头探索 | tests/TangguGuidance.test.cjs:11 |
+| B045 | 三组战斗地标位于石材庭院，铺路折线的所有分段均由通路覆盖 | tests/TangguGuidance.test.cjs:17 |
+| B046 | 起点草坡有可见边界：不能穿过道路外侧，但可沿主路向右行走 | tests/TangguRoutes.test.cjs:10 |
+| B047 | 主路岔口可往返两条支路，关闭捷径不能穿过，主路仍能到第三庭院 | tests/TangguRoutes.test.cjs:27 |
+| B048 | 命中反馈区分普通箭与穿透箭，特效事件不改变原伤害 | tests/TangguRoutes.test.cjs:37 |
+| B049 | 栅门只在可见轮廓阻箭，门北侧空白处普通箭与Q均可飞过 | tests/TangguRoutes.test.cjs:49 |
+| B050 | 玩家在房间中按住右移一秒后跑出220像素，松键立即停止 | tests/TrainingRoom.test.cjs:11 |
+| B051 | 斜向跑动不加速，向右移动时仍可朝左瞄准 | tests/TrainingRoom.test.cjs:21 |
+| B052 | 玩家被柱基挡住，沿柱移动可绕行，持续向下不会跑出房间 | tests/TrainingRoom.test.cjs:28 |
+| B053 | 短按拉弦后松手仍射完一箭，靶只计一次且箭会清理 | tests/TrainingRoom.test.cjs:40 |
+| B054 | 按住按间隔连射，释放后不再增加待发射的箭 | tests/TrainingRoom.test.cjs:49 |
+| B055 | 前摇中离开画面会取消这一箭，重新进入仍按住时不会自行续射 | tests/TrainingRoom.test.cjs:61 |
+| B056 | 暂停冻结箭和人物，取消未发攻击；恢复后须重新释放再按下 | tests/TrainingRoom.test.cjs:74 |
+| B057 | 柱先于后方靶命中，绕到另一侧后能命中同一靶 | tests/TrainingRoom.test.cjs:91 |
+| B058 | 反复重置清除箭、反馈、计数和待发攻击，暂停时重置无效 | tests/TrainingRoom.test.cjs:101 |
+| B059 | 箭能命中可见靶面的上沿，而不是只检测靶下方 | tests/TrainingRoom.test.cjs:117 |
+| B060 | 精修人物的箭从持弓握点释放，肩部近零瞄准保留原方向 | tests/TrainingRoom.test.cjs:125 |
+| B061 | 冷却内点击不排队，松手后不会在下次可攻击时补发 | tests/TrainingRoom.test.cjs:138 |
+| B062 | 大步长箭路仍只命中最早接触，不越过靶或柱 | tests/TrainingRoom.test.cjs:148 |
+| B063 | 攻击显示依次拉弦、放箭、收势；取消前摇后不显示虚假的放箭动作 | tests/TrainingRoom.test.cjs:158 |
+| B064 | 四向持弓使用对应手部握点，箭从可见握点沿准星方向飞行 | tests/TrainingRoom.test.cjs:175 |

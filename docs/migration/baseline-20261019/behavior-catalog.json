@@ -1,0 +1,518 @@
+{
+  "count": 64,
+  "reproduction": "恢复基线后使用冻结的测试源码和辅助函数运行 npm test。每项保留真实输入、时间推进与断言片段，源文件哈希用于追溯。",
+  "cases": [
+    {
+      "id": "B001",
+      "source": "tests/CameraView.test.cjs",
+      "line": 4,
+      "name": "固定屏幕指针随跟随镜头重新映射世界坐标",
+      "input_time_and_assertions": "test('固定屏幕指针随跟随镜头重新映射世界坐标', () => {\n  const before = cameraView({ x: 400, y: 820 }, 1280, 720, 2560, 1440);\n  const after = cameraView({ x: 1000, y: 820 }, 1280, 720, 2560, 1440);\n  assert.deepEqual(screenToWorld({ x: 1000, y: 410 }, before), { x: 1000, y: 870 });\n  assert.deepEqual(screenToWorld({ x: 1000, y: 410 }, after), { x: 1360, y: 870 });\n})",
+      "source_sha256": "bf352ceb4ba63245c221fc157c468edcb0b55d00f19eb893c8d57c4112e0867a"
+    },
+    {
+      "id": "B002",
+      "source": "tests/CameraView.test.cjs",
+      "line": 10,
+      "name": "超宽窗口多显示横向世界，边缘镜头保持在地图内且比例一致",
+      "input_time_and_assertions": "test('超宽窗口多显示横向世界，边缘镜头保持在地图内且比例一致', () => {\n  const wide = cameraView({ x: 2000, y: 900 }, 2560, 1080, 2560, 1440);\n  assert.equal(wide.zoom, 1.5);\n  assert.ok(Math.abs(wide.x + 2560 / wide.zoom - 2560) < 0.001);\n  assert.equal(wide.y, 540);\n  const huge = cameraView({ x: 2000, y: 900 }, 4000, 450, 2560, 1440);\n  assert.equal(huge.x, 0);\n  assert.equal(4000 / huge.zoom, 2560);\n})",
+      "source_sha256": "bf352ceb4ba63245c221fc157c468edcb0b55d00f19eb893c8d57c4112e0867a"
+    },
+    {
+      "id": "B003",
+      "source": "tests/CombatFeedback.test.cjs",
+      "line": 21,
+      "name": "普通箭与Q分别造成15和40伤害，沿来箭方向击退14和36，且不取消敌方预警",
+      "input_time_and_assertions": "test('普通箭与Q分别造成15和40伤害，沿来箭方向击退14和36，且不取消敌方预警', () => {\n  for(const [kind,damage,distance,duration] of [['normal',15,14,0.10],['pierce',40,36,0.14]]){\n    const room=new TrainingRoom(arena);\n    const hit=fireUntilHit(room,kind),enemy=hit.enemies[0],event=hit.effects.find(e=>e.enemy!==undefined);\n    assert.equal(enemy.health,60-damage);\n    assert.equal(event.damage,damage);\n    assert.equal(event.kind,kind);\n    assert.equal(enemy.phase,'warn');\n    advance(room,duration);\n    assert.ok(Math.abs(room.snapshot.enemies[0].x-enemy.x-Math.cos(event.angle)*distance)<0.01);\n    assert.ok(Math.abs(room.snapshot.enemies[0].y-enemy.y-Math.sin(event.angle)*distance)<0.01);\n    assert.equal(room.snapshot.enemies[0].phase,'warn');\n    assert.ok(room.snapshot.enemies[0].timer<enemy.timer);\n  }\n})",
+      "source_sha256": "d0750c2408b7da1694f39591f265d755c62fea7c307dce3c9bee32f743f7880a"
+    },
+    {
+      "id": "B004",
+      "source": "tests/CombatFeedback.test.cjs",
+      "line": 37,
+      "name": "击退遇到薄墙、关闭栅门或地图边缘均停止，长帧不会穿过实体",
+      "input_time_and_assertions": "test('击退遇到薄墙、关闭栅门或地图边缘均停止，长帧不会穿过实体', () => {\n  for(const boundary of ['wall','gate','edge']){\n    const layout={...arena,obstacles:boundary==='edge'?[]:[{x:490,y:700,halfWidth:1,halfHeight:80,height:100,kind:boundary}],floor:boundary==='edge'?[{x:0,y:0},{x:489,y:0},{x:489,y:900},{x:0,y:900}]:arena.floor};\n    for(const coarse of [true,false]){\n      const room=new TrainingRoom(layout);\n      const hit=fireUntilHit(room,'pierce');\n      if(coarse)room.update(idle,0.14);else advance(room,0.14);\n      assert.ok(room.snapshot.enemies[0].x>hit.enemies[0].x);\n      assert.ok(room.snapshot.enemies[0].x<=478);\n    }\n  }\n})",
+      "source_sha256": "d0750c2408b7da1694f39591f265d755c62fea7c307dce3c9bee32f743f7880a"
+    },
+    {
+      "id": "B005",
+      "source": "tests/CombatFeedback.test.cjs",
+      "line": 50,
+      "name": "致死箭飘字只报告剩余生命，不重复扣血；重试清除事件和击退状态",
+      "input_time_and_assertions": "test('致死箭飘字只报告剩余生命，不重复扣血；重试清除事件和击退状态', () => {\n  const room=new TrainingRoom(arena);\n  fireUntilHit(room,'pierce');\n  advance(room,0.14);\n  fireUntilHit(room);\n  for(let i=0;i<100&&room.snapshot.enemies[0].health>0;i++)room.update({...idle,fire:true},0.01);\n  assert.equal(room.snapshot.enemies[0].health,0);\n  assert.equal(room.snapshot.enemies[0].phase,'dead');\n  const fatal=room.snapshot.effects.find(e=>e.enemy!==undefined);\n  assert.ok(fatal);\n  assert.equal(fatal.damage,5);\n  const count=room.snapshot.hits;\n  advance(room,0.5,{...idle,fire:true});\n  assert.equal(room.snapshot.hits,count);\n  room.reset();\n  assert.equal(room.snapshot.effects.length,0);\n  assert.equal(room.snapshot.enemies[0].knockTime,0);\n  assert.equal(room.snapshot.enemies[0].health,60);\n})",
+      "source_sha256": "d0750c2408b7da1694f39591f265d755c62fea7c307dce3c9bee32f743f7880a"
+    },
+    {
+      "id": "B006",
+      "source": "tests/CombatFeedback.test.cjs",
+      "line": 70,
+      "name": "命中墙体只有火花，无伤害飘字或小怪击退",
+      "input_time_and_assertions": "test('命中墙体只有火花，无伤害飘字或小怪击退', () => {\n  const room=new TrainingRoom({...arena,obstacles:[{x:436,y:700,halfWidth:2,halfHeight:15,height:100,kind:'wall'}]});\n  room.update({...idle,fire:true},0);\n  advance(room,0.09);\n  assert.ok(room.snapshot.effects.length>0);\n  assert.ok(room.snapshot.effects.every(e=>e.enemy===undefined&&e.damage===0));\n  assert.equal(room.snapshot.enemies[0].health,60);\n  assert.equal(room.snapshot.enemies[0].knockTime,0);\n})",
+      "source_sha256": "d0750c2408b7da1694f39591f265d755c62fea7c307dce3c9bee32f743f7880a"
+    },
+    {
+      "id": "B007",
+      "source": "tests/CombatFeedback.test.cjs",
+      "line": 80,
+      "name": "暂停冻结击退与反馈，恢复后继续，同一穿透箭对每只怪只产生一次伤害",
+      "input_time_and_assertions": "test('暂停冻结击退与反馈，恢复后继续，同一穿透箭对每只怪只产生一次伤害', () => {\n  const room=new TrainingRoom(arena);\n  fireUntilHit(room,'pierce');\n  room.setPaused(true);\n  const frozen=room.snapshot;\n  advance(room,1);\n  assert.deepEqual(room.snapshot,frozen);\n  room.setPaused(false);\n  advance(room,0.14);\n  assert.equal(room.snapshot.enemies[0].health,20);\n  assert.equal(room.snapshot.hits,1);\n  assert.ok(room.snapshot.enemies[0].knockTime<0.000001);\n})",
+      "source_sha256": "d0750c2408b7da1694f39591f265d755c62fea7c307dce3c9bee32f743f7880a"
+    },
+    {
+      "id": "B008",
+      "source": "tests/CombatFeedback.test.cjs",
+      "line": 94,
+      "name": "箭雨每段各产生15点伤害反馈，沿落点向外击退且不合并成虚假大伤害",
+      "input_time_and_assertions": "test('箭雨每段各产生15点伤害反馈，沿落点向外击退且不合并成虚假大伤害', () => {\n  const room=new TrainingRoom({...arena,encounters:[{x:400,y:700,enemies:[{x:680,y:700}]}]});\n  room.update({...idle,rain:true,aim:{x:650,y:700}},0);\n  advance(room,0.46);\n  let state=room.snapshot;\n  assert.equal(state.enemies[0].health,45);\n  assert.equal(state.effects.find(e=>e.enemy!==undefined).damage,15);\n  assert.ok(state.enemies[0].knockX<0);\n  assert.ok(state.enemies[0].knockTime>0);\n  advance(room,0.36);\n  state=room.snapshot;\n  assert.equal(state.enemies[0].health,15);\n  assert.equal(state.hits,3);\n  assert.ok(state.effects.every(e=>e.damage===15));\n})",
+      "source_sha256": "d0750c2408b7da1694f39591f265d755c62fea7c307dce3c9bee32f743f7880a"
+    },
+    {
+      "id": "B009",
+      "source": "tests/Exploration.test.cjs",
+      "line": 10,
+      "name": "靠近残碑按F阅读，长按不反复开关，游戏时间冻结，释放再按关闭且可重读",
+      "input_time_and_assertions": "test('靠近残碑按F阅读，长按不反复开关，游戏时间冻结，释放再按关闭且可重读',()=>{\n const r=at({x:840,y:365});\n advance(r,0.2,{...idle,pierce:true});\n const before=r.snapshot;\n assert.equal(before.interaction?.id,'stele');\n press(r);\n assert.equal(r.snapshot.reading,true);assert.equal(r.snapshot.exploration.steleRead,true);\n advance(r,1,{...idle,interact:true,moveX:1,fire:true,rain:true});\n assert.equal(r.snapshot.reading,true);\n assert.deepEqual(r.snapshot.player,before.player);\n assert.deepEqual(r.snapshot.arrows,before.arrows);\n assert.deepEqual(r.snapshot.cooldowns,before.cooldowns);\n press(r);assert.equal(r.snapshot.reading,false);\n press(r);assert.equal(r.snapshot.reading,true);\n r.reset();assert.equal(r.snapshot.reading,true,'阅读暂停中R不能重试');\n r.closeReading();r.reset();assert.equal(r.snapshot.exploration.steleRead,false);\n})",
+      "source_sha256": "95c09d2770f7c062c30bb063c57274ddaab2b97c845fa0e3d760951807595064"
+    },
+    {
+      "id": "B010",
+      "source": "tests/Exploration.test.cjs",
+      "line": 28,
+      "name": "互动只选可达最近对象，不隔墙、不越80距离，未激活敌人不阻止阅读",
+      "input_time_and_assertions": "test('互动只选可达最近对象，不隔墙、不越80距离，未激活敌人不阻止阅读',()=>{\n assert.equal(at({x:758,y:365}).snapshot.interaction,null);\n const blocked=at({x:840,y:425},{obstacles:[{x:840,y:395,halfWidth:45,halfHeight:6,height:40,kind:'wall'}]});\n press(blocked);assert.equal(blocked.snapshot.interaction,null);assert.equal(blocked.snapshot.reading,false);\n const nearest=at({x:840,y:365},{exploration:[{id:'stele',x:800,y:365},{id:'altar',x:880,y:365}],obstacles:[]});\n assert.equal(nearest.snapshot.interaction.id,'stele');press(nearest);assert.equal(nearest.snapshot.reading,true);\n const inactive=at({x:840,y:365},{encounters:[{x:2000,y:800,enemies:[{x:2100,y:800}]}]});\n press(inactive);assert.equal(inactive.snapshot.reading,true);\n})",
+      "source_sha256": "95c09d2770f7c062c30bb063c57274ddaab2b97c845fa0e3d760951807595064"
+    },
+    {
+      "id": "B011",
+      "source": "tests/Exploration.test.cjs",
+      "line": 38,
+      "name": "已激活影偶禁止互动且不冻结战斗；暂停中F不补发；阅读失焦后关闭仍需手动恢复",
+      "input_time_and_assertions": "test('已激活影偶禁止互动且不冻结战斗；暂停中F不补发；阅读失焦后关闭仍需手动恢复',()=>{\n const combat=at({x:840,y:365},{encounters:[{x:840,y:365,enemies:[{x:910,y:365}]}]});\n combat.update(idle,0.01);press(combat);assert.equal(combat.snapshot.reading,false);\n assert.match(combat.snapshot.feedback.text,/清除/);const timer=combat.snapshot.enemies[0].timer;\n advance(combat,0.1);assert.notEqual(combat.snapshot.enemies[0].timer,timer);\n const r=at({x:840,y:365});r.setPaused(true);press(r);assert.equal(r.snapshot.reading,false);\n r.setPaused(false);advance(r,0.1,{...idle,interact:true});assert.equal(r.snapshot.reading,false);\n press(r);assert.equal(r.snapshot.reading,true);\n r.setPaused(true);r.closeReading();assert.equal(r.snapshot.paused,true);\n advance(r,1,{...idle,moveX:1,fire:true,interact:true});assert.equal(r.snapshot.reading,false);\n r.setPaused(false);r.update(idle,0);assert.equal(r.snapshot.arrows.length,0);\n})",
+      "source_sha256": "95c09d2770f7c062c30bb063c57274ddaab2b97c845fa0e3d760951807595064"
+    },
+    {
+      "id": "B012",
+      "source": "tests/Exploration.test.cjs",
+      "line": 61,
+      "name": "祭坛满血不消耗；自然受伤清敌后只恢复一次40点并封顶，R全部复原",
+      "input_time_and_assertions": "test('祭坛满血不消耗；自然受伤清敌后只恢复一次40点并封顶，R全部复原',()=>{\n const full=at({x:1660,y:1240});press(full);\n assert.equal(full.snapshot.exploration.altarUsed,false);assert.equal(full.snapshot.feedback.text,'无需恢复');\n for(const [before,after] of [[80,100],[20,60]]){\n  const r=hurtThenClear(before);press(r);\n  assert.equal(r.snapshot.health,after);assert.equal(r.snapshot.exploration.altarUsed,true);\n  assert.equal(r.snapshot.feedback.healed,true);press(r);assert.equal(r.snapshot.health,after);\n  r.reset();assert.equal(r.snapshot.health,100);assert.deepEqual(r.snapshot.exploration,{steleRead:false,altarUsed:false,gateOpen:false});\n }\n})",
+      "source_sha256": "95c09d2770f7c062c30bb063c57274ddaab2b97c845fa0e3d760951807595064"
+    },
+    {
+      "id": "B013",
+      "source": "tests/Exploration.test.cjs",
+      "line": 72,
+      "name": "栅门只能内侧安全F开启；关闭挡移动/箭/闪避，开启同步放行并保持到R",
+      "input_time_and_assertions": "test('栅门只能内侧安全F开启；关闭挡移动/箭/闪避，开启同步放行并保持到R',()=>{\n const outside=at({x:1865,y:1000});press(outside);assert.equal(outside.snapshot.exploration.gateOpen,false);\n assert.match(outside.snapshot.feedback.text,/内侧/);\n const r=at({x:1865,y:1100});advance(r,0.3,{...idle,moveY:-1,dodge:true});\n assert.ok(r.snapshot.player.y>=1071);r.update(idle,0);press(r);\n assert.equal(r.snapshot.exploration.gateOpen,false);assert.ok(r.snapshot.gateOpening>0);\n advance(r,0.3);assert.equal(r.snapshot.exploration.gateOpen,true);\n advance(r,0.4,{...idle,moveY:-1,aim:{x:1865,y:900},fire:true});\n assert.ok(r.snapshot.player.y<1030);assert.ok(r.snapshot.arrows.some(a=>a.y<1005));\n assert.equal(r.snapshot.status,'running');r.reset();assert.equal(r.snapshot.exploration.gateOpen,false);\n const fighting=at({x:1865,y:1100},{encounters:[{x:1865,y:1100,enemies:[{x:1900,y:1150}]}]});\n fighting.update(idle,0);press(fighting);assert.equal(fighting.snapshot.exploration.gateOpen,false);\n})",
+      "source_sha256": "95c09d2770f7c062c30bb063c57274ddaab2b97c845fa0e3d760951807595064"
+    },
+    {
+      "id": "B014",
+      "source": "tests/Exploration.test.cjs",
+      "line": 86,
+      "name": "阅读中断闪避位移但保留冷却，关闭后没有新输入不会滑行",
+      "input_time_and_assertions": "test('阅读中断闪避位移但保留冷却，关闭后没有新输入不会滑行',()=>{\n const r=at({x:840,y:365});r.update({...idle,dodge:true,moveX:1},0);press(r);\n assert.equal(r.snapshot.reading,true);assert.equal(r.snapshot.dodge,0);\n assert.equal(r.snapshot.cooldowns.dodge,1);r.closeReading();const x=r.snapshot.player.x;\n advance(r,0.4);assert.equal(r.snapshot.player.x,x);\n})",
+      "source_sha256": "95c09d2770f7c062c30bb063c57274ddaab2b97c845fa0e3d760951807595064"
+    },
+    {
+      "id": "B015",
+      "source": "tests/Exploration.test.cjs",
+      "line": 93,
+      "name": "三组所有影偶从正式出生点激活后均能正常追击，不困在灯火或实体内部",
+      "input_time_and_assertions": "test('三组所有影偶从正式出生点激活后均能正常追击，不困在灯火或实体内部',()=>{\n const spawns=[{x:650,y:850},{x:1290,y:720},{x:1840,y:750}];\n TANGGU.encounters.forEach((group,i)=>{\n  const r=new TrainingRoom({...TANGGU,spawn:spawns[i],encounters:[{...spawns[i],enemies:group.enemies}]});\n  advance(r,0.25);\n  r.snapshot.enemies.forEach((e,j)=>assert.ok(Math.hypot(e.x-group.enemies[j].x,e.y-group.enemies[j].y)>1,`第${i+1}组第${j+1}只应能离开出生点`));\n });\n})",
+      "source_sha256": "95c09d2770f7c062c30bb063c57274ddaab2b97c845fa0e3d760951807595064"
+    },
+    {
+      "id": "B016",
+      "source": "tests/HitFeedback.test.cjs",
+      "line": 8,
+      "name": "同一命中快照重复读取不重复播放，飘字位置来自命中记录而非当前敌人坐标",
+      "input_time_and_assertions": "test('同一命中快照重复读取不重复播放，飘字位置来自命中记录而非当前敌人坐标',()=>{\n const f=new HitFeedback(),s=frame(0,[hit(0)]);\n const first=f.update(s,0);assert.equal(first.numbers.length,1);assert.equal(first.numbers[0].damage,15);\n assert.equal(first.numbers[0].x,447);assert.equal(first.numbers[0].y,600);\n const again=f.update(s,0.1);assert.equal(again.numbers.length,1);assert.equal(again.bursts.length,1);\n assert.ok(Math.abs(again.numbers[0].age-0.1)<0.00001);\n assert.equal(f.update(s,0.6).numbers.length,0);\n assert.equal(f.update(s,0).numbers.length,0,'旧事件过期后也不能重新播放');\n})",
+      "source_sha256": "f1bef762a8504f5df36a6727389cc33c9f0b116d32d10f122a1faa3dff4375cf"
+    },
+    {
+      "id": "B017",
+      "source": "tests/HitFeedback.test.cjs",
+      "line": 18,
+      "name": "房间多次重试后低序号命中自动重新播放，无需调用显示reset且旧反馈清空",
+      "input_time_and_assertions": "test('房间多次重试后低序号命中自动重新播放，无需调用显示reset且旧反馈清空',()=>{\n const layout={...ROOM,pillars:[],targets:[],encounters:[{x:400,y:440,enemies:[{x:455,y:440}]}]};\n const room=new TrainingRoom(layout),f=new HitFeedback();\n const input={moveX:0,moveY:0,aim:{x:1000,y:389},fire:false,pointerInside:true};\n for(let run=0;run<5;run++){\n  let state=room.snapshot;\n  assert.equal(f.update(state,0).numbers.length,0);\n  room.update(input,0);room.update({...input,fire:true},0);\n  for(let i=0;i<50&&!room.snapshot.effects.length;i++)room.update(input,0.01);\n  state=room.snapshot;assert.equal(state.effects[0].id,0);\n  assert.equal(f.update(state,0).numbers[0].damage,15);\n  room.reset();assert.equal(room.snapshot.runId,run+1);\n }\n})",
+      "source_sha256": "f1bef762a8504f5df36a6727389cc33c9f0b116d32d10f122a1faa3dff4375cf"
+    },
+    {
+      "id": "B018",
+      "source": "tests/HitFeedback.test.cjs",
+      "line": 33,
+      "name": "暂停及失败冻结反馈寿命，恢复后自然结束；碰撞火花不产生正伤害数字",
+      "input_time_and_assertions": "test('暂停及失败冻结反馈寿命，恢复后自然结束；碰撞火花不产生正伤害数字',()=>{\n const f=new HitFeedback();f.update(frame(0,[hit(0)]),0);\n const paused=f.update(frame(0,[],{paused:true}),1);assert.equal(paused.numbers[0].age,0);\n assert.equal(f.update(frame(0,[],{status:'failed'}),1).numbers[0].age,0);\n assert.equal(f.update(frame(0),0.66).numbers.length,0);\n const wall={...hit(1),enemy:undefined,damage:0,damagePosition:null};\n const state=f.update(frame(0,[wall]),0);assert.equal(state.numbers.length,0);assert.equal(state.bursts.length,1);\n})",
+      "source_sha256": "f1bef762a8504f5df36a6727389cc33c9f0b116d32d10f122a1faa3dff4375cf"
+    },
+    {
+      "id": "B019",
+      "source": "tests/HitFeedback.test.cjs",
+      "line": 42,
+      "name": "多目标箭雨超过32个飘字时只复用32个槽位，结束后新命中仍能播放",
+      "input_time_and_assertions": "test('多目标箭雨超过32个飘字时只复用32个槽位，结束后新命中仍能播放',()=>{\n const f=new HitFeedback(),s=f.update(frame(0,Array.from({length:40},(_,i)=>hit(i,i%12))),0);\n assert.equal(s.numbers.length,32);assert.equal(new Set(s.numbers.map(n=>n.slot)).size,32);\n f.update(frame(0),0.7);\n const next=f.update(frame(0,[hit(40)]),0);assert.equal(next.numbers.length,1);assert.ok(next.numbers[0].slot<32);\n})",
+      "source_sha256": "f1bef762a8504f5df36a6727389cc33c9f0b116d32d10f122a1faa3dff4375cf"
+    },
+    {
+      "id": "B020",
+      "source": "tests/PlayerControls.test.cjs",
+      "line": 10,
+      "name": "同帧前按下又松开的F只互动一次，长按与系统重复不反复开关残碑",
+      "input_time_and_assertions": "test('同帧前按下又松开的F只互动一次，长按与系统重复不反复开关残碑',()=>{\n const room=new TrainingRoom({...TANGGU,spawn:{x:840,y:365},encounters:[],obstacles:[]}),c=new PlayerControls(room);\n tap(c,'KeyF');c.update(aim,true,0.01);assert.equal(room.snapshot.reading,true);\n advance(c,0.2);assert.equal(room.snapshot.reading,true);\n c.keyDown('KeyF',true);c.update(aim,true,0.01);assert.equal(room.snapshot.reading,true);\n tap(c,'KeyF');c.update(aim,true,0.01);assert.equal(room.snapshot.reading,false);\n c.keyDown('KeyF');advance(c,0.2);assert.equal(room.snapshot.reading,true);\n})",
+      "source_sha256": "5f5316e3fdc3f20052f2f6e6eb8f947b89dc528cd53485a5546cfdb7acc437d3"
+    },
+    {
+      "id": "B021",
+      "source": "tests/PlayerControls.test.cjs",
+      "line": 19,
+      "name": "失焦叠加阅读后Esc只关闭阅读，仍暂停；恢复不续射，新的点按立即生效",
+      "input_time_and_assertions": "test('失焦叠加阅读后Esc只关闭阅读，仍暂停；恢复不续射，新的点按立即生效',()=>{\n const room=new TrainingRoom({...TANGGU,spawn:{x:840,y:365},encounters:[],obstacles:[]}),c=new PlayerControls(room);\n tap(c,'KeyF');c.update(aim,true,0);c.interrupt(true);\n c.keyDown('Escape');assert.equal(room.snapshot.reading,false);assert.equal(room.snapshot.paused,true);\n c.keyDown('KeyD');c.pointerDown(true);advance(c,0.1);assert.equal(room.snapshot.player.moving,false);\n c.keyDown('Escape');advance(c,0.1);assert.equal(room.snapshot.arrows.length,0);\n c.pointerDown(true);c.pointerUp();advance(c,0.1);assert.equal(room.snapshot.arrows.length,1);\n})",
+      "source_sha256": "5f5316e3fdc3f20052f2f6e6eb8f947b89dc528cd53485a5546cfdb7acc437d3"
+    },
+    {
+      "id": "B022",
+      "source": "tests/PlayerControls.test.cjs",
+      "line": 28,
+      "name": "视口变化取消前摇但不暂停，清除移动与技能脉冲且不退款冷却",
+      "input_time_and_assertions": "test('视口变化取消前摇但不暂停，清除移动与技能脉冲且不退款冷却',()=>{\n const room=new TrainingRoom({...TANGGU,encounters:[]}),c=new PlayerControls(room);\n c.keyDown('KeyQ');c.keyDown('KeyD');c.update(aim,true,0.01);\n assert.ok(room.snapshot.cooldowns.pierce>0);\n c.interrupt();const x=room.snapshot.player.x;advance(c,0.3);\n assert.equal(room.snapshot.paused,false);assert.equal(room.snapshot.player.x,x);assert.equal(room.snapshot.arrows.length,0);\n assert.ok(room.snapshot.cooldowns.pierce>0);\n})",
+      "source_sha256": "5f5316e3fdc3f20052f2f6e6eb8f947b89dc528cd53485a5546cfdb7acc437d3"
+    },
+    {
+      "id": "B023",
+      "source": "tests/PlayerControls.test.cjs",
+      "line": 37,
+      "name": "鼠标离开只取消攻击，不清除WASD；回来按住不会续射，新点击可射箭",
+      "input_time_and_assertions": "test('鼠标离开只取消攻击，不清除WASD；回来按住不会续射，新点击可射箭',()=>{\n const room=new TrainingRoom({...TANGGU,encounters:[]}),c=new PlayerControls(room);\n c.keyDown('KeyD');c.pointerDown(true);c.update(aim,true,0.01);c.pointerLeave();\n advance(c,0.1,false);const x=room.snapshot.player.x;advance(c,0.2,true);\n assert.ok(room.snapshot.player.x>x);assert.equal(room.snapshot.arrows.length,0);\n advance(c,0.15);\n c.pointerDown(true);c.pointerUp();advance(c,0.1);assert.equal(room.snapshot.arrows.length,1);\n})",
+      "source_sha256": "5f5316e3fdc3f20052f2f6e6eb8f947b89dc528cd53485a5546cfdb7acc437d3"
+    },
+    {
+      "id": "B024",
+      "source": "tests/PlayerControls.test.cjs",
+      "line": 46,
+      "name": "暂停时按F/R和技能不积压，R重试清空移动和所有点按状态",
+      "input_time_and_assertions": "test('暂停时按F/R和技能不积压，R重试清空移动和所有点按状态',()=>{\n const room=new TrainingRoom({...TANGGU,encounters:[]}),c=new PlayerControls(room);\n c.keyDown('Escape');for(const key of ['KeyF','KeyR','KeyQ','KeyE','Space'])tap(c,key);\n c.keyDown('Escape');advance(c,0.1);assert.equal(room.snapshot.runId,0);assert.equal(room.snapshot.cooldowns.pierce,0);\n c.keyDown('KeyD');c.pointerDown(true);advance(c,0.2);c.keyDown('KeyR');advance(c,0.1);\n assert.equal(room.snapshot.runId,1);assert.equal(room.snapshot.player.x,TANGGU.spawn.x);assert.equal(room.snapshot.arrows.length,0);\n})",
+      "source_sha256": "5f5316e3fdc3f20052f2f6e6eb8f947b89dc528cd53485a5546cfdb7acc437d3"
+    },
+    {
+      "id": "B025",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 10,
+      "name": "汤谷从安全起点进入扩大后的地图，松键立即停止且不会走出世界边缘",
+      "input_time_and_assertions": "test('汤谷从安全起点进入扩大后的地图，松键立即停止且不会走出世界边缘', () => {\n  const room = new TrainingRoom(TANGGU);\n  assert.deepEqual({ x: room.snapshot.player.x, y: room.snapshot.player.y }, { x: 400, y: 820 });\n  advance(room, 1, { ...idle, moveX: 1 });\n  assert.ok(Math.abs(room.snapshot.player.x - 620) < 0.01);\n  advance(room, 0.5);\n  assert.ok(Math.abs(room.snapshot.player.x - 620) < 0.01);\n  advance(room, 20, { ...idle, moveY: 1 });\n  assert.ok(room.snapshot.player.y <= 1298);\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B026",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 22,
+      "name": "影偶接触不伤人，预警后挥击一次，失败冻结并可从起点重试",
+      "input_time_and_assertions": "test('影偶接触不伤人，预警后挥击一次，失败冻结并可从起点重试', () => {\n  const room = new TrainingRoom(duel);\n  advance(room, 0.01);\n  assert.equal(room.snapshot.enemies[0].phase, 'warn');\n  assert.equal(room.snapshot.health, 100);\n  advance(room, 0.43);\n  assert.equal(room.snapshot.health, 100);\n  advance(room, 0.03);\n  assert.equal(room.snapshot.health, 80);\n  advance(room, 0.08);\n  assert.equal(room.snapshot.health, 80);\n  advance(room, 10);\n  assert.equal(room.snapshot.status, 'failed');\n  const frozen = room.snapshot;\n  advance(room, 1, { ...idle, moveX: 1, fire: true });\n  assert.deepEqual(room.snapshot, frozen);\n  room.reset();\n  assert.equal(room.snapshot.health, 100);\n  assert.equal(room.snapshot.status, 'running');\n  assert.equal(room.snapshot.enemies[0].phase, 'inactive');\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B027",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 44,
+      "name": "闪避穿过影偶、挡在实体前，短暂无敌且不能同时射箭",
+      "input_time_and_assertions": "test('闪避穿过影偶、挡在实体前，短暂无敌且不能同时射箭', () => {\n  const room = new TrainingRoom({ ...duel, obstacles: [{ x: 535, y: 820, halfWidth: 10, halfHeight: 80, height: 100, kind: 'wall' }] });\n  advance(room, 0.38);\n  room.update({ ...idle, moveX: 1, dodge: true, fire: true }, 0);\n  advance(room, 0.09, { ...idle, moveX: 1, fire: true });\n  assert.equal(room.snapshot.health, 100);\n  assert.equal(room.snapshot.arrows.length, 0);\n  advance(room, 0.12, { ...idle, moveX: 1 });\n  assert.ok(room.snapshot.player.x > 450);\n  assert.ok(room.snapshot.player.x <= 513);\n  assert.ok(room.snapshot.cooldowns.dodge > 0);\n  room.reset();\n  assert.equal(room.snapshot.cooldowns.dodge, 0);\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B028",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 59,
+      "name": "Q 穿透多个影偶每只一次，并由中间实体阻断，按住不连发",
+      "input_time_and_assertions": "test('Q 穿透多个影偶每只一次，并由中间实体阻断，按住不连发', () => {\n  const line = { ...duel, encounters: [{ x: 400, y: 820, enemies: [{ x: 620, y: 820 }, { x: 800, y: 820 }] }] };\n  const room = new TrainingRoom(line);\n  room.update(idle, 0);\n  advance(room, 0.65, { ...idle, pierce: true });\n  assert.deepEqual(room.snapshot.enemies.map(e => e.health), [20, 20]);\n  assert.ok(room.snapshot.cooldowns.pierce > 3);\n  advance(room, 4.5, { ...idle, pierce: true, moveX: -1 });\n  assert.equal(room.snapshot.cooldowns.pierce, 0);\n  const blocked = new TrainingRoom({ ...line, obstacles: [{ x: 710, y: 820, halfWidth: 15, halfHeight: 22, height: 120, kind: 'wall' }] });\n  blocked.update(idle, 0);\n  advance(blocked, 0.7, { ...idle, pierce: true });\n  assert.deepEqual(blocked.snapshot.enemies.map(e => e.health), [20, 60]);\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B029",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 74,
+      "name": "E 锁定合法地面点，前摇无伤害，三段落箭；无效点不扣冷却",
+      "input_time_and_assertions": "test('E 锁定合法地面点，前摇无伤害，三段落箭；无效点不扣冷却', () => {\n  const layout = { ...duel, obstacles: [{ x: 540, y: 820, halfWidth: 15, halfHeight: 25, height: 40, kind: 'root' }], encounters: [{ x: 400, y: 820, enemies: [{ x: 700, y: 820 }, { x: 760, y: 820 }] }] };\n  const room = new TrainingRoom(layout);\n  room.update(idle, 0);\n  room.update({ ...idle, rain: true, aim: { x: 2500, y: 1400 } }, 0);\n  assert.equal(room.snapshot.cooldowns.rain, 0);\n  room.update(idle, 0);\n  room.update({ ...idle, rain: true, aim: { x: 540, y: 820 } }, 0);\n  assert.equal(room.snapshot.cooldowns.rain, 0);\n  room.update(idle, 0);\n  room.update({ ...idle, rain: true, aim: { x: 700, y: 820 } }, 0);\n  assert.deepEqual(room.snapshot.rainPreview, { x: 700, y: 820 });\n  advance(room, 0.44, { ...idle, aim: { x: 1500, y: 400 } });\n  assert.deepEqual(room.snapshot.enemies.map(e => e.health), [60, 60]);\n  advance(room, 0.04);\n  assert.deepEqual(room.snapshot.enemies.map(e => e.health), [45, 45]);\n  advance(room, 0.4);\n  assert.deepEqual(room.snapshot.enemies.map(e => e.health), [15, 15]);\n  assert.ok(room.snapshot.cooldowns.rain > 7);\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B030",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 95,
+      "name": "影偶会绕过长残墙追击，不长期卡在直线路径上",
+      "input_time_and_assertions": "test('影偶会绕过长残墙追击，不长期卡在直线路径上', () => {\n  const room = new TrainingRoom({ ...duel, obstacles: [{ x: 650, y: 820, halfWidth: 24, halfHeight: 130, height: 120, kind: 'wall' }], encounters: [{ x: 400, y: 820, enemies: [{ x: 900, y: 820 }] }] });\n  advance(room, 7);\n  assert.ok(room.snapshot.enemies[0].x < 600);\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B031",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 101,
+      "name": "三组按死亡推进，完成后仍可操作，重试清空全部技能和进度",
+      "input_time_and_assertions": "test('三组按死亡推进，完成后仍可操作，重试清空全部技能和进度', () => {\n  const full = new TrainingRoom(TANGGU);\n  assert.deepEqual([0,1,2].map(g => full.snapshot.enemies.filter(e => e.group === g).length), [3,4,5]);\n  const room = new TrainingRoom({ ...duel, encounters: [0,1,2].map(() => ({ x: 400, y: 820, enemies: [{ x: 620, y: 820 }] })) });\n  room.update(idle, 0);\n  assert.deepEqual(room.snapshot.enemies.map(e => e.phase), ['chase','inactive','inactive']);\n  advance(room, 5.8, { ...idle, fire: true });\n  assert.equal(room.snapshot.status, 'complete');\n  assert.equal(room.snapshot.encounter, 3);\n  const x = room.snapshot.player.x;\n  advance(room, 0.1, { ...idle, moveX: 1 });\n  assert.ok(room.snapshot.player.x > x);\n  room.update({ ...idle, rain: true, aim: { x: 650, y: 820 } }, 0);\n  for (let i = 0; i < 20; i++) room.reset();\n  const state = room.snapshot;\n  assert.equal(state.status,'running'); assert.equal(state.health,100); assert.equal(state.encounter,0);\n  assert.equal(state.arrows.length,0); assert.equal(state.rains.length,0); assert.equal(state.effects.length,0);\n  assert.equal(state.rainPreview,null); assert.deepEqual(state.cooldowns,{dodge:0,pierce:0,rain:0});\n  assert.ok(state.enemies.every(e => e.phase === 'inactive' && e.health === 60));\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B032",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 122,
+      "name": "受击取消未发箭雨且不退冷却，硬直中不能发起技能或闪避",
+      "input_time_and_assertions": "test('受击取消未发箭雨且不退冷却，硬直中不能发起技能或闪避', () => {\n  const room = new TrainingRoom(duel);\n  advance(room, 0.38);\n  room.update({ ...idle, rain: true, aim: { x: 450, y: 820 } },0);\n  assert.equal(room.snapshot.cooldowns.rain,8);\n  advance(room,0.09);\n  assert.equal(room.snapshot.health,80);\n  assert.equal(room.snapshot.rainPreview,null);\n  assert.equal(room.snapshot.rains.length,0);\n  assert.ok(room.snapshot.cooldowns.rain>7.8);\n  room.update({...idle,pierce:true,dodge:true},0);\n  assert.equal(room.snapshot.cooldowns.pierce,0);\n  assert.equal(room.snapshot.cooldowns.dodge,0);\n  advance(room,0.15);\n  room.update({...idle,dodge:true},0);\n  assert.equal(room.snapshot.cooldowns.dodge,1);\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B033",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 140,
+      "name": "暂停取消未释放技能但保留冷却，已生效箭雨与敌人状态冻结，恢复后继续",
+      "input_time_and_assertions": "test('暂停取消未释放技能但保留冷却，已生效箭雨与敌人状态冻结，恢复后继续', () => {\n  const room = new TrainingRoom({ ...duel, encounters: [{x:400,y:820,enemies:[{x:700,y:820}]}] });\n  room.update(idle,0);\n  room.update({...idle,rain:true,aim:{x:700,y:820}},0);\n  advance(room,0.48);\n  assert.equal(room.snapshot.enemies[0].health,45);\n  room.setPaused(true);\n  const paused = room.snapshot;\n  advance(room,1,{...idle,moveX:1,pierce:true,dodge:true,fire:true});\n  assert.deepEqual(room.snapshot,paused);\n  room.setPaused(false);\n  advance(room,0.36);\n  assert.equal(room.snapshot.enemies[0].health,15);\n  assert.ok(room.snapshot.cooldowns.rain>7);\n  room.reset();room.update(idle,0);\n  room.update({...idle,pierce:true},0);\n  room.setPaused(true);room.setPaused(false);\n  advance(room,0.3);\n  assert.equal(room.snapshot.arrows.length,0);\n  assert.ok(room.snapshot.cooldowns.pierce>3.6);\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B034",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 162,
+      "name": "跨越箭雨前摇的长帧只推进生效后的余量，不提前结算后续段",
+      "input_time_and_assertions": "test('跨越箭雨前摇的长帧只推进生效后的余量，不提前结算后续段', () => {\n  const room = new TrainingRoom({ ...duel, encounters: [{x:400,y:820,enemies:[{x:700,y:820}]}] });\n  room.update(idle,0);room.update({...idle,rain:true,aim:{x:700,y:820}},0);\n  advance(room,0.4);room.update(idle,0.1);\n  assert.ok(Math.abs(room.snapshot.rains[0].age-0.05)<0.0001);\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B035",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 169,
+      "name": "释放箭的长帧只推进离弦后的时间，不额外增加射程",
+      "input_time_and_assertions": "test('释放箭的长帧只推进离弦后的时间，不额外增加射程', () => {\n  const room = new TrainingRoom({...duel,encounters:[]});\n  room.update(idle,0);room.update({...idle,fire:true},0.1);\n  assert.equal(room.snapshot.arrows.length,1);\n  assert.ok(Math.abs(room.snapshot.arrows[0].age-0.02)<0.0001);\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B036",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 176,
+      "name": "跨越闪避结束的长帧保留剩余普通移动时间",
+      "input_time_and_assertions": "test('跨越闪避结束的长帧保留剩余普通移动时间', () => {\n  const room = new TrainingRoom({...duel,encounters:[]});\n  room.update(idle,0);room.update({...idle,moveX:1,dodge:true},0);\n  room.update({...idle,moveX:1},0.15);room.update({...idle,moveX:1},0.1);\n  assert.ok(Math.abs(room.snapshot.player.x-531)<0.001);\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B037",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 183,
+      "name": "闪避无敌窗结束后仍处于有效挥击区域会受伤，不能多保护一个长帧",
+      "input_time_and_assertions": "test('闪避无敌窗结束后仍处于有效挥击区域会受伤，不能多保护一个长帧', () => {\n  const room = new TrainingRoom({...duel,obstacles:[{x:375,y:820,halfWidth:1,halfHeight:150,height:120,kind:'wall'}]});\n  advance(room,0.35);room.update({...idle,moveX:-1,dodge:true},0);\n  room.update({...idle,moveX:-1},0.13);\n  assert.equal(room.snapshot.health,80);\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B038",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 190,
+      "name": "敌人跨越预警和挥击边界保留余量，闪避不会因长帧多受一次伤",
+      "input_time_and_assertions": "test('敌人跨越预警和挥击边界保留余量，闪避不会因长帧多受一次伤', () => {\n  const layout = {...duel,obstacles:[{x:375,y:820,halfWidth:1,halfHeight:150,height:120,kind:'wall'}]};\n  for (const coarse of [true,false]) {\n    const room = new TrainingRoom(layout);\n    advance(room,0.44);room.update({...idle,moveX:-1,dodge:true},0);\n    if(coarse){room.update({...idle,moveX:-1},0.1);room.update({...idle,moveX:-1},0.03);}\n    else advance(room,0.13,{...idle,moveX:-1});\n    assert.equal(room.snapshot.health,100);\n    assert.equal(room.snapshot.enemies[0].phase,'recover');\n  }\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B039",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 202,
+      "name": "箭寿命结束后的长帧不再延长穿透箭射程",
+      "input_time_and_assertions": "test('箭寿命结束后的长帧不再延长穿透箭射程', () => {\n  const layout = {...duel,encounters:[],targets:[{x:1730,y:820.8}]};\n  for (const coarse of [true,false]) {\n    const room = new TrainingRoom(layout);\n    const aim = {...idle,aim:{x:1000,y:776}};\n    room.update(aim,0);room.update({...aim,pierce:true},0);room.update(aim,0.18);\n    advance(room,1.39,aim);\n    if(coarse)room.update(aim,0.1);else advance(room,0.1,aim);\n    assert.equal(room.snapshot.hits,0);\n    assert.equal(room.snapshot.arrows.length,0);\n  }\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B040",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 215,
+      "name": "暂停中断闪避位移且保留冷却，恢复后没有新输入不会滑行",
+      "input_time_and_assertions": "test('暂停中断闪避位移且保留冷却，恢复后没有新输入不会滑行', () => {\n  const room = new TrainingRoom({...duel,encounters:[]});\n  room.update({...idle,moveX:1,dodge:true},0);room.update({...idle,moveX:1},0.05);\n  room.setPaused(true);room.setPaused(false);\n  const x = room.snapshot.player.x;\n  room.update(idle,0.05);\n  assert.equal(room.snapshot.player.x,x);\n  assert.equal(room.snapshot.dodge,0);\n  assert.ok(room.snapshot.cooldowns.dodge>0);\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B041",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 226,
+      "name": "挥击结束后才进入范围不会被追溯扣血，长短帧结果一致",
+      "input_time_and_assertions": "test('挥击结束后才进入范围不会被追溯扣血，长短帧结果一致', () => {\n  for(const coarse of [true,false]) {\n    const room = new TrainingRoom(duel);\n    room.update(idle,0);advance(room,0.14,{...idle,moveX:-1});advance(room,0.39);\n    if(coarse)room.update({...idle,moveX:1},0.1);else advance(room,0.1,{...idle,moveX:1});\n    assert.equal(room.snapshot.health,100);\n    assert.equal(room.snapshot.enemies[0].phase,'recover');\n  }\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B042",
+      "source": "tests/Tanggu.test.cjs",
+      "line": 237,
+      "name": "三组共十二只影偶混合三种外观，外观不改变近战基础属性",
+      "input_time_and_assertions": "test('三组共十二只影偶混合三种外观，外观不改变近战基础属性', () => {\n  const room = new TrainingRoom(TANGGU);\n  const enemies = room.snapshot.enemies;\n  assert.equal(enemies.length,12);\n  assert.deepEqual([...new Set(enemies.map(e=>e.appearance))].sort(),['bird','paper','wood']);\n  assert.ok(enemies.every(e=>e.health===60&&e.phase==='inactive'));\n})",
+      "source_sha256": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034"
+    },
+    {
+      "id": "B043",
+      "source": "tests/TangguGuidance.test.cjs",
+      "line": 6,
+      "name": "汤谷主路、两支路与捷径按通路区域给出地标名，支路重叠处优先显示探索区域",
+      "input_time_and_assertions": "test('汤谷主路、两支路与捷径按通路区域给出地标名，支路重叠处优先显示探索区域',()=>{\n for(const [point,name] of [[{x:400,y:820},'扶桑残径'],[{x:1430,y:720},'断垣之道'],[{x:2110,y:750},'日鸟石庭'],[{x:840,y:365},'碑林幽径'],[{x:1080,y:760},'碑林幽径'],[{x:1660,y:1240},'祭火林地'],[{x:1865,y:1100},'祭火林地']])assert.equal(tangguGuidance(point,0,false).region,name);\n assert.equal(tangguGuidance({x:0,y:0},0,false).region,'汤谷');\n})",
+      "source_sha256": "9b0b06beb915ee6220e727e3afdca04f3efdc3c7604421ad4faabbdd180e5825"
+    },
+    {
+      "id": "B044",
+      "source": "tests/TangguGuidance.test.cjs",
+      "line": 11,
+      "name": "下一地标使用遭遇自身名称和实际遭遇数，完成后允许回头探索",
+      "input_time_and_assertions": "test('下一地标使用遭遇自身名称和实际遭遇数，完成后允许回头探索',()=>{\n const room=new TrainingRoom(TANGGU);assert.equal(room.snapshot.totalEncounters,TANGGU.encounters.length);\n TANGGU.encounters.forEach((g,i)=>assert.equal(tangguGuidance(TANGGU.spawn,i,false).landmark,`下一地标 · ${g.landmark}`));\n assert.equal(tangguGuidance(TANGGU.spawn,3,true).landmark,'主路已肃清 · 可回头探索');\n})",
+      "source_sha256": "9b0b06beb915ee6220e727e3afdca04f3efdc3c7604421ad4faabbdd180e5825"
+    },
+    {
+      "id": "B045",
+      "source": "tests/TangguGuidance.test.cjs",
+      "line": 17,
+      "name": "三组战斗地标位于石材庭院，铺路折线的所有分段均由通路覆盖",
+      "input_time_and_assertions": "test('三组战斗地标位于石材庭院，铺路折线的所有分段均由通路覆盖',()=>{\n for(const g of TANGGU.encounters)assert.ok(TANGGU.walkableAreas.some(a=>a.material==='stone'&&g.x>=a.left&&g.x<=a.right&&g.y>=a.top&&g.y<=a.bottom));\n for(let i=1;i<TANGGU.mainRoute.length;i++)for(let step=0;step<=20;step++){\n  const a=TANGGU.mainRoute[i-1],b=TANGGU.mainRoute[i],x=a.x+(b.x-a.x)*step/20,y=a.y+(b.y-a.y)*step/20;\n  assert.ok(TANGGU.walkableAreas.some(r=>x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom));\n }\n})",
+      "source_sha256": "9b0b06beb915ee6220e727e3afdca04f3efdc3c7604421ad4faabbdd180e5825"
+    },
+    {
+      "id": "B046",
+      "source": "tests/TangguRoutes.test.cjs",
+      "line": 10,
+      "name": "起点草坡有可见边界：不能穿过道路外侧，但可沿主路向右行走",
+      "input_time_and_assertions": "test('起点草坡有可见边界：不能穿过道路外侧，但可沿主路向右行走', () => {\n  const room = new TrainingRoom(TANGGU);\n  advance(room, 1.2, { ...idle, moveY: -1 });\n  assert.ok(room.snapshot.player.y >= 662, '草坡边界应阻止走入道路外侧');\n  advance(room, 0.6, { ...idle, moveX: 1 });\n  assert.ok(room.snapshot.player.x > 520, '沿主路仍能前进');\n})",
+      "source_sha256": "72776773fa0403a94b64cf4401c871b24f9424ca62571847a42c51b1867d5104"
+    },
+    {
+      "id": "B047",
+      "source": "tests/TangguRoutes.test.cjs",
+      "line": 27,
+      "name": "主路岔口可往返两条支路，关闭捷径不能穿过，主路仍能到第三庭院",
+      "input_time_and_assertions": "test('主路岔口可往返两条支路，关闭捷径不能穿过，主路仍能到第三庭院', () => {\n  const room = new TrainingRoom({ ...TANGGU, encounters: [] });\n  for (const [x,y] of [[650,820],[1080,820],[1080,340],[850,340],[1080,340],[1080,790],[1240,790],[1430,720],[1550,720],[1550,1250],[1800,1250],[1865,1180],[1865,1130]]) walkTo(room,x,y);\n  advance(room, 1, { ...idle, moveY: -1 });\n  assert.ok(room.snapshot.player.y >= 1071, '关闭的栅门阻挡内侧通行');\n  for (const [x,y] of [[1865,1180],[1800,1250],[1550,1250],[1550,720],[1800,720],[1880,750],[2300,950]]) walkTo(room,x,y);\n  room.reset();\n  assert.deepEqual({x:room.snapshot.player.x,y:room.snapshot.player.y},{x:400,y:820});\n})",
+      "source_sha256": "72776773fa0403a94b64cf4401c871b24f9424ca62571847a42c51b1867d5104"
+    },
+    {
+      "id": "B048",
+      "source": "tests/TangguRoutes.test.cjs",
+      "line": 37,
+      "name": "命中反馈区分普通箭与穿透箭，特效事件不改变原伤害",
+      "input_time_and_assertions": "test('命中反馈区分普通箭与穿透箭，特效事件不改变原伤害', () => {\n  const duel = { ...TANGGU, pillars: [], obstacles: [], encounters: [{x:400,y:820,enemies:[{x:620,y:820}]}] };\n  const normal = new TrainingRoom(duel);\n  for(let i=0;i<100&&!normal.snapshot.effects.length;i++) normal.update({ ...idle, aim:{x:620,y:776}, fire:true },0.01);\n  assert.equal(normal.snapshot.enemies[0].health,45);\n  assert.equal(normal.snapshot.effects[0]?.kind,'normal');\n  const piercing = new TrainingRoom(duel);\n  for(let i=0;i<100&&!piercing.snapshot.effects.length;i++) piercing.update({ ...idle, aim:{x:620,y:776}, pierce:true },0.01);\n  assert.equal(piercing.snapshot.enemies[0].health,20);\n  assert.equal(piercing.snapshot.effects[0]?.kind,'pierce');\n})",
+      "source_sha256": "72776773fa0403a94b64cf4401c871b24f9424ca62571847a42c51b1867d5104"
+    },
+    {
+      "id": "B049",
+      "source": "tests/TangguRoutes.test.cjs",
+      "line": 49,
+      "name": "栅门只在可见轮廓阻箭，门北侧空白处普通箭与Q均可飞过",
+      "input_time_and_assertions": "test('栅门只在可见轮廓阻箭，门北侧空白处普通箭与Q均可飞过', () => {\n  for (const kind of ['normal','pierce']) {\n    const clear = new TrainingRoom({ ...TANGGU, spawn:{x:1785,y:985}, encounters:[], pillars:[] });\n    advance(clear,0.34,{...idle,aim:{x:2300,y:933},fire:kind==='normal',pierce:kind==='pierce'});\n    assert.equal(clear.snapshot.effects.length,0,`${kind}不应命中门上方的空白处`);\n    assert.ok(clear.snapshot.arrows.some(a=>a.x>1931),`${kind}应正常飞过门上方`);\n    const blocked = new TrainingRoom({ ...TANGGU, spawn:{x:1865,y:1130}, encounters:[], pillars:[] });\n    for(let i=0;i<100&&!blocked.snapshot.effects.length;i++) blocked.update({...idle,aim:{x:1865,y:900},fire:kind==='normal',pierce:kind==='pierce'},0.01);\n    assert.equal(blocked.snapshot.arrows.length,0,`${kind}仍应被可见的关闭栅门挡住`);\n    assert.ok(blocked.snapshot.effects.length>0,`${kind}应显示门上的命中反馈`);\n  }\n})",
+      "source_sha256": "72776773fa0403a94b64cf4401c871b24f9424ca62571847a42c51b1867d5104"
+    },
+    {
+      "id": "B050",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 11,
+      "name": "玩家在房间中按住右移一秒后跑出220像素，松键立即停止",
+      "input_time_and_assertions": "test('玩家在房间中按住右移一秒后跑出220像素，松键立即停止', () => {\n  const room = new TrainingRoom();\n  advance(room, 1, { ...idle, moveX: 1 });\n  assert.ok(Math.abs(room.snapshot.player.x - 620) < 0.01);\n  assert.equal(room.snapshot.player.y, 440);\n  advance(room, 0.5);\n  assert.ok(Math.abs(room.snapshot.player.x - 620) < 0.01);\n  assert.equal(room.snapshot.player.moving, false);\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    },
+    {
+      "id": "B051",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 21,
+      "name": "斜向跑动不加速，向右移动时仍可朝左瞄准",
+      "input_time_and_assertions": "test('斜向跑动不加速，向右移动时仍可朝左瞄准', () => {\n  const room = new TrainingRoom();\n  advance(room, 0.25, { ...idle, moveX: 1, moveY: -1, aim: { x: 100, y: 410 } });\n  assert.ok(Math.abs(Math.hypot(room.snapshot.player.x - 400, room.snapshot.player.y - 440) - 55) < 0.01);\n  assert.ok(Math.cos(room.snapshot.player.angle) < -0.9);\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    },
+    {
+      "id": "B052",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 28,
+      "name": "玩家被柱基挡住，沿柱移动可绕行，持续向下不会跑出房间",
+      "input_time_and_assertions": "test('玩家被柱基挡住，沿柱移动可绕行，持续向下不会跑出房间', () => {\n  const room = new TrainingRoom();\n  advance(room, 1, { ...idle, moveX: 1 });\n  advance(room, 0.5, { ...idle, moveY: -1 });\n  assert.ok(room.snapshot.player.y >= 389.9);\n  advance(room, 0.4, { ...idle, moveX: 1, moveY: -1 });\n  assert.ok(room.snapshot.player.x > 670);\n  advance(room, 5, { ...idle, moveY: 1 });\n  assert.ok(room.snapshot.player.y < 620);\n  assert.equal(room.snapshot.player.moving, false);\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    },
+    {
+      "id": "B053",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 40,
+      "name": "短按拉弦后松手仍射完一箭，靶只计一次且箭会清理",
+      "input_time_and_assertions": "test('短按拉弦后松手仍射完一箭，靶只计一次且箭会清理', () => {\n  const room = new TrainingRoom();\n  const aimed = { ...idle, aim: { x: 920, y: 387 } };\n  room.update({ ...aimed, fire: true }, 1 / 120);\n  advance(room, 1.5, aimed);\n  assert.equal(room.snapshot.hits, 1);\n  assert.equal(room.snapshot.arrows.length, 0);\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    },
+    {
+      "id": "B054",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 49,
+      "name": "按住按间隔连射，释放后不再增加待发射的箭",
+      "input_time_and_assertions": "test('按住按间隔连射，释放后不再增加待发射的箭', () => {\n  const room = new TrainingRoom();\n  const aimed = { ...idle, aim: { x: 920, y: 387 } };\n  advance(room, 3, { ...aimed, fire: true });\n  assert.equal(room.snapshot.hits, 7);\n  advance(room, 2, aimed);\n  const hits = room.snapshot.hits;\n  advance(room, 2, aimed);\n  assert.equal(room.snapshot.hits, hits);\n  assert.equal(room.snapshot.arrows.length, 0);\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    },
+    {
+      "id": "B055",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 61,
+      "name": "前摇中离开画面会取消这一箭，重新进入仍按住时不会自行续射",
+      "input_time_and_assertions": "test('前摇中离开画面会取消这一箭，重新进入仍按住时不会自行续射', () => {\n  const room = new TrainingRoom();\n  const aimed = { ...idle, aim: { x: 920, y: 387 }, fire: true };\n  room.update(aimed, 0.01);\n  advance(room, 0.2, { ...aimed, pointerInside: false });\n  advance(room, 2, aimed);\n  assert.equal(room.snapshot.hits, 0);\n  assert.equal(room.snapshot.arrows.length, 0);\n  room.update({ ...aimed, fire: false }, 0.01);\n  advance(room, 1, aimed);\n  assert.ok(room.snapshot.hits >= 1);\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    },
+    {
+      "id": "B056",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 74,
+      "name": "暂停冻结箭和人物，取消未发攻击；恢复后须重新释放再按下",
+      "input_time_and_assertions": "test('暂停冻结箭和人物，取消未发攻击；恢复后须重新释放再按下', () => {\n  const room = new TrainingRoom();\n  const aimed = { ...idle, aim: { x: 920, y: 387 }, fire: true };\n  advance(room, 0.1, aimed);\n  room.setPaused(true);\n  const before = room.snapshot;\n  advance(room, 1, { ...aimed, moveX: 1 });\n  assert.deepEqual(room.snapshot, before);\n  room.setPaused(false);\n  advance(room, 2, aimed);\n  assert.equal(room.snapshot.hits, 1);\n  assert.equal(room.snapshot.arrows.length, 0);\n  room.update({ ...aimed, fire: false }, 0.01);\n  advance(room, 1, aimed);\n  assert.ok(room.snapshot.hits > 1);\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    },
+    {
+      "id": "B057",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 91,
+      "name": "柱先于后方靶命中，绕到另一侧后能命中同一靶",
+      "input_time_and_assertions": "test('柱先于后方靶命中，绕到另一侧后能命中同一靶', () => {\n  const room = new TrainingRoom();\n  const aim = { x: 820, y: 247 };\n  advance(room, 2, { ...idle, aim, fire: true });\n  assert.equal(room.snapshot.hits, 0);\n  advance(room, 2, { ...idle, moveX: 1, aim });\n  advance(room, 1, { ...idle, aim, fire: true });\n  assert.ok(room.snapshot.hits > 0);\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    },
+    {
+      "id": "B058",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 101,
+      "name": "反复重置清除箭、反馈、计数和待发攻击，暂停时重置无效",
+      "input_time_and_assertions": "test('反复重置清除箭、反馈、计数和待发攻击，暂停时重置无效', () => {\n  const room = new TrainingRoom();\n  advance(room, 1, { ...idle, aim: { x: 920, y: 387 }, fire: true });\n  for (let i = 0; i < 20; i++) room.reset();\n  assert.deepEqual(room.snapshot.player, { x: 400, y: 440, angle: 0, facing: 0, moving: false });\n  assert.equal(room.snapshot.hits, 0);\n  assert.equal(room.snapshot.arrows.length, 0);\n  assert.equal(room.snapshot.effects.length, 0);\n  assert.equal(room.snapshot.windup, null);\n  advance(room, 0.1, { ...idle, moveX: 1 });\n  room.setPaused(true);\n  const before = room.snapshot;\n  room.reset();\n  assert.deepEqual(room.snapshot, before);\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    },
+    {
+      "id": "B059",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 117,
+      "name": "箭能命中可见靶面的上沿，而不是只检测靶下方",
+      "input_time_and_assertions": "test('箭能命中可见靶面的上沿，而不是只检测靶下方', () => {\n  const room = new TrainingRoom();\n  const aimed = { ...idle, aim: { x: 920, y: 358 } };\n  room.update({ ...aimed, fire: true }, 1 / 120);\n  advance(room, 1.5, aimed);\n  assert.equal(room.snapshot.hits, 1);\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    },
+    {
+      "id": "B060",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 125,
+      "name": "精修人物的箭从持弓握点释放，肩部近零瞄准保留原方向",
+      "input_time_and_assertions": "test('精修人物的箭从持弓握点释放，肩部近零瞄准保留原方向', () => {\n  const room = new TrainingRoom();\n  const aim = { x: 920, y: 375 };\n  advance(room, 0.09, { ...idle, aim, fire: true });\n  const { player, arrows } = room.snapshot;\n  assert.equal(arrows.length, 1);\n  const grip = room.snapshot.grip;\n  assert.ok(Math.abs(Math.atan2(aim.y - grip.y, aim.x - grip.x) - arrows[0].angle) < 0.0001);\n  assert.ok(Math.abs((arrows[0].x - grip.x) * Math.sin(player.angle) - (arrows[0].y - grip.y) * Math.cos(player.angle)) < 0.001);\n  room.update({ ...idle, aim: { x: player.x, y: player.y - ROOM.shoulderHeight } }, 0);\n  assert.equal(room.snapshot.player.angle, player.angle);\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    },
+    {
+      "id": "B061",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 138,
+      "name": "冷却内点击不排队，松手后不会在下次可攻击时补发",
+      "input_time_and_assertions": "test('冷却内点击不排队，松手后不会在下次可攻击时补发', () => {\n  const room = new TrainingRoom();\n  const aimed = { ...idle, aim: { x: 920, y: 375 } };\n  advance(room, 0.1, { ...aimed, fire: true });\n  advance(room, 0.05, aimed);\n  room.update({ ...aimed, fire: true }, 0.01);\n  advance(room, 2, aimed);\n  assert.equal(room.snapshot.hits, 1);\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    },
+    {
+      "id": "B062",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 148,
+      "name": "大步长箭路仍只命中最早接触，不越过靶或柱",
+      "input_time_and_assertions": "test('大步长箭路仍只命中最早接触，不越过靶或柱', () => {\n  for (const [aim, expected] of [[{ x: 920, y: 375 }, 1], [{ x: 820, y: 235 }, 0]]) {\n    const room = new TrainingRoom();\n    advance(room, 0.09, { ...idle, aim, fire: true });\n    room.update({ ...idle, aim }, 1);\n    assert.equal(room.snapshot.hits, expected);\n    assert.equal(room.snapshot.arrows.length, 0);\n  }\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    },
+    {
+      "id": "B063",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 158,
+      "name": "攻击显示依次拉弦、放箭、收势；取消前摇后不显示虚假的放箭动作",
+      "input_time_and_assertions": "test('攻击显示依次拉弦、放箭、收势；取消前摇后不显示虚假的放箭动作', () => {\n  const room = new TrainingRoom();\n  room.update({ ...idle, fire: true }, 0.01);\n  assert.equal(room.snapshot.attack, 'draw');\n  advance(room, 0.08);\n  assert.equal(room.snapshot.attack, 'release');\n  advance(room, 0.08);\n  assert.equal(room.snapshot.attack, 'recover');\n  advance(room, 0.1);\n  assert.equal(room.snapshot.attack, 'idle');\n  room.reset();\n  room.update(idle, 0);\n  room.update({ ...idle, fire: true }, 0.01);\n  room.update({ ...idle, pointerInside: false }, 0);\n  assert.equal(room.snapshot.attack, 'idle');\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    },
+    {
+      "id": "B064",
+      "source": "tests/TrainingRoom.test.cjs",
+      "line": 175,
+      "name": "四向持弓使用对应手部握点，箭从可见握点沿准星方向飞行",
+      "input_time_and_assertions": "test('四向持弓使用对应手部握点，箭从可见握点沿准星方向飞行', () => {\n  const aims = [{ x: 1000, y: 388 }, { x: 400, y: 650 }, { x: 100, y: 388 }, { x: 400, y: 130 }];\n  for (let facing = 0; facing < 4; facing++) {\n    const room = new TrainingRoom();\n    advance(room, 0.09, { ...idle, aim: aims[facing], fire: true });\n    const state = room.snapshot;\n    assert.equal(state.player.facing, facing);\n    assert.equal(state.grip.x, state.player.x + ROOM.grips[facing].x);\n    assert.equal(state.grip.y, state.player.y + ROOM.grips[facing].y);\n    assert.equal(state.arrows.length, 1);\n    assert.ok(Math.abs(Math.atan2(aims[facing].y - state.grip.y, aims[facing].x - state.grip.x) - state.arrows[0].angle) < 0.0001);\n  }\n})",
+      "source_sha256": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c"
+    }
+  ]
+}
