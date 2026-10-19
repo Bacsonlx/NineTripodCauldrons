@@ -5,6 +5,7 @@ var player: Dictionary = {"x": 400.0, "y": 600.0, "moving": false, "angle": 0.0,
 var bounds: Rect2 = Rect2(100, 180, 1080, 640)
 var obstacle: Rect2 = Rect2(720, 430, 80, 36)
 const GRIPS: Array[Vector2] = [Vector2(27, -51), Vector2(24, -48), Vector2(-21, -48), Vector2(-22, -53)]
+const WORLD_SIZE: Vector2 = Vector2(1280, 900)
 var arrows: Array[Dictionary] = []
 var effects: Array[Dictionary] = []
 var shots: int = 0
@@ -122,7 +123,7 @@ func step(input: Dictionary, seconds: float) -> void:
 		arrow.x = end_point.x
 		arrow.y = end_point.y
 		arrow.age += elapsed
-		if arrow.age < 2.0 - 0.000001 and bounds.has_point(end_point):
+		if arrow.age < 2.0 - 0.000001:
 			active.append(arrow)
 	arrows = active
 	var live_effects: Array[Dictionary] = []
@@ -255,6 +256,14 @@ func contact(from: Vector2, to: Vector2) -> Dictionary:
 		if candidate >= 0 and (t < 0 or candidate < t):
 			t = candidate
 			is_enemy = true
+	# 空中弹道使用世界边界，不能使用脚点可行走区域裁掉角色上方的箭。
+	for axis in 2:
+		if to[axis] < 0 or to[axis] > WORLD_SIZE[axis]:
+			var edge: float = 0.0 if to[axis] < 0 else WORLD_SIZE[axis]
+			var candidate: float = 0.0 if from[axis] < 0 or from[axis] > WORLD_SIZE[axis] else (edge - from[axis]) / (to[axis] - from[axis])
+			if t < 0 or candidate < t:
+				t = candidate
+				is_enemy = false
 	if t < 0:
 		return {}
 	var point: Vector2 = from.lerp(to, t)
@@ -295,8 +304,8 @@ func clear_path(from: Vector2, to: Vector2) -> bool:
 
 func find_route(from: Vector2, to: Vector2) -> Array[Vector2]:
 	# 与参照相同的32单位四向网格；实际移动仍按脚点碰撞。
-	var columns: int = 40
-	var rows: int = 29
+	var columns: int = ceili(WORLD_SIZE.x / 32)
+	var rows: int = ceili(WORLD_SIZE.y / 32)
 	var start: Vector2i = Vector2i(floori(from.x / 32), floori(from.y / 32))
 	var previous: Dictionary = {start: start}
 	var queue: Array[Vector2i] = [start]

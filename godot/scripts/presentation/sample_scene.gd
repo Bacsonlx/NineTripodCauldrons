@@ -76,10 +76,10 @@ func pose(node: Sprite2D, key: String, index: int, point: Vector2) -> void:
 
 func update_camera() -> void:
 	var size: Vector2 = get_viewport_rect().size
-	view_zoom = maxf(size.y / 720.0, maxf(size.x / 1280.0, size.y / 900.0))
+	view_zoom = maxf(size.y / 720.0, maxf(size.x / Room.WORLD_SIZE.x, size.y / Room.WORLD_SIZE.y))
 	var visible: Vector2 = size / view_zoom
 	var player_point: Vector2 = Vector2(room.snapshot().player.x, room.snapshot().player.y)
-	view_origin = Vector2(clampf(player_point.x - visible.x / 2.0, 0, maxf(0, 1280.0 - visible.x)), clampf(player_point.y - visible.y / 2.0, 0, maxf(0, 900.0 - visible.y)))
+	view_origin = Vector2(clampf(player_point.x - visible.x / 2.0, 0, maxf(0, Room.WORLD_SIZE.x - visible.x)), clampf(player_point.y - visible.y / 2.0, 0, maxf(0, Room.WORLD_SIZE.y - visible.y)))
 	camera.zoom = Vector2.ONE * view_zoom
 	camera.position = view_origin + visible / 2.0
 	camera.force_update_scroll()
@@ -114,7 +114,6 @@ func _physics_process(seconds: float) -> void:
 		clock += seconds
 		if state.player.moving:
 			walk_time += seconds
-	update_camera()
 	present(seconds)
 	queue_redraw()
 
@@ -201,10 +200,12 @@ func _draw() -> void:
 	if state.is_empty():
 		return
 	for character in [state.player, state.enemies[0]]:
-		if character.get("phase", "") == "inactive":
+		var phase: String = character.get("phase", "")
+		if phase == "inactive" or (phase == "dead" and character.timer <= 0):
 			continue
+		var alpha: float = character.timer / 0.6 if phase == "dead" else 1.0
 		draw_set_transform(Vector2(character.x, character.y), 0, Vector2(1, 0.35))
-		draw_circle(Vector2.ZERO, 18, Color(0.02, 0.03, 0.02, 0.4))
+		draw_circle(Vector2.ZERO, 18, Color(0.02, 0.03, 0.02, 0.4 * alpha))
 		draw_set_transform(Vector2.ZERO)
 	var enemy: Dictionary = state.enemies[0]
 	if enemy.phase == "warn" or enemy.phase == "swing":
