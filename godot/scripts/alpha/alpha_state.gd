@@ -138,6 +138,9 @@ var items: Array[Dictionary] = []
 var camp: bool = true
 var elapsed: float = 0.0
 var message: String = "先选物品，再点击目标格；营地整理暂停冒险。"
+var departed: bool = false
+var shadow_id: int = -1
+var lost_shadows: Array[int] = []
 var burn: Dictionary = {}
 var last_burn: Dictionary = {}
 var burn_held: bool = false
@@ -150,7 +153,7 @@ func _init(seed_number: int = 1) -> void:
 	seed_value=seed_number
 
 func reset(spawn: Vector2) -> void:
-	items.clear(); camp=true; elapsed=0; next_id=0; next_order=0; ranking={}; burn={}; last_burn={}; burn_held=false
+	items.clear(); camp=true; elapsed=0; next_id=0; next_order=0; ranking={}; burn={}; last_burn={}; burn_held=false; departed=false; shadow_id=-1; lost_shadows.clear()
 	message="白盒：仅空间规则已接通，内容卡中的战斗效果尚未实现。"
 	add_item("训练弓","equipment",Vector2i(0,0))
 	add_item("布履","equipment",Vector2i(3,0))
@@ -181,10 +184,11 @@ static func shape(item: Dictionary, rotated: bool) -> Vector2i:
 
 func at_cell(cell: Vector2i) -> Dictionary:
 	for item in items:
-		if item.region!="ground" and Rect2i(item.cell,shape(item,item.rotated)).has_point(cell): return item
+		if REGIONS.has(item.region) and Rect2i(item.cell,shape(item,item.rotated)).has_point(cell): return item
 	return {}
 
 func place(item: Dictionary, cell: Vector2i, rotated: bool) -> bool:
+	if item.get("shadow",false) and departed: message="出发残影本局锁定位置"; return false
 	if item.state=="burning": message="燃烧中仍占原格，不能移动"; return false
 	if item.get("locked",false): message="物品被锁定，不能移动"; return false
 	var region: String = ""
@@ -192,9 +196,10 @@ func place(item: Dictionary, cell: Vector2i, rotated: bool) -> bool:
 	for key in REGIONS:
 		if REGIONS[key].encloses(rectangle): region=key; break
 	if region.is_empty(): message="放置失败：越界、跨区或仓格未开放"; return false
+	if item.get("shadow",false) and region!="altar": message="残影须承诺祭坛空间"; return false
 	if item.kind=="神兽" and region!="equipment": message="神兽须在装备区"; return false
 	for other in items:
-		if other.id!=item.id and other.region!="ground" and rectangle.intersects(Rect2i(other.cell,shape(other,other.rotated))):
+		if other.id!=item.id and REGIONS.has(other.region) and rectangle.intersects(Rect2i(other.cell,shape(other,other.rotated))):
 			message="放置失败：目标格已占用"; return false
 	for sealed in ranking.get("sealed",[]):
 		if rectangle.has_point(sealed) and (item.region=="ground" or not Votes.cells(item).has(sealed)):
@@ -206,12 +211,16 @@ func place(item: Dictionary, cell: Vector2i, rotated: bool) -> bool:
 
 func command(action: Dictionary, room: RefCounted) -> void:
 	var kind: String = action.get("action","")
+	if kind=="shadow":
+		choose_shadow(action,room); return
 	if kind=="burn":
 		if room.paused or room.reading: message="暂停或阅读中不能点燃"; return
 		ignite(); return
 	if kind=="depart":
 		if room.paused or room.reading: message="先恢复暂停或关闭阅读"; return
-		camp=false; room.cancel_input(); message="冒险中；返回起点且清除已激活敌人后可整理"; return
+		for candidate in items:
+			if candidate.get("shadow",false) and candidate.region!="altar": message="先实际摆好残影或选择不带"; return
+		departed=true; camp=false; room.cancel_input(); message="冒险中；返回起点且清除已激活敌人后可整理"; return
 	if kind=="camp":
 		for enemy in room.snapshot().enemies:
 			if enemy.phase!="inactive" and enemy.phase!="dead": message="请先清除已激活影偶"; return
@@ -237,6 +246,7 @@ func command(action: Dictionary, room: RefCounted) -> void:
 	for candidate in items:
 		if candidate.id==action.get("id",-1): item=candidate; break
 	if item.is_empty(): message="物品实例不存在"; return
+	if item.get("shadow",false) and kind not in ["place"]: message="残影不能使用、改装或喂兽"; return
 	if kind=="discard" and item.state=="ash":
 		items.erase(item); message="已丢弃灰烬"; return
 	if kind=="fixture_lock" and camp and item.kind=="受控票物":
@@ -263,7 +273,7 @@ func snapshot() -> Dictionary:
 	for key in Votes.OPPOSITE:
 		cards.append(definition("白盒·"+key))
 		cards.append(definition("白盒装备·"+key))
-	var result: Dictionary = {"version":"tanggu-alpha-whitebox.1","seed":seed_value,"camp":camp,"elapsed":elapsed,"items":items.duplicate(true),"regions":REGIONS.duplicate(),"message":message,"cards":cards,"combatEffectsReady":false,"burn":burn.duplicate(true),"lastBurn":last_burn.duplicate(true)}
+	var result: Dictionary = {"version":"tanggu-alpha-whitebox.4","seed":seed_value,"camp":camp,"elapsed":elapsed,"items":items.duplicate(true),"regions":REGIONS.duplicate(),"message":message,"cards":cards,"combatEffectsReady":false,"departed":departed,"shadowId":shadow_id,"lostShadowIds":lost_shadows.duplicate(),"burn":burn.duplicate(true),"lastBurn":last_burn.duplicate(true)}
 
 	result.merge(ranking.duplicate(true))
 	return result
@@ -300,8 +310,10 @@ func advance(seconds: float, room: RefCounted) -> void:
 		var last: int = int(floor((burn.elapsed+0.000001)/burn.period))
 		for tick in range(first,last+1): burn.ticks.append(tick*burn.period)
 	if burn.remaining>0.000001: return
-	for item in items:
+	for item in items.duplicate():
 		if not burn.items.has(item.id): continue
+		if item.get("shadow",false):
+			lost_shadows.append(item.id); shadow_id=-1; items.erase(item); continue
 		item.state="ash"; item.description="灰烬保留原形状，不能投票或恢复原物，可丢弃"; item.name="灰烬·"+item.name; item.container=""; item.eligible=false; item.locked=false
 		item.region="ground"; item.world=Vector2(room.player.x,room.player.y)
 		for x in range(6,10):
@@ -309,3 +321,22 @@ func advance(seconds: float, room: RefCounted) -> void:
 	last_burn=burn.duplicate(true); burn={}
 	message="终极结束：灰烬自动入仓，无位留地，可丢弃；战斗效果未接通"
 	recount()
+
+func choose_shadow(action: Dictionary, room: RefCounted) -> void:
+	if departed or not camp or room.paused or room.reading or not burn.is_empty():
+		message="只可在首次出发前、未暂停且无终极时选择受控前局残影"; return
+	var title: String = action.get("name","")
+	var original: Dictionary = definition(title)
+	if not title.is_empty() and (original.is_empty() or original.kind in ["神兽","技能书"] or not Votes.OPPOSITE.has(original.container)):
+		message="此卡不是有归属的前局残影候选"; return
+	for previous in items.duplicate():
+		if previous.get("shadow",false): items.erase(previous)
+	shadow_id=-1
+	if title.is_empty(): message="本次不携带残影"; return
+	var item: Dictionary = add_item(title,"unplaced",Vector2i.ZERO)
+	item.shadow=true; item.fixture=true
+	item.quality=action.get("quality",item.quality) if Votes.BASE.has(action.get("quality",item.quality)) else item.quality
+	item.description="受控前局候选：保留原形、种类、品质，基础1票；只投票、不恢复原效果。出发后锁位，可点燃且不产灰。"
+	if item.kind=="装备": item.mainGlyph=true
+	shadow_id=item.id
+	message="已选择受控残影：请摆入祭坛；也可选择不带"

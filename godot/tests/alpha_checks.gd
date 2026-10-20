@@ -128,6 +128,42 @@ func run(check: Callable) -> void:
 	keyboard.update(Vector2(1000,549),true,0)
 	check.call(not keyboard_burn.snapshot().alpha.burn.is_empty(), "营地真实B输入与界面点燃按钮一致")
 
+	var shadow: TrainingRoom = Room.new({"mode":"alpha"})
+	shadow.update({"alpha":{"action":"shadow","name":"司晨","quality":"异"}},0)
+	check.call(shadow.snapshot().alpha.items.back().get("shadow",false), "可在出发前选择一个显式受控前局残影")
+
+	var original_shadow: int = shadow.snapshot().alpha.shadowId
+	shadow.update({"alpha":{"action":"depart"}},0)
+	check.call(shadow.snapshot().alpha.camp, "未摆好残影不能出发，必须承担真实空间")
+	shadow.update({"alpha":{"action":"place","id":original_shadow,"cell":Vector2i(8,0),"rotated":true}},0)
+	check.call(shadow.snapshot().alpha.votes["火"]==1 and shadow.snapshot().alpha.items.back().quality=="异" and shadow.snapshot().alpha.items.back().rotated, "异品两格残影保留品质和旋转形状但基础只投1票")
+	shadow.update({"alpha":{"action":"shadow","name":"素食","quality":"异"}},0)
+	var inherited_id: int = shadow.snapshot().alpha.shadowId
+	check.call(shadow.snapshot().alpha.items.filter(func(item: Dictionary): return item.get("shadow",false)).size()==1 and inherited_id!=original_shadow, "重新选择仍最多一件残影，不复制累积")
+	shadow.update({"alpha":{"action":"place","id":inherited_id,"cell":Vector2i(6,1),"rotated":false}},0)
+	check.call(shadow.snapshot().alpha.votes["木"]==2, "残影固定一票仍受真实同系气息加权")
+	sample(shadow,"快马",Vector2i(7,1))
+	check.call(shadow.snapshot().alpha.votes["木"]==1 and shadow.snapshot().alpha.votes["雷"]==0, "残影与实物正常正交对冲")
+	shadow.update({"alpha":{"action":"depart"}},0)
+	shadow.update({"alpha":{"action":"camp"}},0)
+	shadow.update({"alpha":{"action":"place","id":inherited_id,"cell":Vector2i(6,2)}},0)
+	check.call(shadow.snapshot().alpha.items.filter(func(item: Dictionary): return item.id==inherited_id)[0].cell==Vector2i(6,1) and shadow.snapshot().alpha.message.contains("锁定"), "出发后即使返回营地也不能移动残影")
+	shadow.update({"alpha":{"action":"use","id":inherited_id}},0)
+	check.call(shadow.snapshot().alpha.message.contains("不能使用"), "残影拒绝普通物品用途，不恢复原有效果")
+	shadow.update({"burn":true},0)
+	check.call(shadow.snapshot().alpha.items.filter(func(item: Dictionary): return item.id==inherited_id)[0].state=="burning", "锁定位置不禁止残影随所属容器点燃")
+	shadow.update({"alpha":{"action":"depart"}},0)
+	shadow.update({},20)
+	check.call(shadow.snapshot().alpha.items.filter(func(item: Dictionary): return item.id==inherited_id or item.state=="ash").is_empty() and shadow.snapshot().alpha.lostShadowIds.has(inherited_id), "残影燃后消失并记录失去实例，不产可回收灰烬")
+	shadow.update({"alpha":{"action":"camp"}},0)
+	var ordinary: int = sample(shadow,"素食",Vector2i(6,1))
+	check.call(shadow.snapshot().alpha.items.filter(func(item: Dictionary): return item.id==ordinary)[0].get("shadow",false)==false, "失去残影不封禁同种实物再获得")
+	var none: TrainingRoom = Room.new({"mode":"alpha"})
+	none.update({"alpha":{"action":"shadow","name":"司晨"}},0)
+	none.update({"alpha":{"action":"shadow","name":""}},0)
+	none.update({"alpha":{"action":"depart"}},0)
+	check.call(not none.snapshot().alpha.camp and none.snapshot().alpha.shadowId==-1, "可主动不携带残影并正常出发")
+
 func sample(room: TrainingRoom, title: String, cell: Vector2i, configuration: Dictionary = {}) -> int:
 	var intent: Dictionary = {"action":"sample","name":title}
 	intent.merge(configuration)

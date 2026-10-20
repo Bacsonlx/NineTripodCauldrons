@@ -104,6 +104,11 @@ func _ready() -> void:
 	weighted=CheckBox.new(); weighted.text="受控票物：额外倍率×1.5"; side.add_child(weighted)
 	eligible=CheckBox.new(); eligible.text="受控票物：有投票资格"; eligible.button_pressed=true; side.add_child(eligible)
 	button("生成受控样本到脚边",side,func(): send({"action":"sample","name":catalog.get_item_text(catalog.selected),"quality":quality.get_item_text(quality.selected),"weighted":weighted.button_pressed,"eligible":eligible.button_pressed,"mainGlyph":main_glyph.button_pressed}))
+	button("选此卡为受控前局残影",side,func():
+		send({"action":"shadow","name":catalog.get_item_text(catalog.selected),"quality":quality.get_item_text(quality.selected)})
+		selected=room.snapshot().alpha.shadowId; rotated=false
+	)
+	button("不携带残影",side,func(): send({"action":"shadow","name":""}))
 	label("受控样本只用于白盒，不是正式掉落或已实现的战斗效果。",column)
 	refresh()
 
@@ -118,7 +123,7 @@ func click_cell(cell: Vector2i) -> void:
 		send({"action":"place","id":selected,"cell":cell,"rotated":rotated})
 	else:
 		for item in room.snapshot().alpha.items:
-			if item.region!="ground" and Rect2i(item.cell,State.shape(item,item.rotated)).has_point(cell):
+			if State.REGIONS.has(item.region) and Rect2i(item.cell,State.shape(item,item.rotated)).has_point(cell):
 				selected=item.id; rotated=item.rotated; break
 
 func _process(_seconds: float) -> void:
@@ -138,6 +143,7 @@ func refresh() -> void:
 	var totals: PackedStringArray = []
 	for key in alpha.votes: totals.append("%s %d" % [key,alpha.votes[key]])
 	ranking_label.text=" · ".join(totals)+"\n显灵：%s ｜ 作祟：%s\n%s" % [alpha.winner if not alpha.winner.is_empty() else "无",alpha.harm if not alpha.harm.is_empty() else "无",alpha.reason]
+	ranking_label.text+="\n受控残影：%s ｜ 首次出发后锁位：%s" % ["不带" if alpha.shadowId<0 else str(alpha.shadowId),alpha.departed]
 	if not alpha.burn.is_empty(): ranking_label.text+="\n点燃 %s · 占位还剩 %.2f秒 · 周期记录 %s" % [alpha.burn.container,alpha.burn.remaining,str(alpha.burn.ticks)]
 	elif not alpha.lastBurn.is_empty(): ranking_label.text+="\n上次点燃 %s · 周期 %s（白盒记录）" % [alpha.lastBurn.container,str(alpha.lastBurn.ticks)]
 	var selected_item: Dictionary = {}
@@ -145,6 +151,7 @@ func refresh() -> void:
 		if item.id==selected: selected_item=item; break
 	var card: Dictionary = alpha.cards[catalog.selected]
 	detail.text="内容卡（战斗效果待接通）\n%s · %s · %s · %s\n%s\n\n%s" % [card.name,card.kind,card.quality,card.container,card.description,"未选实物" if selected_item.is_empty() else "选中：%s #%d\n%s朝向：%s" % [selected_item.name,selected_item.id,selected_item.region,"横／转" if rotated else "原形"]]
+	if selected_item.get("shadow",false): detail.text+="\n受控前局残影 · 原品质 %s · 基础票固定1\n原形 %s · 原种类 %s · 不恢复原效果" % [selected_item.quality,str(selected_item.size),selected_item.kind]
 	for record in alpha.breakdown:
 		if record.id==selected:
 			detail.text+="\n票数：%d × %.2f → %d − %d = %d\n资格：%s ｜ 气息：%s ｜ 入坛序：%d" % [record.base,record.multiplier,record.weighted,record.opposition,record.total,record.eligible,record.aura,record.order]
@@ -168,8 +175,8 @@ func refresh() -> void:
 		if alpha.auraCells.has(cell): tile.modulate=Color("98c8ae")
 		if alpha.sealed.has(cell): tile.text="封"; tile.modulate=Color("e1937e")
 		for item in alpha.items:
-			if item.region!="ground" and Rect2i(item.cell,State.shape(item,item.rotated)).has_point(cell):
-				tile.text=item.name.left(2)
+			if State.REGIONS.has(item.region) and Rect2i(item.cell,State.shape(item,item.rotated)).has_point(cell):
+				tile.text=("影·" if item.get("shadow",false) else "")+item.name.left(2)
 				tile.modulate=Color("f2cd75") if item.id==selected else Color("b3d1bb")
 				for record in alpha.breakdown:
 					if record.id==item.id and record.aura: tile.modulate=Color("7fe1b0")

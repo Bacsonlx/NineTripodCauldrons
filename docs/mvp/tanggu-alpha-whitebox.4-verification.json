@@ -1,0 +1,43 @@
+{
+  "version": "tanggu-alpha-whitebox.4",
+  "head_at_build": "1706c0b7b5e3eec27ff48b9d05b4045504394c42",
+  "scope": "T01—T04，受控祭坛白盒，T05用户体验待验",
+  "checks": {
+    "public_checks": 80,
+    "frozen_cases": 55,
+    "snapshot_comparisons": 4250,
+    "clean_import_and_both_scenes": "passed",
+    "macos_exported_package_headless_default_scene": "passed",
+    "macos_exported_alpha_scene": "未直接运行；模板禁用命令行场景覆盖，待用户从界面进入",
+    "macos_adhoc_signature": "passed",
+    "native_window_or_keyboard": "未执行",
+    "windows_native": "暂缓／未执行"
+  },
+  "packages": [
+    {
+      "platform": "macos",
+      "path": "build/godot/alpha-whitebox.4/NineTripods-alpha-whitebox.4-macos.zip",
+      "sha256": "07102a3bfaaebcb1cd8b2327aa6311f32a158da4955efc36095c65ec32bad796",
+      "bytes": 81986408,
+      "native_experience": "未验证"
+    },
+    {
+      "platform": "windows",
+      "path": "build/godot/alpha-whitebox.4/NineTripods-alpha-whitebox.4-windows.zip",
+      "sha256": "f13ebc87050455f8e4c4c89f1bced7bf56c03af18371f1c10066a498a67042ac",
+      "bytes": 59541303,
+      "native_experience": "未验证"
+    }
+  ],
+  "sources": {
+    "godot/scripts/alpha/altar_votes.gd": "2c9dfb3ebd142ced02a1246b25af55ce41d2eb30c5afe1b272e5005c2198675d",
+    "godot/scripts/alpha/alpha_scene.gd": "cb4a1c17186f434034ac3a1860c4b0c8959a1fe30a685c235570bc35eaa47a9a",
+    "godot/scripts/alpha/alpha_state.gd": "dd78d7b24c5c2b9154a69bbb2e2c0abe8fbd4814ea9062eb2246c3a059df00cb",
+    "godot/scripts/combat/training_room.gd": "20fc9394358206b766f668597069e7271862abf695d96fdd941d88fdbde78c64",
+    "godot/scripts/input/player_controls.gd": "812de2663a1133e371b432e5ee3ace778be397f7766ff0283888307167906b78",
+    "godot/scripts/presentation/training_scene.gd": "e06e37e7301b0f543b7ef6b588f27f2519056d7256a72187d09e0dc3c09c72cf",
+    "godot/scenes/tanggu_map.tscn": "51d92c086029b7c9c730de165492e4213a636a6af72598adfcd3d3efa4885427",
+    "godot/scenes/tanggu_alpha.tscn": "4cb73ac3938aada33430880428859a3aabe2acfcc4a8873098f230805e9026fd",
+    "godot/tests/alpha_checks.gd": "b1da2af6dee910e3cea24aae393981e8861f8ef1b8cfc918bf28abe2bb237c04"
+  }
+}
