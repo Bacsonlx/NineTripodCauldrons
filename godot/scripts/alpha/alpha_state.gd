@@ -1,5 +1,7 @@
 extends RefCounted
 
+const Votes = preload("res://scripts/alpha/altar_votes.gd")
+
 const REGIONS: Dictionary = {"equipment":Rect2i(0,0,6,5),"altar":Rect2i(6,0,4,4),"meridian":Rect2i(0,5,5,2),"warehouse":Rect2i(6,4,4,1)}
 const NAMES: Dictionary = {"equipment":"装备","altar":"祭坛","meridian":"经脉","warehouse":"仓库"}
 const CONTENT: Array = [
@@ -70,6 +72,8 @@ var items: Array[Dictionary] = []
 var camp: bool = true
 var elapsed: float = 0.0
 var message: String = "先选物品，再点击目标格；营地整理暂停冒险。"
+var ranking: Dictionary = {}
+var next_order: int = 0
 var next_id: int = 0
 var seed_value: int = 1
 
@@ -77,15 +81,20 @@ func _init(seed_number: int = 1) -> void:
 	seed_value=seed_number
 
 func reset(spawn: Vector2) -> void:
-	items.clear(); camp=true; elapsed=0; next_id=0
+	items.clear(); camp=true; elapsed=0; next_id=0; next_order=0; ranking={}
 	message="白盒：仅空间规则已接通，内容卡中的战斗效果尚未实现。"
 	add_item("训练弓","equipment",Vector2i(0,0))
 	add_item("布履","equipment",Vector2i(3,0))
-	add_item("青龙","equipment",Vector2i(4,0))
+	add_item("青龙","equipment",Vector2i(4,1))
 	var drop: Dictionary = add_item("快马","ground",Vector2i.ZERO)
 	drop.world=spawn+Vector2(60,0)
+	recount()
 
 func definition(title: String) -> Dictionary:
+	if title.begins_with("白盒装备·") and Votes.OPPOSITE.has(title.trim_prefix("白盒装备·")):
+		return {"name":title,"kind":"装备","quality":"凡","container":title.trim_prefix("白盒装备·"),"size":Vector2i.ONE,"description":"受控装备票权样本；按品质和唯一主符投票，不提供属性、嵌符或镶书"}
+	if title.begins_with("白盒·") and Votes.OPPOSITE.has(title.trim_prefix("白盒·")):
+		return {"name":title,"kind":"受控票物","quality":"常","container":title.trim_prefix("白盒·"),"size":Vector2i.ONE,"description":"白盒受控定义，只验证票权、资格、倍率与锁物，不进入实际掉落"}
 	for row in CONTENT:
 		if row[0]==title:
 			return {"name":row[0],"kind":row[1],"quality":row[2],"container":row[3],"size":Vector2i(row[4],row[5]),"description":row[6]}
@@ -94,7 +103,7 @@ func definition(title: String) -> Dictionary:
 func add_item(title: String, region: String, cell: Vector2i) -> Dictionary:
 	var item: Dictionary = definition(title)
 	if item.is_empty(): return {}
-	item.merge({"id":seed_value*100000+next_id,"region":region,"cell":cell,"rotated":false,"state":"normal"})
+	item.merge({"id":seed_value*100000+next_id,"region":region,"cell":cell,"rotated":false,"state":"normal","order":0})
 	next_id+=1; items.append(item)
 	return item
 
@@ -107,6 +116,7 @@ func at_cell(cell: Vector2i) -> Dictionary:
 	return {}
 
 func place(item: Dictionary, cell: Vector2i, rotated: bool) -> bool:
+	if item.get("locked",false): message="物品被锁定，不能移动"; return false
 	var region: String = ""
 	var rectangle: Rect2i = Rect2i(cell,shape(item,rotated))
 	for key in REGIONS:
@@ -116,6 +126,10 @@ func place(item: Dictionary, cell: Vector2i, rotated: bool) -> bool:
 	for other in items:
 		if other.id!=item.id and other.region!="ground" and rectangle.intersects(Rect2i(other.cell,shape(other,other.rotated))):
 			message="放置失败：目标格已占用"; return false
+	for sealed in ranking.get("sealed",[]):
+		if rectangle.has_point(sealed) and (item.region=="ground" or not Votes.cells(item).has(sealed)):
+			message="金作祟封格：不许新放入，已有物不失效"; return false
+	if region=="altar" and item.region!="altar": next_order+=1; item.order=next_order
 	item.cell=cell; item.region=region; item.rotated=rotated
 	message="已摆放 "+item.name+" · "+NAMES[region]
 	return true
@@ -137,6 +151,14 @@ func command(action: Dictionary, room: RefCounted) -> void:
 		if sample.is_empty() or sample.kind=="神兽": message="此内容不能增发"; return
 		var added: Dictionary = add_item(sample.name,"ground",Vector2i.ZERO)
 		added.world=Vector2(room.player.x,room.player.y)
+		if sample.kind=="受控票物" or sample.name.begins_with("白盒装备·"):
+			added.quality=action.get("quality","常") if Votes.BASE.has(action.get("quality","常")) else "常"
+			added.fixture_multiplier=1.5 if action.get("weighted",false) else 1.0
+			added.eligible=action.get("eligible",true)
+			added.locked=false
+			if sample.kind=="装备":
+				added.mainGlyph=action.get("mainGlyph",true)
+				if not added.mainGlyph: added.container=""
 		message="受控样本已放脚边，拾取后整理；战斗效果未接通"; return
 	var item: Dictionary = {}
 	for candidate in items:
@@ -153,8 +175,17 @@ func command(action: Dictionary, room: RefCounted) -> void:
 	if item.region=="ground": message="先拾取实物"; return
 	if kind=="place": place(item,action.get("cell",item.cell),action.get("rotated",item.rotated))
 
+func recount() -> void:
+	ranking=Votes.calculate(items,ranking)
+
 func snapshot() -> Dictionary:
 	var cards: Array[Dictionary] = []
 	for row in CONTENT: cards.append(definition(row[0]))
 	for actor in CHARACTERS: cards.append(actor.duplicate(true))
-	return {"version":"tanggu-alpha-whitebox.1","seed":seed_value,"camp":camp,"elapsed":elapsed,"items":items.duplicate(true),"regions":REGIONS.duplicate(),"message":message,"cards":cards,"combatEffectsReady":false}
+	for key in Votes.OPPOSITE:
+		cards.append(definition("白盒·"+key))
+		cards.append(definition("白盒装备·"+key))
+	var result: Dictionary = {"version":"tanggu-alpha-whitebox.1","seed":seed_value,"camp":camp,"elapsed":elapsed,"items":items.duplicate(true),"regions":REGIONS.duplicate(),"message":message,"cards":cards,"combatEffectsReady":false}
+
+	result.merge(ranking.duplicate(true))
+	return result

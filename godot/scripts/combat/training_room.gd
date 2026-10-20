@@ -95,7 +95,9 @@ func reset() -> void:
 
 func update(input: Dictionary, seconds: float) -> void:
 	if alpha!=null:
-		if input.has("alpha"): alpha.command(input.alpha,self)
+		if input.has("alpha"):
+			alpha.command(input.alpha,self)
+			alpha.recount()
 		if alpha.camp: return
 	var pressed: bool = input.get("interact",false) and not interact_held
 	interact_held=input.get("interact",false)
