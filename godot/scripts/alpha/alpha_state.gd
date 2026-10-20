@@ -68,10 +68,79 @@ const CHARACTERS: Array = [
 		"description": "职责：测试排线、站位与点燃时机的首关终场\n动作／状态：出场、转向／移动、横扫预警／释放／恢复、落雷预告／释放、受击、倒下\n规则：生命900、移速75；近身横扫范围110、伤害25、预警0.8／有效0.15／恢复1.0秒；落雷固定三处合法点，半径70、每点15伤、间隔0.4秒，首处预告至少0.8秒，落下不追踪；循环横扫→恢复→落雷→恢复"
 	}
 ]
+const EFFECT_CARDS: Array = [
+	{
+		"name": "金·鼎·效果说明",
+		"kind": "容器说明",
+		"quality": "首轮初值",
+		"container": "金",
+		"size": Vector2i.ONE,
+		"description": "显灵：显灵期间每次真实击杀记录+1基础攻击伤害，仅显灵时供给，离开排名不发免费收益\n作祟：祭坛左上横向两格封格：不许新放入，已有物仍投票、可移出／使用／点燃，不因封格失票循环\n点燃20秒：期间每次真实击杀记录+2基础攻击伤害，作为本局终极收益保留至局末；不是跨局属性\n白盒只记录周期与占格；战斗效果待后续接通。"
+	},
+	{
+		"name": "木·祠·效果说明",
+		"kind": "容器说明",
+		"quality": "首轮初值",
+		"container": "木",
+		"size": Vector2i.ONE,
+		"description": "显灵：每30秒恢复最大生命15%，首次需满周期\n作祟：移速−10%\n点燃20秒：每5秒恢复最大生命8%，在第5／10／15／20秒各一次\n白盒只记录周期与占格；战斗效果待后续接通。"
+	},
+	{
+		"name": "水·沉·效果说明",
+		"kind": "容器说明",
+		"quality": "首轮初值",
+		"container": "水",
+		"size": Vector2i.ONE,
+		"description": "显灵：每次实际受伤后保护延长至1.5秒，与既有0.6秒取较长者\n作祟：可见世界范围收窄20%，不改碰撞、施法距离或HUD\n点燃20秒：玩家无敌20秒，结束后3秒不能移动或发动攻击／技能；在原位置，不穿越实体，不清除敌人已有攻击\n白盒只记录周期与占格；战斗效果待后续接通。"
+	},
+	{
+		"name": "火·焚·效果说明",
+		"kind": "容器说明",
+		"quality": "首轮初值",
+		"container": "火",
+		"size": Vector2i.ONE,
+		"description": "显灵：击杀时在死者脚点半径80造成15派生爆炸伤害，可连锁，每敌死亡一次\n作祟：每秒损失1生命，可致死，不产生敌人击杀奖励\n点燃20秒：已激活敌人每秒5燃烧伤害；不激活远处敌人。与燧火同目标燃烧取较高秒伤，不叠成两次伤害\n白盒只记录周期与占格；战斗效果待后续接通。"
+	},
+	{
+		"name": "土·葬·效果说明",
+		"kind": "容器说明",
+		"quality": "首轮初值",
+		"container": "土",
+		"size": Vector2i.ONE,
+		"description": "显灵：受到伤害乘0.82，与涂炭的0.90分别相乘后最终取整\n作祟：只将基础闪避距离乘0.75，时长／无敌窗不变，不影响回风／引风\n点燃20秒：受到伤害乘0.50；无敌优先为零，不产生负伤害\n白盒只记录周期与占格；战斗效果待后续接通。"
+	},
+	{
+		"name": "雷·刑·效果说明",
+		"kind": "容器说明",
+		"quality": "首轮初值",
+		"container": "雷",
+		"size": Vector2i.ONE,
+		"description": "显灵：直接攻击暴击后，对该次首个命中敌人追加一次15雷伤；每次攻击动作最多一次\n作祟：玩家每次实际受伤在同一事件中额外+5伤，不再次触发受伤链\n点燃20秒：每次直接攻击动作首次有效命中追加一次15雷伤，射空不触发；与显灵雷击不对同动作重复发动\n白盒只记录周期与占格；战斗效果待后续接通。"
+	},
+	{
+		"name": "场·斗·效果说明",
+		"kind": "容器说明",
+		"quality": "首轮初值",
+		"container": "场",
+		"size": Vector2i.ONE,
+		"description": "显灵：显灵期间每次击杀记录普通攻击起手速率+2%，最多10层，仅显灵时供给\n作祟：当前遭遇激活时额外增加一只普通鸟面影偶，同一遭遇最多一次；离开第二名不删已经出现的敌人\n点燃20秒：期间每次击杀增加普通攻击起手速率5%，只在本次终极供给；最短起手间隔0.10秒，仍不能跳过攻击前摇\n白盒只记录周期与占格；战斗效果待后续接通。"
+	},
+	{
+		"name": "塔·镇·效果说明",
+		"kind": "容器说明",
+		"quality": "首轮初值",
+		"container": "塔",
+		"size": Vector2i.ONE,
+		"description": "显灵：白盒受控样例为半径160内敌移速−25%，正式小池不提供塔物品\n作祟：四个技能槽的冷却乘1.15，不改变普通攻击或基础闪避\n点燃20秒：白盒受控样例令普通敌不能移动但仍可进行范围内攻击；对首领改为移速−50%，不长期冻结行动；不投放相关免耗道具\n白盒只记录周期与占格；战斗效果待后续接通。"
+	}
+]
 var items: Array[Dictionary] = []
 var camp: bool = true
 var elapsed: float = 0.0
 var message: String = "先选物品，再点击目标格；营地整理暂停冒险。"
+var burn: Dictionary = {}
+var last_burn: Dictionary = {}
+var burn_held: bool = false
 var ranking: Dictionary = {}
 var next_order: int = 0
 var next_id: int = 0
@@ -81,7 +150,7 @@ func _init(seed_number: int = 1) -> void:
 	seed_value=seed_number
 
 func reset(spawn: Vector2) -> void:
-	items.clear(); camp=true; elapsed=0; next_id=0; next_order=0; ranking={}
+	items.clear(); camp=true; elapsed=0; next_id=0; next_order=0; ranking={}; burn={}; last_burn={}; burn_held=false
 	message="白盒：仅空间规则已接通，内容卡中的战斗效果尚未实现。"
 	add_item("训练弓","equipment",Vector2i(0,0))
 	add_item("布履","equipment",Vector2i(3,0))
@@ -116,6 +185,7 @@ func at_cell(cell: Vector2i) -> Dictionary:
 	return {}
 
 func place(item: Dictionary, cell: Vector2i, rotated: bool) -> bool:
+	if item.state=="burning": message="燃烧中仍占原格，不能移动"; return false
 	if item.get("locked",false): message="物品被锁定，不能移动"; return false
 	var region: String = ""
 	var rectangle: Rect2i = Rect2i(cell,shape(item,rotated))
@@ -136,6 +206,9 @@ func place(item: Dictionary, cell: Vector2i, rotated: bool) -> bool:
 
 func command(action: Dictionary, room: RefCounted) -> void:
 	var kind: String = action.get("action","")
+	if kind=="burn":
+		if room.paused or room.reading: message="暂停或阅读中不能点燃"; return
+		ignite(); return
 	if kind=="depart":
 		if room.paused or room.reading: message="先恢复暂停或关闭阅读"; return
 		camp=false; room.cancel_input(); message="冒险中；返回起点且清除已激活敌人后可整理"; return
@@ -164,6 +237,10 @@ func command(action: Dictionary, room: RefCounted) -> void:
 	for candidate in items:
 		if candidate.id==action.get("id",-1): item=candidate; break
 	if item.is_empty(): message="物品实例不存在"; return
+	if kind=="discard" and item.state=="ash":
+		items.erase(item); message="已丢弃灰烬"; return
+	if kind=="fixture_lock" and camp and item.kind=="受控票物":
+		item.locked=not item.get("locked",false); return
 	if kind=="pickup":
 		if item.region!="ground": message="该实例已拾取"; return
 		var origin: Vector2 = Vector2(room.player.x,room.player.y)
@@ -182,10 +259,53 @@ func snapshot() -> Dictionary:
 	var cards: Array[Dictionary] = []
 	for row in CONTENT: cards.append(definition(row[0]))
 	for actor in CHARACTERS: cards.append(actor.duplicate(true))
+	for effect in EFFECT_CARDS: cards.append(effect.duplicate(true))
 	for key in Votes.OPPOSITE:
 		cards.append(definition("白盒·"+key))
 		cards.append(definition("白盒装备·"+key))
-	var result: Dictionary = {"version":"tanggu-alpha-whitebox.1","seed":seed_value,"camp":camp,"elapsed":elapsed,"items":items.duplicate(true),"regions":REGIONS.duplicate(),"message":message,"cards":cards,"combatEffectsReady":false}
+	var result: Dictionary = {"version":"tanggu-alpha-whitebox.1","seed":seed_value,"camp":camp,"elapsed":elapsed,"items":items.duplicate(true),"regions":REGIONS.duplicate(),"message":message,"cards":cards,"combatEffectsReady":false,"burn":burn.duplicate(true),"lastBurn":last_burn.duplicate(true)}
 
 	result.merge(ranking.duplicate(true))
 	return result
+
+func burn_input(pressed: bool) -> void:
+	if pressed and not burn_held: ignite()
+	burn_held=pressed
+
+func ignite() -> void:
+	if not burn.is_empty(): message="已有终极在进行，不能再次点燃"; return
+	var winner: String = ranking.get("winner","")
+	if winner.is_empty(): message="没有可点燃的显灵者"; return
+	if winner in ["镜","草"]: message="镜／草只验证数学，本期没有准入终极"; return
+	var targets: Array[int] = []
+	for item in items:
+		if item.region=="altar" and item.container==winner and item.state=="normal":
+			if item.get("locked",false): message="该容器有锁物，不能整容器点燃"; return
+			targets.append(item.id)
+	if targets.is_empty(): message="没有可点燃的物品"; return
+	for item in items:
+		if targets.has(item.id): item.state="burning"
+	burn={"container":winner,"remaining":20.0,"elapsed":0.0,"items":targets,"ticks":[],"period":5.0 if winner=="木" else 1.0 if winner=="火" else 0.0}
+	message="已点燃%s：原效果和票停止，原格保留20秒；白盒只记录周期" % winner
+	recount()
+
+func advance(seconds: float, room: RefCounted) -> void:
+	elapsed+=seconds
+	if burn.is_empty(): return
+	var before: float = burn.elapsed
+	burn.elapsed=minf(20.0,before+seconds)
+	burn.remaining=maxf(0,20.0-burn.elapsed)
+	if burn.period>0:
+		var first: int = int(floor((before+0.000001)/burn.period))+1
+		var last: int = int(floor((burn.elapsed+0.000001)/burn.period))
+		for tick in range(first,last+1): burn.ticks.append(tick*burn.period)
+	if burn.remaining>0.000001: return
+	for item in items:
+		if not burn.items.has(item.id): continue
+		item.state="ash"; item.description="灰烬保留原形状，不能投票或恢复原物，可丢弃"; item.name="灰烬·"+item.name; item.container=""; item.eligible=false; item.locked=false
+		item.region="ground"; item.world=Vector2(room.player.x,room.player.y)
+		for x in range(6,10):
+			if place(item,Vector2i(x,4),false) or place(item,Vector2i(x,4),true): break
+	last_burn=burn.duplicate(true); burn={}
+	message="终极结束：灰烬自动入仓，无位留地，可丢弃；战斗效果未接通"
+	recount()

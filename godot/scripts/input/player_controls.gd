@@ -3,6 +3,7 @@ extends RefCounted
 
 var room: TrainingRoom
 var keys: Dictionary = {}
+var burn: bool = false
 var fire: bool = false
 var fire_pulse: bool = false
 var interact: bool = false
@@ -23,6 +24,8 @@ func key_down(code: int,repeated: bool = false) -> void:
 		if not state.paused: room.reset(); interrupt()
 	elif code==KEY_F:
 		if not state.paused or state.reading: interact=true; interact_pulse=true
+	elif code==KEY_B and room.alpha!=null:
+		if not room.paused and not room.reading and state.status!="failed": burn=true
 	elif not state.paused and state.status!="failed":
 		if code==KEY_Q: skills.pierce=true
 		elif code==KEY_E: skills.rain=true
@@ -43,7 +46,7 @@ func pointer_leave() -> void:
 	room.cancel_pending()
 func interrupt(blur: bool = false) -> void:
 	if blur: room.set_paused(true)
-	keys.clear(); fire=false; fire_pulse=false; interact=false; interact_pulse=false
+	keys.clear(); burn=false; fire=false; fire_pulse=false; interact=false; interact_pulse=false
 	skills={"pierce":false,"rain":false,"dodge":false}
 	room.cancel_input()
 func movement() -> Vector2:
@@ -53,7 +56,8 @@ func update(aim: Vector2,inside: bool,seconds: float) -> Dictionary:
 	var move: Vector2 = movement()
 	var input: Dictionary = {"moveX":move.x,"moveY":move.y,"aim":aim,"fire":fire or fire_pulse,"pointerInside":inside,"interact":interact or interact_pulse}
 	input.merge(skills)
+	if room.alpha!=null: input.burn=burn
 	room.update(input,seconds)
-	fire_pulse=false; interact_pulse=false; skills={"pierce":false,"rain":false,"dodge":false}
+	burn=false; fire_pulse=false; interact_pulse=false; skills={"pierce":false,"rain":false,"dodge":false}
 	if room.snapshot().reading!=was_reading: interrupt()
 	return room.snapshot()

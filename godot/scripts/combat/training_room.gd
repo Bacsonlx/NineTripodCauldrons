@@ -98,6 +98,8 @@ func update(input: Dictionary, seconds: float) -> void:
 		if input.has("alpha"):
 			alpha.command(input.alpha,self)
 			alpha.recount()
+		if not paused and not reading:
+			alpha.burn_input(input.get("burn",false))
 		if alpha.camp: return
 	var pressed: bool = input.get("interact",false) and not interact_held
 	interact_held=input.get("interact",false)
@@ -112,7 +114,7 @@ func update(input: Dictionary, seconds: float) -> void:
 
 func step(input: Dictionary, seconds: float) -> void:
 	if paused or status=="failed": return
-	if alpha!=null: alpha.elapsed+=seconds
+	if alpha!=null: alpha.advance(seconds,self)
 	if not feedback.is_empty():
 		feedback.remaining-=seconds
 		if feedback.remaining<=0: feedback={}

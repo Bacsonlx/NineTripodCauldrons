@@ -18,6 +18,7 @@ var quality: OptionButton
 var weighted: CheckBox
 var main_glyph: CheckBox
 var eligible: CheckBox
+var battle_status: Label
 var battle_button: Button
 
 func label(text: String, parent: Node) -> Label:
@@ -47,6 +48,7 @@ func _ready() -> void:
 	layer.layer=20; add_child(layer)
 	battle_button=button("安全营地 / 白盒",layer,func(): send({"action":"camp"}))
 	battle_button.position=Vector2(28,160)
+	battle_status=label("",layer); battle_status.position=Vector2(28,205)
 	panel=PanelContainer.new()
 	layer.add_child(panel)
 	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -81,6 +83,9 @@ func _ready() -> void:
 	var tools: HBoxContainer = HBoxContainer.new(); grid_column.add_child(tools)
 	button("预览旋转90°",tools,func(): rotated=not rotated)
 	button("拾取选中实物",tools,func(): send({"action":"pickup","id":selected}))
+	button("点燃第一名 · B",tools,func(): send({"action":"burn"}))
+	button("丢弃灰烬",tools,func(): send({"action":"discard","id":selected}))
+	button("锁物样例",tools,func(): send({"action":"fixture_lock","id":selected}))
 	button("取消选择",tools,func(): selected=-1)
 	var side: VBoxContainer = VBoxContainer.new(); side.custom_minimum_size.x=290; body.add_child(side)
 	label("背包与地面实例（选择后点击目标格）",side)
@@ -126,10 +131,15 @@ func refresh() -> void:
 	var alpha: Dictionary = state.alpha
 	panel.visible=alpha.camp
 	battle_button.visible=not alpha.camp
+	battle_status.visible=not alpha.camp
+	battle_status.text="B 点燃 · 有效冒险 %.1f 秒\n%s" % [alpha.elapsed,alpha.message]
+	if not alpha.burn.is_empty(): battle_status.text+="\n%s终极占位 %.1f秒（白盒周期记录）" % [alpha.burn.container,alpha.burn.remaining]
 	status_label.text=("暂停中 · 请先点 Esc 继续。 " if room.paused else "")+alpha.message+"\n白盒版本 "+alpha.version+" ｜ 有效冒险 %.2f 秒" % alpha.elapsed
 	var totals: PackedStringArray = []
 	for key in alpha.votes: totals.append("%s %d" % [key,alpha.votes[key]])
 	ranking_label.text=" · ".join(totals)+"\n显灵：%s ｜ 作祟：%s\n%s" % [alpha.winner if not alpha.winner.is_empty() else "无",alpha.harm if not alpha.harm.is_empty() else "无",alpha.reason]
+	if not alpha.burn.is_empty(): ranking_label.text+="\n点燃 %s · 占位还剩 %.2f秒 · 周期记录 %s" % [alpha.burn.container,alpha.burn.remaining,str(alpha.burn.ticks)]
+	elif not alpha.lastBurn.is_empty(): ranking_label.text+="\n上次点燃 %s · 周期 %s（白盒记录）" % [alpha.lastBurn.container,str(alpha.lastBurn.ticks)]
 	var selected_item: Dictionary = {}
 	for item in alpha.items:
 		if item.id==selected: selected_item=item; break
@@ -163,6 +173,8 @@ func refresh() -> void:
 				tile.modulate=Color("f2cd75") if item.id==selected else Color("b3d1bb")
 				for record in alpha.breakdown:
 					if record.id==item.id and record.aura: tile.modulate=Color("7fe1b0")
+				if item.state=="burning": tile.text="燃·"+tile.text; tile.modulate=Color("ed9373")
+				if item.get("locked",false): tile.text="锁·"+tile.text
 				tile.tooltip_text="%s #%d · %s" % [item.name,item.id,item.description]
 		if alpha.sealed.has(cell):
 			tile.text="封·"+tile.text.trim_prefix("封")
