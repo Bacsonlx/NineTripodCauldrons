@@ -13,6 +13,11 @@ func check(condition: bool, message: String) -> void:
 		push_error(message)
 
 func _initialize() -> void:
+	if "--alpha-only" in OS.get_cmdline_user_args():
+		load("res://tests/alpha_checks.gd").new().run(Callable(self,"check"))
+		print(JSON.stringify({"checks":count,"failures":failures}))
+		quit(0 if failures.is_empty() else 1)
+		return
 	var room = Room.new()
 	room.update({"moveX": 1.0, "moveY": 0.0, "aim": Vector2(1000, 549), "fire": false, "pointerInside": true}, 1.0)
 	check(abs(room.snapshot().player.x - 620.0) < 0.01, "单轴移动一秒推进220世界单位")
@@ -128,5 +133,6 @@ func _initialize() -> void:
 	reader_controls.key_down(KEY_ESCAPE)
 	reader_controls.update(Vector2(1000,300),true,0.1)
 	check(not reader.snapshot().paused and reader.snapshot().arrows.is_empty(),"二次Esc恢复后不续射，阅读切换已清理操作意图")
+	load("res://tests/alpha_checks.gd").new().run(Callable(self,"check"))
 	print(JSON.stringify({"checks":count,"failures":failures,"rule_traces":report}))
 	quit(0 if failures.is_empty() else 1)

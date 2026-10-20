@@ -9,6 +9,8 @@ const SKILL_GRIPS: Dictionary = {
 	"dodge": [Vector2(16,-39), Vector2(-3,-39), Vector2(-13,-37), Vector2(-8,-45)]
 }
 const ATTACKS: Dictionary = {"normal":{"damage":15,"distance":14,"duration":0.10}, "pierce":{"damage":40,"distance":36,"duration":0.14}, "rain":{"damage":15,"distance":8,"duration":0.08}}
+const AlphaState = preload("res://scripts/alpha/alpha_state.gd")
+var alpha: RefCounted = null
 var layout: Dictionary = {}
 var obstacle: Rect2 = Rect2(720,430,80,36)
 var player: Dictionary = {}
@@ -64,6 +66,7 @@ func _init(options: Dictionary = {}) -> void:
 		var bounds: Rect2 = options.get("bounds", Rect2(100,180,1080,640))
 		var center: Vector2 = obstacle.get_center()
 		layout = {"width":1280,"height":900,"floor":[Vector2.ZERO,Vector2(1280,0),Vector2(1280,900),Vector2(0,900)], "spawn":options.get("spawn",Vector2(400,600)), "walkableAreas":[{"left":bounds.position.x,"top":bounds.position.y,"right":bounds.end.x,"bottom":bounds.end.y}], "pillars":[],"pillarBody":[],"targets":[],"shoulderHeight":52,"grips":GRIPS,"targetFace":{}, "obstacles":[{"x":center.x,"y":center.y,"halfWidth":obstacle.size.x/2,"halfHeight":obstacle.size.y/2,"height":120,"kind":"root"}], "encounters":[{"x":point(options.get("encounter",Vector2(740,600))).x,"y":point(options.get("encounter",Vector2(740,600))).y,"enemies":[options.get("enemy",Vector2(840,600))]}]}
+	if options.get("mode","")=="alpha": alpha=AlphaState.new(options.get("seed",1))
 	reset()
 
 func reset() -> void:
@@ -88,8 +91,12 @@ func reset() -> void:
 	exploration={"steleRead":false,"altarUsed":false,"gateOpen":false}
 	feedback={}; interact_held=run_id>0; gate_opening=0
 	cancel_pending(); needs_release=run_id>0
+	if alpha!=null: alpha.reset(spawn)
 
 func update(input: Dictionary, seconds: float) -> void:
+	if alpha!=null:
+		if input.has("alpha"): alpha.command(input.alpha,self)
+		if alpha.camp: return
 	var pressed: bool = input.get("interact",false) and not interact_held
 	interact_held=input.get("interact",false)
 	if pressed and reading:
@@ -103,6 +110,7 @@ func update(input: Dictionary, seconds: float) -> void:
 
 func step(input: Dictionary, seconds: float) -> void:
 	if paused or status=="failed": return
+	if alpha!=null: alpha.elapsed+=seconds
 	if not feedback.is_empty():
 		feedback.remaining-=seconds
 		if feedback.remaining<=0: feedback={}
@@ -491,4 +499,9 @@ func snapshot() -> Dictionary:
 	for index in layout.targets.size():
 		var target: Dictionary = layout.targets[index].duplicate(); target.flash=flashes[index]; targets.append(target)
 	var skill: Variant = {"kind":"rain","phase":"windup","remaining":raining.remaining} if not raining.is_empty() else {"kind":"pierce","phase":"windup","remaining":piercing} if piercing>=0 else {"kind":last_skill,"phase":"recover","remaining":skill_recovery} if skill_recovery>0 and not last_skill.is_empty() else null
-	return {"runId":run_id,"player":player.duplicate(),"grip":grip(),"hits":hits,"windup":windup if windup>=0 else null,"paused":paused or reading,"reading":reading,"gateOpening":gate_opening,"exploration":exploration.duplicate(),"interaction":nearest_interaction() if not nearest_interaction().is_empty() else null,"feedback":feedback.duplicate() if not feedback.is_empty() else null,"attack":attack_phase(),"health":health,"hurt":hurt,"protection":protection,"status":status,"dodge":dodge_time,"dodgeDirection":dodge_direction,"dodgeInvulnerability":dodge_invulnerability,"cooldowns":{"dodge":dodge_cooldown,"pierce":pierce_cooldown,"rain":rain_cooldown},"skill":skill,"rainPreview":raining.point if not raining.is_empty() else null,"rains":rains.duplicate(true),"invalid":invalid.duplicate() if not invalid.is_empty() else null,"encounter":encounter,"totalEncounters":layout.get("encounters",[]).size(),"enemies":visible_enemies,"arrows":arrows.duplicate(true),"effects":effects.duplicate(true),"targets":targets,"shots":shots}
+	var result: Dictionary = {"runId":run_id,"player":player.duplicate(),"grip":grip(),"hits":hits,"windup":windup if windup>=0 else null,"paused":paused or reading,"reading":reading,"gateOpening":gate_opening,"exploration":exploration.duplicate(),"interaction":nearest_interaction() if not nearest_interaction().is_empty() else null,"feedback":feedback.duplicate() if not feedback.is_empty() else null,"attack":attack_phase(),"health":health,"hurt":hurt,"protection":protection,"status":status,"dodge":dodge_time,"dodgeDirection":dodge_direction,"dodgeInvulnerability":dodge_invulnerability,"cooldowns":{"dodge":dodge_cooldown,"pierce":pierce_cooldown,"rain":rain_cooldown},"skill":skill,"rainPreview":raining.point if not raining.is_empty() else null,"rains":rains.duplicate(true),"invalid":invalid.duplicate() if not invalid.is_empty() else null,"encounter":encounter,"totalEncounters":layout.get("encounters",[]).size(),"enemies":visible_enemies,"arrows":arrows.duplicate(true),"effects":effects.duplicate(true),"targets":targets,"shots":shots}
+
+	if alpha!=null:
+		result.alpha=alpha.snapshot()
+		result.paused=result.paused or alpha.camp
+	return result

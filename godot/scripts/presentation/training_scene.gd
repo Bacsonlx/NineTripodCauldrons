@@ -262,6 +262,10 @@ func build_hud() -> void:
 	fullscreen.text = "全屏"
 	fullscreen.pressed.connect(toggle_fullscreen)
 	top.add_child(fullscreen)
+	var alpha_entry: Button = Button.new()
+	alpha_entry.name="OpenAlpha"; alpha_entry.text="初版白盒"; alpha_entry.focus_mode=Control.FOCUS_NONE
+	alpha_entry.pressed.connect(func(): get_tree().change_scene_to_file("res://scenes/tanggu_alpha.tscn"))
+	top.add_child(alpha_entry)
 	health_label = make_label("生命 100 / 100", 15)
 	column.add_child(health_label)
 	skills_label=make_label("",13,Color("b8b59f")); column.add_child(skills_label)
