@@ -924,6 +924,750 @@
     "source": "assets/mvp02/child-failed-v1.png",
     "sha256": "287c54106f20018a0df38fb47f0808056b0f7365dda328f07b6a4044d0e00dc1"
   },
+  "enemyPaper": {
+    "frames": [
+      {
+        "name": "enemyPaper-0-0",
+        "x": 54,
+        "y": 71,
+        "width": 146,
+        "height": 155,
+        "originX": 0.4417808219178082,
+        "originY": 0.9806451612903225
+      },
+      {
+        "name": "enemyPaper-1-0",
+        "x": 64,
+        "y": 308,
+        "width": 134,
+        "height": 152,
+        "originX": 0.6007462686567164,
+        "originY": 0.9802631578947368
+      },
+      {
+        "name": "enemyPaper-2-0",
+        "x": 40,
+        "y": 528,
+        "width": 161,
+        "height": 150,
+        "originX": 0.5559006211180124,
+        "originY": 0.98
+      },
+      {
+        "name": "enemyPaper-3-0",
+        "x": 50,
+        "y": 744,
+        "width": 146,
+        "height": 160,
+        "originX": 0.5102739726027398,
+        "originY": 0.98125
+      },
+      {
+        "name": "enemyPaper-0-1",
+        "x": 292,
+        "y": 71,
+        "width": 155,
+        "height": 156,
+        "originX": 0.42258064516129035,
+        "originY": 0.9807692307692307
+      },
+      {
+        "name": "enemyPaper-1-1",
+        "x": 304,
+        "y": 308,
+        "width": 133,
+        "height": 153,
+        "originX": 0.6015037593984962,
+        "originY": 0.9803921568627451
+      },
+      {
+        "name": "enemyPaper-2-1",
+        "x": 275,
+        "y": 528,
+        "width": 172,
+        "height": 151,
+        "originX": 0.561046511627907,
+        "originY": 0.9801324503311258
+      },
+      {
+        "name": "enemyPaper-3-1",
+        "x": 287,
+        "y": 744,
+        "width": 152,
+        "height": 161,
+        "originX": 0.4769736842105263,
+        "originY": 0.9813664596273292
+      },
+      {
+        "name": "enemyPaper-0-2",
+        "x": 514,
+        "y": 71,
+        "width": 138,
+        "height": 156,
+        "originX": 0.5398550724637681,
+        "originY": 0.9807692307692307
+      },
+      {
+        "name": "enemyPaper-1-2",
+        "x": 533,
+        "y": 308,
+        "width": 126,
+        "height": 152,
+        "originX": 0.6111111111111112,
+        "originY": 0.9802631578947368
+      },
+      {
+        "name": "enemyPaper-2-2",
+        "x": 518,
+        "y": 528,
+        "width": 156,
+        "height": 151,
+        "originX": 0.4198717948717949,
+        "originY": 0.9801324503311258
+      },
+      {
+        "name": "enemyPaper-3-2",
+        "x": 528,
+        "y": 744,
+        "width": 132,
+        "height": 159,
+        "originX": 0.4734848484848485,
+        "originY": 0.9811320754716981
+      },
+      {
+        "name": "enemyPaper-0-3",
+        "x": 751,
+        "y": 44,
+        "width": 125,
+        "height": 181,
+        "originX": 0.512,
+        "originY": 0.9834254143646409
+      },
+      {
+        "name": "enemyPaper-1-3",
+        "x": 752,
+        "y": 275,
+        "width": 128,
+        "height": 185,
+        "originX": 0.55078125,
+        "originY": 0.9837837837837838
+      },
+      {
+        "name": "enemyPaper-2-3",
+        "x": 753,
+        "y": 504,
+        "width": 145,
+        "height": 174,
+        "originX": 0.41724137931034483,
+        "originY": 0.9827586206896551
+      },
+      {
+        "name": "enemyPaper-3-3",
+        "x": 761,
+        "y": 718,
+        "width": 128,
+        "height": 182,
+        "originX": 0.46484375,
+        "originY": 0.9835164835164835
+      },
+      {
+        "name": "enemyPaper-0-4",
+        "x": 958,
+        "y": 86,
+        "width": 205,
+        "height": 140,
+        "originX": 0.3878048780487805,
+        "originY": 0.9785714285714285
+      },
+      {
+        "name": "enemyPaper-1-4",
+        "x": 970,
+        "y": 326,
+        "width": 192,
+        "height": 135,
+        "originX": 0.390625,
+        "originY": 0.9777777777777777
+      },
+      {
+        "name": "enemyPaper-2-4",
+        "x": 939,
+        "y": 550,
+        "width": 214,
+        "height": 132,
+        "originX": 0.6191588785046729,
+        "originY": 0.9772727272727273
+      },
+      {
+        "name": "enemyPaper-3-4",
+        "x": 940,
+        "y": 756,
+        "width": 218,
+        "height": 143,
+        "originX": 0.5619266055045872,
+        "originY": 0.9790209790209791
+      },
+      {
+        "name": "enemyPaper-0-5",
+        "x": 1219,
+        "y": 80,
+        "width": 152,
+        "height": 147,
+        "originX": 0.5263157894736842,
+        "originY": 0.9795918367346939
+      },
+      {
+        "name": "enemyPaper-1-5",
+        "x": 1225,
+        "y": 311,
+        "width": 138,
+        "height": 153,
+        "originX": 0.5942028985507246,
+        "originY": 0.9803921568627451
+      },
+      {
+        "name": "enemyPaper-2-5",
+        "x": 1217,
+        "y": 535,
+        "width": 162,
+        "height": 149,
+        "originX": 0.45987654320987653,
+        "originY": 0.9798657718120806
+      },
+      {
+        "name": "enemyPaper-3-5",
+        "x": 1226,
+        "y": 744,
+        "width": 139,
+        "height": 160,
+        "originX": 0.39928057553956836,
+        "originY": 0.98125
+      },
+      {
+        "name": "enemyPaper-0-6",
+        "x": 1425,
+        "y": 115,
+        "width": 186,
+        "height": 126,
+        "originX": 0.5161290322580645,
+        "originY": 0.9761904761904762
+      },
+      {
+        "name": "enemyPaper-1-6",
+        "x": 1425,
+        "y": 328,
+        "width": 181,
+        "height": 153,
+        "originX": 0.5359116022099447,
+        "originY": 0.9803921568627451
+      },
+      {
+        "name": "enemyPaper-2-6",
+        "x": 1431,
+        "y": 564,
+        "width": 186,
+        "height": 134,
+        "originX": 0.510752688172043,
+        "originY": 0.9776119402985075
+      },
+      {
+        "name": "enemyPaper-3-6",
+        "x": 1423,
+        "y": 775,
+        "width": 193,
+        "height": 138,
+        "originX": 0.4844559585492228,
+        "originY": 0.9782608695652174
+      }
+    ],
+    "scale": 0.53125,
+    "source": "assets/mvp02/shadow-paper-v2.png",
+    "sha256": "b0172d992a8ea35e8ea051935ebd170e5bf91c91e4fd7fbafa2d05c541a81197"
+  },
+  "enemyWood": {
+    "frames": [
+      {
+        "name": "enemyWood-0-0",
+        "x": 61,
+        "y": 74,
+        "width": 167,
+        "height": 159,
+        "originX": 0.5449101796407185,
+        "originY": 0.9811320754716981
+      },
+      {
+        "name": "enemyWood-1-0",
+        "x": 69,
+        "y": 302,
+        "width": 147,
+        "height": 158,
+        "originX": 0.5952380952380952,
+        "originY": 0.9810126582278481
+      },
+      {
+        "name": "enemyWood-2-0",
+        "x": 52,
+        "y": 513,
+        "width": 164,
+        "height": 161,
+        "originX": 0.43902439024390244,
+        "originY": 0.9813664596273292
+      },
+      {
+        "name": "enemyWood-3-0",
+        "x": 52,
+        "y": 734,
+        "width": 143,
+        "height": 168,
+        "originX": 0.5664335664335665,
+        "originY": 0.9821428571428571
+      },
+      {
+        "name": "enemyWood-0-1",
+        "x": 293,
+        "y": 76,
+        "width": 161,
+        "height": 157,
+        "originX": 0.4503105590062112,
+        "originY": 0.9808917197452229
+      },
+      {
+        "name": "enemyWood-1-1",
+        "x": 306,
+        "y": 303,
+        "width": 140,
+        "height": 157,
+        "originX": 0.5928571428571429,
+        "originY": 0.9808917197452229
+      },
+      {
+        "name": "enemyWood-2-1",
+        "x": 284,
+        "y": 515,
+        "width": 166,
+        "height": 157,
+        "originX": 0.4578313253012048,
+        "originY": 0.9808917197452229
+      },
+      {
+        "name": "enemyWood-3-1",
+        "x": 289,
+        "y": 734,
+        "width": 146,
+        "height": 166,
+        "originX": 0.5034246575342466,
+        "originY": 0.9819277108433735
+      },
+      {
+        "name": "enemyWood-0-2",
+        "x": 520,
+        "y": 75,
+        "width": 142,
+        "height": 158,
+        "originX": 0.5528169014084507,
+        "originY": 0.9810126582278481
+      },
+      {
+        "name": "enemyWood-1-2",
+        "x": 537,
+        "y": 304,
+        "width": 135,
+        "height": 157,
+        "originX": 0.6259259259259259,
+        "originY": 0.9808917197452229
+      },
+      {
+        "name": "enemyWood-2-2",
+        "x": 538,
+        "y": 517,
+        "width": 151,
+        "height": 155,
+        "originX": 0.4271523178807947,
+        "originY": 0.9806451612903225
+      },
+      {
+        "name": "enemyWood-3-2",
+        "x": 536,
+        "y": 735,
+        "width": 127,
+        "height": 166,
+        "originX": 0.5196850393700787,
+        "originY": 0.9819277108433735
+      },
+      {
+        "name": "enemyWood-0-3",
+        "x": 761,
+        "y": 52,
+        "width": 133,
+        "height": 180,
+        "originX": 0.5150375939849624,
+        "originY": 0.9833333333333333
+      },
+      {
+        "name": "enemyWood-1-3",
+        "x": 765,
+        "y": 270,
+        "width": 124,
+        "height": 187,
+        "originX": 0.5,
+        "originY": 0.983957219251337
+      },
+      {
+        "name": "enemyWood-2-3",
+        "x": 751,
+        "y": 490,
+        "width": 138,
+        "height": 224,
+        "originX": 0.391304347826087,
+        "originY": 0.9866071428571429
+      },
+      {
+        "name": "enemyWood-3-3",
+        "x": 760,
+        "y": 714,
+        "width": 125,
+        "height": 181,
+        "originX": 0.516,
+        "originY": 0.9834254143646409
+      },
+      {
+        "name": "enemyWood-0-4",
+        "x": 967,
+        "y": 90,
+        "width": 201,
+        "height": 142,
+        "originX": 0.34577114427860695,
+        "originY": 0.9788732394366197
+      },
+      {
+        "name": "enemyWood-1-4",
+        "x": 962,
+        "y": 317,
+        "width": 218,
+        "height": 140,
+        "originX": 0.3463302752293578,
+        "originY": 0.9785714285714285
+      },
+      {
+        "name": "enemyWood-2-4",
+        "x": 944,
+        "y": 531,
+        "width": 219,
+        "height": 142,
+        "originX": 0.632420091324201,
+        "originY": 0.9788732394366197
+      },
+      {
+        "name": "enemyWood-3-4",
+        "x": 937,
+        "y": 753,
+        "width": 211,
+        "height": 142,
+        "originX": 0.5876777251184834,
+        "originY": 0.9788732394366197
+      },
+      {
+        "name": "enemyWood-0-5",
+        "x": 1223,
+        "y": 80,
+        "width": 152,
+        "height": 152,
+        "originX": 0.5361842105263158,
+        "originY": 0.9802631578947368
+      },
+      {
+        "name": "enemyWood-1-5",
+        "x": 1240,
+        "y": 306,
+        "width": 132,
+        "height": 155,
+        "originX": 0.5643939393939394,
+        "originY": 0.9806451612903225
+      },
+      {
+        "name": "enemyWood-2-5",
+        "x": 1221,
+        "y": 525,
+        "width": 154,
+        "height": 153,
+        "originX": 0.41883116883116883,
+        "originY": 0.9803921568627451
+      },
+      {
+        "name": "enemyWood-3-5",
+        "x": 1217,
+        "y": 740,
+        "width": 138,
+        "height": 161,
+        "originX": 0.5362318840579711,
+        "originY": 0.9813664596273292
+      },
+      {
+        "name": "enemyWood-0-6",
+        "x": 1431,
+        "y": 125,
+        "width": 176,
+        "height": 124,
+        "originX": 0.4971590909090909,
+        "originY": 0.9758064516129032
+      },
+      {
+        "name": "enemyWood-1-6",
+        "x": 1426,
+        "y": 333,
+        "width": 184,
+        "height": 154,
+        "originX": 0.4945652173913043,
+        "originY": 0.9805194805194806
+      },
+      {
+        "name": "enemyWood-2-6",
+        "x": 1426,
+        "y": 554,
+        "width": 182,
+        "height": 141,
+        "originX": 0.4945054945054945,
+        "originY": 0.9787234042553191
+      },
+      {
+        "name": "enemyWood-3-6",
+        "x": 1422,
+        "y": 765,
+        "width": 193,
+        "height": 138,
+        "originX": 0.5025906735751295,
+        "originY": 0.9782608695652174
+      }
+    ],
+    "scale": 0.5059523809523809,
+    "source": "assets/mvp02/shadow-wood-v2.png",
+    "sha256": "ba92c9f909e3cf8c75fa31517a97912a7f15ff545a2ebb2c75f7aca8c96c1784"
+  },
+  "worldProps": {
+    "frames": [
+      {
+        "name": "props-0-0",
+        "x": 9,
+        "y": 8,
+        "width": 475,
+        "height": 528,
+        "originX": 0.5,
+        "originY": 0.9924242424242424
+      },
+      {
+        "name": "props-0-1",
+        "x": 492,
+        "y": 176,
+        "width": 555,
+        "height": 314,
+        "originX": 0.5,
+        "originY": 0.9872611464968153
+      },
+      {
+        "name": "props-0-2",
+        "x": 1067,
+        "y": 147,
+        "width": 459,
+        "height": 391,
+        "originX": 0.5,
+        "originY": 0.989769820971867
+      },
+      {
+        "name": "props-1-0",
+        "x": 69,
+        "y": 541,
+        "width": 283,
+        "height": 444,
+        "originX": 0.5,
+        "originY": 0.990990990990991
+      },
+      {
+        "name": "props-1-1",
+        "x": 492,
+        "y": 553,
+        "width": 540,
+        "height": 419,
+        "originX": 0.5,
+        "originY": 0.9904534606205251
+      },
+      {
+        "name": "props-1-2",
+        "x": 1097,
+        "y": 681,
+        "width": 408,
+        "height": 299,
+        "originX": 0.5,
+        "originY": 0.9866220735785953
+      }
+    ],
+    "scale": 0.46,
+    "source": "assets/mvp02/tanggu-props-v1.png",
+    "sha256": "d793edf3c4ec7c621d22e650e86957e10fa8dab2150bf66401f90deff7a094be"
+  },
+  "vfx": {
+    "frames": [
+      {
+        "name": "streak",
+        "x": 0,
+        "y": 150,
+        "width": 490,
+        "height": 190,
+        "originX": 0.5,
+        "originY": 0.5
+      },
+      {
+        "name": "spark",
+        "x": 500,
+        "y": 20,
+        "width": 360,
+        "height": 390,
+        "originX": 0.5,
+        "originY": 0.5
+      },
+      {
+        "name": "ring",
+        "x": 880,
+        "y": 15,
+        "width": 445,
+        "height": 420,
+        "originX": 0.5,
+        "originY": 0.5
+      },
+      {
+        "name": "dust",
+        "x": 1340,
+        "y": 0,
+        "width": 434,
+        "height": 443,
+        "originX": 0.5,
+        "originY": 0.5
+      },
+      {
+        "name": "halo",
+        "x": 0,
+        "y": 440,
+        "width": 440,
+        "height": 440,
+        "originX": 0.5,
+        "originY": 0.5
+      },
+      {
+        "name": "embers",
+        "x": 465,
+        "y": 455,
+        "width": 360,
+        "height": 415,
+        "originX": 0.5,
+        "originY": 0.5
+      },
+      {
+        "name": "feather",
+        "x": 850,
+        "y": 530,
+        "width": 530,
+        "height": 260,
+        "originX": 0.5,
+        "originY": 0.5
+      },
+      {
+        "name": "shards",
+        "x": 1390,
+        "y": 490,
+        "width": 370,
+        "height": 360,
+        "originX": 0.5,
+        "originY": 0.5
+      }
+    ],
+    "scale": 1.0,
+    "source": "assets/mvp03/combat-vfx-v1.png",
+    "sha256": "566a29d714fd3c643f26489c007523c033a7d03bdc83e8feaf1bc38e0fbdbd31"
+  },
+  "exploration": {
+    "frames": [
+      {
+        "name": "stele",
+        "x": 93,
+        "y": 83,
+        "width": 488,
+        "height": 530,
+        "originX": 0.5,
+        "originY": 1
+      },
+      {
+        "name": "altarLit",
+        "x": 678,
+        "y": 151,
+        "width": 514,
+        "height": 475,
+        "originX": 0.5,
+        "originY": 1
+      },
+      {
+        "name": "altarSpent",
+        "x": 80,
+        "y": 743,
+        "width": 513,
+        "height": 449,
+        "originX": 0.5,
+        "originY": 1
+      },
+      {
+        "name": "gate",
+        "x": 663,
+        "y": 738,
+        "width": 564,
+        "height": 432,
+        "originX": 0.5,
+        "originY": 1
+      }
+    ],
+    "scale": 1.0,
+    "source": "assets/mvp03/full/exploration-props-v1.png",
+    "sha256": "673f7e690567bfdd6310da211bc4107b0bdea7bf1e522ba61b492955bc51ae69"
+  },
+  "terrain": {
+    "frames": [
+      {
+        "name": "stone",
+        "x": 0,
+        "y": 0,
+        "width": 627,
+        "height": 627,
+        "originX": 0.5,
+        "originY": 0.9
+      },
+      {
+        "name": "path",
+        "x": 627,
+        "y": 0,
+        "width": 627,
+        "height": 627,
+        "originX": 0.5,
+        "originY": 0.9
+      },
+      {
+        "name": "forest",
+        "x": 0,
+        "y": 627,
+        "width": 627,
+        "height": 627,
+        "originX": 0.5,
+        "originY": 0.9
+      },
+      {
+        "name": "paving",
+        "x": 627,
+        "y": 627,
+        "width": 627,
+        "height": 627,
+        "originX": 0.5,
+        "originY": 0.9
+      }
+    ],
+    "scale": 1.0,
+    "source": "assets/mvp03/full/terrain-materials-v1.png",
+    "sha256": "9c3e195fa90cfed3458e00641ff79006de44dd48308231d0aa9470b6245106f5"
+  },
   "props": {
     "frames": [
       {

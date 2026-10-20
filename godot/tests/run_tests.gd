@@ -1,7 +1,8 @@
 extends SceneTree
 
-const Room = preload("res://scripts/combat/sample_room.gd")
-const Controls = preload("res://scripts/input/sample_controls.gd")
+const TraceReplay = preload("res://tests/trace_replay.gd")
+const Room = preload("res://scripts/combat/training_room.gd")
+const Controls = preload("res://scripts/input/player_controls.gd")
 var failures: Array[String] = []
 var count: int = 0
 
@@ -94,5 +95,38 @@ func _initialize() -> void:
 	upper_edge.update({"aim": Vector2(1000, 159), "fire": true}, 0.01)
 	upper_edge.update({"aim": Vector2(1000, 159), "fire": false}, 0.44)
 	check(upper_edge.snapshot().enemies[0].health == 45, "合法上缘脚点释放的空中箭不被脚点边界清除，仍可命中")
-	print(JSON.stringify({"checks": count, "failures": failures}))
+	var traces: RefCounted = TraceReplay.new()
+	var report: Dictionary = traces.run()
+	check(report.failures.is_empty(),"55个参照场景回放："+str(report.failures))
+	var scene: PackedScene = load("res://scenes/tanggu_map.tscn")
+	var map: Node2D = scene.instantiate()
+	var expected: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/tanggu.json"))
+	check(traces.difference(traces.json_value(map.get_layout()),expected).is_empty(),"正式编辑器地图与冻结参照的道路、出生、障碍、遭遇和探索布局一致")
+	map.get_node("Road1").size.x+=20
+	map.get_node("Obstacle1").position.x+=10
+	map.get_node("PlayerSpawn").position.x+=20
+	map.get_node("SteleInteraction").position.y+=10
+	var edited: Dictionary = map.get_layout()
+	var packed: PackedScene = PackedScene.new()
+	check(packed.pack(map)==OK and ResourceSaver.save(packed,"/private/tmp/nine-tripod-edited-map.tscn")==OK,"四类编辑器配置可以保存为原生场景")
+	map.free()
+	var reopened: PackedScene = ResourceLoader.load("/private/tmp/nine-tripod-edited-map.tscn","PackedScene",ResourceLoader.CACHE_MODE_IGNORE)
+	map=reopened.instantiate()
+	check(traces.difference(traces.json_value(map.get_layout()),traces.json_value(edited)).is_empty(),"保存关闭后重开四类布局保留，未写回参照地图")
+	var edited_room = Room.new(map.get_layout())
+	check(edited_room.snapshot().player.x==420 and edited_room.snapshot().enemies.size()==12,"重新载入的场景配置直接进入正式规则，出生点与三组12敌人一致")
+	map.free()
+	var reading_layout: Dictionary = expected.duplicate(true)
+	reading_layout.spawn={"x":840,"y":365}; reading_layout.encounters=[]
+	var reader = Room.new(reading_layout)
+	var reader_controls = Controls.new(reader)
+	reader_controls.key_down(KEY_F); reader_controls.key_up(KEY_F)
+	reader_controls.update(Vector2(1000,300),true,0)
+	check(reader.snapshot().reading,"适配层快速F点按打开阅读，不被同帧松键吞掉")
+	reader_controls.interrupt(true); reader_controls.key_down(KEY_ESCAPE)
+	check(not reader.snapshot().reading and reader.snapshot().paused,"阅读叠加失焦后Esc只关闭阅读，仍保持暂停")
+	reader_controls.key_down(KEY_ESCAPE)
+	reader_controls.update(Vector2(1000,300),true,0.1)
+	check(not reader.snapshot().paused and reader.snapshot().arrows.is_empty(),"二次Esc恢复后不续射，阅读切换已清理操作意图")
+	print(JSON.stringify({"checks":count,"failures":failures,"rule_traces":report}))
 	quit(0 if failures.is_empty() else 1)

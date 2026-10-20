@@ -1,0 +1,23 @@
+{
+  "capture_date": "2026-10-19",
+  "baseline": "docs/migration/baseline-20261019",
+  "cases": 55,
+  "events": 19663,
+  "observable_snapshots": 4250,
+  "source_sha256": {
+    "src/game/TrainingRoom.ts": "7d2980a942481a3f11f0efa5f6ef57d80e6f8f0e76d6ac046b26dbbe45f1409c",
+    "src/game/Tanggu.ts": "f3add7df4eb03d01604e0d43d361fcd0cf551729df648194850c27fe8471a847",
+    "src/game/PlayerControls.ts": "46997c2458f1ee993f7a0e1320a591b57f81860b38c60c3a7438766fdb6102db",
+    "src/game/CombatBalance.ts": "3f36373dbc2e1c29ff31423206408d63a0be1409ea76a17c9bf84141c129bd81",
+    "tests/TrainingRoom.test.cjs": "0a0276f8376640768142686bfc10c924cf699632862cf890353b3ba73087f24c",
+    "tests/Tanggu.test.cjs": "42a97407afde43745d4714dd7ea57029d1ad243e855a014a9d1960a5f9acb034",
+    "tests/CombatFeedback.test.cjs": "d0750c2408b7da1694f39591f265d755c62fea7c307dce3c9bee32f743f7880a",
+    "tests/Exploration.test.cjs": "95c09d2770f7c062c30bb063c57274ddaab2b97c845fa0e3d760951807595064",
+    "tests/PlayerControls.test.cjs": "5f5316e3fdc3f20052f2f6e6eb8f947b89dc528cd53485a5546cfdb7acc437d3",
+    "tests/TangguRoutes.test.cjs": "72776773fa0403a94b64cf4401c871b24f9424ca62571847a42c51b1867d5104"
+  },
+  "fixture_sha256": "9d614207ca9039c1fa5518eda5794d8213b05cb2043d8330355e77006a83a86a",
+  "boundary": "公开构造布局、update/input/time、reset、暂停/中断/阅读方法及可观察快照；不读取私有字段",
+  "numeric_tolerance": 0.001,
+  "angle_equivalence": "同一方向的等价角度"
+}

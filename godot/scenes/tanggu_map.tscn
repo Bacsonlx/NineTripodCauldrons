@@ -1,0 +1,453 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/map_definition.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/world/map_item.gd" id="2"]
+
+[node name="TangguMap" type="Node2D"]
+script = ExtResource("1")
+
+[node name="PlayerSpawn" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(400, 820)
+category = "spawn"
+
+[node name="Road1" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(400.0, 875.0)
+category = "road"
+size = Vector2(560, 450)
+label = "起点"
+region = "扶桑残径"
+terrain_material = "path"
+priority = 0
+
+[node name="Road2" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(830.0, 840.0)
+category = "road"
+size = Vector2(420, 440)
+label = "第一庭院"
+region = "扶桑残径"
+terrain_material = "stone"
+priority = 0
+
+[node name="Road3" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1130.0, 795.0)
+category = "road"
+size = Vector2(280, 190)
+label = "断垣廊道"
+region = "断垣之道"
+terrain_material = "path"
+priority = 0
+
+[node name="Road4" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1445.0, 625.0)
+category = "road"
+size = Vector2(490, 450)
+label = "第二庭院"
+region = "断垣之道"
+terrain_material = "stone"
+priority = 0
+
+[node name="Road5" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1725.0, 710.0)
+category = "road"
+size = Vector2(230, 180)
+label = "日鸟廊道"
+region = "断垣之道"
+terrain_material = "path"
+priority = 0
+
+[node name="Road6" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(2080.0, 760.0)
+category = "road"
+size = Vector2(620, 480)
+label = "第三庭院"
+region = "日鸟石庭"
+terrain_material = "stone"
+priority = 0
+
+[node name="Road7" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1085.0, 550.0)
+category = "road"
+size = Vector2(130, 500)
+label = "碑林支路"
+region = "碑林幽径"
+terrain_material = "path"
+priority = 1
+
+[node name="Road8" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(945.0, 330.0)
+category = "road"
+size = Vector2(410, 240)
+label = "碑林空地"
+region = "碑林幽径"
+terrain_material = "path"
+priority = 1
+
+[node name="Road9" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1590.0, 980.0)
+category = "road"
+size = Vector2(140, 380)
+label = "祭火支路"
+region = "祭火林地"
+terrain_material = "path"
+priority = 1
+
+[node name="Road10" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1695.0, 1200.0)
+category = "road"
+size = Vector2(510, 220)
+label = "祭火空地"
+region = "祭火林地"
+terrain_material = "path"
+priority = 1
+
+[node name="Road11" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1865.0, 1075.0)
+category = "road"
+size = Vector2(130, 250)
+label = "回程捷径"
+region = "祭火林地"
+terrain_material = "path"
+priority = 1
+
+[node name="Obstacle1" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(840, 300)
+category = "obstacle"
+size = Vector2(106, 36)
+body_height = 97
+obstacle_kind = "stele"
+
+[node name="Obstacle2" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(940, 560)
+category = "obstacle"
+size = Vector2(180, 48)
+body_height = 125
+obstacle_kind = "wall"
+
+[node name="Obstacle3" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1360, 410)
+category = "obstacle"
+size = Vector2(210, 60)
+body_height = 144
+obstacle_kind = "root"
+
+[node name="Obstacle4" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1660, 1180)
+category = "obstacle"
+size = Vector2(140, 64)
+body_height = 97
+obstacle_kind = "altar"
+
+[node name="Obstacle5" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(600, 600)
+category = "obstacle"
+size = Vector2(72, 52)
+body_height = 232
+obstacle_kind = "tree"
+
+[node name="Obstacle6" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1160, 460)
+category = "obstacle"
+size = Vector2(76, 52)
+body_height = 232
+obstacle_kind = "tree"
+
+[node name="Obstacle7" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1700, 930)
+category = "obstacle"
+size = Vector2(76, 52)
+body_height = 232
+obstacle_kind = "tree"
+
+[node name="Obstacle8" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1865, 1045)
+category = "obstacle"
+size = Vector2(132, 28)
+body_height = 87
+obstacle_kind = "gate"
+
+[node name="Obstacle9" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(515, 710)
+category = "obstacle"
+size = Vector2(36, 28)
+body_height = 100
+obstacle_kind = "waystone"
+marker_offset_y = 60
+
+[node name="Obstacle10" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1375, 815)
+category = "obstacle"
+size = Vector2(36, 28)
+body_height = 100
+obstacle_kind = "waystone"
+marker_offset_y = -50
+
+[node name="Obstacle11" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(2240, 985)
+category = "obstacle"
+size = Vector2(36, 28)
+body_height = 100
+obstacle_kind = "waystone"
+marker_offset_y = -85
+
+[node name="Obstacle12" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(700, 1010)
+category = "obstacle"
+size = Vector2(36, 28)
+body_height = 70
+obstacle_kind = "brazier"
+
+[node name="Obstacle13" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1180, 860)
+category = "obstacle"
+size = Vector2(36, 28)
+body_height = 70
+obstacle_kind = "brazier"
+
+[node name="Obstacle14" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1600, 820)
+category = "obstacle"
+size = Vector2(36, 28)
+body_height = 70
+obstacle_kind = "brazier"
+
+[node name="Obstacle15" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1800, 760)
+category = "obstacle"
+size = Vector2(36, 28)
+body_height = 70
+obstacle_kind = "brazier"
+
+[node name="Obstacle16" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(2320, 900)
+category = "obstacle"
+size = Vector2(36, 28)
+body_height = 70
+obstacle_kind = "brazier"
+
+[node name="Obstacle17" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(995, 690)
+category = "obstacle"
+size = Vector2(36, 28)
+body_height = 70
+obstacle_kind = "brazier"
+
+[node name="Obstacle18" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1170, 720)
+category = "obstacle"
+size = Vector2(36, 28)
+body_height = 70
+obstacle_kind = "brazier"
+
+[node name="Obstacle19" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(985, 1030)
+category = "obstacle"
+size = Vector2(36, 28)
+body_height = 100
+obstacle_kind = "waystone"
+
+[node name="Encounter1" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(740, 850)
+category = "encounter"
+label = "扶桑石庭"
+
+[node name="Enemy1" type="Node2D" parent="Encounter1"]
+script = ExtResource("2")
+position = Vector2(90, -90)
+category = "enemy"
+appearance = "bird"
+
+[node name="Enemy2" type="Node2D" parent="Encounter1"]
+script = ExtResource("2")
+position = Vector2(190, 70)
+category = "enemy"
+appearance = "paper"
+
+[node name="Enemy3" type="Node2D" parent="Encounter1"]
+script = ExtResource("2")
+position = Vector2(210, -110)
+category = "enemy"
+appearance = "wood"
+
+[node name="Encounter2" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1290, 720)
+category = "encounter"
+label = "断垣庭院"
+
+[node name="Enemy1" type="Node2D" parent="Encounter2"]
+script = ExtResource("2")
+position = Vector2(120, -220)
+category = "enemy"
+appearance = "paper"
+
+[node name="Enemy2" type="Node2D" parent="Encounter2"]
+script = ExtResource("2")
+position = Vector2(240, -20)
+category = "enemy"
+appearance = "wood"
+
+[node name="Enemy3" type="Node2D" parent="Encounter2"]
+script = ExtResource("2")
+position = Vector2(120, 70)
+category = "enemy"
+appearance = "bird"
+
+[node name="Enemy4" type="Node2D" parent="Encounter2"]
+script = ExtResource("2")
+position = Vector2(330, -200)
+category = "enemy"
+appearance = "paper"
+
+[node name="Encounter3" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1880, 750)
+category = "encounter"
+label = "日鸟石庭"
+
+[node name="Enemy1" type="Node2D" parent="Encounter3"]
+script = ExtResource("2")
+position = Vector2(110, -150)
+category = "enemy"
+appearance = "bird"
+
+[node name="Enemy2" type="Node2D" parent="Encounter3"]
+script = ExtResource("2")
+position = Vector2(210, -20)
+category = "enemy"
+appearance = "paper"
+
+[node name="Enemy3" type="Node2D" parent="Encounter3"]
+script = ExtResource("2")
+position = Vector2(120, 150)
+category = "enemy"
+appearance = "wood"
+
+[node name="Enemy4" type="Node2D" parent="Encounter3"]
+script = ExtResource("2")
+position = Vector2(340, 100)
+category = "enemy"
+appearance = "paper"
+
+[node name="Enemy5" type="Node2D" parent="Encounter3"]
+script = ExtResource("2")
+position = Vector2(410, -50)
+category = "enemy"
+appearance = "wood"
+
+[node name="SteleInteraction" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(840, 365)
+category = "interaction"
+interaction_id = "stele"
+
+[node name="AltarInteraction" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1660, 1240)
+category = "interaction"
+interaction_id = "altar"
+
+[node name="GateInteraction" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1865, 1100)
+category = "interaction"
+interaction_id = "gate"
+
+[node name="Pillar1" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(780, 680)
+category = "pillar"
+
+[node name="Pillar2" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1240, 440)
+category = "pillar"
+
+[node name="Pillar3" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(2140, 560)
+category = "pillar"
+
+[node name="Route1" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(400, 820)
+category = "route"
+
+[node name="Route2" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(850, 820)
+category = "route"
+
+[node name="Route3" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1100, 790)
+category = "route"
+
+[node name="Route4" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1430, 720)
+category = "route"
+
+[node name="Route5" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1800, 720)
+category = "route"
+
+[node name="Route6" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(2110, 750)
+category = "route"
+
+[node name="Route7" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(2270, 870)
+category = "route"
+
+[node name="Ground1" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(930, 820)
+category = "ground"
+size = Vector2(740, 500)
+
+[node name="Ground2" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1440, 630)
+category = "ground"
+size = Vector2(490, 420)
+
+[node name="Ground3" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(2100, 760)
+category = "ground"
+size = Vector2(610, 450)

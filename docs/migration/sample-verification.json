@@ -78,10 +78,14 @@
     "Windows": {
       "export": "passed",
       "device": null,
-      "native_startup": "pending",
-      "native_controls": "pending"
+      "native_startup": "deferred-by-user",
+      "native_controls": "deferred-by-user"
     },
-    "user_sample_approval": "pending"
+    "user_sample_approval": {
+      "status": "approved",
+      "version": "0.3.0-godot-sample.1",
+      "source": "用户明确回复：已试玩通过，继续后续 Task"
+    }
   },
   "source_sha256": {
     "godot/README.md": "b09eb7f6b87548aaa0461e31e694c4f34b89d2b58ec8afda5a35490db67df6ba",

@@ -11,6 +11,7 @@ output = root / "godot/assets/generated"
 output.mkdir(parents=True, exist_ok=True)
 old = json.loads((root / "assets/mvp/child-refined-v3.frames.json").read_text())
 atlases = json.loads((root / "assets/mvp02/atlases.json").read_text())
+full = json.loads((root / "assets/mvp03/full/frames.json").read_text())
 sample = json.loads((root / "assets/mvp03/frames.json").read_text())
 definitions = {
     "upper": ("assets/mvp/child-upper-refined-v3.png", old["upper"], 0.20),
@@ -19,6 +20,12 @@ definitions = {
     "enemy": ("assets/mvp02/shadow-puppet-v2.png", atlases["enemy"]["frames"], atlases["enemy"]["scale"]),
     "skills": ("assets/mvp02/child-skills-upper-v1.png", atlases["skills"]["frames"], 0.20),
     "failed": ("assets/mvp02/child-failed-v1.png", atlases["failed"]["frames"], atlases["failed"]["scale"]),
+    "enemyPaper": ("assets/mvp02/shadow-paper-v2.png", atlases["enemyPaper"]["frames"], atlases["enemyPaper"]["scale"]),
+    "enemyWood": ("assets/mvp02/shadow-wood-v2.png", atlases["enemyWood"]["frames"], atlases["enemyWood"]["scale"]),
+    "worldProps": ("assets/mvp02/tanggu-props-v1.png", atlases["props"]["frames"], 0.46),
+    "vfx": ("assets/mvp03/combat-vfx-v1.png", sample["vfx"], 1.0),
+    "exploration": ("assets/mvp03/full/exploration-props-v1.png", full["exploration"], 1.0),
+    "terrain": ("assets/mvp03/full/terrain-materials-v1.png", full["terrain"], 1.0),
     "props": ("assets/mvp03/junction-props-v1.png", sample["props"], 0.30),
 }
 
