@@ -18,29 +18,29 @@
 
 ### Game development skills
 
-编写 Godot 脚本、场景、资源、测试、HUD、动画、音频、Shader、导出，或开展关卡、手感、性能任务前，读取 [游戏开发 Skills 使用指南](docs/游戏开发Skills使用指南.md)，按任务选择 `.agents/skills/` 中的最少技能并读取其 `SKILL.md`；参考文件按需加载。主工程固定为 `godot/`，版本读取 `godot/engine-lock.json`，旧 Phaser 文件不参与引擎选择。
+编写 Godot 脚本、场景、资源、测试、HUD、动画、音频、Shader、导出，或开展关卡、手感、性能任务前，读取 [游戏开发 Skills 使用指南](docs/guides/游戏开发Skills使用指南.md)，按任务选择 `.agents/skills/` 中的最少技能并读取其 `SKILL.md`；参考文件按需加载。主工程固定为 `godot/`，版本读取 `godot/engine-lock.json`，旧 Phaser 文件不参与引擎选择。
 
 项目约束及指南中的适配规则优先于上游示例；技能互相提及不代表其已安装，也不构成扩展玩法范围的授权。安装完整性检查：`python3 tools/gamedev_skills/verify.py`。
 
 ## Project context
 
-架构、范围或玩法改动前读取 `docs/九鼎_架构选型结论.md`，具体已确认规则见 `docs/十日_玩法与运行规则.md`。历史故事材料中的未决建议不自动成为实现要求。
+先按 [文档索引](docs/README.md) 判断资料类别和状态。架构、范围或玩法改动前读取 [架构选型结论](docs/architecture/九鼎_架构选型结论.md)，具体已确认规则见 [玩法与运行规则](docs/product/十日_玩法与运行规则.md)。`docs/story/` 的历史大纲、`docs/product/` 的旧版 HTML、`docs/mvp/` 的草稿及 `output/` 的观察材料不自动成为实现要求；资源原件和来源记录见 `assets/` 与 `docs/art/`。移动文档时同步更新索引和站内链接。
 
 ### Godot project
 
-迁移、工具链或迁移验收改动前，读取 [ADR-0010](docs/adr/0010-godot-migration-direction.md) 和 [Godot 迁移方案](docs/九鼎_Godot架构评估与迁移落地方案_2026-10-19.md)；以 Q1—Q9 的已确认决策为范围依据，后续商业版预案按各自规格实施。
+迁移、工具链或迁移验收改动前，读取 [ADR-0010](docs/adr/0010-godot-migration-direction.md) 和 [Godot 迁移方案](docs/architecture/九鼎_Godot架构评估与迁移落地方案_2026-10-19.md)；以 Q1—Q9 的已确认决策为范围依据，后续商业版预案按各自规格实施。
 
 汤谷迁移实施、拆票和验收以 [Godot 迁移 Spec](docs/mvp/九鼎_Godot迁移_Spec.md)（[GitHub #33](https://github.com/Bacsonlx/NineTripodCauldrons/issues/33)）为合同；已确认测试边界为规则输入／时间／可观察状态、操作中断输入适配和双平台原生体验。
 
 - 当前开发与运行工程为 `godot/`，采用原生 2D＋带类型 GDScript；启动用 `godot --path godot`，版本与模板以 `godot/engine-lock.json` 为准，编辑／测试／导出见 [Godot README](godot/README.md)。
 - 完整汤谷已接入 Godot，动态小样已获用户确认；当前功能与待验项以 [实施记录](docs/migration/Godot迁移_实施记录.md)和[候选验收记录](docs/migration/Godot候选_验收记录.md)为准。
-- 内容布局由 Godot 编辑器承载，用户调整与验收，AI 负责脚本和批量配置。当前默认采用 `godot/scenes/rooms/` 七个独立房间，运行入口 `tanggu_first_level.tscn`；门连接、任务与编辑方式见 [房间地图说明](docs/汤谷房间地图使用说明.md)。原连续地图 `tanggu_first_level_map.tscn` 和旧 `tanggu_map.tscn` 保留用户编辑结果，冻结规则夹具仅用于回归参照。
+- 内容布局由 Godot 编辑器承载，用户调整与验收，AI 负责脚本和批量配置。当前默认采用 `godot/scenes/rooms/` 七个独立房间，运行入口 `tanggu_first_level.tscn`；门连接、任务与编辑方式见 [房间地图说明](docs/guides/汤谷房间地图使用说明.md)。原连续地图 `tanggu_first_level_map.tscn` 和旧 `tanggu_map.tscn` 保留用户编辑结果，冻结规则夹具仅用于回归参照。
 - `src/`、根 `tests/`、npm／Electron／Phaser 工具链保留为旧版参照与迁移制作工具；新增玩法在 Godot 实现，Node.js 不作为游戏运行依赖。
 - 手柄、正式肉鸽闭环、存档和 Steam 完整功能属于后续范围；构建、规则测试或单平台通过分别记录，不能替代双平台实机完成证据。
 
 ### Godot MCP
 
-使用 `jiuding_godot` 查询工程、编辑场景／节点／精灵或排查 UID 前，读取 [Godot MCP 使用指南](docs/Godot_MCP使用指南.md)。配置和依赖安装位于 `tools/godot_mcp/`；当前仅后台操作，场景修改后仍执行下述项目检查。
+使用 `jiuding_godot` 查询工程、编辑场景／节点／精灵或排查 UID 前，读取 [Godot MCP 使用指南](docs/guides/Godot_MCP使用指南.md)。配置和依赖安装位于 `tools/godot_mcp/`；当前仅后台操作，场景修改后仍执行下述项目检查。
 
 ### Sprite Forge
 

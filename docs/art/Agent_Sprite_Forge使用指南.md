@@ -75,7 +75,7 @@ ART_RUN="output/art/<ID>/<版本>"
 
 先看浅色、深色、棋盘格预览，再按实际游戏尺寸检查边缘、方向、动作、共享锚点与循环接缝。QA warning 必须逐项解释，不能只凭 exit 0 标为画面通过。导出不会设置完整 Godot PNG 导入参数；结合像素／绘画素材选择过滤、无损压缩和 mipmap，并检查图集边缘渗色。
 
-确认接入后运行素材转换及 `python3 tools/migration/check_godot.py`，资源呈现改动按 [Godot README](../../godot/README.md) 检查干净导入与原生包。编辑场景可使用 [Godot MCP](../Godot_MCP使用指南.md)，保留用户正式地图。当前仅后台验证；真实动态画面、手感和双平台体验由对应验收任务记录。
+确认接入后运行素材转换及 `python3 tools/migration/check_godot.py`，资源呈现改动按 [Godot README](../../godot/README.md) 检查干净导入与原生包。编辑场景可使用 [Godot MCP](../guides/Godot_MCP使用指南.md)，保留用户正式地图。当前仅后台验证；真实动态画面、手感和双平台体验由对应验收任务记录。
 
 2026-10-20 已在 macOS 后台验证：三 Skill 与锁定源码一致；已有腿部单帧按原矩形切出后 RGBA 一致；两帧共用平移后保留 8 px 上下运动、alpha 和可见 RGB；单帧 Godot 导出可干净导入、实例化，原点、纹理区域、循环及 100 ms 时长正确。跨框裁切保留一个 warning；单帧测试不证明完整动画质量，未验证图生视频、付费 API、Windows 或前台画面。证据见 [verification.json](../../tools/asset_forge/verification.json)。`verify.py` 仅复核安装完整性、依赖和命令可启动性，不重新执行这些后台素材／Godot 实验。
 

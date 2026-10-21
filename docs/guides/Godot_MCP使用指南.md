@@ -18,7 +18,7 @@
 
 ## 2. 安装与迁移到其他开发机
 
-要求：Git、Node.js 22+、Python 3.11+（配置读取使用标准库 `tomllib`），以及 [engine-lock.json](../godot/engine-lock.json) 锁定的 Godot，均可从终端 PATH 找到。在仓库根目录执行：
+要求：Git、Node.js 22+、Python 3.11+（配置读取使用标准库 `tomllib`），以及 [engine-lock.json](../../godot/engine-lock.json) 锁定的 Godot，均可从终端 PATH 找到。在仓库根目录执行：
 
 ```sh
 npm ci --prefix tools/godot_mcp
@@ -71,7 +71,7 @@ python3 tools/migration/check_godot.py
 
 使用上游 [`1209744`](https://github.com/Coding-Solo/godot-mcp/commit/1209744fad78f3998f98c7394fd0f6ef50da5281) 源码及项目 npm 锁文件。没有直接使用浮动 `npx @coding-solo/godot-mcp`；查询到 npm `0.1.1` 的发布提交为 `f341234`，与本次审读的源码提交不同。
 
-本机临时工程验证发现两个实际问题，[patch.mjs](../tools/godot_mcp/patch.mjs) 在安装后自动对已构建的 GDScript 应用小补丁：
+本机临时工程验证发现两个实际问题，[patch.mjs](../../tools/godot_mcp/patch.mjs) 在安装后自动对已构建的 GDScript 应用小补丁：
 
 - 去掉 `create_scene` 中将根节点 owner 设为自身的操作，否则引擎报错。
 - 在四处场景打包后释放临时实例，否则加载精灵等操作在退出时出现资源泄漏报错。
