@@ -1,0 +1,1 @@
+Prepared 15 existing atlases/images for the Godot sample

@@ -150,6 +150,54 @@
     "source": "assets/mvp/child-upper-refined-v3.png",
     "sha256": "1b08ed48d6eb324a07d64babc20241854d6d12a55d0135a4167ed835b72d36f9"
   },
+  "upperDown": {
+    "frames": [
+      {
+        "name": "idle_down",
+        "x": 0,
+        "y": 0,
+        "width": 543,
+        "height": 724,
+        "originX": 0.5027624309392266,
+        "originY": 0.7486187845303868
+      },
+      {
+        "name": "draw_down",
+        "x": 543,
+        "y": 0,
+        "width": 543,
+        "height": 724,
+        "originX": 0.5027624309392266,
+        "originY": 0.7486187845303868
+      },
+      {
+        "name": "release_down",
+        "x": 1086,
+        "y": 0,
+        "width": 543,
+        "height": 724,
+        "originX": 0.5027624309392266,
+        "originY": 0.7486187845303868
+      },
+      {
+        "name": "recover_down",
+        "x": 1629,
+        "y": 0,
+        "width": 543,
+        "height": 724,
+        "originX": 0.5027624309392266,
+        "originY": 0.7486187845303868
+      }
+    ],
+    "scale": 0.12,
+    "source": "assets/characters/child/down-archery-v3.png",
+    "sha256": "3c3f596f09252a6035b8e7f103f0421cccdf4b58f2db5f8a405d9db6a75ee288",
+    "grip": {
+      "x": -0.12,
+      "y": -17.04
+    },
+    "arrowScale": 0.024
+  },
   "bow": {
     "frames": [
       {

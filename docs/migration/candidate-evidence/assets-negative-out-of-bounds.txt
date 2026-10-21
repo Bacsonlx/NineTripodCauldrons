@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/var/folders/1y/kswbw03s56512cz91zm16ljr0000gn/T/nine-tripods-final-clean-18ioefq_/tools/migration/prepare_sample_assets.py", line 57, in <module>
+    raise ValueError(f"Frame outside atlas: {key}/{frame['name']}")
+ValueError: Frame outside atlas: upper/upper-0-0

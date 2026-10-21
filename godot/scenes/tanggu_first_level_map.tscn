@@ -1,0 +1,5358 @@
+[gd_scene load_steps=25 format=3]
+[ext_resource type="Script" path="res://scripts/world/first_level_map.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/world/map_item.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/world/environment_prop.tscn" id="3"]
+[ext_resource type="Texture2D" path="res://assets/world/tree_green.tres" id="4"]
+[ext_resource type="Texture2D" path="res://assets/world/tree_red.tres" id="5"]
+[ext_resource type="Texture2D" path="res://assets/world/rocks.tres" id="6"]
+[ext_resource type="Texture2D" path="res://assets/world/ferns.tres" id="7"]
+[ext_resource type="Texture2D" path="res://assets/world/stele.tres" id="8"]
+[ext_resource type="Texture2D" path="res://assets/world/grass.tres" id="9"]
+[ext_resource type="Texture2D" path="res://assets/world/root.tres" id="10"]
+[ext_resource type="Texture2D" path="res://assets/world/court.tres" id="11"]
+[ext_resource type="Texture2D" path="res://assets/world/gateway.tres" id="12"]
+[ext_resource type="Texture2D" path="res://assets/world/wall_east.tres" id="13"]
+[ext_resource type="Texture2D" path="res://assets/world/wall_west.tres" id="14"]
+[ext_resource type="Texture2D" path="res://assets/world/pillar.tres" id="15"]
+[ext_resource type="Texture2D" path="res://assets/world/camp.tres" id="16"]
+[ext_resource type="Texture2D" path="res://assets/world/altar.tres" id="17"]
+[ext_resource type="Texture2D" path="res://assets/world/gate.tres" id="18"]
+[ext_resource type="Texture2D" path="res://assets/world/forest.png" id="19"]
+[ext_resource type="Texture2D" path="res://assets/world/path.png" id="20"]
+[ext_resource type="Texture2D" path="res://assets/world/stone.png" id="21"]
+[ext_resource type="Texture2D" path="res://assets/world/water.png" id="22"]
+[ext_resource type="Script" path="res://scripts/world/terrain_surface.gd" id="surface"]
+[ext_resource type="Texture2D" path="res://assets/world/wall_north.tres" id="25"]
+
+[node name="TangguFirstLevelMap" type="Node2D"]
+script = ExtResource("1")
+world_size = Vector2(4608, 3072)
+floor_polygon = PackedVector2Array(0, 0, 4608, 0, 4608, 3072, 0, 3072)
+
+[node name="Walkable" type="Node2D" parent="."]
+
+[node name="第一庭院" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(633, 2133, 774, 2010, 1029, 1956, 1224, 1968, 1440, 2040, 1587, 2175, 1641, 2325, 1494, 2430, 1305, 2478, 1116, 2475, 921, 2418, 753, 2328, 645, 2241)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_第一庭院" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "第一庭院"
+region = "第一庭院"
+position = Vector2(1137, 2217)
+size = Vector2(1008, 522)
+
+[node name="入口" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(273, 2580, 342, 2475, 477, 2376, 603, 2262, 684, 2253, 738, 2325, 642, 2409, 522, 2511, 378, 2625)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_入口" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "入口"
+region = "入口"
+position = Vector2(505.5, 2439)
+size = Vector2(465, 372)
+
+[node name="第一营地西径" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(1410, 2094, 1473, 1971, 1611, 1869, 1695, 1902, 1665, 2016, 1590, 2124, 1596, 2208)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_第一营地西径" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "第一营地西径"
+region = "第一营地西径"
+position = Vector2(1552.5, 2038.5)
+size = Vector2(285, 339)
+
+[node name="第一营地" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(1575, 1929, 1704, 1812, 1815, 1776, 1956, 1809, 2085, 1932, 2202, 2010, 2202, 2103, 2076, 2193, 1935, 2208, 1767, 2157, 1656, 2076)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_第一营地" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "第一营地"
+region = "第一营地"
+position = Vector2(1888.5, 1992)
+size = Vector2(627, 432)
+
+[node name="第二庭院入口" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(2088, 2025, 2178, 1860, 2271, 1746, 2397, 1671, 2460, 1737, 2412, 1830, 2292, 1914, 2229, 2067)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_第二庭院入口" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "第二庭院入口"
+region = "第二庭院入口"
+position = Vector2(2274, 1869)
+size = Vector2(372, 396)
+
+[node name="第二庭院" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(2196, 1809, 2316, 1674, 2472, 1614, 2652, 1623, 2808, 1686, 2916, 1794, 3015, 1860, 3030, 1992, 2922, 2082, 2796, 2136, 2595, 2169, 2424, 2124, 2298, 2031, 2211, 1929)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_第二庭院" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "第二庭院"
+region = "第二庭院"
+position = Vector2(2613, 1891.5)
+size = Vector2(834, 555)
+
+[node name="第二庭院出口" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(2799, 1710, 2943, 1614, 3114, 1551, 3246, 1467, 3309, 1527, 3177, 1638, 3024, 1701, 2898, 1788)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_第二庭院出口" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "第二庭院出口"
+region = "第二庭院出口"
+position = Vector2(3054, 1627.5)
+size = Vector2(510, 321)
+
+[node name="第三庭院" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(3162, 1377, 3279, 1290, 3450, 1236, 3630, 1233, 3843, 1275, 4035, 1362, 4152, 1461, 4206, 1608, 4146, 1716, 4047, 1773, 3852, 1845, 3669, 1860, 3483, 1827, 3351, 1761, 3279, 1674, 3186, 1650)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_第三庭院" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "第三庭院"
+region = "第三庭院"
+position = Vector2(3684, 1546.5)
+size = Vector2(1044, 627)
+
+[node name="第二营地" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(3171, 1434, 3105, 1329, 3015, 1275, 2955, 1242, 2922, 1158, 2970, 1083, 3060, 1050, 3168, 1080, 3255, 1119, 3273, 1206, 3201, 1287, 3249, 1371)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_第二营地" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "第二营地"
+region = "第二营地"
+position = Vector2(3097.5, 1242)
+size = Vector2(351, 384)
+
+[node name="第三庭院北径" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(3984, 1437, 3942, 1233, 3867, 1158, 3858, 1074, 3882, 1014, 3969, 897, 4023, 783, 4029, 705, 3942, 639, 3861, 588, 3858, 516, 3933, 468, 4029, 471, 4089, 537, 4146, 588, 4128, 669, 4116, 753, 4080, 843, 4014, 948, 3969, 1032, 3981, 1098, 4059, 1176, 4104, 1254, 4104, 1425)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_第三庭院北径" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "第三庭院北径"
+region = "第三庭院北径"
+position = Vector2(4002, 952.5)
+size = Vector2(288, 969)
+
+[node name="第三营地" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(3864, 507, 3981, 411, 4113, 333, 4215, 348, 4290, 411, 4251, 501, 4176, 564, 4065, 609)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_第三营地" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "第三营地"
+region = "第三营地"
+position = Vector2(4077, 471)
+size = Vector2(426, 276)
+
+[node name="终场东径" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(2853, 447, 2985, 441, 3210, 474, 3450, 480, 3708, 456, 3921, 474, 3954, 543, 3804, 600, 3606, 591, 3384, 603, 3159, 591, 2940, 564, 2850, 549)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_终场东径" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "终场东径"
+region = "终场东径"
+position = Vector2(3402, 522)
+size = Vector2(1104, 162)
+
+[node name="终场石台" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(1791, 324, 1875, 210, 2037, 135, 2250, 114, 2457, 117, 2631, 156, 2790, 240, 2877, 345, 2904, 465, 2859, 582, 2763, 672, 2628, 729, 2436, 771, 2229, 762, 2049, 717, 1923, 648, 1836, 546, 1776, 429)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_终场石台" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "终场石台"
+region = "终场石台"
+position = Vector2(2340, 442.5)
+size = Vector2(1128, 657)
+
+[node name="战后出口" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(1800, 405, 1695, 429, 1581, 417, 1473, 393, 1398, 354, 1332, 351, 1281, 396, 1266, 465, 1359, 513, 1473, 537, 1608, 549, 1728, 543, 1827, 522)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_战后出口" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "战后出口"
+region = "战后出口"
+position = Vector2(1546.5, 450)
+size = Vector2(561, 198)
+
+[node name="碑林支路" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(1647, 1875, 1539, 1761, 1395, 1641, 1305, 1542, 1251, 1440, 1233, 1323, 1224, 1254, 1146, 1188, 1044, 1158, 936, 1158, 894, 1122, 900, 1053, 993, 1011, 1077, 1041, 1179, 1104, 1269, 1164, 1326, 1248, 1347, 1371, 1386, 1467, 1455, 1551, 1587, 1638, 1686, 1722, 1770, 1809)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_碑林支路" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "碑林支路"
+region = "碑林支路"
+position = Vector2(1332, 1443)
+size = Vector2(876, 864)
+
+[node name="碑林" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(780, 1077, 837, 1011, 936, 984, 1056, 1005, 1164, 1062, 1227, 1143, 1161, 1200, 1032, 1206, 897, 1167, 798, 1131)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_碑林" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "碑林"
+region = "碑林"
+position = Vector2(1003.5, 1095)
+size = Vector2(447, 222)
+
+[node name="回程环路" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(1728, 2205, 1827, 2244, 1806, 2352, 1797, 2427, 1827, 2493, 1965, 2544, 2208, 2598, 2463, 2625, 2703, 2652, 3009, 2685, 3270, 2685, 3489, 2646, 3714, 2583, 3954, 2529, 4170, 2460, 4308, 2376, 4389, 2268, 4374, 2145, 4317, 1989, 4284, 1818, 4245, 1695, 4125, 1605, 4167, 1521, 4314, 1617, 4371, 1728, 4404, 1875, 4452, 2025, 4503, 2160, 4524, 2277, 4476, 2394, 4404, 2475, 4248, 2550, 4020, 2634, 3771, 2697, 3519, 2754, 3273, 2796, 2994, 2805, 2676, 2772, 2376, 2745, 2172, 2712, 1938, 2658, 1797, 2601, 1698, 2541, 1656, 2463, 1659, 2382)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_回程环路" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "回程环路"
+region = "回程环路"
+position = Vector2(3090, 2163)
+size = Vector2(2868, 1284)
+
+[node name="祭火阶梯" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(3654, 2646, 3714, 2496, 3789, 2424, 3840, 2358, 3861, 2292, 3945, 2289, 3945, 2373, 3903, 2454, 3825, 2523, 3762, 2652)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_祭火阶梯" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "祭火阶梯"
+region = "祭火阶梯"
+position = Vector2(3799.5, 2470.5)
+size = Vector2(291, 363)
+
+[node name="回血祭坛" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(3795, 2247, 3870, 2130, 3990, 2088, 4149, 2112, 4230, 2175, 4230, 2253, 4149, 2334, 4020, 2376, 3897, 2346)
+color = Color(0.1, 0.8, 0.6, 0.2)
+
+[node name="Region_回血祭坛" type="Node2D" parent="."]
+script = ExtResource("2")
+category = "road"
+label = "回血祭坛"
+region = "回血祭坛"
+position = Vector2(4012.5, 2232)
+size = Vector2(435, 288)
+
+[node name="PlayerSpawn" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(540, 2380)
+category = "spawn"
+
+[node name="Encounter1" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1134, 2232)
+category = "encounter"
+label = "扶桑残径"
+
+[node name="Enemy1" type="Node2D" parent="Encounter1"]
+script = ExtResource("2")
+position = Vector2(-81, -90)
+category = "enemy"
+appearance = "bird"
+
+[node name="Enemy2" type="Node2D" parent="Encounter1"]
+script = ExtResource("2")
+position = Vector2(102, 18)
+category = "enemy"
+appearance = "paper"
+
+[node name="Enemy3" type="Node2D" parent="Encounter1"]
+script = ExtResource("2")
+position = Vector2(-18, 138)
+category = "enemy"
+appearance = "wood"
+
+[node name="Encounter2" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(2607, 1878)
+category = "encounter"
+label = "断垣庭"
+
+[node name="Enemy1" type="Node2D" parent="Encounter2"]
+script = ExtResource("2")
+position = Vector2(-96, -93)
+category = "enemy"
+appearance = "bird"
+
+[node name="Enemy2" type="Node2D" parent="Encounter2"]
+script = ExtResource("2")
+position = Vector2(117, -48)
+category = "enemy"
+appearance = "wood"
+
+[node name="Enemy3" type="Node2D" parent="Encounter2"]
+script = ExtResource("2")
+position = Vector2(153, 120)
+category = "enemy"
+appearance = "paper"
+
+[node name="Enemy4" type="Node2D" parent="Encounter2"]
+script = ExtResource("2")
+position = Vector2(-93, 123)
+category = "enemy"
+appearance = "wood"
+
+[node name="Encounter3" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(3600, 1506)
+category = "encounter"
+label = "日轮高台"
+
+[node name="Enemy1" type="Node2D" parent="Encounter3"]
+script = ExtResource("2")
+position = Vector2(-108, -84)
+category = "enemy"
+appearance = "bird"
+
+[node name="Enemy2" type="Node2D" parent="Encounter3"]
+script = ExtResource("2")
+position = Vector2(135, -117)
+category = "enemy"
+appearance = "paper"
+
+[node name="Enemy3" type="Node2D" parent="Encounter3"]
+script = ExtResource("2")
+position = Vector2(354, 39)
+category = "enemy"
+appearance = "wood"
+
+[node name="Enemy4" type="Node2D" parent="Encounter3"]
+script = ExtResource("2")
+position = Vector2(150, 189)
+category = "enemy"
+appearance = "paper"
+
+[node name="Enemy5" type="Node2D" parent="Encounter3"]
+script = ExtResource("2")
+position = Vector2(-120, 189)
+category = "enemy"
+appearance = "wood"
+
+[node name="FirstSeal" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1644.000, 1980.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(36, 540)
+body_height = 100.0
+opens_after_encounter = 0
+
+[node name="SecondSeal" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(3060.000, 1623.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(36, 288)
+body_height = 100.0
+opens_after_encounter = 1
+
+[node name="ThirdSeal" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(3960.000, 1005.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(336, 30)
+body_height = 100.0
+opens_after_encounter = 2
+
+[node name="ReturnGate" parent="." instance=ExtResource("3")]
+position = Vector2(1761.000, 2304.000)
+category = "obstacle"
+obstacle_kind = "gate"
+size = Vector2(183, 30)
+body_height = 100.0
+texture_asset = ExtResource("18")
+render_width = 183.0
+
+[node name="InteractionAnchor" type="Marker2D" parent="ReturnGate"]
+position = Vector2(0, 75)
+
+[node name="Stele" parent="." instance=ExtResource("3")]
+position = Vector2(1032.000, 1089.000)
+category = "obstacle"
+obstacle_kind = "stele"
+size = Vector2(87, 36)
+body_height = 100.0
+texture_asset = ExtResource("8")
+render_width = 110.0
+
+[node name="InteractionAnchor" type="Marker2D" parent="Stele"]
+position = Vector2(33, 81)
+
+[node name="Altar" parent="." instance=ExtResource("3")]
+position = Vector2(4092.000, 2229.000)
+category = "obstacle"
+obstacle_kind = "altar"
+size = Vector2(111, 57)
+body_height = 100.0
+texture_asset = ExtResource("17")
+render_width = 155.0
+
+[node name="InteractionAnchor" type="Marker2D" parent="Altar"]
+position = Vector2(-78, 69)
+
+[node name="Interact_stele" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1065, 1170)
+category = "interaction"
+interaction_id = "stele"
+
+[node name="Interact_altar" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(4014, 2298)
+category = "interaction"
+interaction_id = "altar"
+
+[node name="Interact_gate" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1761, 2379)
+category = "interaction"
+interaction_id = "gate"
+
+[node name="Route0" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(471, 2484)
+category = "route"
+
+[node name="Route1" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1134, 2232)
+category = "route"
+
+[node name="Route2" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1953, 2097)
+category = "route"
+
+[node name="Route3" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(2607, 1878)
+category = "route"
+
+[node name="Route4" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(3090, 1227)
+category = "route"
+
+[node name="Route5" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(3600, 1506)
+category = "route"
+
+[node name="Route6" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(4140, 498)
+category = "route"
+
+[node name="Route7" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(2400, 438)
+category = "route"
+
+[node name="Route8" type="Node2D" parent="."]
+script = ExtResource("2")
+position = Vector2(1374, 435)
+category = "route"
+
+[node name="Landmark_camp1" type="Marker2D" parent="."]
+position = Vector2(1953, 2097)
+
+[node name="Landmark_camp2" type="Marker2D" parent="."]
+position = Vector2(3090, 1227)
+
+[node name="Landmark_camp3" type="Marker2D" parent="."]
+position = Vector2(4140, 498)
+
+[node name="Landmark_boss" type="Marker2D" parent="."]
+position = Vector2(2400, 438)
+
+[node name="Landmark_exit" type="Marker2D" parent="."]
+position = Vector2(1374, 435)
+
+[node name="Landmark_stele" type="Marker2D" parent="."]
+position = Vector2(1065, 1170)
+
+[node name="Landmark_altar" type="Marker2D" parent="."]
+position = Vector2(4014, 2298)
+
+[node name="Landmark_gate" type="Marker2D" parent="."]
+position = Vector2(1761, 2379)
+
+[node name="GreatRootBody" parent="." instance=ExtResource("3")]
+position = Vector2(2100.000, 1230.000)
+category = "obstacle"
+obstacle_kind = "root"
+size = Vector2(750, 540)
+body_height = 100.0
+texture_asset = ExtResource("10")
+render_width = 930.0
+art_offset = Vector2(0, 180)
+
+[node name="Ground" type="Node2D" parent="."]
+
+script = ExtResource("surface")
+path_texture = ExtResource("20")
+
+[node name="Forest" type="Polygon2D" parent="Ground"]
+z_index = -100
+polygon = PackedVector2Array(0.000, 0.000, 4608.000, 0.000, 4608.000, 3072.000, 0.000, 3072.000)
+uv = PackedVector2Array(0.000, 0.000, 4608.000, 0.000, 4608.000, 3072.000, 0.000, 3072.000)
+texture = ExtResource("19")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="River" type="Polygon2D" parent="Ground"]
+z_index = -90
+polygon = PackedVector2Array(0.000, 0.000, 575.000, 0.000, 655.000, 210.000, 690.000, 450.000, 600.000, 650.000, 330.000, 1000.000, 370.000, 1250.000, 545.000, 1600.000, 480.000, 1900.000, 450.000, 2100.000, 260.000, 2420.000, 140.000, 2550.000, 280.000, 2850.000, 630.000, 3072.000, 0.000, 3072.000)
+uv = PackedVector2Array(0.000, 0.000, 575.000, 0.000, 655.000, 210.000, 690.000, 450.000, 600.000, 650.000, 330.000, 1000.000, 370.000, 1250.000, 545.000, 1600.000, 480.000, 1900.000, 450.000, 2100.000, 260.000, 2420.000, 140.000, 2550.000, 280.000, 2850.000, 630.000, 3072.000, 0.000, 3072.000)
+texture = ExtResource("22")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="第一庭院" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(633.000, 2133.000, 774.000, 2010.000, 1029.000, 1956.000, 1224.000, 1968.000, 1440.000, 2040.000, 1587.000, 2175.000, 1641.000, 2325.000, 1494.000, 2430.000, 1305.000, 2478.000, 1116.000, 2475.000, 921.000, 2418.000, 753.000, 2328.000, 645.000, 2241.000)
+uv = PackedVector2Array(633.000, 2133.000, 774.000, 2010.000, 1029.000, 1956.000, 1224.000, 1968.000, 1440.000, 2040.000, 1587.000, 2175.000, 1641.000, 2325.000, 1494.000, 2430.000, 1305.000, 2478.000, 1116.000, 2475.000, 921.000, 2418.000, 753.000, 2328.000, 645.000, 2241.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="入口" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(273.000, 2580.000, 342.000, 2475.000, 477.000, 2376.000, 603.000, 2262.000, 684.000, 2253.000, 738.000, 2325.000, 642.000, 2409.000, 522.000, 2511.000, 378.000, 2625.000)
+uv = PackedVector2Array(273.000, 2580.000, 342.000, 2475.000, 477.000, 2376.000, 603.000, 2262.000, 684.000, 2253.000, 738.000, 2325.000, 642.000, 2409.000, 522.000, 2511.000, 378.000, 2625.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="第一营地西径" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(1410.000, 2094.000, 1473.000, 1971.000, 1611.000, 1869.000, 1695.000, 1902.000, 1665.000, 2016.000, 1590.000, 2124.000, 1596.000, 2208.000)
+uv = PackedVector2Array(1410.000, 2094.000, 1473.000, 1971.000, 1611.000, 1869.000, 1695.000, 1902.000, 1665.000, 2016.000, 1590.000, 2124.000, 1596.000, 2208.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="第一营地" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(1575.000, 1929.000, 1704.000, 1812.000, 1815.000, 1776.000, 1956.000, 1809.000, 2085.000, 1932.000, 2202.000, 2010.000, 2202.000, 2103.000, 2076.000, 2193.000, 1935.000, 2208.000, 1767.000, 2157.000, 1656.000, 2076.000)
+uv = PackedVector2Array(1575.000, 1929.000, 1704.000, 1812.000, 1815.000, 1776.000, 1956.000, 1809.000, 2085.000, 1932.000, 2202.000, 2010.000, 2202.000, 2103.000, 2076.000, 2193.000, 1935.000, 2208.000, 1767.000, 2157.000, 1656.000, 2076.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="第二庭院入口" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(2088.000, 2025.000, 2178.000, 1860.000, 2271.000, 1746.000, 2397.000, 1671.000, 2460.000, 1737.000, 2412.000, 1830.000, 2292.000, 1914.000, 2229.000, 2067.000)
+uv = PackedVector2Array(2088.000, 2025.000, 2178.000, 1860.000, 2271.000, 1746.000, 2397.000, 1671.000, 2460.000, 1737.000, 2412.000, 1830.000, 2292.000, 1914.000, 2229.000, 2067.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="第二庭院" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(2196.000, 1809.000, 2316.000, 1674.000, 2472.000, 1614.000, 2652.000, 1623.000, 2808.000, 1686.000, 2916.000, 1794.000, 3015.000, 1860.000, 3030.000, 1992.000, 2922.000, 2082.000, 2796.000, 2136.000, 2595.000, 2169.000, 2424.000, 2124.000, 2298.000, 2031.000, 2211.000, 1929.000)
+uv = PackedVector2Array(2196.000, 1809.000, 2316.000, 1674.000, 2472.000, 1614.000, 2652.000, 1623.000, 2808.000, 1686.000, 2916.000, 1794.000, 3015.000, 1860.000, 3030.000, 1992.000, 2922.000, 2082.000, 2796.000, 2136.000, 2595.000, 2169.000, 2424.000, 2124.000, 2298.000, 2031.000, 2211.000, 1929.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="第二庭院出口" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(2799.000, 1710.000, 2943.000, 1614.000, 3114.000, 1551.000, 3246.000, 1467.000, 3309.000, 1527.000, 3177.000, 1638.000, 3024.000, 1701.000, 2898.000, 1788.000)
+uv = PackedVector2Array(2799.000, 1710.000, 2943.000, 1614.000, 3114.000, 1551.000, 3246.000, 1467.000, 3309.000, 1527.000, 3177.000, 1638.000, 3024.000, 1701.000, 2898.000, 1788.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="第三庭院" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(3162.000, 1377.000, 3279.000, 1290.000, 3450.000, 1236.000, 3630.000, 1233.000, 3843.000, 1275.000, 4035.000, 1362.000, 4152.000, 1461.000, 4206.000, 1608.000, 4146.000, 1716.000, 4047.000, 1773.000, 3852.000, 1845.000, 3669.000, 1860.000, 3483.000, 1827.000, 3351.000, 1761.000, 3279.000, 1674.000, 3186.000, 1650.000)
+uv = PackedVector2Array(3162.000, 1377.000, 3279.000, 1290.000, 3450.000, 1236.000, 3630.000, 1233.000, 3843.000, 1275.000, 4035.000, 1362.000, 4152.000, 1461.000, 4206.000, 1608.000, 4146.000, 1716.000, 4047.000, 1773.000, 3852.000, 1845.000, 3669.000, 1860.000, 3483.000, 1827.000, 3351.000, 1761.000, 3279.000, 1674.000, 3186.000, 1650.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="第二营地" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(3171.000, 1434.000, 3105.000, 1329.000, 3015.000, 1275.000, 2955.000, 1242.000, 2922.000, 1158.000, 2970.000, 1083.000, 3060.000, 1050.000, 3168.000, 1080.000, 3255.000, 1119.000, 3273.000, 1206.000, 3201.000, 1287.000, 3249.000, 1371.000)
+uv = PackedVector2Array(3171.000, 1434.000, 3105.000, 1329.000, 3015.000, 1275.000, 2955.000, 1242.000, 2922.000, 1158.000, 2970.000, 1083.000, 3060.000, 1050.000, 3168.000, 1080.000, 3255.000, 1119.000, 3273.000, 1206.000, 3201.000, 1287.000, 3249.000, 1371.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="第三庭院北径" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(3984.000, 1437.000, 3942.000, 1233.000, 3867.000, 1158.000, 3858.000, 1074.000, 3882.000, 1014.000, 3969.000, 897.000, 4023.000, 783.000, 4029.000, 705.000, 3942.000, 639.000, 3861.000, 588.000, 3858.000, 516.000, 3933.000, 468.000, 4029.000, 471.000, 4089.000, 537.000, 4146.000, 588.000, 4128.000, 669.000, 4116.000, 753.000, 4080.000, 843.000, 4014.000, 948.000, 3969.000, 1032.000, 3981.000, 1098.000, 4059.000, 1176.000, 4104.000, 1254.000, 4104.000, 1425.000)
+uv = PackedVector2Array(3984.000, 1437.000, 3942.000, 1233.000, 3867.000, 1158.000, 3858.000, 1074.000, 3882.000, 1014.000, 3969.000, 897.000, 4023.000, 783.000, 4029.000, 705.000, 3942.000, 639.000, 3861.000, 588.000, 3858.000, 516.000, 3933.000, 468.000, 4029.000, 471.000, 4089.000, 537.000, 4146.000, 588.000, 4128.000, 669.000, 4116.000, 753.000, 4080.000, 843.000, 4014.000, 948.000, 3969.000, 1032.000, 3981.000, 1098.000, 4059.000, 1176.000, 4104.000, 1254.000, 4104.000, 1425.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="第三营地" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(3864.000, 507.000, 3981.000, 411.000, 4113.000, 333.000, 4215.000, 348.000, 4290.000, 411.000, 4251.000, 501.000, 4176.000, 564.000, 4065.000, 609.000)
+uv = PackedVector2Array(3864.000, 507.000, 3981.000, 411.000, 4113.000, 333.000, 4215.000, 348.000, 4290.000, 411.000, 4251.000, 501.000, 4176.000, 564.000, 4065.000, 609.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="终场东径" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(2853.000, 447.000, 2985.000, 441.000, 3210.000, 474.000, 3450.000, 480.000, 3708.000, 456.000, 3921.000, 474.000, 3954.000, 543.000, 3804.000, 600.000, 3606.000, 591.000, 3384.000, 603.000, 3159.000, 591.000, 2940.000, 564.000, 2850.000, 549.000)
+uv = PackedVector2Array(2853.000, 447.000, 2985.000, 441.000, 3210.000, 474.000, 3450.000, 480.000, 3708.000, 456.000, 3921.000, 474.000, 3954.000, 543.000, 3804.000, 600.000, 3606.000, 591.000, 3384.000, 603.000, 3159.000, 591.000, 2940.000, 564.000, 2850.000, 549.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="终场石台" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(1791.000, 324.000, 1875.000, 210.000, 2037.000, 135.000, 2250.000, 114.000, 2457.000, 117.000, 2631.000, 156.000, 2790.000, 240.000, 2877.000, 345.000, 2904.000, 465.000, 2859.000, 582.000, 2763.000, 672.000, 2628.000, 729.000, 2436.000, 771.000, 2229.000, 762.000, 2049.000, 717.000, 1923.000, 648.000, 1836.000, 546.000, 1776.000, 429.000)
+uv = PackedVector2Array(1791.000, 324.000, 1875.000, 210.000, 2037.000, 135.000, 2250.000, 114.000, 2457.000, 117.000, 2631.000, 156.000, 2790.000, 240.000, 2877.000, 345.000, 2904.000, 465.000, 2859.000, 582.000, 2763.000, 672.000, 2628.000, 729.000, 2436.000, 771.000, 2229.000, 762.000, 2049.000, 717.000, 1923.000, 648.000, 1836.000, 546.000, 1776.000, 429.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="战后出口" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(1800.000, 405.000, 1695.000, 429.000, 1581.000, 417.000, 1473.000, 393.000, 1398.000, 354.000, 1332.000, 351.000, 1281.000, 396.000, 1266.000, 465.000, 1359.000, 513.000, 1473.000, 537.000, 1608.000, 549.000, 1728.000, 543.000, 1827.000, 522.000)
+uv = PackedVector2Array(1800.000, 405.000, 1695.000, 429.000, 1581.000, 417.000, 1473.000, 393.000, 1398.000, 354.000, 1332.000, 351.000, 1281.000, 396.000, 1266.000, 465.000, 1359.000, 513.000, 1473.000, 537.000, 1608.000, 549.000, 1728.000, 543.000, 1827.000, 522.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="碑林支路" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(1647.000, 1875.000, 1539.000, 1761.000, 1395.000, 1641.000, 1305.000, 1542.000, 1251.000, 1440.000, 1233.000, 1323.000, 1224.000, 1254.000, 1146.000, 1188.000, 1044.000, 1158.000, 936.000, 1158.000, 894.000, 1122.000, 900.000, 1053.000, 993.000, 1011.000, 1077.000, 1041.000, 1179.000, 1104.000, 1269.000, 1164.000, 1326.000, 1248.000, 1347.000, 1371.000, 1386.000, 1467.000, 1455.000, 1551.000, 1587.000, 1638.000, 1686.000, 1722.000, 1770.000, 1809.000)
+uv = PackedVector2Array(1647.000, 1875.000, 1539.000, 1761.000, 1395.000, 1641.000, 1305.000, 1542.000, 1251.000, 1440.000, 1233.000, 1323.000, 1224.000, 1254.000, 1146.000, 1188.000, 1044.000, 1158.000, 936.000, 1158.000, 894.000, 1122.000, 900.000, 1053.000, 993.000, 1011.000, 1077.000, 1041.000, 1179.000, 1104.000, 1269.000, 1164.000, 1326.000, 1248.000, 1347.000, 1371.000, 1386.000, 1467.000, 1455.000, 1551.000, 1587.000, 1638.000, 1686.000, 1722.000, 1770.000, 1809.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="碑林" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(780.000, 1077.000, 837.000, 1011.000, 936.000, 984.000, 1056.000, 1005.000, 1164.000, 1062.000, 1227.000, 1143.000, 1161.000, 1200.000, 1032.000, 1206.000, 897.000, 1167.000, 798.000, 1131.000)
+uv = PackedVector2Array(780.000, 1077.000, 837.000, 1011.000, 936.000, 984.000, 1056.000, 1005.000, 1164.000, 1062.000, 1227.000, 1143.000, 1161.000, 1200.000, 1032.000, 1206.000, 897.000, 1167.000, 798.000, 1131.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="回程环路" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(1728.000, 2205.000, 1827.000, 2244.000, 1806.000, 2352.000, 1797.000, 2427.000, 1827.000, 2493.000, 1965.000, 2544.000, 2208.000, 2598.000, 2463.000, 2625.000, 2703.000, 2652.000, 3009.000, 2685.000, 3270.000, 2685.000, 3489.000, 2646.000, 3714.000, 2583.000, 3954.000, 2529.000, 4170.000, 2460.000, 4308.000, 2376.000, 4389.000, 2268.000, 4374.000, 2145.000, 4317.000, 1989.000, 4284.000, 1818.000, 4245.000, 1695.000, 4125.000, 1605.000, 4167.000, 1521.000, 4314.000, 1617.000, 4371.000, 1728.000, 4404.000, 1875.000, 4452.000, 2025.000, 4503.000, 2160.000, 4524.000, 2277.000, 4476.000, 2394.000, 4404.000, 2475.000, 4248.000, 2550.000, 4020.000, 2634.000, 3771.000, 2697.000, 3519.000, 2754.000, 3273.000, 2796.000, 2994.000, 2805.000, 2676.000, 2772.000, 2376.000, 2745.000, 2172.000, 2712.000, 1938.000, 2658.000, 1797.000, 2601.000, 1698.000, 2541.000, 1656.000, 2463.000, 1659.000, 2382.000)
+uv = PackedVector2Array(1728.000, 2205.000, 1827.000, 2244.000, 1806.000, 2352.000, 1797.000, 2427.000, 1827.000, 2493.000, 1965.000, 2544.000, 2208.000, 2598.000, 2463.000, 2625.000, 2703.000, 2652.000, 3009.000, 2685.000, 3270.000, 2685.000, 3489.000, 2646.000, 3714.000, 2583.000, 3954.000, 2529.000, 4170.000, 2460.000, 4308.000, 2376.000, 4389.000, 2268.000, 4374.000, 2145.000, 4317.000, 1989.000, 4284.000, 1818.000, 4245.000, 1695.000, 4125.000, 1605.000, 4167.000, 1521.000, 4314.000, 1617.000, 4371.000, 1728.000, 4404.000, 1875.000, 4452.000, 2025.000, 4503.000, 2160.000, 4524.000, 2277.000, 4476.000, 2394.000, 4404.000, 2475.000, 4248.000, 2550.000, 4020.000, 2634.000, 3771.000, 2697.000, 3519.000, 2754.000, 3273.000, 2796.000, 2994.000, 2805.000, 2676.000, 2772.000, 2376.000, 2745.000, 2172.000, 2712.000, 1938.000, 2658.000, 1797.000, 2601.000, 1698.000, 2541.000, 1656.000, 2463.000, 1659.000, 2382.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="祭火阶梯" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(3654.000, 2646.000, 3714.000, 2496.000, 3789.000, 2424.000, 3840.000, 2358.000, 3861.000, 2292.000, 3945.000, 2289.000, 3945.000, 2373.000, 3903.000, 2454.000, 3825.000, 2523.000, 3762.000, 2652.000)
+uv = PackedVector2Array(3654.000, 2646.000, 3714.000, 2496.000, 3789.000, 2424.000, 3840.000, 2358.000, 3861.000, 2292.000, 3945.000, 2289.000, 3945.000, 2373.000, 3903.000, 2454.000, 3825.000, 2523.000, 3762.000, 2652.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="回血祭坛" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(3795.000, 2247.000, 3870.000, 2130.000, 3990.000, 2088.000, 4149.000, 2112.000, 4230.000, 2175.000, 4230.000, 2253.000, 4149.000, 2334.000, 4020.000, 2376.000, 3897.000, 2346.000)
+uv = PackedVector2Array(3795.000, 2247.000, 3870.000, 2130.000, 3990.000, 2088.000, 4149.000, 2112.000, 4230.000, 2175.000, 4230.000, 2253.000, 4149.000, 2334.000, 4020.000, 2376.000, 3897.000, 2346.000)
+texture = ExtResource("20")
+texture_repeat = 2
+texture_filter = 2
+
+[node name="World_CourtFloor1" parent="." instance=ExtResource("3")]
+position = Vector2(1134.000, 2502.116)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("11")
+render_width = 870.000
+body_height = 100.0
+flat = true
+
+[node name="World_CourtFloor2" parent="." instance=ExtResource("3")]
+position = Vector2(2607.000, 2129.488)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("11")
+render_width = 810.000
+body_height = 100.0
+flat = true
+
+[node name="World_CourtFloor3" parent="." instance=ExtResource("3")]
+position = Vector2(3675.000, 1852.374)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("11")
+render_width = 990.000
+body_height = 100.0
+flat = true
+
+[node name="World_CourtFloor4" parent="." instance=ExtResource("3")]
+position = Vector2(2400.000, 773.317)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("11")
+render_width = 1080.000
+body_height = 100.0
+flat = true
+
+[node name="World_camp1" parent="." instance=ExtResource("3")]
+position = Vector2(1875.000, 2007.000)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("16")
+render_width = 240.000
+body_height = 100.0
+
+[node name="LeftPole" type="Node2D" parent="World_camp1"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(-90.000, -10.000)
+size = Vector2(16.000, 16.000)
+body_height = 80.0
+
+[node name="RightPole" type="Node2D" parent="World_camp1"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(90.000, -45.000)
+size = Vector2(16.000, 16.000)
+body_height = 80.0
+
+[node name="Bedding" type="Node2D" parent="World_camp1"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(0.000, -65.000)
+size = Vector2(90.000, 35.000)
+body_height = 80.0
+
+[node name="World_camp2" parent="." instance=ExtResource("3")]
+position = Vector2(3081.000, 1161.000)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("16")
+render_width = 240.000
+body_height = 100.0
+
+[node name="LeftPole" type="Node2D" parent="World_camp2"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(-90.000, -10.000)
+size = Vector2(16.000, 16.000)
+body_height = 80.0
+
+[node name="RightPole" type="Node2D" parent="World_camp2"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(90.000, -45.000)
+size = Vector2(16.000, 16.000)
+body_height = 80.0
+
+[node name="Bedding" type="Node2D" parent="World_camp2"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(0.000, -65.000)
+size = Vector2(90.000, 35.000)
+body_height = 80.0
+
+[node name="World_camp3" parent="." instance=ExtResource("3")]
+position = Vector2(4146.000, 441.000)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("16")
+render_width = 240.000
+body_height = 100.0
+
+[node name="LeftPole" type="Node2D" parent="World_camp3"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(-90.000, -10.000)
+size = Vector2(16.000, 16.000)
+body_height = 80.0
+
+[node name="RightPole" type="Node2D" parent="World_camp3"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(90.000, -45.000)
+size = Vector2(16.000, 16.000)
+body_height = 80.0
+
+[node name="Bedding" type="Node2D" parent="World_camp3"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(0.000, -65.000)
+size = Vector2(90.000, 35.000)
+body_height = 80.0
+
+[node name="World_Gateway1" parent="." instance=ExtResource("3")]
+position = Vector2(510.000, 2469.000)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("12")
+render_width = 240.000
+body_height = 100.0
+
+mirror_art = true
+depth_offset = -150
+
+[node name="LeftPost" type="Node2D" parent="World_Gateway1"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(72, -8.000)
+size = Vector2(28, 24)
+body_height = 220.0
+
+[node name="RightPost" type="Node2D" parent="World_Gateway1"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(-72, -60.000)
+size = Vector2(28, 24)
+body_height = 220.0
+
+[node name="World_Gateway2" parent="." instance=ExtResource("3")]
+position = Vector2(1344.000, 459.000)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("12")
+render_width = 240.000
+body_height = 100.0
+
+[node name="LeftPost" type="Node2D" parent="World_Gateway2"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(-72.000, -8.000)
+size = Vector2(28, 24)
+body_height = 220.0
+
+[node name="RightPost" type="Node2D" parent="World_Gateway2"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(72.000, -60.000)
+size = Vector2(28, 24)
+body_height = 220.0
+
+[node name="World_Gateway3" parent="." instance=ExtResource("3")]
+position = Vector2(3885.000, 534.000)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("12")
+render_width = 240.000
+body_height = 100.0
+
+[node name="LeftPost" type="Node2D" parent="World_Gateway3"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(-72.000, -8.000)
+size = Vector2(28, 24)
+body_height = 220.0
+
+[node name="RightPost" type="Node2D" parent="World_Gateway3"]
+script = ExtResource("2")
+category = "obstacle"
+obstacle_kind = "wall"
+position = Vector2(72.000, -60.000)
+size = Vector2(28, 24)
+body_height = 220.0
+
+[node name="World_Boundary1" parent="." instance=ExtResource("3")]
+position = Vector2(671.946, 2035.329)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary2" parent="." instance=ExtResource("3")]
+position = Vector2(827.806, 1949.541)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary3" parent="." instance=ExtResource("3")]
+position = Vector2(955.306, 1922.541)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary4" parent="." instance=ExtResource("3")]
+position = Vector2(1080.698, 1911.091)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary5" parent="." instance=ExtResource("3")]
+position = Vector2(1178.198, 1917.091)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary6" parent="." instance=ExtResource("3")]
+position = Vector2(1293.179, 1940.463)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary7" parent="." instance=ExtResource("3")]
+position = Vector2(1401.179, 1976.463)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary8" parent="." instance=ExtResource("3")]
+position = Vector2(1659.163, 2233.741)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("15")
+render_width = 58.000
+body_height = 100.0
+
+[node name="World_Boundary9" parent="." instance=ExtResource("3")]
+position = Vector2(1595.399, 2416.559)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary10" parent="." instance=ExtResource("3")]
+position = Vector2(1458.565, 2488.523)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary11" parent="." instance=ExtResource("3")]
+position = Vector2(1364.065, 2512.523)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary12" parent="." instance=ExtResource("3")]
+position = Vector2(1256.988, 2525.244)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary13" parent="." instance=ExtResource("3")]
+position = Vector2(1162.488, 2523.744)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary14" parent="." instance=ExtResource("3")]
+position = Vector2(1047.147, 2529.556)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary15" parent="." instance=ExtResource("3")]
+position = Vector2(934.878, 2507.990)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary16" parent="." instance=ExtResource("3")]
+position = Vector2(821.208, 2463.846)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary17" parent="." instance=ExtResource("3")]
+position = Vector2(737.938, 2408.104)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary18" parent="." instance=ExtResource("3")]
+position = Vector2(591.294, 2192.301)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("15")
+render_width = 58.000
+body_height = 100.0
+
+[node name="World_Boundary19" parent="." instance=ExtResource("3")]
+position = Vector2(2220.124, 1709.611)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary20" parent="." instance=ExtResource("3")]
+position = Vector2(2376.769, 1599.199)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary21" parent="." instance=ExtResource("3")]
+position = Vector2(2564.397, 1570.560)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary22" parent="." instance=ExtResource("3")]
+position = Vector2(2747.974, 1609.992)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary23" parent="." instance=ExtResource("3")]
+position = Vector2(3030.877, 1777.912)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary24" parent="." instance=ExtResource("3")]
+position = Vector2(3070.193, 1920.580)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("15")
+render_width = 58.000
+body_height = 100.0
+
+[node name="World_Boundary25" parent="." instance=ExtResource("3")]
+position = Vector2(3006.729, 2073.875)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary26" parent="." instance=ExtResource("3")]
+position = Vector2(2877.908, 2153.119)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary27" parent="." instance=ExtResource("3")]
+position = Vector2(2753.526, 2191.616)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary28" parent="." instance=ExtResource("3")]
+position = Vector2(2653.026, 2208.116)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary29" parent="." instance=ExtResource("3")]
+position = Vector2(2497.284, 2192.920)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary30" parent="." instance=ExtResource("3")]
+position = Vector2(2332.495, 2116.120)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary31" parent="." instance=ExtResource("3")]
+position = Vector2(2155.871, 1874.954)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("15")
+render_width = 58.000
+body_height = 100.0
+
+[node name="World_Boundary32" parent="." instance=ExtResource("3")]
+position = Vector2(3350.046, 1217.228)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary33" parent="." instance=ExtResource("3")]
+position = Vector2(3539.200, 1186.507)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary34" parent="." instance=ExtResource("3")]
+position = Vector2(3692.536, 1196.407)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary35" parent="." instance=ExtResource("3")]
+position = Vector2(3799.036, 1217.407)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary36" parent="." instance=ExtResource("3")]
+position = Vector2(3923.295, 1237.572)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary37" parent="." instance=ExtResource("3")]
+position = Vector2(4148.229, 1365.877)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary38" parent="." instance=ExtResource("3")]
+position = Vector2(4224.056, 1517.949)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("15")
+render_width = 58.000
+body_height = 100.0
+
+[node name="World_Boundary39" parent="." instance=ExtResource("3")]
+position = Vector2(4217.960, 1685.311)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("15")
+render_width = 58.000
+body_height = 100.0
+
+[node name="World_Boundary40" parent="." instance=ExtResource("3")]
+position = Vector2(4120.450, 1786.098)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary41" parent="." instance=ExtResource("3")]
+position = Vector2(4014.876, 1836.029)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary42" parent="." instance=ExtResource("3")]
+position = Vector2(3917.376, 1872.029)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary43" parent="." instance=ExtResource("3")]
+position = Vector2(3764.421, 1900.340)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary44" parent="." instance=ExtResource("3")]
+position = Vector2(3614.115, 1899.012)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary45" parent="." instance=ExtResource("3")]
+position = Vector2(3521.115, 1882.512)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary46" parent="." instance=ExtResource("3")]
+position = Vector2(3395.534, 1836.933)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary47" parent="." instance=ExtResource("3")]
+position = Vector2(3247.335, 1763.802)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary48" parent="." instance=ExtResource("3")]
+position = Vector2(3195.418, 1717.501)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary49" parent="." instance=ExtResource("3")]
+position = Vector2(3120.184, 1449.454)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("15")
+render_width = 58.000
+body_height = 100.0
+
+[node name="World_Boundary50" parent="." instance=ExtResource("3")]
+position = Vector2(1794.357, 238.526)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary51" parent="." instance=ExtResource("3")]
+position = Vector2(1935.834, 128.942)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary52" parent="." instance=ExtResource("3")]
+position = Vector2(2085.540, 81.982)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary53" parent="." instance=ExtResource("3")]
+position = Vector2(2192.040, 71.482)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary54" parent="." instance=ExtResource("3")]
+position = Vector2(2302.446, 66.755)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary55" parent="." instance=ExtResource("3")]
+position = Vector2(2405.946, 68.255)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary56" parent="." instance=ExtResource("3")]
+position = Vector2(2560.449, 76.244)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary57" parent="." instance=ExtResource("3")]
+position = Vector2(2756.995, 135.136)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary58" parent="." instance=ExtResource("3")]
+position = Vector2(2917.820, 244.145)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary59" parent="." instance=ExtResource("3")]
+position = Vector2(2999.707, 389.409)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("15")
+render_width = 58.000
+body_height = 100.0
+
+[node name="World_Boundary60" parent="." instance=ExtResource("3")]
+position = Vector2(2869.139, 674.793)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary61" parent="." instance=ExtResource("3")]
+position = Vector2(2714.171, 744.720)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary62" parent="." instance=ExtResource("3")]
+position = Vector2(2590.257, 786.391)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary63" parent="." instance=ExtResource("3")]
+position = Vector2(2494.257, 807.391)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary64" parent="." instance=ExtResource("3")]
+position = Vector2(2382.165, 816.705)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary65" parent="." instance=ExtResource("3")]
+position = Vector2(2278.665, 812.205)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary66" parent="." instance=ExtResource("3")]
+position = Vector2(2127.358, 786.067)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary67" parent="." instance=ExtResource("3")]
+position = Vector2(1962.945, 724.601)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary68" parent="." instance=ExtResource("3")]
+position = Vector2(1842.980, 628.149)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary69" parent="." instance=ExtResource("3")]
+position = Vector2(1735.982, 369.712)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("15")
+render_width = 58.000
+body_height = 100.0
+
+[node name="World_Boundary70" parent="." instance=ExtResource("3")]
+position = Vector2(772.172, 1012.626)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary71" parent="." instance=ExtResource("3")]
+position = Vector2(873.870, 951.191)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary72" parent="." instance=ExtResource("3")]
+position = Vector2(1004.274, 947.219)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary73" parent="." instance=ExtResource("3")]
+position = Vector2(1132.404, 991.050)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary74" parent="." instance=ExtResource("3")]
+position = Vector2(1233.389, 1073.031)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary75" parent="." instance=ExtResource("3")]
+position = Vector2(1098.730, 1250.948)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary76" parent="." instance=ExtResource("3")]
+position = Vector2(951.178, 1232.614)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary77" parent="." instance=ExtResource("3")]
+position = Vector2(831.096, 1194.110)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary78" parent="." instance=ExtResource("3")]
+position = Vector2(743.463, 1119.179)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("15")
+render_width = 58.000
+body_height = 100.0
+
+[node name="World_Boundary79" parent="." instance=ExtResource("3")]
+position = Vector2(3792.090, 2162.596)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary80" parent="." instance=ExtResource("3")]
+position = Vector2(3914.143, 2063.695)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary81" parent="." instance=ExtResource("3")]
+position = Vector2(4076.664, 2052.538)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary82" parent="." instance=ExtResource("3")]
+position = Vector2(4218.969, 2105.611)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary83" parent="." instance=ExtResource("3")]
+position = Vector2(4278.000, 2214.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("15")
+render_width = 58.000
+body_height = 100.0
+
+[node name="World_Boundary84" parent="." instance=ExtResource("3")]
+position = Vector2(4223.441, 2327.441)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary85" parent="." instance=ExtResource("3")]
+position = Vector2(4099.360, 2400.642)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("14")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary86" parent="." instance=ExtResource("3")]
+position = Vector2(3947.126, 2407.633)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Boundary87" parent="." instance=ExtResource("3")]
+position = Vector2(3812.569, 2330.944)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(34.000, 26.000)
+texture_asset = ExtResource("13")
+render_width = 150.000
+body_height = 100.0
+
+[node name="World_Seal1_0" parent="." instance=ExtResource("3")]
+position = Vector2(1644, 2255)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("25")
+render_width = 191.000
+body_height = 100.0
+opens_after_encounter = 0
+ground_axis = Vector2(0.6, 0)
+
+[node name="World_Seal2_0" parent="." instance=ExtResource("3")]
+position = Vector2(3060, 1772)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("25")
+render_width = 113.000
+body_height = 100.0
+opens_after_encounter = 1
+ground_axis = Vector2(0.8, 0)
+
+[node name="World_Seal3_0" parent="." instance=ExtResource("3")]
+position = Vector2(3820.000, 1005.000)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("13")
+render_width = 115.000
+body_height = 100.0
+opens_after_encounter = 2
+ground_axis = Vector2(1, -0.55)
+
+[node name="World_Seal3_1" parent="." instance=ExtResource("3")]
+position = Vector2(3876.000, 1005.000)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("13")
+render_width = 115.000
+body_height = 100.0
+opens_after_encounter = 2
+ground_axis = Vector2(1, -0.55)
+
+[node name="World_Seal3_2" parent="." instance=ExtResource("3")]
+position = Vector2(3932.000, 1005.000)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("13")
+render_width = 115.000
+body_height = 100.0
+opens_after_encounter = 2
+ground_axis = Vector2(1, -0.55)
+
+[node name="World_Seal3_3" parent="." instance=ExtResource("3")]
+position = Vector2(3988.000, 1005.000)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("13")
+render_width = 115.000
+body_height = 100.0
+opens_after_encounter = 2
+ground_axis = Vector2(1, -0.55)
+
+[node name="World_Seal3_4" parent="." instance=ExtResource("3")]
+position = Vector2(4044.000, 1005.000)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("13")
+render_width = 115.000
+body_height = 100.0
+opens_after_encounter = 2
+ground_axis = Vector2(1, -0.55)
+
+[node name="World_Seal3_5" parent="." instance=ExtResource("3")]
+position = Vector2(4100.000, 1005.000)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("13")
+render_width = 115.000
+body_height = 100.0
+opens_after_encounter = 2
+ground_axis = Vector2(1, -0.55)
+
+[node name="World_Tree117" parent="." instance=ExtResource("3")]
+position = Vector2(664.990, 76.835)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 281.889
+body_height = 160.0
+
+[node name="World_Tree118" parent="." instance=ExtResource("3")]
+position = Vector2(851.598, 144.045)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 261.764
+body_height = 160.0
+
+[node name="World_Tree119" parent="." instance=ExtResource("3")]
+position = Vector2(1061.123, 90.178)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 289.468
+body_height = 160.0
+
+[node name="World_Tree120" parent="." instance=ExtResource("3")]
+position = Vector2(1185.704, 103.910)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 334.700
+body_height = 160.0
+
+[node name="World_Tree121" parent="." instance=ExtResource("3")]
+position = Vector2(1403.310, 66.999)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 297.271
+body_height = 160.0
+
+[node name="World_Tree122" parent="." instance=ExtResource("3")]
+position = Vector2(1651.192, 172.798)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 269.250
+body_height = 160.0
+
+[node name="World_Tree123" parent="." instance=ExtResource("3")]
+position = Vector2(1786.628, 95.262)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 330.584
+body_height = 160.0
+
+[node name="World_Tree124" parent="." instance=ExtResource("3")]
+position = Vector2(2848.650, 72.410)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 277.203
+body_height = 160.0
+
+[node name="World_Tree125" parent="." instance=ExtResource("3")]
+position = Vector2(3098.057, 110.431)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 337.376
+body_height = 160.0
+
+[node name="World_Tree126" parent="." instance=ExtResource("3")]
+position = Vector2(3223.251, 146.789)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 311.587
+body_height = 160.0
+
+[node name="World_Tree127" parent="." instance=ExtResource("3")]
+position = Vector2(3407.617, 157.634)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 271.075
+body_height = 160.0
+
+[node name="World_Tree128" parent="." instance=ExtResource("3")]
+position = Vector2(3639.406, 165.753)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 262.316
+body_height = 160.0
+
+[node name="World_Tree129" parent="." instance=ExtResource("3")]
+position = Vector2(3787.522, 131.221)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 278.812
+body_height = 160.0
+
+[node name="World_Tree130" parent="." instance=ExtResource("3")]
+position = Vector2(3961.534, 71.243)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 329.190
+body_height = 160.0
+
+[node name="World_Tree131" parent="." instance=ExtResource("3")]
+position = Vector2(4194.168, 76.126)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 322.570
+body_height = 160.0
+
+[node name="World_Tree132" parent="." instance=ExtResource("3")]
+position = Vector2(4346.809, 165.993)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 292.355
+body_height = 160.0
+
+[node name="World_Tree133" parent="." instance=ExtResource("3")]
+position = Vector2(688.652, 288.782)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 290.911
+body_height = 160.0
+
+[node name="World_Tree134" parent="." instance=ExtResource("3")]
+position = Vector2(825.095, 342.978)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 320.180
+body_height = 160.0
+
+[node name="World_Tree135" parent="." instance=ExtResource("3")]
+position = Vector2(1014.873, 340.604)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 320.553
+body_height = 160.0
+
+[node name="World_Tree136" parent="." instance=ExtResource("3")]
+position = Vector2(1199.635, 308.217)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 331.409
+body_height = 160.0
+
+[node name="World_Tree137" parent="." instance=ExtResource("3")]
+position = Vector2(3038.703, 300.031)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 305.018
+body_height = 160.0
+
+[node name="World_Tree138" parent="." instance=ExtResource("3")]
+position = Vector2(3239.803, 347.060)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 279.064
+body_height = 160.0
+
+[node name="World_Tree139" parent="." instance=ExtResource("3")]
+position = Vector2(3400.365, 258.533)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 296.882
+body_height = 160.0
+
+[node name="World_Tree140" parent="." instance=ExtResource("3")]
+position = Vector2(3649.363, 347.259)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 317.011
+body_height = 160.0
+
+[node name="World_Tree141" parent="." instance=ExtResource("3")]
+position = Vector2(3857.995, 289.572)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 313.021
+body_height = 160.0
+
+[node name="World_Tree142" parent="." instance=ExtResource("3")]
+position = Vector2(3964.393, 266.552)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 280.385
+body_height = 160.0
+
+[node name="World_Tree143" parent="." instance=ExtResource("3")]
+position = Vector2(4404.830, 250.007)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 264.656
+body_height = 160.0
+
+[node name="World_Tree144" parent="." instance=ExtResource("3")]
+position = Vector2(895.913, 506.735)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 280.689
+body_height = 160.0
+
+[node name="World_Tree145" parent="." instance=ExtResource("3")]
+position = Vector2(991.269, 437.326)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 316.803
+body_height = 160.0
+
+[node name="World_Tree146" parent="." instance=ExtResource("3")]
+position = Vector2(686.566, 649.050)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 336.007
+body_height = 160.0
+
+[node name="World_Tree147" parent="." instance=ExtResource("3")]
+position = Vector2(875.389, 669.775)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 344.292
+body_height = 160.0
+
+[node name="World_Tree148" parent="." instance=ExtResource("3")]
+position = Vector2(1090.477, 631.165)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 306.088
+body_height = 160.0
+
+[node name="World_Tree149" parent="." instance=ExtResource("3")]
+position = Vector2(1181.967, 693.458)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 290.853
+body_height = 160.0
+
+[node name="World_Tree150" parent="." instance=ExtResource("3")]
+position = Vector2(1461.851, 721.723)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 263.319
+body_height = 160.0
+
+[node name="World_Tree151" parent="." instance=ExtResource("3")]
+position = Vector2(1618.716, 662.812)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 331.901
+body_height = 160.0
+
+[node name="World_Tree152" parent="." instance=ExtResource("3")]
+position = Vector2(1754.433, 707.678)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 286.625
+body_height = 160.0
+
+[node name="World_Tree153" parent="." instance=ExtResource("3")]
+position = Vector2(4325.297, 655.901)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 281.212
+body_height = 160.0
+
+[node name="World_Tree154" parent="." instance=ExtResource("3")]
+position = Vector2(500.968, 830.892)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 285.666
+body_height = 160.0
+
+[node name="World_Tree155" parent="." instance=ExtResource("3")]
+position = Vector2(677.490, 840.907)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 286.991
+body_height = 160.0
+
+[node name="World_Tree156" parent="." instance=ExtResource("3")]
+position = Vector2(1085.923, 874.208)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 284.419
+body_height = 160.0
+
+[node name="World_Tree157" parent="." instance=ExtResource("3")]
+position = Vector2(1206.971, 847.948)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 306.659
+body_height = 160.0
+
+[node name="World_Tree158" parent="." instance=ExtResource("3")]
+position = Vector2(1433.631, 834.127)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 309.093
+body_height = 160.0
+
+[node name="World_Tree159" parent="." instance=ExtResource("3")]
+position = Vector2(2719.467, 829.842)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 298.052
+body_height = 160.0
+
+[node name="World_Tree160" parent="." instance=ExtResource("3")]
+position = Vector2(2877.623, 842.680)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 288.452
+body_height = 160.0
+
+[node name="World_Tree161" parent="." instance=ExtResource("3")]
+position = Vector2(3097.011, 880.927)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 306.207
+body_height = 160.0
+
+[node name="World_Tree162" parent="." instance=ExtResource("3")]
+position = Vector2(3300.035, 890.506)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 320.627
+body_height = 160.0
+
+[node name="World_Tree163" parent="." instance=ExtResource("3")]
+position = Vector2(3408.960, 817.929)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 269.470
+body_height = 160.0
+
+[node name="World_Tree164" parent="." instance=ExtResource("3")]
+position = Vector2(3608.939, 894.056)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 344.049
+body_height = 160.0
+
+[node name="World_Tree165" parent="." instance=ExtResource("3")]
+position = Vector2(3836.368, 858.699)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 329.484
+body_height = 160.0
+
+[node name="World_Tree166" parent="." instance=ExtResource("3")]
+position = Vector2(4380.441, 868.320)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 260.387
+body_height = 160.0
+
+[node name="World_Tree167" parent="." instance=ExtResource("3")]
+position = Vector2(355.520, 1042.570)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 275.385
+body_height = 160.0
+
+[node name="World_Tree168" parent="." instance=ExtResource("3")]
+position = Vector2(485.886, 1005.476)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 263.647
+body_height = 160.0
+
+[node name="World_Tree169" parent="." instance=ExtResource("3")]
+position = Vector2(1444.784, 1011.575)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 269.413
+body_height = 160.0
+
+[node name="World_Tree170" parent="." instance=ExtResource("3")]
+position = Vector2(1547.673, 1027.813)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 343.071
+body_height = 160.0
+
+[node name="World_Tree171" parent="." instance=ExtResource("3")]
+position = Vector2(2668.545, 1098.336)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 338.715
+body_height = 160.0
+
+[node name="World_Tree172" parent="." instance=ExtResource("3")]
+position = Vector2(2883.717, 995.820)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 333.607
+body_height = 160.0
+
+[node name="World_Tree173" parent="." instance=ExtResource("3")]
+position = Vector2(3425.257, 1037.303)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 322.004
+body_height = 160.0
+
+[node name="World_Tree174" parent="." instance=ExtResource("3")]
+position = Vector2(3638.726, 1042.963)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 302.269
+body_height = 160.0
+
+[node name="World_Tree175" parent="." instance=ExtResource("3")]
+position = Vector2(4169.131, 996.675)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 332.216
+body_height = 160.0
+
+[node name="World_Tree176" parent="." instance=ExtResource("3")]
+position = Vector2(4331.310, 998.065)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 265.866
+body_height = 160.0
+
+[node name="World_Tree177" parent="." instance=ExtResource("3")]
+position = Vector2(435.633, 1185.194)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 292.100
+body_height = 160.0
+
+[node name="World_Tree178" parent="." instance=ExtResource("3")]
+position = Vector2(633.903, 1266.803)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 331.248
+body_height = 160.0
+
+[node name="World_Tree179" parent="." instance=ExtResource("3")]
+position = Vector2(1448.512, 1255.213)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 266.104
+body_height = 160.0
+
+[node name="World_Tree180" parent="." instance=ExtResource("3")]
+position = Vector2(1553.361, 1251.291)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 310.060
+body_height = 160.0
+
+[node name="World_Tree181" parent="." instance=ExtResource("3")]
+position = Vector2(2726.198, 1192.453)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 323.169
+body_height = 160.0
+
+[node name="World_Tree182" parent="." instance=ExtResource("3")]
+position = Vector2(4413.442, 1262.496)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 317.518
+body_height = 160.0
+
+[node name="World_Tree183" parent="." instance=ExtResource("3")]
+position = Vector2(538.170, 1457.156)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 296.711
+body_height = 160.0
+
+[node name="World_Tree184" parent="." instance=ExtResource("3")]
+position = Vector2(698.556, 1378.992)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 308.439
+body_height = 160.0
+
+[node name="World_Tree185" parent="." instance=ExtResource("3")]
+position = Vector2(873.469, 1437.370)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 328.430
+body_height = 160.0
+
+[node name="World_Tree186" parent="." instance=ExtResource("3")]
+position = Vector2(1018.044, 1408.732)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 280.885
+body_height = 160.0
+
+[node name="World_Tree187" parent="." instance=ExtResource("3")]
+position = Vector2(1596.833, 1389.823)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 323.913
+body_height = 160.0
+
+[node name="World_Tree188" parent="." instance=ExtResource("3")]
+position = Vector2(2711.505, 1457.936)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 330.046
+body_height = 160.0
+
+[node name="World_Tree189" parent="." instance=ExtResource("3")]
+position = Vector2(2857.670, 1404.070)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 265.957
+body_height = 160.0
+
+[node name="World_Tree190" parent="." instance=ExtResource("3")]
+position = Vector2(4388.439, 1466.107)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 332.346
+body_height = 160.0
+
+[node name="World_Tree191" parent="." instance=ExtResource("3")]
+position = Vector2(688.129, 1587.813)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 290.296
+body_height = 160.0
+
+[node name="World_Tree192" parent="." instance=ExtResource("3")]
+position = Vector2(851.205, 1556.955)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 276.093
+body_height = 160.0
+
+[node name="World_Tree193" parent="." instance=ExtResource("3")]
+position = Vector2(1057.224, 1552.467)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 298.681
+body_height = 160.0
+
+[node name="World_Tree194" parent="." instance=ExtResource("3")]
+position = Vector2(1798.395, 1651.315)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 321.303
+body_height = 160.0
+
+[node name="World_Tree195" parent="." instance=ExtResource("3")]
+position = Vector2(685.458, 1763.602)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 287.233
+body_height = 160.0
+
+[node name="World_Tree196" parent="." instance=ExtResource("3")]
+position = Vector2(825.271, 1833.427)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 326.007
+body_height = 160.0
+
+[node name="World_Tree197" parent="." instance=ExtResource("3")]
+position = Vector2(1022.784, 1802.016)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 324.460
+body_height = 160.0
+
+[node name="World_Tree198" parent="." instance=ExtResource("3")]
+position = Vector2(1236.139, 1826.413)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 327.898
+body_height = 160.0
+
+[node name="World_Tree199" parent="." instance=ExtResource("3")]
+position = Vector2(495.544, 1985.085)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 309.847
+body_height = 160.0
+
+[node name="World_Tree200" parent="." instance=ExtResource("3")]
+position = Vector2(3256.152, 1980.598)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 277.786
+body_height = 160.0
+
+[node name="World_Tree201" parent="." instance=ExtResource("3")]
+position = Vector2(3480.305, 1966.576)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 304.748
+body_height = 160.0
+
+[node name="World_Tree202" parent="." instance=ExtResource("3")]
+position = Vector2(3669.468, 1999.338)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 300.418
+body_height = 160.0
+
+[node name="World_Tree203" parent="." instance=ExtResource("3")]
+position = Vector2(3826.976, 2018.777)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 262.955
+body_height = 160.0
+
+[node name="World_Tree204" parent="." instance=ExtResource("3")]
+position = Vector2(3994.837, 1938.118)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 332.248
+body_height = 160.0
+
+[node name="World_Tree205" parent="." instance=ExtResource("3")]
+position = Vector2(4139.004, 1993.428)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 312.935
+body_height = 160.0
+
+[node name="World_Tree206" parent="." instance=ExtResource("3")]
+position = Vector2(512.994, 2163.589)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 293.741
+body_height = 160.0
+
+[node name="World_Tree207" parent="." instance=ExtResource("3")]
+position = Vector2(3091.949, 2131.970)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 301.272
+body_height = 160.0
+
+[node name="World_Tree208" parent="." instance=ExtResource("3")]
+position = Vector2(3290.070, 2168.548)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 277.361
+body_height = 160.0
+
+[node name="World_Tree209" parent="." instance=ExtResource("3")]
+position = Vector2(3473.511, 2200.538)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 303.071
+body_height = 160.0
+
+[node name="World_Tree210" parent="." instance=ExtResource("3")]
+position = Vector2(3658.096, 2103.400)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 321.870
+body_height = 160.0
+
+[node name="World_Tree211" parent="." instance=ExtResource("3")]
+position = Vector2(2006.338, 2364.663)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 275.382
+body_height = 160.0
+
+[node name="World_Tree212" parent="." instance=ExtResource("3")]
+position = Vector2(2143.677, 2335.119)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 274.894
+body_height = 160.0
+
+[node name="World_Tree213" parent="." instance=ExtResource("3")]
+position = Vector2(2306.480, 2345.155)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 293.572
+body_height = 160.0
+
+[node name="World_Tree214" parent="." instance=ExtResource("3")]
+position = Vector2(2576.549, 2288.688)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 264.140
+body_height = 160.0
+
+[node name="World_Tree215" parent="." instance=ExtResource("3")]
+position = Vector2(2727.254, 2327.884)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 339.148
+body_height = 160.0
+
+[node name="World_Tree216" parent="." instance=ExtResource("3")]
+position = Vector2(2895.620, 2306.587)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 341.540
+body_height = 160.0
+
+[node name="World_Tree217" parent="." instance=ExtResource("3")]
+position = Vector2(3106.314, 2298.705)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 310.607
+body_height = 160.0
+
+[node name="World_Tree218" parent="." instance=ExtResource("3")]
+position = Vector2(3240.636, 2363.995)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 338.526
+body_height = 160.0
+
+[node name="World_Tree219" parent="." instance=ExtResource("3")]
+position = Vector2(3460.059, 2374.943)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 289.929
+body_height = 160.0
+
+[node name="World_Tree220" parent="." instance=ExtResource("3")]
+position = Vector2(3604.678, 2371.729)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 322.464
+body_height = 160.0
+
+[node name="World_Tree221" parent="." instance=ExtResource("3")]
+position = Vector2(698.718, 2563.806)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 332.282
+body_height = 160.0
+
+[node name="World_Tree222" parent="." instance=ExtResource("3")]
+position = Vector2(856.253, 2555.917)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 336.311
+body_height = 160.0
+
+[node name="World_Tree223" parent="." instance=ExtResource("3")]
+position = Vector2(1568.109, 2540.041)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 307.618
+body_height = 160.0
+
+[node name="World_Tree224" parent="." instance=ExtResource("3")]
+position = Vector2(2683.148, 2471.150)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 331.445
+body_height = 160.0
+
+[node name="World_Tree225" parent="." instance=ExtResource("3")]
+position = Vector2(3065.740, 2549.378)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 341.736
+body_height = 160.0
+
+[node name="World_Tree226" parent="." instance=ExtResource("3")]
+position = Vector2(3242.179, 2477.996)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 329.466
+body_height = 160.0
+
+[node name="World_Tree227" parent="." instance=ExtResource("3")]
+position = Vector2(3438.886, 2542.692)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 275.215
+body_height = 160.0
+
+[node name="World_Tree228" parent="." instance=ExtResource("3")]
+position = Vector2(340.107, 2728.299)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 268.553
+body_height = 160.0
+
+[node name="World_Tree229" parent="." instance=ExtResource("3")]
+position = Vector2(501.023, 2760.479)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 291.101
+body_height = 160.0
+
+[node name="World_Tree230" parent="." instance=ExtResource("3")]
+position = Vector2(634.596, 2761.677)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 264.251
+body_height = 160.0
+
+[node name="World_Tree231" parent="." instance=ExtResource("3")]
+position = Vector2(815.217, 2697.886)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 343.025
+body_height = 160.0
+
+[node name="World_Tree232" parent="." instance=ExtResource("3")]
+position = Vector2(1011.141, 2753.292)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 286.896
+body_height = 160.0
+
+[node name="World_Tree233" parent="." instance=ExtResource("3")]
+position = Vector2(1229.448, 2757.300)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 299.655
+body_height = 160.0
+
+[node name="World_Tree234" parent="." instance=ExtResource("3")]
+position = Vector2(1421.802, 2660.356)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 288.088
+body_height = 160.0
+
+[node name="World_Tree235" parent="." instance=ExtResource("3")]
+position = Vector2(1582.785, 2749.984)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 283.462
+body_height = 160.0
+
+[node name="World_Tree236" parent="." instance=ExtResource("3")]
+position = Vector2(4404.986, 2731.621)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 331.949
+body_height = 160.0
+
+[node name="World_Tree237" parent="." instance=ExtResource("3")]
+position = Vector2(451.637, 2913.028)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 337.904
+body_height = 160.0
+
+[node name="World_Tree238" parent="." instance=ExtResource("3")]
+position = Vector2(659.143, 2919.437)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 294.180
+body_height = 160.0
+
+[node name="World_Tree239" parent="." instance=ExtResource("3")]
+position = Vector2(914.693, 2938.131)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 271.023
+body_height = 160.0
+
+[node name="World_Tree240" parent="." instance=ExtResource("3")]
+position = Vector2(1005.371, 2944.723)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 337.876
+body_height = 160.0
+
+[node name="World_Tree241" parent="." instance=ExtResource("3")]
+position = Vector2(1233.009, 2909.093)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 310.920
+body_height = 160.0
+
+[node name="World_Tree242" parent="." instance=ExtResource("3")]
+position = Vector2(1428.691, 2949.507)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 325.318
+body_height = 160.0
+
+[node name="World_Tree243" parent="." instance=ExtResource("3")]
+position = Vector2(1643.418, 2918.534)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 260.740
+body_height = 160.0
+
+[node name="World_Tree244" parent="." instance=ExtResource("3")]
+position = Vector2(1763.056, 2923.117)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 290.522
+body_height = 160.0
+
+[node name="World_Tree245" parent="." instance=ExtResource("3")]
+position = Vector2(1981.024, 2866.606)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 333.897
+body_height = 160.0
+
+[node name="World_Tree246" parent="." instance=ExtResource("3")]
+position = Vector2(2111.735, 2842.026)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 310.161
+body_height = 160.0
+
+[node name="World_Tree247" parent="." instance=ExtResource("3")]
+position = Vector2(2318.471, 2868.934)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 263.789
+body_height = 160.0
+
+[node name="World_Tree248" parent="." instance=ExtResource("3")]
+position = Vector2(2579.862, 2885.341)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 273.918
+body_height = 160.0
+
+[node name="World_Tree249" parent="." instance=ExtResource("3")]
+position = Vector2(2728.690, 2917.716)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("5")
+render_width = 292.720
+body_height = 160.0
+
+[node name="World_Tree250" parent="." instance=ExtResource("3")]
+position = Vector2(3243.895, 2917.815)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 271.785
+body_height = 160.0
+
+[node name="World_Tree251" parent="." instance=ExtResource("3")]
+position = Vector2(3460.984, 2929.042)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 307.241
+body_height = 160.0
+
+[node name="World_Tree252" parent="." instance=ExtResource("3")]
+position = Vector2(3682.241, 2871.552)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 279.356
+body_height = 160.0
+
+[node name="World_Tree253" parent="." instance=ExtResource("3")]
+position = Vector2(3869.675, 2924.376)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 339.382
+body_height = 160.0
+
+[node name="World_Tree254" parent="." instance=ExtResource("3")]
+position = Vector2(3956.139, 2866.448)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 338.829
+body_height = 160.0
+
+[node name="World_Tree255" parent="." instance=ExtResource("3")]
+position = Vector2(4244.148, 2852.308)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 342.862
+body_height = 160.0
+
+[node name="World_Tree256" parent="." instance=ExtResource("3")]
+position = Vector2(4334.066, 2882.837)
+category = "obstacle"
+obstacle_kind = "tree"
+size = Vector2(48.000, 32.000)
+texture_asset = ExtResource("4")
+render_width = 263.714
+body_height = 160.0
+
+[node name="World_Understory0" parent="." instance=ExtResource("3")]
+position = Vector2(962.729, 1413.995)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 133.561
+body_height = 100.0
+
+[node name="World_Understory1" parent="." instance=ExtResource("3")]
+position = Vector2(739.577, 1588.002)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 99.493
+body_height = 100.0
+
+[node name="World_Understory3" parent="." instance=ExtResource("3")]
+position = Vector2(908.400, 188.544)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 136.309
+body_height = 100.0
+
+[node name="World_Understory4" parent="." instance=ExtResource("3")]
+position = Vector2(3080.764, 1719.713)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 108.270
+body_height = 100.0
+
+[node name="World_Understory6" parent="." instance=ExtResource("3")]
+position = Vector2(4064.315, 2836.392)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 126.141
+body_height = 100.0
+
+[node name="World_Understory8" parent="." instance=ExtResource("3")]
+position = Vector2(916.478, 939.737)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 124.737
+body_height = 100.0
+
+[node name="World_Understory9" parent="." instance=ExtResource("3")]
+position = Vector2(501.181, 1270.297)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 124.620
+body_height = 100.0
+
+[node name="World_Understory10" parent="." instance=ExtResource("3")]
+position = Vector2(1799.206, 182.861)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 133.502
+body_height = 100.0
+
+[node name="World_Understory11" parent="." instance=ExtResource("3")]
+position = Vector2(1859.390, 228.695)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 116.013
+body_height = 100.0
+
+[node name="World_Understory12" parent="." instance=ExtResource("3")]
+position = Vector2(798.510, 428.661)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 120.913
+body_height = 100.0
+
+[node name="World_Understory14" parent="." instance=ExtResource("3")]
+position = Vector2(3343.823, 2391.226)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 115.381
+body_height = 100.0
+
+[node name="World_Understory15" parent="." instance=ExtResource("3")]
+position = Vector2(868.168, 421.087)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 95.137
+body_height = 100.0
+
+[node name="World_Understory16" parent="." instance=ExtResource("3")]
+position = Vector2(4260.406, 1273.348)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 142.066
+body_height = 100.0
+
+[node name="World_Understory17" parent="." instance=ExtResource("3")]
+position = Vector2(2544.546, 1390.061)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 94.452
+body_height = 100.0
+
+[node name="World_Understory18" parent="." instance=ExtResource("3")]
+position = Vector2(776.618, 2716.871)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 116.376
+body_height = 100.0
+
+[node name="World_Understory19" parent="." instance=ExtResource("3")]
+position = Vector2(602.713, 2249.673)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 90.417
+body_height = 100.0
+
+[node name="World_Understory24" parent="." instance=ExtResource("3")]
+position = Vector2(3564.875, 869.715)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 91.504
+body_height = 100.0
+
+[node name="World_Understory27" parent="." instance=ExtResource("3")]
+position = Vector2(567.307, 1013.479)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 131.605
+body_height = 100.0
+
+[node name="World_Understory29" parent="." instance=ExtResource("3")]
+position = Vector2(3739.525, 1021.286)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 139.216
+body_height = 100.0
+
+[node name="World_Understory30" parent="." instance=ExtResource("3")]
+position = Vector2(683.487, 2564.008)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 122.632
+body_height = 100.0
+
+[node name="World_Understory32" parent="." instance=ExtResource("3")]
+position = Vector2(2094.110, 2995.968)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 89.842
+body_height = 100.0
+
+[node name="World_Understory33" parent="." instance=ExtResource("3")]
+position = Vector2(2740.617, 1253.584)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 119.773
+body_height = 100.0
+
+[node name="World_Understory34" parent="." instance=ExtResource("3")]
+position = Vector2(1863.110, 2455.586)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 93.325
+body_height = 100.0
+
+[node name="World_Understory35" parent="." instance=ExtResource("3")]
+position = Vector2(537.581, 2972.385)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 144.343
+body_height = 100.0
+
+[node name="World_Understory36" parent="." instance=ExtResource("3")]
+position = Vector2(3958.975, 1852.603)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 95.637
+body_height = 100.0
+
+[node name="World_Understory39" parent="." instance=ExtResource("3")]
+position = Vector2(4514.045, 1523.798)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 139.878
+body_height = 100.0
+
+[node name="World_Understory43" parent="." instance=ExtResource("3")]
+position = Vector2(3421.118, 2085.652)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 109.771
+body_height = 100.0
+
+[node name="World_Understory44" parent="." instance=ExtResource("3")]
+position = Vector2(4225.440, 1727.869)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 89.692
+body_height = 100.0
+
+[node name="World_Understory49" parent="." instance=ExtResource("3")]
+position = Vector2(2679.388, 1052.684)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 113.333
+body_height = 100.0
+
+[node name="World_Understory50" parent="." instance=ExtResource("3")]
+position = Vector2(942.990, 1428.043)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 110.128
+body_height = 100.0
+
+[node name="World_Understory51" parent="." instance=ExtResource("3")]
+position = Vector2(1184.580, 641.825)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 106.750
+body_height = 100.0
+
+[node name="World_Understory54" parent="." instance=ExtResource("3")]
+position = Vector2(1522.442, 1892.346)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 110.286
+body_height = 100.0
+
+[node name="World_Understory56" parent="." instance=ExtResource("3")]
+position = Vector2(2415.454, 2835.743)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 95.883
+body_height = 100.0
+
+[node name="World_Understory57" parent="." instance=ExtResource("3")]
+position = Vector2(1452.826, 1826.851)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 98.569
+body_height = 100.0
+
+[node name="World_Understory58" parent="." instance=ExtResource("3")]
+position = Vector2(2943.068, 2155.083)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 121.172
+body_height = 100.0
+
+[node name="World_Understory59" parent="." instance=ExtResource("3")]
+position = Vector2(4351.744, 1333.325)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 103.056
+body_height = 100.0
+
+[node name="World_Understory60" parent="." instance=ExtResource("3")]
+position = Vector2(1981.733, 2950.235)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 87.050
+body_height = 100.0
+
+[node name="World_Understory61" parent="." instance=ExtResource("3")]
+position = Vector2(601.491, 1151.773)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 118.952
+body_height = 100.0
+
+[node name="World_Understory62" parent="." instance=ExtResource("3")]
+position = Vector2(1057.286, 748.655)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 98.059
+body_height = 100.0
+
+[node name="World_Understory66" parent="." instance=ExtResource("3")]
+position = Vector2(1475.510, 667.604)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 134.475
+body_height = 100.0
+
+[node name="World_Understory67" parent="." instance=ExtResource("3")]
+position = Vector2(1369.852, 2684.819)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 103.024
+body_height = 100.0
+
+[node name="World_Understory68" parent="." instance=ExtResource("3")]
+position = Vector2(1374.160, 710.779)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 132.712
+body_height = 100.0
+
+[node name="World_Understory69" parent="." instance=ExtResource("3")]
+position = Vector2(3611.505, 2464.607)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 121.268
+body_height = 100.0
+
+[node name="World_Understory71" parent="." instance=ExtResource("3")]
+position = Vector2(1895.301, 1652.276)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 121.635
+body_height = 100.0
+
+[node name="World_Understory74" parent="." instance=ExtResource("3")]
+position = Vector2(3109.809, 2309.489)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 129.824
+body_height = 100.0
+
+[node name="World_Understory75" parent="." instance=ExtResource("3")]
+position = Vector2(1304.280, 1966.081)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 134.295
+body_height = 100.0
+
+[node name="World_Understory76" parent="." instance=ExtResource("3")]
+position = Vector2(3375.865, 2273.042)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 134.558
+body_height = 100.0
+
+[node name="World_Understory78" parent="." instance=ExtResource("3")]
+position = Vector2(915.361, 883.909)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 106.596
+body_height = 100.0
+
+[node name="World_Understory79" parent="." instance=ExtResource("3")]
+position = Vector2(714.134, 297.826)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 140.616
+body_height = 100.0
+
+[node name="World_Understory80" parent="." instance=ExtResource("3")]
+position = Vector2(1024.026, 2964.110)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 124.046
+body_height = 100.0
+
+[node name="World_Understory83" parent="." instance=ExtResource("3")]
+position = Vector2(1443.222, 798.806)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 127.292
+body_height = 100.0
+
+[node name="World_Understory84" parent="." instance=ExtResource("3")]
+position = Vector2(3018.114, 2514.749)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 133.927
+body_height = 100.0
+
+[node name="World_Understory85" parent="." instance=ExtResource("3")]
+position = Vector2(549.138, 2720.064)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 130.038
+body_height = 100.0
+
+[node name="World_Understory86" parent="." instance=ExtResource("3")]
+position = Vector2(603.780, 1431.060)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 120.651
+body_height = 100.0
+
+[node name="World_Understory87" parent="." instance=ExtResource("3")]
+position = Vector2(3048.085, 1944.393)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 124.537
+body_height = 100.0
+
+[node name="World_Understory88" parent="." instance=ExtResource("3")]
+position = Vector2(1780.323, 2940.740)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 144.150
+body_height = 100.0
+
+[node name="World_Understory89" parent="." instance=ExtResource("3")]
+position = Vector2(3269.706, 104.179)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 109.397
+body_height = 100.0
+
+[node name="World_Understory90" parent="." instance=ExtResource("3")]
+position = Vector2(818.295, 1505.141)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 88.212
+body_height = 100.0
+
+[node name="World_Understory92" parent="." instance=ExtResource("3")]
+position = Vector2(1277.181, 1801.294)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 88.023
+body_height = 100.0
+
+[node name="World_Understory93" parent="." instance=ExtResource("3")]
+position = Vector2(1989.201, 101.886)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 114.828
+body_height = 100.0
+
+[node name="World_Understory95" parent="." instance=ExtResource("3")]
+position = Vector2(3828.148, 175.255)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 87.413
+body_height = 100.0
+
+[node name="World_Understory96" parent="." instance=ExtResource("3")]
+position = Vector2(1347.065, 1880.450)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 110.956
+body_height = 100.0
+
+[node name="World_Understory98" parent="." instance=ExtResource("3")]
+position = Vector2(1128.796, 784.393)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 130.430
+body_height = 100.0
+
+[node name="World_Understory101" parent="." instance=ExtResource("3")]
+position = Vector2(2534.710, 2818.102)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 133.933
+body_height = 100.0
+
+[node name="World_Understory103" parent="." instance=ExtResource("3")]
+position = Vector2(3712.018, 2251.215)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 140.053
+body_height = 100.0
+
+[node name="World_Understory106" parent="." instance=ExtResource("3")]
+position = Vector2(3933.053, 649.318)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 100.986
+body_height = 100.0
+
+[node name="World_Understory109" parent="." instance=ExtResource("3")]
+position = Vector2(2717.832, 970.744)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 138.388
+body_height = 100.0
+
+[node name="World_Understory112" parent="." instance=ExtResource("3")]
+position = Vector2(4326.550, 2139.887)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 88.746
+body_height = 100.0
+
+[node name="World_Understory113" parent="." instance=ExtResource("3")]
+position = Vector2(1025.943, 2575.522)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 141.211
+body_height = 100.0
+
+[node name="World_Understory114" parent="." instance=ExtResource("3")]
+position = Vector2(3510.877, 627.719)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 127.171
+body_height = 100.0
+
+[node name="World_Understory115" parent="." instance=ExtResource("3")]
+position = Vector2(3394.899, 917.380)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 136.117
+body_height = 100.0
+
+[node name="World_Understory120" parent="." instance=ExtResource("3")]
+position = Vector2(1695.986, 2953.868)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 140.683
+body_height = 100.0
+
+[node name="World_Understory121" parent="." instance=ExtResource("3")]
+position = Vector2(3434.305, 892.737)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 115.438
+body_height = 100.0
+
+[node name="World_Understory123" parent="." instance=ExtResource("3")]
+position = Vector2(3457.770, 2364.880)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 140.868
+body_height = 100.0
+
+[node name="World_Understory125" parent="." instance=ExtResource("3")]
+position = Vector2(3696.027, 2838.181)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 85.592
+body_height = 100.0
+
+[node name="World_Understory130" parent="." instance=ExtResource("3")]
+position = Vector2(2837.901, 2503.963)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 115.338
+body_height = 100.0
+
+[node name="World_Understory133" parent="." instance=ExtResource("3")]
+position = Vector2(2349.458, 2103.391)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 139.238
+body_height = 100.0
+
+[node name="World_Understory134" parent="." instance=ExtResource("3")]
+position = Vector2(1666.352, 2555.264)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 99.090
+body_height = 100.0
+
+[node name="World_Understory135" parent="." instance=ExtResource("3")]
+position = Vector2(766.062, 2540.860)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 108.587
+body_height = 100.0
+
+[node name="World_Understory136" parent="." instance=ExtResource("3")]
+position = Vector2(622.427, 1309.226)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 139.479
+body_height = 100.0
+
+[node name="World_Understory138" parent="." instance=ExtResource("3")]
+position = Vector2(4301.019, 2170.200)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 144.280
+body_height = 100.0
+
+[node name="World_Understory139" parent="." instance=ExtResource("3")]
+position = Vector2(3359.528, 112.383)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 93.123
+body_height = 100.0
+
+[node name="World_Understory140" parent="." instance=ExtResource("3")]
+position = Vector2(852.281, 2707.506)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 97.152
+body_height = 100.0
+
+[node name="World_Understory141" parent="." instance=ExtResource("3")]
+position = Vector2(1993.180, 1794.075)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 124.242
+body_height = 100.0
+
+[node name="World_Understory142" parent="." instance=ExtResource("3")]
+position = Vector2(644.188, 651.189)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 85.421
+body_height = 100.0
+
+[node name="World_Understory144" parent="." instance=ExtResource("3")]
+position = Vector2(631.801, 1676.560)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 132.188
+body_height = 100.0
+
+[node name="World_Understory145" parent="." instance=ExtResource("3")]
+position = Vector2(3368.907, 1095.880)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 136.359
+body_height = 100.0
+
+[node name="World_Understory148" parent="." instance=ExtResource("3")]
+position = Vector2(3429.406, 243.230)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 98.182
+body_height = 100.0
+
+[node name="World_Understory149" parent="." instance=ExtResource("3")]
+position = Vector2(2526.757, 962.442)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 117.518
+body_height = 100.0
+
+[node name="World_Understory150" parent="." instance=ExtResource("3")]
+position = Vector2(2154.118, 2756.718)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 137.337
+body_height = 100.0
+
+[node name="World_Understory151" parent="." instance=ExtResource("3")]
+position = Vector2(1216.137, 1467.309)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 100.754
+body_height = 100.0
+
+[node name="World_Understory152" parent="." instance=ExtResource("3")]
+position = Vector2(711.664, 2816.878)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 101.577
+body_height = 100.0
+
+[node name="World_Understory154" parent="." instance=ExtResource("3")]
+position = Vector2(4095.566, 2955.455)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 94.418
+body_height = 100.0
+
+[node name="World_Understory156" parent="." instance=ExtResource("3")]
+position = Vector2(3596.971, 233.153)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 126.849
+body_height = 100.0
+
+[node name="World_Understory161" parent="." instance=ExtResource("3")]
+position = Vector2(4508.014, 1574.435)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 133.891
+body_height = 100.0
+
+[node name="World_Understory162" parent="." instance=ExtResource("3")]
+position = Vector2(1149.070, 2844.784)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 114.022
+body_height = 100.0
+
+[node name="World_Understory163" parent="." instance=ExtResource("3")]
+position = Vector2(3921.758, 879.550)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 126.916
+body_height = 100.0
+
+[node name="World_Understory164" parent="." instance=ExtResource("3")]
+position = Vector2(1122.165, 1282.730)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 137.401
+body_height = 100.0
+
+[node name="World_Understory165" parent="." instance=ExtResource("3")]
+position = Vector2(795.289, 206.798)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 86.683
+body_height = 100.0
+
+[node name="World_Understory168" parent="." instance=ExtResource("3")]
+position = Vector2(1167.943, 1576.514)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 92.006
+body_height = 100.0
+
+[node name="World_Understory169" parent="." instance=ExtResource("3")]
+position = Vector2(1185.480, 2752.561)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 98.406
+body_height = 100.0
+
+[node name="World_Understory171" parent="." instance=ExtResource("3")]
+position = Vector2(1664.592, 2581.158)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 140.524
+body_height = 100.0
+
+[node name="World_Understory172" parent="." instance=ExtResource("3")]
+position = Vector2(1549.908, 782.123)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 126.444
+body_height = 100.0
+
+[node name="World_Understory173" parent="." instance=ExtResource("3")]
+position = Vector2(541.894, 1512.565)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 113.878
+body_height = 100.0
+
+[node name="World_Understory174" parent="." instance=ExtResource("3")]
+position = Vector2(3232.568, 2024.076)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 106.786
+body_height = 100.0
+
+[node name="World_Understory175" parent="." instance=ExtResource("3")]
+position = Vector2(3475.092, 601.812)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 92.536
+body_height = 100.0
+
+[node name="World_Understory177" parent="." instance=ExtResource("3")]
+position = Vector2(3195.367, 1819.343)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 91.252
+body_height = 100.0
+
+[node name="World_Understory178" parent="." instance=ExtResource("3")]
+position = Vector2(3474.703, 1062.872)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 94.170
+body_height = 100.0
+
+[node name="World_Understory180" parent="." instance=ExtResource("3")]
+position = Vector2(3183.106, 640.318)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 97.467
+body_height = 100.0
+
+[node name="World_Understory182" parent="." instance=ExtResource("3")]
+position = Vector2(964.753, 681.378)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 96.479
+body_height = 100.0
+
+[node name="World_Understory183" parent="." instance=ExtResource("3")]
+position = Vector2(3359.749, 169.687)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 127.990
+body_height = 100.0
+
+[node name="World_Understory184" parent="." instance=ExtResource("3")]
+position = Vector2(1881.358, 2639.886)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 124.262
+body_height = 100.0
+
+[node name="World_Understory186" parent="." instance=ExtResource("3")]
+position = Vector2(2456.619, 2304.766)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 126.350
+body_height = 100.0
+
+[node name="World_Understory187" parent="." instance=ExtResource("3")]
+position = Vector2(2474.140, 790.495)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 106.347
+body_height = 100.0
+
+[node name="World_Understory188" parent="." instance=ExtResource("3")]
+position = Vector2(3578.291, 2327.485)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 93.043
+body_height = 100.0
+
+[node name="World_Understory190" parent="." instance=ExtResource("3")]
+position = Vector2(4469.318, 2577.312)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 141.016
+body_height = 100.0
+
+[node name="World_Understory191" parent="." instance=ExtResource("3")]
+position = Vector2(2957.167, 2629.990)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 118.168
+body_height = 100.0
+
+[node name="World_Understory192" parent="." instance=ExtResource("3")]
+position = Vector2(1377.070, 2816.495)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 130.527
+body_height = 100.0
+
+[node name="World_Understory193" parent="." instance=ExtResource("3")]
+position = Vector2(2406.961, 2171.132)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 115.961
+body_height = 100.0
+
+[node name="World_Understory195" parent="." instance=ExtResource("3")]
+position = Vector2(4258.990, 2937.646)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 112.243
+body_height = 100.0
+
+[node name="World_Understory197" parent="." instance=ExtResource("3")]
+position = Vector2(3707.216, 2113.094)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 107.665
+body_height = 100.0
+
+[node name="World_Understory198" parent="." instance=ExtResource("3")]
+position = Vector2(1630.767, 2480.040)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 106.033
+body_height = 100.0
+
+[node name="World_Understory199" parent="." instance=ExtResource("3")]
+position = Vector2(3244.326, 1766.179)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 90.312
+body_height = 100.0
+
+[node name="World_Understory201" parent="." instance=ExtResource("3")]
+position = Vector2(3456.525, 1082.314)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 134.634
+body_height = 100.0
+
+[node name="World_Understory202" parent="." instance=ExtResource("3")]
+position = Vector2(3534.530, 857.867)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 105.242
+body_height = 100.0
+
+[node name="World_Understory205" parent="." instance=ExtResource("3")]
+position = Vector2(994.697, 873.802)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 129.837
+body_height = 100.0
+
+[node name="World_Understory207" parent="." instance=ExtResource("3")]
+position = Vector2(713.790, 2768.446)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 86.934
+body_height = 100.0
+
+[node name="World_Understory209" parent="." instance=ExtResource("3")]
+position = Vector2(3677.911, 2017.029)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 108.988
+body_height = 100.0
+
+[node name="World_Understory210" parent="." instance=ExtResource("3")]
+position = Vector2(1440.232, 1192.351)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 129.802
+body_height = 100.0
+
+[node name="World_Understory211" parent="." instance=ExtResource("3")]
+position = Vector2(3801.454, 923.987)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 128.061
+body_height = 100.0
+
+[node name="World_Understory212" parent="." instance=ExtResource("3")]
+position = Vector2(3750.913, 2104.918)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 123.867
+body_height = 100.0
+
+[node name="World_Understory213" parent="." instance=ExtResource("3")]
+position = Vector2(2534.460, 2313.432)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 93.206
+body_height = 100.0
+
+[node name="World_Understory214" parent="." instance=ExtResource("3")]
+position = Vector2(628.309, 2797.266)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 136.095
+body_height = 100.0
+
+[node name="World_Understory216" parent="." instance=ExtResource("3")]
+position = Vector2(2164.924, 1556.217)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 136.256
+body_height = 100.0
+
+[node name="World_Understory217" parent="." instance=ExtResource("3")]
+position = Vector2(1471.811, 2686.778)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 86.563
+body_height = 100.0
+
+[node name="World_Understory218" parent="." instance=ExtResource("3")]
+position = Vector2(1794.945, 788.391)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 123.946
+body_height = 100.0
+
+[node name="World_Understory223" parent="." instance=ExtResource("3")]
+position = Vector2(2915.690, 2850.672)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 112.794
+body_height = 100.0
+
+[node name="World_Understory224" parent="." instance=ExtResource("3")]
+position = Vector2(2043.697, 1765.323)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 137.747
+body_height = 100.0
+
+[node name="World_Understory226" parent="." instance=ExtResource("3")]
+position = Vector2(2821.538, 170.634)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 139.049
+body_height = 100.0
+
+[node name="World_Understory227" parent="." instance=ExtResource("3")]
+position = Vector2(746.439, 143.727)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 109.380
+body_height = 100.0
+
+[node name="World_Understory229" parent="." instance=ExtResource("3")]
+position = Vector2(2173.006, 1613.868)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 143.554
+body_height = 100.0
+
+[node name="World_Understory230" parent="." instance=ExtResource("3")]
+position = Vector2(3492.680, 2565.130)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 95.432
+body_height = 100.0
+
+[node name="World_Understory234" parent="." instance=ExtResource("3")]
+position = Vector2(2205.444, 2514.782)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 138.719
+body_height = 100.0
+
+[node name="World_Understory235" parent="." instance=ExtResource("3")]
+position = Vector2(4413.777, 1300.700)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 104.444
+body_height = 100.0
+
+[node name="World_Understory236" parent="." instance=ExtResource("3")]
+position = Vector2(1132.412, 1006.126)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 85.882
+body_height = 100.0
+
+[node name="World_Understory238" parent="." instance=ExtResource("3")]
+position = Vector2(355.385, 2677.307)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 132.435
+body_height = 100.0
+
+[node name="World_Understory239" parent="." instance=ExtResource("3")]
+position = Vector2(3636.257, 1990.025)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 137.059
+body_height = 100.0
+
+[node name="World_Understory241" parent="." instance=ExtResource("3")]
+position = Vector2(3580.114, 2298.268)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 107.559
+body_height = 100.0
+
+[node name="World_Understory242" parent="." instance=ExtResource("3")]
+position = Vector2(1790.335, 93.741)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 143.136
+body_height = 100.0
+
+[node name="World_Understory243" parent="." instance=ExtResource("3")]
+position = Vector2(3210.905, 2875.797)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 133.889
+body_height = 100.0
+
+[node name="World_Understory244" parent="." instance=ExtResource("3")]
+position = Vector2(2822.170, 640.249)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 92.200
+body_height = 100.0
+
+[node name="World_Understory246" parent="." instance=ExtResource("3")]
+position = Vector2(2554.051, 1269.415)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 98.123
+body_height = 100.0
+
+[node name="World_Understory247" parent="." instance=ExtResource("3")]
+position = Vector2(3717.625, 1889.092)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 134.415
+body_height = 100.0
+
+[node name="World_Understory249" parent="." instance=ExtResource("3")]
+position = Vector2(1371.653, 1989.589)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 107.355
+body_height = 100.0
+
+[node name="World_Understory250" parent="." instance=ExtResource("3")]
+position = Vector2(3569.362, 2128.227)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 94.110
+body_height = 100.0
+
+[node name="World_Understory251" parent="." instance=ExtResource("3")]
+position = Vector2(1216.549, 533.663)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 90.237
+body_height = 100.0
+
+[node name="World_Understory253" parent="." instance=ExtResource("3")]
+position = Vector2(745.468, 2410.238)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 87.981
+body_height = 100.0
+
+[node name="World_Understory255" parent="." instance=ExtResource("3")]
+position = Vector2(1563.184, 958.013)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 125.273
+body_height = 100.0
+
+[node name="World_Understory256" parent="." instance=ExtResource("3")]
+position = Vector2(2773.205, 926.493)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 93.472
+body_height = 100.0
+
+[node name="World_Understory260" parent="." instance=ExtResource("3")]
+position = Vector2(1365.985, 1140.073)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 134.529
+body_height = 100.0
+
+[node name="World_Understory261" parent="." instance=ExtResource("3")]
+position = Vector2(2968.214, 2075.269)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 115.298
+body_height = 100.0
+
+[node name="World_Understory262" parent="." instance=ExtResource("3")]
+position = Vector2(4162.223, 749.174)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 122.100
+body_height = 100.0
+
+[node name="World_Understory263" parent="." instance=ExtResource("3")]
+position = Vector2(4177.901, 1050.702)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 124.449
+body_height = 100.0
+
+[node name="World_Understory264" parent="." instance=ExtResource("3")]
+position = Vector2(1573.215, 1568.863)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 118.584
+body_height = 100.0
+
+[node name="World_Understory265" parent="." instance=ExtResource("3")]
+position = Vector2(4522.060, 2693.619)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 95.550
+body_height = 100.0
+
+[node name="World_Understory266" parent="." instance=ExtResource("3")]
+position = Vector2(964.163, 2617.585)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 144.717
+body_height = 100.0
+
+[node name="World_Understory268" parent="." instance=ExtResource("3")]
+position = Vector2(3127.898, 1408.511)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 111.065
+body_height = 100.0
+
+[node name="World_Understory272" parent="." instance=ExtResource("3")]
+position = Vector2(4165.034, 157.136)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 119.503
+body_height = 100.0
+
+[node name="World_Understory273" parent="." instance=ExtResource("3")]
+position = Vector2(2750.005, 971.916)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 124.182
+body_height = 100.0
+
+[node name="World_Understory274" parent="." instance=ExtResource("3")]
+position = Vector2(4347.324, 355.485)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 119.540
+body_height = 100.0
+
+[node name="World_Understory277" parent="." instance=ExtResource("3")]
+position = Vector2(4246.311, 1290.864)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 130.501
+body_height = 100.0
+
+[node name="World_Understory280" parent="." instance=ExtResource("3")]
+position = Vector2(3896.400, 1918.305)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 92.699
+body_height = 100.0
+
+[node name="World_Understory283" parent="." instance=ExtResource("3")]
+position = Vector2(3314.547, 2668.305)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 101.719
+body_height = 100.0
+
+[node name="World_Understory285" parent="." instance=ExtResource("3")]
+position = Vector2(1413.736, 1888.864)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("9")
+render_width = 135.505
+body_height = 100.0
+
+[node name="World_Understory289" parent="." instance=ExtResource("3")]
+position = Vector2(4265.488, 1275.975)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 86.248
+body_height = 100.0
+
+[node name="World_Understory290" parent="." instance=ExtResource("3")]
+position = Vector2(4523.263, 525.294)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 125.998
+body_height = 100.0
+
+[node name="World_Understory292" parent="." instance=ExtResource("3")]
+position = Vector2(1696.289, 1613.695)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 87.002
+body_height = 100.0
+
+[node name="World_Understory293" parent="." instance=ExtResource("3")]
+position = Vector2(4138.965, 2672.708)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 102.426
+body_height = 100.0
+
+[node name="World_Understory298" parent="." instance=ExtResource("3")]
+position = Vector2(1761.986, 1697.040)
+category = "ground"
+obstacle_kind = "wall"
+size = Vector2(60.000, 32.000)
+texture_asset = ExtResource("7")
+render_width = 108.289
+body_height = 100.0
+
+[node name="World_ShoreRock0" parent="." instance=ExtResource("3")]
+position = Vector2(578.788, 50.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 162.241
+body_height = 100.0
+
+[node name="World_ShoreRock1" parent="." instance=ExtResource("3")]
+position = Vector2(594.478, 96.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 191.073
+body_height = 100.0
+
+[node name="World_ShoreRock2" parent="." instance=ExtResource("3")]
+position = Vector2(692.900, 142.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 157.350
+body_height = 100.0
+
+[node name="World_ShoreRock3" parent="." instance=ExtResource("3")]
+position = Vector2(636.661, 188.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 173.244
+body_height = 100.0
+
+[node name="World_ShoreRock4" parent="." instance=ExtResource("3")]
+position = Vector2(683.140, 234.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 145.943
+body_height = 100.0
+
+[node name="World_ShoreRock5" parent="." instance=ExtResource("3")]
+position = Vector2(655.635, 280.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 176.338
+body_height = 100.0
+
+[node name="World_ShoreRock6" parent="." instance=ExtResource("3")]
+position = Vector2(713.966, 326.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 167.415
+body_height = 100.0
+
+[node name="World_ShoreRock7" parent="." instance=ExtResource("3")]
+position = Vector2(685.752, 372.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 185.561
+body_height = 100.0
+
+[node name="World_ShoreRock8" parent="." instance=ExtResource("3")]
+position = Vector2(673.588, 418.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 185.474
+body_height = 100.0
+
+[node name="World_ShoreRock9" parent="." instance=ExtResource("3")]
+position = Vector2(662.703, 464.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 172.783
+body_height = 100.0
+
+[node name="World_ShoreRock10" parent="." instance=ExtResource("3")]
+position = Vector2(746.035, 510.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 190.396
+body_height = 100.0
+
+[node name="World_ShoreRock11" parent="." instance=ExtResource("3")]
+position = Vector2(595.323, 556.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 210.918
+body_height = 100.0
+
+[node name="World_ShoreRock12" parent="." instance=ExtResource("3")]
+position = Vector2(621.293, 602.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 140.353
+body_height = 100.0
+
+[node name="World_ShoreRock13" parent="." instance=ExtResource("3")]
+position = Vector2(654.881, 648.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 143.144
+body_height = 100.0
+
+[node name="World_ShoreRock14" parent="." instance=ExtResource("3")]
+position = Vector2(643.524, 694.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 161.056
+body_height = 100.0
+
+[node name="World_ShoreRock15" parent="." instance=ExtResource("3")]
+position = Vector2(644.424, 740.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 179.793
+body_height = 100.0
+
+[node name="World_ShoreRock16" parent="." instance=ExtResource("3")]
+position = Vector2(620.759, 786.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 178.681
+body_height = 100.0
+
+[node name="World_ShoreRock17" parent="." instance=ExtResource("3")]
+position = Vector2(341.318, 832.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 161.551
+body_height = 100.0
+
+[node name="World_ShoreRock18" parent="." instance=ExtResource("3")]
+position = Vector2(389.312, 878.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 154.052
+body_height = 100.0
+
+[node name="World_ShoreRock19" parent="." instance=ExtResource("3")]
+position = Vector2(373.855, 924.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 191.751
+body_height = 100.0
+
+[node name="World_ShoreRock20" parent="." instance=ExtResource("3")]
+position = Vector2(403.134, 970.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 147.864
+body_height = 100.0
+
+[node name="World_ShoreRock21" parent="." instance=ExtResource("3")]
+position = Vector2(377.678, 1016.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 215.109
+body_height = 100.0
+
+[node name="World_ShoreRock22" parent="." instance=ExtResource("3")]
+position = Vector2(382.386, 1062.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 205.379
+body_height = 100.0
+
+[node name="World_ShoreRock23" parent="." instance=ExtResource("3")]
+position = Vector2(390.431, 1108.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 186.071
+body_height = 100.0
+
+[node name="World_ShoreRock24" parent="." instance=ExtResource("3")]
+position = Vector2(433.887, 1154.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 202.099
+body_height = 100.0
+
+[node name="World_ShoreRock25" parent="." instance=ExtResource("3")]
+position = Vector2(441.680, 1200.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 211.666
+body_height = 100.0
+
+[node name="World_ShoreRock26" parent="." instance=ExtResource("3")]
+position = Vector2(437.418, 1246.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 150.203
+body_height = 100.0
+
+[node name="World_ShoreRock27" parent="." instance=ExtResource("3")]
+position = Vector2(407.621, 1292.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 196.689
+body_height = 100.0
+
+[node name="World_ShoreRock28" parent="." instance=ExtResource("3")]
+position = Vector2(392.993, 1338.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 157.599
+body_height = 100.0
+
+[node name="World_ShoreRock29" parent="." instance=ExtResource("3")]
+position = Vector2(403.525, 1384.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 155.607
+body_height = 100.0
+
+[node name="World_ShoreRock30" parent="." instance=ExtResource("3")]
+position = Vector2(576.457, 1430.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 156.015
+body_height = 100.0
+
+[node name="World_ShoreRock31" parent="." instance=ExtResource("3")]
+position = Vector2(528.421, 1476.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 209.795
+body_height = 100.0
+
+[node name="World_ShoreRock32" parent="." instance=ExtResource("3")]
+position = Vector2(527.806, 1522.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 179.267
+body_height = 100.0
+
+[node name="World_ShoreRock33" parent="." instance=ExtResource("3")]
+position = Vector2(542.225, 1568.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 201.824
+body_height = 100.0
+
+[node name="World_ShoreRock34" parent="." instance=ExtResource("3")]
+position = Vector2(556.896, 1614.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 140.443
+body_height = 100.0
+
+[node name="World_ShoreRock35" parent="." instance=ExtResource("3")]
+position = Vector2(578.494, 1660.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 170.465
+body_height = 100.0
+
+[node name="World_ShoreRock36" parent="." instance=ExtResource("3")]
+position = Vector2(559.468, 1706.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 173.513
+body_height = 100.0
+
+[node name="World_ShoreRock37" parent="." instance=ExtResource("3")]
+position = Vector2(493.534, 1752.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 203.603
+body_height = 100.0
+
+[node name="World_ShoreRock38" parent="." instance=ExtResource("3")]
+position = Vector2(522.561, 1798.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 175.923
+body_height = 100.0
+
+[node name="World_ShoreRock39" parent="." instance=ExtResource("3")]
+position = Vector2(506.514, 1844.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 164.519
+body_height = 100.0
+
+[node name="World_ShoreRock40" parent="." instance=ExtResource("3")]
+position = Vector2(485.856, 1890.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 168.974
+body_height = 100.0
+
+[node name="World_ShoreRock41" parent="." instance=ExtResource("3")]
+position = Vector2(510.688, 1936.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 160.109
+body_height = 100.0
+
+[node name="World_ShoreRock42" parent="." instance=ExtResource("3")]
+position = Vector2(479.726, 1982.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 163.553
+body_height = 100.0
+
+[node name="World_ShoreRock43" parent="." instance=ExtResource("3")]
+position = Vector2(510.388, 2028.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 141.432
+body_height = 100.0
+
+[node name="World_ShoreRock44" parent="." instance=ExtResource("3")]
+position = Vector2(448.919, 2074.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 151.866
+body_height = 100.0
+
+[node name="World_ShoreRock45" parent="." instance=ExtResource("3")]
+position = Vector2(446.804, 2120.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 149.260
+body_height = 100.0
+
+[node name="World_ShoreRock46" parent="." instance=ExtResource("3")]
+position = Vector2(474.157, 2166.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 194.657
+body_height = 100.0
+
+[node name="World_ShoreRock47" parent="." instance=ExtResource("3")]
+position = Vector2(469.111, 2212.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 156.112
+body_height = 100.0
+
+[node name="World_ShoreRock48" parent="." instance=ExtResource("3")]
+position = Vector2(499.615, 2258.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 190.057
+body_height = 100.0
+
+[node name="World_ShoreRock49" parent="." instance=ExtResource("3")]
+position = Vector2(320.567, 2304.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 171.384
+body_height = 100.0
+
+[node name="World_ShoreRock50" parent="." instance=ExtResource("3")]
+position = Vector2(329.178, 2350.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 162.079
+body_height = 100.0
+
+[node name="World_ShoreRock51" parent="." instance=ExtResource("3")]
+position = Vector2(302.683, 2396.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 153.004
+body_height = 100.0
+
+[node name="World_ShoreRock52" parent="." instance=ExtResource("3")]
+position = Vector2(313.180, 2442.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 205.368
+body_height = 100.0
+
+[node name="World_ShoreRock53" parent="." instance=ExtResource("3")]
+position = Vector2(128.044, 2488.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 190.160
+body_height = 100.0
+
+[node name="World_ShoreRock54" parent="." instance=ExtResource("3")]
+position = Vector2(160.177, 2534.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 191.236
+body_height = 100.0
+
+[node name="World_ShoreRock55" parent="." instance=ExtResource("3")]
+position = Vector2(209.150, 2580.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 181.663
+body_height = 100.0
+
+[node name="World_ShoreRock56" parent="." instance=ExtResource("3")]
+position = Vector2(213.305, 2626.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 171.248
+body_height = 100.0
+
+[node name="World_ShoreRock57" parent="." instance=ExtResource("3")]
+position = Vector2(210.526, 2672.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 207.795
+body_height = 100.0
+
+[node name="World_ShoreRock58" parent="." instance=ExtResource("3")]
+position = Vector2(266.413, 2718.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 150.741
+body_height = 100.0
+
+[node name="World_ShoreRock59" parent="." instance=ExtResource("3")]
+position = Vector2(296.547, 2764.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 150.695
+body_height = 100.0
+
+[node name="World_ShoreRock60" parent="." instance=ExtResource("3")]
+position = Vector2(281.035, 2810.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 146.753
+body_height = 100.0
+
+[node name="World_ShoreRock61" parent="." instance=ExtResource("3")]
+position = Vector2(335.556, 2856.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 179.745
+body_height = 100.0
+
+[node name="World_ShoreRock62" parent="." instance=ExtResource("3")]
+position = Vector2(356.098, 2902.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 164.533
+body_height = 100.0
+
+[node name="World_ShoreRock63" parent="." instance=ExtResource("3")]
+position = Vector2(313.470, 2948.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 210.064
+body_height = 100.0
+
+[node name="World_ShoreRock64" parent="." instance=ExtResource("3")]
+position = Vector2(704.793, 2994.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(45.000, 28.000)
+texture_asset = ExtResource("6")
+render_width = 155.894
+body_height = 100.0
+
+[node name="World_SteleGroup0" parent="." instance=ExtResource("3")]
+position = Vector2(900.000, 1050.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(30.000, 26.000)
+texture_asset = ExtResource("8")
+render_width = 110.000
+body_height = 100.0
+
+[node name="World_SteleGroup1" parent="." instance=ExtResource("3")]
+position = Vector2(1137.000, 1074.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(30.000, 26.000)
+texture_asset = ExtResource("8")
+render_width = 110.000
+body_height = 100.0
+
+[node name="World_SteleGroup2" parent="." instance=ExtResource("3")]
+position = Vector2(837.000, 1116.000)
+category = "obstacle"
+obstacle_kind = "wall"
+size = Vector2(30.000, 26.000)
+texture_asset = ExtResource("8")
+render_width = 110.000
+body_height = 100.0
+
+[node name="World_FirePillar0" parent="." instance=ExtResource("3")]
+position = Vector2(661.500, 2158.277)
+category = "obstacle"
+obstacle_kind = "brazier"
+size = Vector2(28.000, 24.000)
+texture_asset = ExtResource("15")
+render_width = 60.000
+body_height = 100.0
+
+[node name="World_FirePillar1" parent="." instance=ExtResource("3")]
+position = Vector2(1578.000, 2049.000)
+category = "obstacle"
+obstacle_kind = "brazier"
+size = Vector2(28.000, 24.000)
+texture_asset = ExtResource("15")
+render_width = 60.000
+body_height = 100.0
+
+[node name="World_FirePillar2" parent="." instance=ExtResource("3")]
+position = Vector2(2157.000, 1860.000)
+category = "obstacle"
+obstacle_kind = "brazier"
+size = Vector2(28.000, 24.000)
+texture_asset = ExtResource("15")
+render_width = 60.000
+body_height = 100.0
+
+[node name="World_FirePillar3" parent="." instance=ExtResource("3")]
+position = Vector2(2995.086, 1732.468)
+category = "obstacle"
+obstacle_kind = "brazier"
+size = Vector2(28.000, 24.000)
+texture_asset = ExtResource("15")
+render_width = 60.000
+body_height = 100.0
+
+[node name="World_FirePillar4" parent="." instance=ExtResource("3")]
+position = Vector2(3279.000, 1305.000)
+category = "obstacle"
+obstacle_kind = "brazier"
+size = Vector2(28.000, 24.000)
+texture_asset = ExtResource("15")
+render_width = 60.000
+body_height = 100.0
+
+[node name="World_FirePillar5" parent="." instance=ExtResource("3")]
+position = Vector2(4087.348, 1315.167)
+category = "obstacle"
+obstacle_kind = "brazier"
+size = Vector2(28.000, 24.000)
+texture_asset = ExtResource("15")
+render_width = 60.000
+body_height = 100.0
+
+[node name="World_FirePillar6" parent="." instance=ExtResource("3")]
+position = Vector2(1811.785, 350.737)
+category = "obstacle"
+obstacle_kind = "brazier"
+size = Vector2(28.000, 24.000)
+texture_asset = ExtResource("15")
+render_width = 60.000
+body_height = 100.0
+
+[node name="World_FirePillar7" parent="." instance=ExtResource("3")]
+position = Vector2(3002.389, 471.466)
+category = "obstacle"
+obstacle_kind = "brazier"
+size = Vector2(28.000, 24.000)
+texture_asset = ExtResource("15")
+render_width = 60.000
+body_height = 100.0
+
+[node name="World_FirePillar8" parent="." instance=ExtResource("3")]
+position = Vector2(1981.757, 709.021)
+category = "obstacle"
+obstacle_kind = "brazier"
+size = Vector2(28.000, 24.000)
+texture_asset = ExtResource("15")
+render_width = 60.000
+body_height = 100.0
+
+[node name="World_FirePillar9" parent="." instance=ExtResource("3")]
+position = Vector2(2735.168, 750.315)
+category = "obstacle"
+obstacle_kind = "brazier"
+size = Vector2(28.000, 24.000)
+texture_asset = ExtResource("15")
+render_width = 60.000
+body_height = 100.0
+
+[node name="World_FirePillar10" parent="." instance=ExtResource("3")]
+position = Vector2(3864.000, 2199.000)
+category = "obstacle"
+obstacle_kind = "brazier"
+size = Vector2(28.000, 24.000)
+texture_asset = ExtResource("15")
+render_width = 60.000
+body_height = 100.0

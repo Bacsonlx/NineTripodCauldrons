@@ -2,73 +2,62 @@
 
 主 IP：九鼎。副 IP：十日。
 
-Windows／macOS 单机动作肉鸽游戏的技术验证工程，采用固定等距二维战斗与分层 2.5D 表现，目标画风为皮影主导的像素质感混合风格。
+Windows／macOS 单机动作肉鸽游戏，当前开发与运行工程为 **Godot 原生 2D＋带类型 GDScript**。采用固定等距二维战斗与分层 2.5D 表现，目标画风为皮影主导的像素质感混合风格。Electron／Phaser 工程保留为旧版参照。
 
-各版本内容与验证状态见 [更新日志](CHANGELOG.md)。
+## 开发与运行
 
-## Godot 迁移
-
-后续开发已确定采用 **Godot 原生 2D＋带类型的 GDScript**，面向 PC／Steam，保持现有二维战斗平面、固定俯视／等距表现与离线图集。决策见 [ADR-0010](docs/adr/0010-godot-migration-direction.md)，完整范围与验收标准见 [Godot 迁移落地方案](docs/九鼎_Godot架构评估与迁移落地方案_2026-10-19.md)。
-
-**Godot 动态小样已在 `godot/` 建立，旧版主入口仍为 Electron＋TypeScript＋Phaser。** 引擎固定为 Godot 4.7.2 official，Compatibility 为候选渲染器，匹配官方模板与校验见 [Godot 开发说明](godot/README.md)。小样已接入跑射、单影偶近战、遮挡、相机和操作中断；Mac 原生启动与部分操作已检查，Windows 实机及用户试玩确认仍待验。
-
-- 首个交付覆盖当前汤谷的战斗、探索、镜头、反馈、键鼠操作，以及 Windows x64／Apple Silicon Mac 原生运行。
-- 先交付移动、独立瞄准、普通射箭、一个影偶、遮挡物和跟随镜头的可玩动态小样；试玩确认画面与手感后，再铺完整汤谷。
-- 保持已确认的玩法规则与数值，允许经确认的表现改进。用户在 Godot 编辑器调整道路、障碍、出生点和互动点并验收，AI 负责脚本与批量配置。
-- 指定两平台实机在 1080p 下连续跑射 60 秒：平均 ≥58 FPS，至少 95% 帧间隔 ≤20ms；另做 5 分钟稳定性检查。双平台验收通过后切换主入口，商业版最低配置后续验证。
-- 手柄、随机房间、Boss、成长、正式存档和 Steam 完整功能进入后续商业闭环；迁移早期先核实 Steam 接入路径与兼容性。
-
-M0—M4 的实施规格已发布为 [GitHub Spec #33](https://github.com/Bacsonlx/NineTripodCauldrons/issues/33)，本地镜像见 [Godot 迁移 Spec](docs/mvp/九鼎_Godot迁移_Spec.md)。18 个 Task 已发布为 #34—#51；当前实现、试玩包、检查与待验项见 [Godot 实施记录](docs/migration/Godot迁移_实施记录.md)。用户确认动态小样后继续技能、完整地图与探索，最后按双平台验收切入口。
-
-## 当前工程开发
-
-使用 Node.js 22 或更新版本；当前工程使用 npm 和 `package-lock.json`。
+安装 [engine-lock.json](godot/engine-lock.json) 锁定的 Godot 和 Python 3。导出需安装匹配的官方模板；Node.js 不作为 Godot 游戏运行依赖。在仓库根目录执行：
 
 ```sh
-npm ci
-npm start
+godot --path godot                 # 运行完整汤谷
+godot --editor --path godot        # 打开编辑器
+python3 tools/migration/check_godot.py   # 后台导入、规则检查和完整场景启动
+python3 tools/migration/export_godot.py  # 后台预检并导出双平台ZIP
 ```
 
-```sh
-npm run check    # TypeScript 检查
-npm test         # 单房间移动、射箭、碰撞和状态边界
-npm run package  # 检查并构建当前系统的应用目录
-npm run make     # 检查并生成当前系统的分发包
-```
+首次准备或更新源素材后运行 `python3 tools/migration/prepare_sample_assets.py`，再执行检查。完整环境、地图编辑与导出说明见 [Godot 开发说明](godot/README.md)。地图由 `godot/scenes/tanggu_map.tscn` 承载；用户在编辑器调整道路、障碍、出生点和互动点，保存后运行与导出均使用该场景。
 
-当前入口为 **MVP-03 汤谷探索 0.3.0**：固定等距跟随镜头，三组 3／4／5 战斗，一条主路、两条支路及内侧开启的捷径；分层环境沿已批准小样铺满全图。WASD 跑动、鼠标瞄准、左键射箭，Q 穿透箭、E 箭雨、空格闪避、F 互动，Esc 暂停／关闭阅读，R 重试。残碑采用已单独批准的 v0.1；祭坛一次恢复40，满血不消耗；R 同时复原探索与战斗。46项测试与渲染功能流程通过，Mac／Windows 原生完整体验仍待验。见 [完整探索实现与验收记录](docs/mvp/MVP03_完整探索_实现与验收记录.md)。
+Codex 已接入项目级 `jiuding_godot` MCP，工程查询、场景／节点／精灵编辑与安装方法见 [Godot MCP 使用指南](docs/Godot_MCP使用指南.md)。
 
-人物、影偶与环境使用本地透明 PNG，人物四向各 6 帧跑步，独立上身与技能／受击／失败动作；弓和箭保持握点与箭尖一致。HUD、冷却与朱红预警由代码绘制，技能使用纹理与代码动画组合。复用来源见 [MVP-02 美术接入记录](assets/mvp02/制作与接入记录.md)，新增局部地面、分离物件和特效纹理见 [MVP-03 美术接入记录](assets/mvp03/制作与接入记录.md)。
+人物、道具、图标、短特效制作及已有图片切帧／对齐／打包，按 [Agent Sprite Forge 使用指南](docs/art/Agent_Sprite_Forge使用指南.md) 调用用户级 Skill。
 
-`make` 生成 ZIP；Windows x64 可在 Mac 执行 `npm run make -- --platform=win32 --arch=x64`，EXE 使用 `npm run make:win-exe`。构建成功不代表平台验收通过，Windows 实机仍由用户回传。历史 0.2.1／0.2.0 验收分别保留在 [人物与小怪修订记录](docs/mvp/MVP02_0.2.1_人物与小怪修订.md)和[旧实现记录](docs/mvp/MVP02_实现与验收记录.md)，不被本轮小样追溯改写。
+## 当前交付与验收
 
-## 目录
+完整汤谷候选为 `0.3.0-godot-candidate.1`：普通箭、Q 穿透箭、E 固定落点三段箭雨、闪避、三组 3／4／5 影偶、主路、两条支路、残碑阅读、一次性回血祭坛、内侧开启捷径、HUD与命中反馈均已接入。已批准动态小样 `0.3.0-godot-sample.1` 的确认仅覆盖对应小样版本。
 
-- `src/desktop/`：桌面主进程与 preload。
-- `src/renderer/`：窗口页面与游戏启动。
-- `src/game/`：Phaser 场景与可独立推进的房间规则。
-- `assets/mvp/`：MVP-01 图集、原始素材及复用的上身／弓箭。
-- `assets/mvp02/`：汤谷、影偶、人物扩展图集、实际裁切和完整生成提示词。
-- `assets/mvp03/`：局部动态小样的地面、分离物件与特效纹理、帧裁切和生成提示词。
-- `scripts/`：图集描述与开发验收采样工具；采样不覆写焦点、不丢弃慢帧。
-- `tests/`：房间规则的外部行为测试。
-- `src/shared/`：进程间共享类型与通道常量。
-- `docs/`：规则、架构结论与 ADR。
-- `output/十日_战斗概念图/`：前期概念图与提示词，不是已制作的游戏素材。
+- [Mac候选ZIP](build/godot/NineTripods-godot-macos.zip)：含arm64的Universal 2，本地ad-hoc签名，未公证。
+- [Windows x64候选ZIP](build/godot/NineTripods-godot-windows.zip)：未签名，实机验收按用户要求暂缓。
+- 两包均附完整操作说明和第三方许可；规则检查、干净构建、产物校验与待验项见 [候选验收记录](docs/migration/Godot候选_验收记录.md)。
+
+当前默认后台测试，不打开窗口或发送系统键鼠事件；原生完整玩法、画面／手感、1080p前台跑射60秒与5分钟稳定性由用户安排后单独验收。两平台目标为平均≥58FPS、至少95%帧间隔≤20ms；构建或单平台通过不替代双平台证据。Godot已成为开发入口，交付验收仍独立跟踪。
+
+操作：WASD移动，鼠标独立瞄准，左键点按／按住射箭，Q穿透箭，E箭雨，空格闪避，F互动，Esc暂停／合上残碑，R重试，F11全屏。残碑阅读冻结游戏时间；祭坛一次恢复40并封顶至100，满血不消耗；完成主路后仍可探索，R同时重置战斗与探索。
+
+手柄、随机房间、Boss、成长、正式存档、神降／签署闭环和Steam完整功能属于后续范围。旧MVP-01／02／03的独立待验项保留，不因引擎迁移自动关闭。
+
+## 目录与维护
+
+- `godot/scenes/`：运行场景与编辑器地图；默认主场景为 `tanggu.tscn`。
+- `godot/scripts/combat/`、`input/`：战斗规则与输入适配；`presentation/`：相机、动作、反馈及HUD；`world/`：编辑布局。
+- `godot/tests/`：公开边界检查与冻结规则对照；`godot/assets/generated/`：转换后的离线图集与锚点。
+- `tools/migration/`：素材转换、Godot检查和双平台导出；`build/godot/`：本地产物。
+- `assets/mvp/`、`assets/mvp02/`、`assets/mvp03/`：复用源素材、帧裁切与制作记录。
+- `docs/`：架构、玩法、ADR及实施／验收证据；`output/`：历史观察与概念素材。
+- `src/`、根 `tests/`、`scripts/`及npm配置：旧版Electron／Phaser代码、行为参照与制作工具。
+
+战斗参数与后续属性建议见 [战斗数值方案](docs/balance/九鼎_战斗数值方案_v0.1.md)；当前动作和反馈实现以Godot为准，旧TypeScript修复过程见 [历史架构修复记录](docs/九鼎_架构深化修复记录_2026-10-19.md)。源素材沿用 [MVP-02制作记录](assets/mvp02/制作与接入记录.md)与 [MVP-03制作记录](assets/mvp03/制作与接入记录.md)。各版本历史见 [更新日志](CHANGELOG.md)。
+
+## 旧版参照
+
+需要复现迁移前行为时，使用Node.js 22+及根npm工具链：`npm ci`、`npm start`启动旧版，`npm run check`／`npm test`检查旧版，`npm run package`／`npm run make`生成旧版包。它们不会启动、检查或导出Godot。历史0.2.1的Windows安装包命令为 `npm run make:win-exe`，其原生待验状态见 [0.2.1修订记录](docs/mvp/MVP02_0.2.1_人物与小怪修订.md)；0.3.0旧版完整探索见 [历史实现记录](docs/mvp/MVP03_完整探索_实现与验收记录.md)。
 
 ## 设计依据
 
+- [当前Godot决策 ADR-0010](docs/adr/0010-godot-migration-direction.md)
 - [架构选型结论](docs/九鼎_架构选型结论.md)
-- [玩法与运行规则](docs/十日_玩法与运行规则.md)
-- [领域术语](GLOSSARY.md)
+- [玩法与运行规则](docs/十日_玩法与运行规则.md)、[领域术语](GLOSSARY.md)
+- [Godot迁移方案](docs/九鼎_Godot架构评估与迁移落地方案_2026-10-19.md)、[迁移Spec #33](docs/mvp/九鼎_Godot迁移_Spec.md)
+- [实施记录与Task状态](docs/migration/Godot迁移_实施记录.md)、[64项行为映射](docs/migration/Godot行为用例映射.md)
 - [世界观与故事框架 v1.2](十日_世界观与故事框架_v1.2.pdf)
 
-任务由当前仓库的 GitHub Issues 跟踪；Matt Pocock 技能配置复用用户级 `~/.agents/mattpocock-config/`。具体消费规则见 [AGENTS.md](AGENTS.md)。
-
-当前安装包未配置发行签名。剧情、存档、Boss、神降和签署闭环仍属于后续范围。MVP-02 的功能、美术、性能与双平台实机结果完整前，Spec #2 保持未完成；旧 MVP-01 #1 的验收缺口也保持独立。
-
-### 0.2.1 人物与小怪修订
-
-统一人物腰带／衣摆与脚点，新增纸面、木甲两种影偶外观；三组共 12 只，仍用原近战规则。修复默认最大化启动时的画布与可见性同步。
-
-运行 `npm run make:win-exe`，Forge 先构建 Windows x64 ZIP，再由固定版本 electron-builder 将相同产物包装为 NSIS EXE；当前为未签名的当前用户安装包，不包含自动更新。Windows 实际安装／运行仍待回传，详见 [0.2.1 修订记录](docs/mvp/MVP02_0.2.1_人物与小怪修订.md)。
+任务由当前仓库的GitHub Issues跟踪；Matt Pocock技能采用用户级全局配置。Agent执行约定见 [AGENTS.md](AGENTS.md)。

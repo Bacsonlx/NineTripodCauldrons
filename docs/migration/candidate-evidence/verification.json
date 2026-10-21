@@ -1,0 +1,90 @@
+{
+  "version": "0.3.0-godot-candidate.1",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "tests": {
+    "checks": 30,
+    "failures": [],
+    "rule_traces": {
+      "cases": 55,
+      "failures": [],
+      "snapshots": 4250
+    }
+  },
+  "clean_import": true,
+  "clean_scene": true,
+  "asset_conversion_repeat_identical": true,
+  "assets_match_source": true,
+  "both_exports": true,
+  "archive_integrity": true,
+  "macos_adhoc_signature": true,
+  "exported_layout_matches_source": true,
+  "artifacts": {
+    "NineTripods-godot-macos.zip": {
+      "path": "build/godot/NineTripods-godot-macos.zip",
+      "bytes": 81951469,
+      "sha256": "a78243121a7b125beaa9e1aa9d1bac12e937c378cacf126549dc6a413fa461d7"
+    },
+    "NineTripods-godot-windows.zip": {
+      "path": "build/godot/NineTripods-godot-windows.zip",
+      "bytes": 59506050,
+      "sha256": "27213cc3d8390d951c67ba146152c71b7e555563e1adeb74fa037bef4e024992"
+    }
+  },
+  "native_acceptance": "pending; headless loading does not establish GPU/input/performance acceptance",
+  "date": "2026-10-20",
+  "standards": {
+    "actionable_findings": 0
+  },
+  "spec": {
+    "findings": 1,
+    "fixed": 1,
+    "rereview": "passed"
+  },
+  "edited_layout": {
+    "edited_road_width": 580.0,
+    "export_exit": 0,
+    "export_layout_matches_source": true,
+    "scope": "导出Mac包headless加载实际地图；不代表原生GPU或键鼠验收"
+  },
+  "invalid_layout_rejected": {
+    "exit_code": 1,
+    "node": "Road1"
+  },
+  "assets_negative_cases": [
+    {
+      "case": "missing-source",
+      "exit_code": 1,
+      "identified": true,
+      "passed": true
+    },
+    {
+      "case": "out-of-bounds",
+      "exit_code": 1,
+      "identified": true,
+      "passed": true
+    },
+    {
+      "case": "duplicate-frame",
+      "exit_code": 1,
+      "identified": true,
+      "passed": true
+    },
+    {
+      "case": "nonfinite-frame",
+      "exit_code": 1,
+      "identified": true,
+      "passed": true
+    }
+  ],
+  "legacy_npm_check": {
+    "exit_code": 0
+  },
+  "native": {
+    "macos_final_candidate": "pending",
+    "windows": "deferred-by-user",
+    "foreground_performance": "not-run",
+    "five_minute_stability": "not-run",
+    "user_final_approval": "pending",
+    "execution_constraint": "后续仅后台，不占用正常屏幕"
+  }
+}

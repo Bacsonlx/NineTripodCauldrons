@@ -1,0 +1,446 @@
+[gd_scene load_steps=22 format=3]
+[ext_resource type="Script" path="res://scripts/world/room_map.gd" id="map"]
+[ext_resource type="Script" path="res://scripts/world/map_item.gd" id="item"]
+[ext_resource type="PackedScene" path="res://scenes/world/environment_prop.tscn" id="prop"]
+[ext_resource type="PackedScene" path="res://scenes/world/room_portal.tscn" id="portal"]
+[ext_resource type="Script" path="res://scripts/world/terrain_surface.gd" id="surface"]
+[ext_resource type="Texture2D" path="res://assets/world/forest.png" id="forest"]
+[ext_resource type="Texture2D" path="res://assets/world/path.png" id="path"]
+[ext_resource type="Texture2D" path="res://assets/world/tree_green.tres" id="tree_green"]
+[ext_resource type="Texture2D" path="res://assets/world/tree_red.tres" id="tree_red"]
+[ext_resource type="Texture2D" path="res://assets/world/rocks.tres" id="rocks"]
+[ext_resource type="Texture2D" path="res://assets/world/ferns.tres" id="ferns"]
+[ext_resource type="Texture2D" path="res://assets/world/grass.tres" id="grass"]
+[ext_resource type="Texture2D" path="res://assets/world/wall_east.tres" id="wall_east"]
+[ext_resource type="Texture2D" path="res://assets/world/wall_west.tres" id="wall_west"]
+[ext_resource type="Texture2D" path="res://assets/world/pillar.tres" id="pillar"]
+[ext_resource type="Texture2D" path="res://assets/world/court.tres" id="court"]
+[ext_resource type="Texture2D" path="res://assets/world/stele.tres" id="stele"]
+[ext_resource type="Texture2D" path="res://assets/world/altar.tres" id="altar"]
+[ext_resource type="Texture2D" path="res://assets/world/camp.tres" id="camp"]
+[ext_resource type="Texture2D" path="res://assets/world/gateway.tres" id="gateway"]
+[ext_resource type="Texture2D" path="res://assets/world/root.tres" id="root"]
+[node name="court1" type="Node2D"]
+script = ExtResource("map")
+room_id = "court1"
+room_title = "日鸟石庭"
+objective = "combat"
+world_size = Vector2(1440,1040)
+floor_polygon = PackedVector2Array(0,0,1440,0,1440,1040,0,1040)
+[node name="Ground" type="Node2D" parent="."]
+script = ExtResource("surface")
+path_texture = ExtResource("path")
+[node name="Forest" type="Polygon2D" parent="Ground"]
+z_index = -100
+polygon = PackedVector2Array(0,0,1440,0,1440,1040,0,1040)
+texture = ExtResource("forest")
+texture_repeat = 2
+[node name="RoomFloor" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(140, 280, 300, 170, 1140, 170, 1300, 280, 1300, 790, 1140, 900, 300, 900, 140, 790)
+texture = ExtResource("path")
+texture_repeat = 2
+[node name="Walkable" type="Node2D" parent="."]
+visible = false
+[node name="Floor" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(140, 280, 300, 170, 1140, 170, 1300, 280, 1300, 790, 1140, 900, 300, 900, 140, 790)
+[node name="Metrics" type="Node2D" parent="."]
+position = Vector2(720,535)
+script = ExtResource("item")
+category = "road"
+size = Vector2(1160,730)
+region = "日鸟石庭"
+[node name="PlayerSpawn" type="Node2D" parent="."]
+position = Vector2(310,525)
+script = ExtResource("item")
+category = "spawn"
+size = Vector2(40,30)
+[node name="CourtFloor" parent="." instance=ExtResource("prop")]
+position = Vector2(720,860.4786545924967)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("court")
+render_width = 1000.0
+flat = true
+[node name="Encounter" type="Node2D" parent="."]
+position = Vector2(650,550)
+script = ExtResource("item")
+category = "encounter"
+size = Vector2(40,30)
+label = "第1波"
+[node name="Enemy0" type="Node2D" parent="Encounter"]
+position = Vector2(-90,-100)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "bird"
+[node name="Enemy1" type="Node2D" parent="Encounter"]
+position = Vector2(90,-100)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "paper"
+[node name="Enemy2" type="Node2D" parent="Encounter"]
+position = Vector2(220,40)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "wood"
+[node name="Enemy3" type="Node2D" parent="Encounter"]
+position = Vector2(20,120)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "bird"
+[node name="Encounter2" type="Node2D" parent="."]
+position = Vector2(650,550)
+script = ExtResource("item")
+category = "encounter"
+size = Vector2(40,30)
+label = "第2波"
+[node name="Enemy0" type="Node2D" parent="Encounter2"]
+position = Vector2(-170,40)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "paper"
+[node name="Enemy1" type="Node2D" parent="Encounter2"]
+position = Vector2(-40,-180)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "wood"
+[node name="Enemy2" type="Node2D" parent="Encounter2"]
+position = Vector2(180,-140)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "bird"
+[node name="Enemy3" type="Node2D" parent="Encounter2"]
+position = Vector2(260,100)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "paper"
+[node name="Enemy4" type="Node2D" parent="Encounter2"]
+position = Vector2(-20,190)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "wood"
+[node name="Tree0" parent="." instance=ExtResource("prop")]
+position = Vector2(45,60)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 260.0
+obstacle_kind = "tree"
+[node name="Tree1" parent="." instance=ExtResource("prop")]
+position = Vector2(1395,60)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 272.0
+obstacle_kind = "tree"
+[node name="Tree2" parent="." instance=ExtResource("prop")]
+position = Vector2(45,180)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 284.0
+obstacle_kind = "tree"
+[node name="Tree3" parent="." instance=ExtResource("prop")]
+position = Vector2(1395,180)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 296.0
+obstacle_kind = "tree"
+[node name="Tree4" parent="." instance=ExtResource("prop")]
+position = Vector2(45,300)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_red")
+render_width = 260.0
+obstacle_kind = "tree"
+[node name="Tree5" parent="." instance=ExtResource("prop")]
+position = Vector2(1395,300)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 272.0
+obstacle_kind = "tree"
+[node name="Tree6" parent="." instance=ExtResource("prop")]
+position = Vector2(45,420)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 284.0
+obstacle_kind = "tree"
+[node name="Tree7" parent="." instance=ExtResource("prop")]
+position = Vector2(1395,420)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 296.0
+obstacle_kind = "tree"
+[node name="Tree8" parent="." instance=ExtResource("prop")]
+position = Vector2(45,540)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 260.0
+obstacle_kind = "tree"
+[node name="Tree9" parent="." instance=ExtResource("prop")]
+position = Vector2(1395,540)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_red")
+render_width = 272.0
+obstacle_kind = "tree"
+[node name="Tree10" parent="." instance=ExtResource("prop")]
+position = Vector2(45,660)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 284.0
+obstacle_kind = "tree"
+[node name="Tree11" parent="." instance=ExtResource("prop")]
+position = Vector2(1395,660)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 296.0
+obstacle_kind = "tree"
+[node name="Tree12" parent="." instance=ExtResource("prop")]
+position = Vector2(45,780)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 260.0
+obstacle_kind = "tree"
+[node name="Tree13" parent="." instance=ExtResource("prop")]
+position = Vector2(1395,780)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 272.0
+obstacle_kind = "tree"
+[node name="Tree14" parent="." instance=ExtResource("prop")]
+position = Vector2(45,900)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_red")
+render_width = 284.0
+obstacle_kind = "tree"
+[node name="Tree15" parent="." instance=ExtResource("prop")]
+position = Vector2(1395,900)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 296.0
+obstacle_kind = "tree"
+[node name="Tree16" parent="." instance=ExtResource("prop")]
+position = Vector2(45,1020)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 260.0
+obstacle_kind = "tree"
+[node name="Tree17" parent="." instance=ExtResource("prop")]
+position = Vector2(1395,1020)
+category = "obstacle"
+size = Vector2(42,30)
+texture_asset = ExtResource("tree_green")
+render_width = 272.0
+obstacle_kind = "tree"
+[node name="Boundary0" parent="." instance=ExtResource("prop")]
+position = Vector2(360,130)
+category = "obstacle"
+size = Vector2(75,24)
+texture_asset = ExtResource("wall_west")
+render_width = 180.0
+obstacle_kind = "wall"
+[node name="Boundary1" parent="." instance=ExtResource("prop")]
+position = Vector2(595,130)
+category = "obstacle"
+size = Vector2(75,24)
+texture_asset = ExtResource("wall_east")
+render_width = 180.0
+obstacle_kind = "wall"
+[node name="Boundary2" parent="." instance=ExtResource("prop")]
+position = Vector2(830,130)
+category = "obstacle"
+size = Vector2(75,24)
+texture_asset = ExtResource("wall_west")
+render_width = 180.0
+obstacle_kind = "wall"
+[node name="Boundary3" parent="." instance=ExtResource("prop")]
+position = Vector2(1065,130)
+category = "obstacle"
+size = Vector2(75,24)
+texture_asset = ExtResource("wall_east")
+render_width = 180.0
+obstacle_kind = "wall"
+[node name="Boundary4" parent="." instance=ExtResource("prop")]
+position = Vector2(360,950)
+category = "obstacle"
+size = Vector2(75,24)
+texture_asset = ExtResource("wall_west")
+render_width = 180.0
+obstacle_kind = "wall"
+[node name="Boundary5" parent="." instance=ExtResource("prop")]
+position = Vector2(595,950)
+category = "obstacle"
+size = Vector2(75,24)
+texture_asset = ExtResource("wall_east")
+render_width = 180.0
+obstacle_kind = "wall"
+[node name="Boundary6" parent="." instance=ExtResource("prop")]
+position = Vector2(830,950)
+category = "obstacle"
+size = Vector2(75,24)
+texture_asset = ExtResource("wall_west")
+render_width = 180.0
+obstacle_kind = "wall"
+[node name="Boundary7" parent="." instance=ExtResource("prop")]
+position = Vector2(1065,950)
+category = "obstacle"
+size = Vector2(75,24)
+texture_asset = ExtResource("wall_east")
+render_width = 180.0
+obstacle_kind = "wall"
+[node name="Groundcover0" parent="." instance=ExtResource("prop")]
+position = Vector2(170,95)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 145.0
+[node name="Groundcover1" parent="." instance=ExtResource("prop")]
+position = Vector2(395,95)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 145.0
+[node name="Groundcover2" parent="." instance=ExtResource("prop")]
+position = Vector2(620,95)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 145.0
+[node name="Groundcover3" parent="." instance=ExtResource("prop")]
+position = Vector2(845,95)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 145.0
+[node name="Groundcover4" parent="." instance=ExtResource("prop")]
+position = Vector2(1070,95)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 145.0
+[node name="Groundcover5" parent="." instance=ExtResource("prop")]
+position = Vector2(1295,95)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 145.0
+[node name="Groundcover6" parent="." instance=ExtResource("prop")]
+position = Vector2(170,1020)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 145.0
+[node name="Groundcover7" parent="." instance=ExtResource("prop")]
+position = Vector2(395,1020)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 145.0
+[node name="Groundcover8" parent="." instance=ExtResource("prop")]
+position = Vector2(620,1020)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 145.0
+[node name="Groundcover9" parent="." instance=ExtResource("prop")]
+position = Vector2(845,1020)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 145.0
+[node name="Groundcover10" parent="." instance=ExtResource("prop")]
+position = Vector2(1070,1020)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 145.0
+[node name="Groundcover11" parent="." instance=ExtResource("prop")]
+position = Vector2(1295,1020)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 145.0
+[node name="FirePillar0" parent="." instance=ExtResource("prop")]
+position = Vector2(330,260)
+category = "obstacle"
+size = Vector2(28,24)
+texture_asset = ExtResource("pillar")
+render_width = 58.0
+obstacle_kind = "brazier"
+body_height = 150.0
+[node name="FirePillar1" parent="." instance=ExtResource("prop")]
+position = Vector2(1110,845)
+category = "obstacle"
+size = Vector2(28,24)
+texture_asset = ExtResource("pillar")
+render_width = 58.0
+obstacle_kind = "brazier"
+body_height = 150.0
+[node name="Doors" type="Node2D" parent="."]
+[node name="entry" parent="Doors" instance=ExtResource("portal")]
+position = Vector2(170,550)
+portal_id = "entry"
+target_room = "entry"
+target_portal = "court1"
+target_title = "汤谷入口"
+[node name="Approach" parent="Doors/entry" index="4"]
+position = Vector2(100,-25)
+[node name="Arrival" parent="Doors/entry" index="5"]
+position = Vector2(140,-25)
+[editable path="Doors/entry"]
+[node name="stele" parent="Doors" instance=ExtResource("portal")]
+position = Vector2(1270,370)
+portal_id = "stele"
+target_room = "stele"
+target_portal = "court1"
+target_title = "碑林遗径"
+[node name="Frame" parent="Doors/stele" index="0"]
+mirror_art = true
+[node name="LeftPost" parent="Doors/stele" index="2"]
+position = Vector2(65,-5)
+[node name="RightPost" parent="Doors/stele" index="3"]
+position = Vector2(-65,-50)
+[node name="Approach" parent="Doors/stele" index="4"]
+position = Vector2(-100,-25)
+[node name="Arrival" parent="Doors/stele" index="5"]
+position = Vector2(-140,-25)
+[editable path="Doors/stele"]
+[node name="altar" parent="Doors" instance=ExtResource("portal")]
+position = Vector2(1270,700)
+portal_id = "altar"
+target_room = "altar"
+target_portal = "court1"
+target_title = "祭火营地"
+[node name="Frame" parent="Doors/altar" index="0"]
+mirror_art = true
+[node name="LeftPost" parent="Doors/altar" index="2"]
+position = Vector2(65,-5)
+[node name="RightPost" parent="Doors/altar" index="3"]
+position = Vector2(-65,-50)
+[node name="Approach" parent="Doors/altar" index="4"]
+position = Vector2(-100,-25)
+[node name="Arrival" parent="Doors/altar" index="5"]
+position = Vector2(-140,-25)
+[editable path="Doors/altar"]

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/var/folders/1y/kswbw03s56512cz91zm16ljr0000gn/T/nine-tripods-final-clean-18ioefq_/tools/migration/prepare_sample_assets.py", line 42, in <module>
+    content = (root / source).read_bytes()
+  File "/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/pathlib/_abc.py", line 625, in read_bytes
+    with self.open(mode='rb') as f:
+         ~~~~~~~~~^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.3_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/pathlib/_local.py", line 537, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/private/var/folders/1y/kswbw03s56512cz91zm16ljr0000gn/T/nine-tripods-final-clean-18ioefq_/assets/mvp/child-upper-refined-v3.png'

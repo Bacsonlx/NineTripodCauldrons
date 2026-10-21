@@ -2,9 +2,10 @@
 class_name MapItem
 extends Node2D
 
-@export_enum("road","obstacle","spawn","encounter","enemy","interaction","pillar","route","ground") var category: String = "road"
+@export_enum("road","obstacle","spawn","encounter","enemy","interaction","pillar","route","ground") var category: String = "road":
+	set(value): category=value; layout_changed()
 @export var size: Vector2 = Vector2(100,100):
-	set(value): size=value; queue_redraw()
+	set(value): size=value; layout_changed()
 @export var body_height: float = 100.0
 @export_enum("tree","root","wall","gate","stele","altar","brazier","waystone") var obstacle_kind: String = "wall"
 @export var label: String = ""
@@ -14,6 +15,10 @@ extends Node2D
 @export_enum("bird","paper","wood") var appearance: String = "bird"
 @export_enum("stele","altar","gate") var interaction_id: String = "stele"
 @export var marker_offset_y: float = NAN
+@export var opens_after_encounter: int = -1
+
+func layout_changed() -> void:
+	queue_redraw()
 
 func _draw() -> void:
 	if not Engine.is_editor_hint(): return

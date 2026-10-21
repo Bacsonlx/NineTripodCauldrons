@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/var/folders/1y/kswbw03s56512cz91zm16ljr0000gn/T/nine-tripods-final-clean-18ioefq_/tools/migration/prepare_sample_assets.py", line 55, in <module>
+    raise ValueError(f"Non-finite frame: {key}")
+ValueError: Non-finite frame: upper

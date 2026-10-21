@@ -13,8 +13,10 @@ old = json.loads((root / "assets/mvp/child-refined-v3.frames.json").read_text())
 atlases = json.loads((root / "assets/mvp02/atlases.json").read_text())
 full = json.loads((root / "assets/mvp03/full/frames.json").read_text())
 sample = json.loads((root / "assets/mvp03/frames.json").read_text())
+down = json.loads((root / "assets/characters/child/down-archery-v3.frames.json").read_text())
 definitions = {
     "upper": ("assets/mvp/child-upper-refined-v3.png", old["upper"], 0.20),
+    "upperDown": ("assets/characters/child/down-archery-v3.png", down["frames"], down["scale"]),
     "bow": ("assets/mvp/bow-states-v3.png", old["bow"], 0.04),
     "lower": ("assets/mvp02/child-lower-unified-v2.png", atlases["lower"]["frames"], 0.20),
     "enemy": ("assets/mvp02/shadow-puppet-v2.png", atlases["enemy"]["frames"], atlases["enemy"]["scale"]),
@@ -62,5 +64,7 @@ for key, source in {"arrow": "assets/mvp/arrow-refined-v2.png", "ground": "asset
     content = (root / source).read_bytes()
     write(output / f"{key}.png", content)
     result[key] = {"source": source, "sha256": hashlib.sha256(content).hexdigest()}
+result["upperDown"]["grip"] = down["grip"]
+result["upperDown"]["arrowScale"] = down["arrowScale"]
 write(output / "atlas.json", (json.dumps(result, ensure_ascii=False, indent=2) + "\n").encode())
 print(f"Prepared {len(result)} existing atlases/images for the Godot sample")

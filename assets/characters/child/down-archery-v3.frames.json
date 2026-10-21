@@ -1,0 +1,58 @@
+{
+  "asset": "CHR-001",
+  "candidate": "output/art/CHR-001/2026-10-21-down-review-v3",
+  "source_sha256": "3c3f596f09252a6035b8e7f103f0421cccdf4b58f2db5f8a405d9db6a75ee288",
+  "scale": 0.12,
+  "waist_px": [
+    273,
+    542
+  ],
+  "muzzle_px": [
+    272,
+    650
+  ],
+  "grip": {
+    "x": -0.12,
+    "y": -17.04
+  },
+  "grip_note": "Historical grip API stores projectile origin. New origin is the full-draw arrow tip, not the holding fist. Torso offset is (0,-30).",
+  "frames": [
+    {
+      "name": "idle_down",
+      "x": 0,
+      "y": 0,
+      "width": 543,
+      "height": 724,
+      "originX": 0.5027624309392266,
+      "originY": 0.7486187845303868
+    },
+    {
+      "name": "draw_down",
+      "x": 543,
+      "y": 0,
+      "width": 543,
+      "height": 724,
+      "originX": 0.5027624309392266,
+      "originY": 0.7486187845303868
+    },
+    {
+      "name": "release_down",
+      "x": 1086,
+      "y": 0,
+      "width": 543,
+      "height": 724,
+      "originX": 0.5027624309392266,
+      "originY": 0.7486187845303868
+    },
+    {
+      "name": "recover_down",
+      "x": 1629,
+      "y": 0,
+      "width": 543,
+      "height": 724,
+      "originX": 0.5027624309392266,
+      "originY": 0.7486187845303868
+    }
+  ],
+  "arrowScale": 0.024
+}

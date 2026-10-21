@@ -3,7 +3,7 @@ config_version=5
 [application]
 config/name="九鼎 · 汤谷"
 config/version="0.3.0-godot-candidate.1"
-run/main_scene="res://scenes/tanggu.tscn"
+run/main_scene="res://scenes/tanggu_first_level.tscn"
 
 [display]
 window/size/viewport_width=1280

@@ -1,0 +1,146 @@
+{
+  "tree_green": {
+    "sheet": "tree_green",
+    "region": [
+      23,
+      62,
+      1213,
+      1151
+    ]
+  },
+  "tree_red": {
+    "sheet": "tree_red",
+    "region": [
+      13,
+      33,
+      1230,
+      1194
+    ]
+  },
+  "rocks": {
+    "sheet": "flora",
+    "region": [
+      1092,
+      162,
+      388,
+      345
+    ]
+  },
+  "ferns": {
+    "sheet": "flora",
+    "region": [
+      58,
+      512,
+      454,
+      439
+    ]
+  },
+  "stele": {
+    "sheet": "flora",
+    "region": [
+      512,
+      512,
+      453,
+      440
+    ]
+  },
+  "grass": {
+    "sheet": "flora",
+    "region": [
+      1061,
+      624,
+      426,
+      300
+    ]
+  },
+  "root": {
+    "sheet": "root",
+    "region": [
+      32,
+      30,
+      1208,
+      1206
+    ]
+  },
+  "court": {
+    "sheet": "court",
+    "region": [
+      17,
+      16,
+      1546,
+      960
+    ]
+  },
+  "gateway": {
+    "sheet": "architecture",
+    "region": [
+      48,
+      10,
+      411,
+      502
+    ]
+  },
+  "wall_east": {
+    "sheet": "architecture",
+    "region": [
+      523,
+      155,
+      453,
+      321
+    ]
+  },
+  "wall_west": {
+    "sheet": "architecture",
+    "region": [
+      1041,
+      124,
+      450,
+      356
+    ]
+  },
+  "pillar": {
+    "sheet": "pillar",
+    "region": [
+      223,
+      22,
+      619,
+      1446
+    ]
+  },
+  "camp": {
+    "sheet": "architecture",
+    "region": [
+      530,
+      541,
+      462,
+      399
+    ]
+  },
+  "altar": {
+    "sheet": "architecture",
+    "region": [
+      1093,
+      563,
+      373,
+      375
+    ]
+  },
+  "gate": {
+    "sheet": "legacy/exploration",
+    "region": [
+      663,
+      738,
+      564,
+      432
+    ]
+  },
+  "wall_north": {
+    "sheet": "wall_north",
+    "region": [
+      268,
+      77,
+      427,
+      1386
+    ]
+  }
+}

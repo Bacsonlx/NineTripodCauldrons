@@ -106,21 +106,55 @@ func _initialize() -> void:
 	var scene: PackedScene = load("res://scenes/tanggu_map.tscn")
 	var map: Node2D = scene.instantiate()
 	var expected: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/fixtures/tanggu.json"))
-	check(traces.difference(traces.json_value(map.get_layout()),expected).is_empty(),"正式编辑器地图与冻结参照的道路、出生、障碍、遭遇和探索布局一致")
+	var map_errors: Array[String] = map.validation_errors()
+	check(map_errors.is_empty(),"正式编辑器地图通过布局校验，允许合法调整而不改写冻结规则参照："+str(map_errors))
+	map.free()
+	# 保存重开使用独立布局，避免测试偏移量限制用户的合法关卡编辑。
+	map=load("res://scripts/world/map_definition.gd").new()
+	for definition in [
+		{"name":"Road1","category":"road","position":Vector2(1280,745),"size":Vector2(2320,1130)},
+		{"name":"PlayerSpawn","category":"spawn","position":Vector2(400,600)},
+		{"name":"Obstacle1","category":"obstacle","position":Vector2(1000,900)},
+		{"name":"Stele","category":"obstacle","position":Vector2(840,280),"obstacle_kind":"stele"},
+		{"name":"Altar","category":"obstacle","position":Vector2(1000,1100),"obstacle_kind":"altar"},
+		{"name":"Gate","category":"obstacle","position":Vector2(1500,700),"obstacle_kind":"gate"},
+		{"name":"SteleInteraction","category":"interaction","position":Vector2(840,365),"interaction_id":"stele"},
+		{"name":"AltarInteraction","category":"interaction","position":Vector2(1000,1180),"interaction_id":"altar"},
+		{"name":"GateInteraction","category":"interaction","position":Vector2(1580,700),"interaction_id":"gate"},
+		{"name":"Encounter1","category":"encounter","position":Vector2(830,600)},
+		{"name":"Route1","category":"route","position":Vector2(400,600)},
+		{"name":"Route2","category":"route","position":Vector2(1200,600)},
+	]:
+		var item: Node2D = load("res://scripts/world/map_item.gd").new()
+		for key in definition: item.set(key,definition[key])
+		map.add_child(item); item.owner=map
+	var enemy_spawn: Node2D = load("res://scripts/world/map_item.gd").new()
+	enemy_spawn.name="Enemy1"; enemy_spawn.category="enemy"
+	map.get_node("Encounter1").add_child(enemy_spawn); enemy_spawn.owner=map
+	var road_width: float = map.get_node("Road1").size.x
+	map.get_node("Road1").size.x=-20
+	check(not map.validation_errors().is_empty() and str(map.validation_errors()).contains("Road1"),"非法道路尺寸在编辑、运行和导出预检时明确定位节点")
+	map.get_node("Road1").size.x=road_width
 	map.get_node("Road1").size.x+=20
 	map.get_node("Obstacle1").position.x+=10
 	map.get_node("PlayerSpawn").position.x+=20
+	map.get_node("Encounter1/Enemy1").position.x+=20
 	map.get_node("SteleInteraction").position.y+=10
 	var edited: Dictionary = map.get_layout()
 	var packed: PackedScene = PackedScene.new()
-	check(packed.pack(map)==OK and ResourceSaver.save(packed,"/private/tmp/nine-tripod-edited-map.tscn")==OK,"四类编辑器配置可以保存为原生场景")
+	var edited_path: String = "user://editor-roundtrip-%d.tscn" % OS.get_process_id()
+	var saved: bool = packed.pack(map)==OK and ResourceSaver.save(packed,edited_path)==OK
+	check(saved,"四类编辑器配置可以保存为原生场景")
+	if not saved:
+		map.free(); quit(1); return
 	map.free()
-	var reopened: PackedScene = ResourceLoader.load("/private/tmp/nine-tripod-edited-map.tscn","PackedScene",ResourceLoader.CACHE_MODE_IGNORE)
+	var reopened: PackedScene = ResourceLoader.load(edited_path,"PackedScene",ResourceLoader.CACHE_MODE_IGNORE)
 	map=reopened.instantiate()
 	check(traces.difference(traces.json_value(map.get_layout()),traces.json_value(edited)).is_empty(),"保存关闭后重开四类布局保留，未写回参照地图")
 	var edited_room = Room.new(map.get_layout())
-	check(edited_room.snapshot().player.x==420 and edited_room.snapshot().enemies.size()==12,"重新载入的场景配置直接进入正式规则，出生点与三组12敌人一致")
+	check(edited_room.snapshot().player.x==edited.spawn.x and edited_room.snapshot().enemies.size()==edited.encounters[0].enemies.size() and edited_room.snapshot().enemies[0].x==edited.encounters[0].enemies[0].x,"重新载入的场景配置直接进入正式规则，玩家与敌人出生点使用编辑结果")
 	map.free()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(edited_path))
 	var reading_layout: Dictionary = expected.duplicate(true)
 	reading_layout.spawn={"x":840,"y":365}; reading_layout.encounters=[]
 	var reader = Room.new(reading_layout)

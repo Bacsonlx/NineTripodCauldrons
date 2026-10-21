@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"checks":30,"failures":["正式编辑器地图通过布局校验，允许合法调整而不改写冻结规则参照：[\"Road1: Size 必须为有限正数\", \"Road1: 道路宽高必须大于脚点直径24\"]"],"rule_traces":{"cases":55,"failures":[],"snapshots":4250}}
+ERROR: 正式编辑器地图通过布局校验，允许合法调整而不改写冻结规则参照：["Road1: Size 必须为有限正数", "Road1: 道路宽高必须大于脚点直径24"]
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] check (res://tests/run_tests.gd:13)
+       [1] _initialize (res://tests/run_tests.gd:105)

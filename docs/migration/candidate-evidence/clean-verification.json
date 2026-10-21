@@ -1,0 +1,17 @@
+{
+  "project": "/var/folders/1y/kswbw03s56512cz91zm16ljr0000gn/T/nine-tripods-final-clean-18ioefq_/godot",
+  "checks": {
+    "clean-import": {
+      "exit_code": 0,
+      "passed": true
+    },
+    "clean-tests": {
+      "exit_code": 0,
+      "passed": true
+    },
+    "clean-scene": {
+      "exit_code": 0,
+      "passed": true
+    }
+  }
+}

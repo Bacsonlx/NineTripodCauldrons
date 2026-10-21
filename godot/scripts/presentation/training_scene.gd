@@ -2,6 +2,8 @@ extends Node2D
 
 const Room = preload("res://scripts/combat/training_room.gd")
 const Backdrop = preload("res://scripts/presentation/tanggu_backdrop.gd")
+const NativeSuite = preload("res://scripts/qa/native_suite.gd")
+const NativeProbe = preload("res://scripts/qa/native_probe.gd")
 const Overlay = preload("res://scripts/presentation/combat_overlay.gd")
 const Effects = preload("res://scripts/presentation/combat_effects.gd")
 const Controls = preload("res://scripts/input/player_controls.gd")
@@ -45,13 +47,18 @@ func sprite(key: String) -> Sprite2D:
 
 func _ready() -> void:
 	if has_node("TangguMap"):
-		room=Room.new($TangguMap.get_layout())
+		var layout: Dictionary = $TangguMap.get_layout()
+		if layout.is_empty(): get_tree().quit(1); return
+		room=create_room(layout)
 		controls=Controls.new(room)
 	atlas = JSON.parse_string(FileAccess.get_file_as_string("res://assets/generated/atlas.json"))
+	# 按正式素材的离弦箭尖标定普通箭起点；技能仍使用各自握点。
+	room.layout.grips = room.layout.grips.duplicate()
+	room.layout.grips[1] = atlas.upperDown.grip.duplicate() if room.layout.grips[1] is Dictionary else Vector2(atlas.upperDown.grip.x, atlas.upperDown.grip.y)
 	for key in atlas:
 		textures[key] = load("res://assets/generated/%s.png" % key)
 	if has_node("TangguMap"):
-		backdrop=Backdrop.new(); add_child(backdrop); backdrop.setup(room.layout,atlas,textures)
+		backdrop=create_backdrop(); add_child(backdrop); backdrop.setup(room.layout,atlas,textures)
 	else:
 		var ground: Sprite2D = sprite("ground")
 		ground.position=Vector2(640,500); ground.scale=Vector2.ONE*0.75; ground.z_index=-1000
@@ -78,7 +85,23 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(func(): controls.interrupt(); update_camera())
 	get_window().mode = Window.MODE_MAXIMIZED
 	update_camera()
-	present(0.0)
+	present(state,0.0)
+	var arguments: PackedStringArray = OS.get_cmdline_user_args()
+	if get_window().has_meta("native_qa_started"): return
+	if "--layout-audit" in arguments or "--native-suite" in arguments or "--native-probe" in arguments: get_window().set_meta("native_qa_started",true)
+	if "--layout-audit" in arguments:
+		var output: FileAccess = FileAccess.open(arguments[arguments.find("--layout-audit")+1],FileAccess.WRITE)
+		output.store_string(JSON.stringify(room.layout,"  ")+"\n"); get_tree().quit()
+	elif "--native-suite" in arguments:
+		add_child(NativeSuite.new())
+	elif "--native-probe" in arguments:
+		add_child(NativeProbe.new())
+
+func create_backdrop() -> Node2D:
+	return Backdrop.new()
+
+func create_room(layout: Dictionary) -> TrainingRoom:
+	return Room.new(layout)
 
 func pose(node: Sprite2D, key: String, index: int, point: Vector2) -> void:
 	var frame: Dictionary = atlas[key].frames[index]
@@ -130,10 +153,11 @@ func _physics_process(seconds: float) -> void:
 		clock += seconds
 		if state.player.moving:
 			walk_time += seconds
-	present(seconds)
+	present(state,seconds)
 	queue_redraw()
 
-func present(_seconds: float) -> void:
+func present(snapshot: Dictionary,_seconds: float) -> void:
+	state=snapshot
 	var p: Dictionary = state.player
 	var point: Vector2 = Vector2(p.x, p.y)
 	var movement: Vector2 = controls.movement()
@@ -148,6 +172,8 @@ func present(_seconds: float) -> void:
 	elif state.dodge>0: upper_key="skills"; upper_frame=8+p.facing
 	elif state.skill!=null and state.skill.phase=="windup": upper_key="skills"; upper_frame=(4 if state.skill.kind=="rain" else 0)+p.facing
 	elif state.skill!=null: upper_frame=(2 if state.skill.remaining>0.06 else 3)*4+p.facing
+	var down_pose: bool = p.facing==1 and upper_key=="upper" and state.skill==null
+	if down_pose: upper_key="upperDown"; upper_frame=attack
 	pose(torso,upper_key,upper_frame,point+Vector2(0,-30+bob))
 	pose(failed, "failed", p.facing, point)
 	legs.z_index = int(p.y)
@@ -159,14 +185,17 @@ func present(_seconds: float) -> void:
 	legs.visible = state.status != "failed"
 	torso.visible = state.status != "failed"
 	failed.visible = state.status == "failed"
-	pose(bow,"bow",1 if state.attack=="draw" or (state.skill!=null and state.skill.phase=="windup") else 2 if state.attack=="release" else 0,state.grip+Vector2(0,bob))
+	var bow_grip: Vector2 = state.grip
+	if p.facing==1 and not down_pose and state.dodge<=0 and not (state.skill!=null and state.skill.phase=="windup"):
+		bow_grip=point+Room.GRIPS[1]
+	pose(bow,"bow",1 if state.attack=="draw" or (state.skill!=null and state.skill.phase=="windup") else 2 if state.attack=="release" else 0,bow_grip+Vector2(0,bob))
 	bow.rotation=-PI/2 if state.skill!=null and state.skill.kind=="rain" and state.skill.phase=="windup" else p.angle
 	bow.z_index = int(p.y) + 2
-	bow.visible = state.status != "failed"
-	nocked_arrow.position = state.grip + Vector2(0, bob)
+	bow.visible = state.status != "failed" and not down_pose
+	nocked_arrow.position = bow_grip + Vector2(0, bob)
 	nocked_arrow.rotation = p.angle
 	nocked_arrow.z_index = int(p.y) + 3
-	nocked_arrow.visible=(state.attack=="draw" or (state.skill!=null and state.skill.kind=="pierce" and state.skill.phase=="windup")) and state.status!="failed"
+	nocked_arrow.visible=(state.attack=="draw" or (state.skill!=null and state.skill.kind=="pierce" and state.skill.phase=="windup")) and state.status!="failed" and not down_pose
 	if is_instance_valid(obstacle_body): obstacle_body.modulate.a=0.3 if p.y<room.obstacle.get_center().y and p.y>room.obstacle.get_center().y-126 and absf(p.x-room.obstacle.get_center().x)<100 else 1.0
 	if is_instance_valid(backdrop): backdrop.update(state,clock)
 	for enemy in state.enemies:
@@ -182,6 +211,8 @@ func present(_seconds: float) -> void:
 		live_arrows[arrow.id] = true
 		if not arrows.has(arrow.id):
 			arrows[arrow.id] = arrow_sprite()
+		arrows[arrow.id].scale=Vector2.ONE*(0.037 if arrow.kind=="pierce" else atlas.upperDown.arrowScale if direction(arrow.angle)==1 else 0.029)
+		arrows[arrow.id].modulate=Color("ffd06c") if arrow.kind=="pierce" else Color.WHITE
 		arrows[arrow.id].position = Vector2(arrow.x, arrow.y)
 		arrows[arrow.id].rotation = arrow.angle
 		arrows[arrow.id].z_index = int(arrow.y + 52)
@@ -193,7 +224,10 @@ func present(_seconds: float) -> void:
 	overlay.update(state,aim,pointer_inside)
 	health_label.text="生命  %d / 100" % state.health
 	var guidance: Dictionary = guidance_at(point)
-	encounter_label.text=guidance.region+" · "+guidance.landmark
+	var remaining: int = 0
+	for enemy in state.enemies:
+		if enemy.group==state.encounter and enemy.phase!="dead": remaining+=1
+	encounter_label.text=guidance.region+" · "+guidance.landmark+("\n三庭肃清" if state.status=="complete" else "\n遭遇 %d / %d · 影偶 %d" % [mini(state.encounter+1,state.totalEncounters),state.totalEncounters,remaining])
 	skills_label.text="Q 穿透箭 %s  ·  E 箭雨 %s  ·  空格 闪避 %s" % [cooldown_text(state.cooldowns.pierce),cooldown_text(state.cooldowns.rain),cooldown_text(state.cooldowns.dodge)]
 	interaction_label.text=state.feedback.text if state.feedback!=null else ("F · "+state.interaction.label+(" · "+state.interaction.reason if state.interaction.reason!=null else "")) if state.interaction!=null else "残碑藏于北侧林径 · 祭火位于南侧支路"
 	status_label.visible=(state.paused and not state.reading) or state.status=="failed"
@@ -266,6 +300,10 @@ func build_hud() -> void:
 	alpha_entry.name="OpenAlpha"; alpha_entry.text="初版白盒"; alpha_entry.focus_mode=Control.FOCUS_NONE
 	alpha_entry.pressed.connect(func(): get_tree().change_scene_to_file("res://scenes/tanggu_alpha.tscn"))
 	top.add_child(alpha_entry)
+	var map_entry: Button = Button.new()
+	map_entry.name="OpenFirstLevelMap"; map_entry.text="首关地图"; map_entry.focus_mode=Control.FOCUS_NONE
+	map_entry.pressed.connect(func(): get_tree().change_scene_to_file("res://scenes/tanggu_first_level.tscn"))
+	top.add_child(map_entry)
 	health_label = make_label("生命 100 / 100", 15)
 	column.add_child(health_label)
 	skills_label=make_label("",13,Color("b8b59f")); column.add_child(skills_label)

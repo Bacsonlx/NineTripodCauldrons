@@ -1,0 +1,4 @@
+/var/folders/1y/kswbw03s56512cz91zm16ljr0000gn/T/nine-tripods-final-clean-18ioefq_/build/godot/unpacked-macos/九鼎 · 汤谷.app/Contents/MacOS/九鼎 · 汤谷: Mach-O universal binary with 2 architectures: [x86_64:Mach-O 64-bit executable x86_64] [arm64]
+/var/folders/1y/kswbw03s56512cz91zm16ljr0000gn/T/nine-tripods-final-clean-18ioefq_/build/godot/unpacked-macos/九鼎 · 汤谷.app/Contents/MacOS/九鼎 · 汤谷 (for architecture x86_64):	Mach-O 64-bit executable x86_64
+/var/folders/1y/kswbw03s56512cz91zm16ljr0000gn/T/nine-tripods-final-clean-18ioefq_/build/godot/unpacked-macos/九鼎 · 汤谷.app/Contents/MacOS/九鼎 · 汤谷 (for architecture arm64):	Mach-O 64-bit executable arm64
+/Users/linxin/Developer/GAME/十日/build/godot/candidate-windows/NineTripods.exe:                                                                          PE32+ executable (GUI) x86-64 (stripped to external PDB), for MS Windows

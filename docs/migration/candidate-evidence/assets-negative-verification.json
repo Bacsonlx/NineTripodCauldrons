@@ -1,0 +1,26 @@
+[
+  {
+    "case": "missing-source",
+    "exit_code": 1,
+    "identified": true,
+    "passed": true
+  },
+  {
+    "case": "out-of-bounds",
+    "exit_code": 1,
+    "identified": true,
+    "passed": true
+  },
+  {
+    "case": "duplicate-frame",
+    "exit_code": 1,
+    "identified": true,
+    "passed": true
+  },
+  {
+    "case": "nonfinite-frame",
+    "exit_code": 1,
+    "identified": true,
+    "passed": true
+  }
+]

@@ -17,6 +17,7 @@ func setup(data: Dictionary,frames: Dictionary,images: Dictionary) -> void:
 		var position: Vector2 = Vector2(item.x,item.y)
 		if item.kind in ["tree","root","wall"]:
 			prop("worldProps",{"tree":0,"root":1,"wall":2}[item.kind],position,Vector2.ONE*(0.44 if item.kind=="tree" else 0.46),item.height)
+			if item.has("opensAfterEncounter"): props[-1].opensAfterEncounter=item.opensAfterEncounter
 		elif item.kind in ["brazier","waystone"]:
 			var body: Sprite2D = prop("props",0 if item.kind=="brazier" else 1,position,Vector2.ONE*(0.15 if item.kind=="brazier" else 0.19),item.height)
 			if item.kind=="brazier": flames.append(body)
@@ -40,6 +41,7 @@ func prop(key: String,index: int,position: Vector2,scale_value: Vector2,height: 
 func update(state: Dictionary,clock: float) -> void:
 	var player: Dictionary = state.player
 	for item in props:
+		item.body.visible=state.encounter<=int(item.get("opensAfterEncounter",2147483647))
 		item.body.modulate.a=0.3 if player.y<item.y and player.y>item.y-item.height and absf(player.x-item.x)<item.body.region_rect.size.x*item.body.scale.x/2 else 1.0
 	for index in flames.size():
 		if flames[index].modulate.a>0.4: flames[index].modulate.a=0.94+sin(clock*4+index)*0.04

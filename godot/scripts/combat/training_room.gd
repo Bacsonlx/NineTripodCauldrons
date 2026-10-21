@@ -265,7 +265,7 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 		var inactive: bool = true
 		for enemy in enemies:
 			if enemy.group==encounter and enemy.phase!="inactive": inactive=false
-		if inactive and point(groups[encounter]).distance_to(Vector2(player.x,player.y))<=170:
+		if inactive and encounter_ready(groups[encounter]):
 			for enemy in enemies:
 				if enemy.group==encounter: enemy.phase="chase"
 	for enemy in enemies:
@@ -339,6 +339,9 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 			encounter+=1
 			if encounter==groups.size(): status="complete"
 
+func encounter_ready(group: Dictionary) -> bool:
+	return point(group).distance_to(Vector2(player.x,player.y))<=170
+
 func cancel_pending() -> void:
 	windup=-1; piercing=-1; raining={}; attack_released=false; needs_release=false
 func cancel_input() -> void:
@@ -358,11 +361,17 @@ func grip() -> Vector2:
 	return Vector2(player.x,player.y)+point(offsets[player.facing])
 
 func obstacles() -> Array:
-	return layout.get("obstacles",[]).filter(func(item: Dictionary): return item.kind!="gate" or not exploration.gateOpen)
+	return layout.get("obstacles",[]).filter(func(item: Dictionary): return (item.kind!="gate" or not exploration.gateOpen) and encounter<=int(item.get("opensAfterEncounter",2147483647)))
 func can_walk(position: Vector2) -> bool:
 	return can_walk_xy(position.x,position.y)
 func can_walk_xy(x: float,y: float) -> bool:
-	if layout.has("walkableAreas"):
+	if layout.has("walkablePolygons"):
+		for offset in [Vector2.ZERO,Vector2(12,0),Vector2(-12,0),Vector2(0,12),Vector2(0,-12)]:
+			var inside: bool = false
+			for polygon in layout.walkablePolygons:
+				if Geometry2D.is_point_in_polygon(Vector2(x,y)+offset,polygon): inside=true; break
+			if not inside: return false
+	elif layout.has("walkableAreas"):
 		var inside: bool = false
 		for area in layout.walkableAreas:
 			if x>=area.left+12 and x<=area.right-12 and y>=area.top+12 and y<=area.bottom-12: inside=true; break
@@ -392,7 +401,7 @@ func find_route(from: Variant,to: Variant) -> Array:
 	var head: int = 0
 	while head<queue.size():
 		var current: Vector2i = queue[head]; head+=1
-		var center: Vector2 = (Vector2(current)+Vector2.ONE*0.5)*32
+		var center: Vector2 = point(from) if layout.has("walkablePolygons") and current==start else (Vector2(current)+Vector2.ONE*0.5)*32
 		if sqrt(pow(center.x-to.x,2)+pow(center.y-to.y,2))<=48 and clear_path(center,to):
 			# 终点保持玩家位置引用，与参照一致；路径有效期间玩家仍可移动。
 			var result: Array = [to]
@@ -402,7 +411,9 @@ func find_route(from: Variant,to: Variant) -> Array:
 		for offset in [Vector2i.LEFT,Vector2i.RIGHT,Vector2i.UP,Vector2i.DOWN]:
 			var next: Vector2i = current+offset
 			if next.x<0 or next.y<0 or next.x>=columns or next.y>=rows or previous.has(next): continue
-			if can_walk((Vector2(next)+Vector2.ONE*0.5)*32): previous[next]=current; queue.append(next)
+			var next_point: Vector2 = (Vector2(next)+Vector2.ONE*0.5)*32
+			if layout.has("walkablePolygons") and not clear_path(center,next_point): continue
+			if can_walk(next_point): previous[next]=current; queue.append(next)
 	return []
 
 func segment_rectangle(from: Vector2,to: Vector2,rectangle: Rect2) -> float:
