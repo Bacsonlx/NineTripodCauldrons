@@ -4,6 +4,7 @@ var icon: Texture2D
 var remaining: float = 0.0
 var duration: float = 1.0
 var counter: Label
+var insufficient: bool = false
 
 func update_cooldown(seconds: float) -> void:
 	remaining=seconds if seconds>0.000001 else 0.0
@@ -12,7 +13,7 @@ func update_cooldown(seconds: float) -> void:
 
 func _draw() -> void:
 	if icon==null: return
-	draw_texture_rect(icon,Rect2(0,0,60,60),false,Color("88877d") if remaining>0 else Color.WHITE)
+	draw_texture_rect(icon,Rect2(0,0,60,60),false,Color("88877d") if remaining>0 or insufficient else Color.WHITE)
 	if remaining<=0: return
 	# 从十二点方向顺时针遮住剩余冷却，数字与遮罩共用规则时间。
 	var fraction: float = clampf(remaining/duration,0,1)

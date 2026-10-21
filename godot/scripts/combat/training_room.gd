@@ -10,6 +10,13 @@ const SKILL_GRIPS: Dictionary = {
 }
 const ATTACKS: Dictionary = {"normal":{"damage":15,"distance":14,"duration":0.10}, "pierce":{"damage":40,"distance":36,"duration":0.14}, "rain":{"damage":15,"distance":8,"duration":0.08}}
 const AlphaState = preload("res://scripts/alpha/alpha_state.gd")
+const ENERGY_COSTS: Dictionary = {"pierce":12,"rain":28,"dodge":25}
+# 只在正式独立房间启用；冻结迁移参照和旧小样保留原规则。
+var energy_enabled: bool = false
+var mana: int = 100
+var stamina: float = 100.0
+var stamina_delay: float = 0.0
+var pending_mana: int = 0
 var alpha: RefCounted = null
 var layout: Dictionary = {}
 var obstacle: Rect2 = Rect2(720,430,80,36)
@@ -84,6 +91,7 @@ func reset() -> void:
 	arrows.clear(); effects.clear(); rains.clear(); flashes.clear()
 	for target in layout.targets: flashes.append(0.0)
 	health=100; hurt=0; protection=0; status="running"; encounter=0
+	pending_mana=0; mana=100; stamina=100; stamina_delay=0
 	cooldown=0; shots=0; hits=0; next_effect=0
 	dodge_time=0; dodge_invulnerability=0; dodge_cooldown=0; dodge_held=run_id>0
 	piercing=-1; pierce_cooldown=0; pierce_held=run_id>0; skill_recovery=0; last_skill=""
@@ -115,6 +123,10 @@ func update(input: Dictionary, seconds: float) -> void:
 func step(input: Dictionary, seconds: float) -> void:
 	if paused or status=="failed": return
 	if alpha!=null: alpha.advance(seconds,self)
+	if energy_enabled:
+		var recovering: float = maxf(0,seconds-stamina_delay)
+		stamina_delay=maxf(0,stamina_delay-seconds)
+		stamina=minf(100,stamina+recovering*10)
 	if not feedback.is_empty():
 		feedback.remaining-=seconds
 		if feedback.remaining<=0: feedback={}
@@ -139,8 +151,9 @@ func step(input: Dictionary, seconds: float) -> void:
 	skill_recovery=maxf(0,skill_recovery-seconds); dodge_cooldown=maxf(0,dodge_cooldown-seconds)
 	var movement: Vector2 = Vector2(input.get("moveX",0),input.get("moveY",0)).limit_length()
 	if input.get("dodge",false) and not dodge_held and dodge_cooldown==0 and hurt==0 and dodge_time==0:
-		dodge_direction=movement.normalized() if movement.length()>0 else Vector2.from_angle(player.angle)
-		dodge_time=0.20; dodge_invulnerability=0.12; dodge_cooldown=1.0; cancel_pending()
+		if spend_energy("dodge"):
+			dodge_direction=movement.normalized() if movement.length()>0 else Vector2.from_angle(player.angle)
+			dodge_time=0.20; dodge_invulnerability=0.12; dodge_cooldown=1.0; cancel_pending()
 	dodge_held=input.get("dodge",false)
 	var dashing: bool = dodge_time>0
 	var start: Vector2 = Vector2(player.x,player.y)
@@ -171,19 +184,23 @@ func step(input: Dictionary, seconds: float) -> void:
 	cooldown=maxf(0,cooldown-seconds)
 	var can_start: bool = not dashing and hurt==0 and windup<0 and piercing<0 and raining.is_empty() and skill_recovery==0 and not (attack_released and cooldown>0.12)
 	if can_start and pierce_pressed and pierce_cooldown==0 and input.get("pointerInside",true):
-		piercing=0.18; pierce_cooldown=4; last_skill="pierce"; attack_released=false
+		if spend_energy("pierce"):
+			piercing=0.18; pierce_cooldown=4; last_skill="pierce"; attack_released=false
 	if can_start and piercing<0 and rain_pressed and rain_cooldown==0 and input.get("pointerInside",true):
 		if aim.distance_to(Vector2(player.x,player.y))<=480 and can_walk(aim):
-			raining={"remaining":0.45,"point":aim}; rain_cooldown=8; last_skill="rain"; attack_released=false; invalid={}
+			if spend_energy("rain"):
+				raining={"remaining":0.45,"point":aim}; rain_cooldown=8; last_skill="rain"; attack_released=false; invalid={}
 		else: invalid={"x":aim.x,"y":aim.y,"remaining":0.35}
 	if not raining.is_empty():
 		raining.remaining-=seconds
 		if raining.remaining<=0:
+			pending_mana=0
 			rains.append({"x":raining.point.x,"y":raining.point.y,"age":-raining.remaining-seconds,"pulse":0})
 			raining={}; skill_recovery=0.12
 	if piercing>=0:
 		piercing-=seconds
 		if piercing<=0:
+			pending_mana=0
 			var remainder: float = -piercing
 			piercing=0 # 离弦时仍使用穿透箭握点；随后才退出技能动作。
 			launch("pierce",remainder); piercing=-1; skill_recovery=0.12
@@ -246,14 +263,16 @@ func impact(hit: Dictionary, kind: String, angle: float) -> void:
 		hits+=1; flashes[int(hit.target)]=0.1
 	if hit.has("enemy"):
 		for enemy in enemies:
-			if enemy.id!=hit.enemy: continue
+			if enemy.id!=hit.enemy or enemy.phase=="dead": continue
 			damage_position=Vector2(enemy.x,enemy.y)
 			var stats: Dictionary = ATTACKS[kind]
 			damage=mini(enemy.health,stats.damage); enemy.health-=damage
 			enemy.flash=0.12; hits+=1
 			enemy.knockX=cos(angle)*stats.distance/stats.duration; enemy.knockY=sin(angle)*stats.distance/stats.duration; enemy.knockTime=stats.duration
 			enemy.route=[]; enemy.repath=0
-			if enemy.health==0: enemy.phase="dead"; enemy.timer=0.6
+			if enemy.health==0:
+				enemy.phase="dead"; enemy.timer=0.6
+				if energy_enabled: restore_mana(4)
 			break
 	var effect: Dictionary = hit.duplicate()
 	effect.merge({"id":next_effect,"kind":kind,"remaining":0.15,"age":0.0,"damage":damage,"angle":angle,"damagePosition":damage_position})
@@ -336,6 +355,7 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 		for enemy in enemies:
 			if enemy.group==encounter and enemy.phase!="dead": cleared=false
 		if cleared:
+			if energy_enabled: restore_mana(12)
 			encounter+=1
 			if encounter==groups.size(): status="complete"
 
@@ -343,7 +363,26 @@ func encounter_ready(group: Dictionary) -> bool:
 	return point(group).distance_to(Vector2(player.x,player.y))<=170
 
 func cancel_pending() -> void:
+	if energy_enabled and pending_mana>0: mana=mini(100,mana+pending_mana)
+	pending_mana=0
 	windup=-1; piercing=-1; raining={}; attack_released=false; needs_release=false
+
+func spend_energy(action: String) -> bool:
+	if not energy_enabled: return true
+	var cost: int = ENERGY_COSTS[action]
+	if (stamina+0.000001<cost if action=="dodge" else mana<cost):
+		feedback={"text":"精力不足" if action=="dodge" else "蓝量不足","remaining":0.8,"healed":false}
+		return false
+	if action=="dodge": stamina=maxf(0,stamina-cost); stamina_delay=1.2
+	else: mana-=cost; pending_mana=cost
+	return true
+
+func restore_mana(amount: int) -> void:
+	var restored: int = mini(amount,100-mana)
+	mana+=restored
+	if restored>0:
+		var previous: int = int(feedback.get("mana",0))
+		feedback={"text":"蓝量 +%d" % (previous+restored),"mana":previous+restored,"remaining":0.8,"healed":false}
 func cancel_input() -> void:
 	cancel_pending(); pierce_held=false; rain_held=false; dodge_held=false; interact_held=false
 func set_paused(value: bool) -> void:
@@ -519,4 +558,6 @@ func snapshot() -> Dictionary:
 	if alpha!=null:
 		result.alpha=alpha.snapshot()
 		result.paused=result.paused or alpha.camp
+	if energy_enabled:
+		result.resources={"mana":mana,"stamina":stamina,"staminaDelay":stamina_delay,"pendingMana":pending_mana,"costs":ENERGY_COSTS.duplicate()}
 	return result

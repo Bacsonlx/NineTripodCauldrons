@@ -6,6 +6,7 @@ var wave_delay: float = 0.0
 
 func _init(data: Dictionary) -> void:
 	super(data)
+	energy_enabled=true
 	completed=data.objective=="safe"
 
 func update(input: Dictionary,seconds: float) -> void:
@@ -59,9 +60,11 @@ func snapshot() -> Dictionary:
 	return data
 
 func travel_state() -> Dictionary:
-	return {"health":health,"cooldown":cooldown,"pierce":pierce_cooldown,"rain":rain_cooldown,"dodge":dodge_cooldown,"recovery":skill_recovery,"hurt":hurt,"protection":protection}
+	return {"health":health,"cooldown":cooldown,"pierce":pierce_cooldown,"rain":rain_cooldown,"dodge":dodge_cooldown,"recovery":skill_recovery,"hurt":hurt,"protection":protection,"mana":mana,"stamina":stamina,"staminaDelay":stamina_delay}
 
 func arrive(travel: Dictionary,location: Vector2,facing: int,generation: int) -> void:
+	cancel_input()
+	mana=travel.mana; stamina=travel.stamina; stamina_delay=travel.staminaDelay
 	health=travel.health; cooldown=travel.cooldown; pierce_cooldown=travel.pierce
 	rain_cooldown=travel.rain; dodge_cooldown=travel.dodge; skill_recovery=travel.recovery
 	hurt=travel.hurt; protection=travel.protection

@@ -28,11 +28,12 @@ func run() -> void:
 	check(hud.actions.get_child_count()==4 and hud.actions.size.x<=288,"四个动作紧凑排列，宽度不超过288逻辑像素")
 	check(hud.actions.position.x==24 and absf(hud.actions.position.y-(hud.size.y-112))<1,"动作栏锚定左下安全边距")
 	check(hud.mouse_filter==Control.MOUSE_FILTER_IGNORE and hud.actions.mouse_filter==Control.MOUSE_FILTER_IGNORE,"装饰HUD不截获战斗鼠标输入")
-	check(hud.find_children("Value","Label",true,false).filter(func(value: Label): return value.text=="未启用").size()==2,"蓝量和精力明确标记未启用，不显示虚构数值")
+	check(hud.mana.value==100 and hud.stamina.value==100 and hud.mana_value.text=="100 / 100","蓝量与精力启用并显示真实初始状态")
 	game.controls.key_down(KEY_Q)
 	game.present(game.controls.update(Vector2(1000,550),true,0.01),0)
 	var q: Label = hud.get_node("Actions/Pierce/Cooldown")
 	check(q.text=="4.0","Q真实输入后显示四秒冷却")
+	check(hud.mana.value==88 and hud.mana_value.text=="88 / 100","Q起手后HUD蓝量同步扣除12")
 	game.controls.key_up(KEY_Q); game.controls.key_down(KEY_ESCAPE)
 	game.present(game.controls.update(Vector2(1000,550),true,1),0)
 	check(q.text=="4.0" and game.status_label.visible,"暂停期间冷却数字冻结并显示暂停提示")
@@ -43,6 +44,18 @@ func run() -> void:
 	retry.physical_keycode=KEY_R; retry.pressed=true
 	game._unhandled_input(retry)
 	check(q.text.is_empty() and hud.health.value==100,"R重试清空冷却并恢复生命显示")
+	for i in 8:
+		game.room.update({},0)
+		game.room.update({"pierce":true,"aim":Vector2(1000,550)},0.2)
+		game.room.update({},4)
+	game.present(game.room.snapshot(),0)
+	check(hud.mana.value==4 and hud.slots.pierce.insufficient and hud.slots.rain.insufficient and not hud.slots.dodge.insufficient,"真实低蓝时Q/E图标变暗，闪避保持可用")
+	for i in 4:
+		game.room.update({},0); game.room.update({"dodge":true},0)
+		if i<3: game.room.update({},1.001)
+	game.present(game.room.snapshot(),0)
+	check(hud.stamina_value.text=="0 / 100" and hud.slots.dodge.insufficient,"精力耗尽时真实数值归零，闪避图标变暗")
+	check(hud.health.size.y<=16 and hud.get_node("StatusBacking").size.y<=100,"状态采用窄条和轻量底衬，避免上一版大块面板")
 	# 独立战斗规则的真实命中快照输入呈现层，检查可观察的原生血条。
 	var duel: TrainingRoom = load("res://scripts/combat/training_room.gd").new({"enemy":Vector2(455,600),"encounter":Vector2(400,600)})
 	duel.update({"aim":Vector2(1000,549),"fire":true},0.01)

@@ -54,8 +54,8 @@ func consume_transition() -> bool:
 	if request.is_empty() or not active.completed or active.paused or active.reading or active.health<=0: return false
 	for door in layouts[current_id].doors:
 		if door.id!=request: continue
-		var travel: Dictionary = active.travel_state()
 		active.cancel_input(); active.arrows.clear(); active.rains.clear(); active.effects.clear()
+		var travel: Dictionary = active.travel_state()
 		current_id=door.target
 		if not rooms.has(current_id): rooms[current_id]=Stage.new(layouts[current_id])
 		active=rooms[current_id]
