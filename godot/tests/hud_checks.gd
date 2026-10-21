@@ -18,6 +18,13 @@ func run() -> void:
 	check(hud!=null,"正式首关显示头像、状态与左下动作栏")
 	if hud==null: finish(game); return
 	check(hud.get_node("PlayerStatus/Portrait").texture!=null and hud.health.value==100,"已接入头像素材并展示真实初始生命")
+	var font: Font = hud.health_value.get_theme_font("font")
+	check(font.resource_path=="res://assets/fonts/NineTripodsHudSong.ttf" and not font.allow_system_fallback,"HUD使用随包宋体，不依赖系统字体")
+	var covered: bool = true
+	for character in "无名之子生命蓝量精力未启用穿透箭箭雨闪避第波剩余0123456789 /":
+		covered=covered and font.has_char(character.unicode_at(0))
+	check(covered,"新字体包含HUD中文与数值所需字形")
+	check(hud.get_node("StatusBacking").visible and hud.get_node("StatusBacking").mouse_filter==Control.MOUSE_FILTER_IGNORE,"状态底衬可见且不阻断射击")
 	check(hud.actions.get_child_count()==4 and hud.actions.size.x<=288,"四个动作紧凑排列，宽度不超过288逻辑像素")
 	check(hud.actions.position.x==24 and absf(hud.actions.position.y-(hud.size.y-112))<1,"动作栏锚定左下安全边距")
 	check(hud.mouse_filter==Control.MOUSE_FILTER_IGNORE and hud.actions.mouse_filter==Control.MOUSE_FILTER_IGNORE,"装饰HUD不截获战斗鼠标输入")

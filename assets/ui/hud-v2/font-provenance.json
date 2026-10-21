@@ -1,0 +1,14 @@
+{
+  "repository": "https://github.com/google/fonts",
+  "commit": "8b0a1d0f5983c89bc2b93f1b5fb55f9e252744b5",
+  "font_url": "https://raw.githubusercontent.com/google/fonts/8b0a1d0f5983c89bc2b93f1b5fb55f9e252744b5/ofl/notoserifsc/NotoSerifSC%5Bwght%5D.ttf",
+  "license_url": "https://raw.githubusercontent.com/google/fonts/8b0a1d0f5983c89bc2b93f1b5fb55f9e252744b5/ofl/notoserifsc/OFL.txt",
+  "source_sha256": "050080d9255a86808f2945bffac582b31ef32bc36411ce29563b4961670c66f9",
+  "output_sha256": "13cfdb552746ceefaffd5cb6a9dbd3580683eeef50ebe96e74af3412c459f572",
+  "bytes": 10444944,
+  "weight": 500,
+  "tool": "fonttools==4.60.1",
+  "coverage": "CJK Unified Ideographs, ASCII, general/CJK/fullwidth punctuation plus current GDScript characters",
+  "renamed_family": "NineTripods HUD Song",
+  "license": "SIL OFL 1.1"
+}

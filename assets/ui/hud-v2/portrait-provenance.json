@@ -1,0 +1,29 @@
+{
+  "art_source": "host_image",
+  "route": "built-in image_gen",
+  "model": "not reported by host",
+  "estimateUsd": null,
+  "requested_size": [
+    512,
+    512
+  ],
+  "actual_size": [
+    1280,
+    1280
+  ],
+  "source_sha256": "bc060d585ace96ee5bb5282ab6203e4b431bee493b7659b8c22064ade5572905",
+  "reference": "assets/ui/hud-v1/prototype.png",
+  "display_px": [
+    104,
+    112
+  ],
+  "processing": "native RGBA preserved, full-image AtlasTexture, no raster edits",
+  "colors": {
+    "ink": "#111611EB",
+    "brass": "#9A7F4D",
+    "text": "#F2E6C5",
+    "health": "#D9422D",
+    "mana": "#14A9BD",
+    "stamina": "#4D943E"
+  }
+}

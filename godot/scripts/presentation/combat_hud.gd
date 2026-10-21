@@ -1,8 +1,9 @@
 extends Control
 
 const Slot = preload("res://scripts/presentation/action_slot.gd")
-const INK = Color("171c18ec")
-const BRASS = Color("8e7950")
+const INK = Color("111611eb")
+const BRASS = Color("9a7f4d")
+const TEXT = Color("f2e6c5")
 var health: ProgressBar
 var health_value: Label
 var encounter: Label
@@ -17,8 +18,8 @@ static func label(text: String,font_size: int) -> Label:
 	var node: Label = Label.new()
 	node.text=text; node.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	node.add_theme_font_size_override("font_size",font_size)
-	node.add_theme_color_override("font_color",Color("eedbb5"))
-	node.add_theme_color_override("font_shadow_color",Color("101710"))
+	node.add_theme_color_override("font_color",TEXT)
+	node.add_theme_color_override("font_shadow_color",Color("080d09"))
 	node.add_theme_constant_override("shadow_offset_x",1)
 	node.add_theme_constant_override("shadow_offset_y",2)
 	return node
@@ -34,22 +35,33 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter=Control.MOUSE_FILTER_IGNORE
 	texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	theme=Theme.new()
+	theme.default_font=preload("res://assets/fonts/NineTripodsHudSong.ttf")
+	theme.default_font.allow_system_fallback=false
+	var backing: Panel = Panel.new()
+	backing.name="StatusBacking"; backing.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	backing.position=Vector2(130,16); backing.size=Vector2(316,120)
+	var surface: StyleBoxFlat = box(INK)
+	surface.set_border_width_all(0); surface.set_corner_radius_all(5)
+	surface.shadow_color=Color(0.02,0.035,0.02,0.6); surface.shadow_size=8
+	backing.add_theme_stylebox_override("panel",surface); add_child(backing)
 	var statuses: HBoxContainer = HBoxContainer.new()
-	statuses.name="PlayerStatus"; statuses.position=Vector2(24,22)
+	statuses.name="PlayerStatus"; statuses.position=Vector2(24,16)
 	statuses.add_theme_constant_override("separation",12); statuses.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	add_child(statuses)
 	var portrait: TextureRect = TextureRect.new()
 	portrait.name="Portrait"; portrait.texture=preload("res://assets/ui/portrait.tres")
-	portrait.custom_minimum_size=Vector2(88,88); portrait.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+	portrait.custom_minimum_size=Vector2(104,112); portrait.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED; portrait.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	statuses.add_child(portrait)
 	var meters: VBoxContainer = VBoxContainer.new()
+	meters.name="Meters"
 	meters.mouse_filter=Control.MOUSE_FILTER_IGNORE; meters.add_theme_constant_override("separation",4)
-	statuses.add_child(meters); meters.add_child(label("无名之子",19))
-	health=add_meter(meters,"生命",Color("cf513b"),true)
+	statuses.add_child(meters); meters.add_child(label("无名之子",22))
+	health=add_meter(meters,"生命",Color("d9422d"),true)
 	health_value=meters.get_node("生命/Value")
-	add_meter(meters,"蓝量",Color("459bb2"),false)
-	add_meter(meters,"精力",Color("779650"),false)
+	add_meter(meters,"蓝量",Color("14a9bd"),false)
+	add_meter(meters,"精力",Color("4d943e"),false)
 	encounter=label("",17); encounter.name="Encounter"
 	encounter.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	encounter.size=Vector2(370,56); add_child(encounter)
@@ -95,7 +107,7 @@ func _ready() -> void:
 	layout_edges()
 
 func layout_edges() -> void:
-	encounter.position=Vector2((size.x-370)/2,24 if size.x>=1180 else 132)
+	encounter.position=Vector2((size.x-370)/2,24 if size.x>=1280 else 148)
 	toolbar.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	toolbar.offset_left=-214; toolbar.offset_top=24; toolbar.offset_right=-24
 	interaction.offset_left=-minf(580,size.x-340)
@@ -104,15 +116,17 @@ func add_meter(parent: VBoxContainer,title: String,color: Color,enabled: bool) -
 	var row: HBoxContainer = HBoxContainer.new()
 	row.name=title; row.mouse_filter=Control.MOUSE_FILTER_IGNORE; row.add_theme_constant_override("separation",6)
 	parent.add_child(row)
-	var caption: Label = label(title,13); caption.custom_minimum_size.x=32; row.add_child(caption)
+	var caption: Label = label(title,14); caption.custom_minimum_size.x=32; row.add_child(caption)
 	var meter: ProgressBar = ProgressBar.new()
-	meter.name="Bar"; meter.custom_minimum_size=Vector2(174 if enabled else 148,16 if enabled else 12)
+	meter.name="Bar"; meter.custom_minimum_size=Vector2(184 if enabled else 158,16 if enabled else 12)
 	meter.size_flags_vertical=Control.SIZE_SHRINK_CENTER; meter.show_percentage=false
 	meter.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	meter.add_theme_stylebox_override("background",box(INK if enabled else Color(color,0.12)))
-	meter.add_theme_stylebox_override("fill",box(color))
+	var fill: StyleBoxFlat = box(color)
+	fill.set_border_width_all(0); fill.border_width_top=1; fill.border_color=color.lightened(0.2)
+	meter.add_theme_stylebox_override("fill",fill)
 	row.add_child(meter)
-	var value: Label = label("100 / 100" if enabled else "未启用",12)
+	var value: Label = label("100 / 100" if enabled else "未启用",14)
 	value.name="Value"; value.custom_minimum_size.x=64; row.add_child(value)
 	if not enabled: row.modulate=Color(0.7,0.76,0.73,1)
 	return meter
