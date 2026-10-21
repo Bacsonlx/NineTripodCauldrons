@@ -6,12 +6,12 @@
 
 ## 可试玩产物
 
-2026-10-21 当前产物更新：已按用户要求正式替换 v3 向下普通射箭上身并重建下表两个包，校验同步更新。出箭点及箭长标定、干净导入与当前后台检查见 [正式接入记录](../../output/art/CHR-001/2026-10-21-production-down-v3/README.md)。本页其余 2026-10-20 检查与源码归档属于历史快照，不代表当前包的完整源码清单；当前文件校验见 [本次清单](../../output/art/CHR-001/2026-10-21-production-down-v3/source-manifest.json)。T15—T18 和 Windows 实测状态不变。
+2026-10-21 当前产物更新：七房首关已增加为42影偶、8波，并强化命中与技能动效；下表包与校验已更新。最新后台、干净导入、包内资源与复审记录见 [本轮交付](../../output/combat-feel-20261021/README.md)，当前源码校验见 [清单](../../output/combat-feel-20261021/source-manifest.json)。此前向下射箭接入和2026-10-20验收内容均保留为历史记录，不将旧源码归档当作当前包。T15—T18 和 Windows 实测状态不变。
 
 | 平台 | 候选 ZIP | 校验 |
 | --- | --- | --- |
-| Mac Universal 2，含 arm64 | [NineTripods-godot-macos.zip](../../build/godot/NineTripods-godot-macos.zip) | SHA-256 `88c1fdebeb56f7e17b67fc0b4c452913a568fd9d2faefd48b3afef8f9f4eadf4` |
-| Windows x64 | [NineTripods-godot-windows.zip](../../build/godot/NineTripods-godot-windows.zip) | SHA-256 `49e0171e921fba12efb2f817291526e742c01f2f7910aa3e2922401469199fcf` |
+| Mac Universal 2，含 arm64 | [NineTripods-godot-macos.zip](../../build/godot/NineTripods-godot-macos.zip) | SHA-256 `16e7c4ddda112a7c3f19e6abca9113d229d9888acff9840644cd24334d296b0e` |
+| Windows x64 | [NineTripods-godot-windows.zip](../../build/godot/NineTripods-godot-windows.zip) | SHA-256 `db528d0b198c7915cce905933f1e000af995b535a8e899136614a717b6644596` |
 
 两包均包含完整资源、操作说明及引擎第三方声明，不需要 Node.js、Godot 编辑器或 Steam 客户端才能离线运行。Mac 本地 ad-hoc 签名，未公证；Windows 未签名。构建成功不代表操作系统分发限制或实机功能验收通过。
 

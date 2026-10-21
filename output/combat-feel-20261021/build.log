@@ -1,0 +1,34 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"checks":80,"failures":[],"rule_traces":{"cases":55,"failures":[],"snapshots":4250}}
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"failures":[],"first_level_checks":26}
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"environment_instances":507,"failures":[],"first_level_visual_checks":121}
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"failures":[],"map_revision_checks":16}
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"failures":[],"room_journey_checks":15}
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"failures":[],"room_layout_checks":34}
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"failures":[],"portal_presentation_checks":121}
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"failures":[],"wave_checks":13}
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"combat_feedback_checks":13,"failures":[]}
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"combat_runs":[{"enemies":9,"health":100,"room":"court1","seconds":10.8,"waves":2},{"enemies":15,"health":100,"room":"court2","seconds":15.82,"waves":3},{"enemies":18,"health":100,"room":"court3","seconds":23.32,"waves":3}],"failures":[],"room_flow_checks":12}
+Godot engine/import/public tests/full scene: passed
+Export passed: macOS Universal
+Export passed: Windows x64
+Packaged both candidates with playtest instructions and third-party notices

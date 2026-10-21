@@ -1,0 +1,6 @@
+godot --import PASS
+godot res://tests/wave_checks.gd PASS
+godot res://tests/combat_feedback_checks.gd PASS
+godot res://tests/room_layout_checks.gd PASS
+/var/folders/1y/kswbw03s56512cz91zm16ljr0000gn/T/jiuding-waves-clean-cnnas089/native/九鼎 · 汤谷.app/Contents/MacOS/九鼎 · 汤谷 3 PASS
+DELIVERY PASS
