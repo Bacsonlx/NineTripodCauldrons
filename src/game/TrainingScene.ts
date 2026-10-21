@@ -1,9 +1,11 @@
 import Phaser from 'phaser';
 import { TrainingRoom, SKILL_COOLDOWNS, RAIN_RADIUS, type Point } from './TrainingRoom';
-import { TANGGU } from './Tanggu';
+import { TANGGU, tangguGuidance } from './Tanggu';
+import { PlayerControls } from './PlayerControls';
 import { cameraView, screenToWorld } from './CameraView';
 import { TangguBackdrop } from './TangguBackdrop';
 import { CombatEffects } from './CombatEffects';
+import { ENEMY_STATS, PLAYER_STATS } from './CombatBalance';
 import upperUrl from '../../assets/mvp/child-upper-refined-v3.png';
 import oldFrames from '../../assets/mvp/child-refined-v3.frames.json';
 import bowUrl from '../../assets/mvp/bow-states-v3.png';
@@ -30,13 +32,9 @@ type EnemyView = { body: Phaser.GameObjects.Sprite; shadow: Phaser.GameObjects.E
 
 export class TrainingScene extends Phaser.Scene {
   private room = new TrainingRoom(TANGGU);
-  private keys = new Set<string>();
+  private controls = new PlayerControls(this.room);
   private pointer = { x: 0, y: 0, present: false, controls: false };
-  private fire = false;
-  private interact = false;
-  private interactPulse = false;
-  private firePulse = false;
-  private skills = { pierce: false, rain: false, dodge: false };
+  private lastRunId = 0;
   private loaded = true;
   private walkTime = 0;
   private moveDirection = 0;
@@ -130,32 +128,16 @@ export class TrainingScene extends Phaser.Scene {
       this.pointer.x = e.clientX; this.pointer.y = e.clientY; this.pointer.present = true;
       this.pointer.controls = e.target instanceof Element && !!e.target.closest('button');
     };
-    const down = (e: PointerEvent) => {
-      point(e);
-      if (e.button === 0 && this.inside() && !this.room.snapshot.paused && this.room.snapshot.status !== 'failed') { this.fire = true; this.firePulse = true; }
-    };
-    const up = (e: PointerEvent) => { if (e.button === 0) this.fire = false; };
-    const leave = () => { this.pointer.present = false; this.fire = false; this.firePulse = false; this.skills.pierce = false; this.skills.rain = false; this.cancelPointer(); };
-    const keydown = (e: KeyboardEvent) => {
-      if (!['KeyW','KeyA','KeyS','KeyD','KeyQ','KeyE','KeyF','KeyR','Space','Escape'].includes(e.code)) return;
-      e.preventDefault();
-      if (e.repeat) return;
-      if (e.code === 'Escape') { if(this.room.snapshot.reading)this.room.closeReading();else this.room.setPaused(!this.room.snapshot.paused); this.clearInput(); }
-      else if(e.code === 'KeyF') { this.interact = true; this.interactPulse = true; }
-      else if (e.code === 'KeyR' && !this.room.snapshot.paused) this.retry();
-      else if (!this.room.snapshot.paused && this.room.snapshot.status !== 'failed') {
-        if (e.code === 'KeyQ') this.skills.pierce = true;
-        else if (e.code === 'KeyE') this.skills.rain = true;
-        else if (e.code === 'Space') this.skills.dodge = true;
-        else this.keys.add(e.code);
-      }
-    };
-    const keyup = (e: KeyboardEvent) => { this.keys.delete(e.code); if(e.code==='KeyF')this.interact=false; };
-    const blur = () => { this.room.setPaused(true); this.clearInput(); };
-    const resize = () => { this.clearInput(); this.updateCamera(); };
+    const down = (e: PointerEvent) => { point(e);if(e.button===0)this.controls.pointerDown(this.inside()); };
+    const up = (e: PointerEvent) => { if(e.button===0)this.controls.pointerUp(); };
+    const leave = () => { this.pointer.present=false;this.controls.pointerLeave(); };
+    const keydown = (e: KeyboardEvent) => { if(this.controls.keyDown(e.code,e.repeat))e.preventDefault(); };
+    const keyup = (e: KeyboardEvent) => this.controls.keyUp(e.code);
+    const blur = () => this.controls.interrupt(true);
+    const resize = () => { this.controls.interrupt();this.updateCamera(); };
     const full = document.getElementById('fullscreen')!;
-    const toggleFullscreen = () => { this.clearInput(); void window.desktop.toggleFullscreen().catch(() => this.fail('窗口模式切换失败，请重启后重试。')); };
-    const state = (s: { fullscreen: boolean }) => { full.textContent = s.fullscreen ? '退出全屏' : '全屏'; full.setAttribute('aria-label',s.fullscreen ? '退出全屏' : '进入全屏'); this.clearInput(); };
+    const toggleFullscreen = () => { this.controls.interrupt(); void window.desktop.toggleFullscreen().catch(() => this.fail('窗口模式切换失败，请重启后重试。')); };
+    const state = (s: { fullscreen: boolean }) => { full.textContent = s.fullscreen ? '退出全屏' : '全屏'; full.setAttribute('aria-label',s.fullscreen ? '退出全屏' : '进入全屏'); this.controls.interrupt(); };
     void window.desktop.getWindowState().then(state);
     const offWindowState = window.desktop.onWindowStateChange(state);
     window.addEventListener('pointermove',point);
@@ -180,18 +162,8 @@ export class TrainingScene extends Phaser.Scene {
     return this.pointer.present && !this.pointer.controls && this.pointer.x >= r.left && this.pointer.x < r.right && this.pointer.y >= r.top && this.pointer.y < r.bottom;
   }
 
-  private cancelPointer(): void {
-    this.room.update({moveX:0,moveY:0,aim:{x:0,y:0},fire:false,pointerInside:false},0);
-  }
-
-  private clearInput(): void {
-    this.keys.clear();this.interact = false;this.interactPulse = false;this.fire = false;this.firePulse = false;this.skills = {pierce:false,rain:false,dodge:false};
-    if (!this.room.snapshot.paused) this.cancelPointer();
-  }
-
-  private retry(): void {
-    this.combatEffects.reset();
-    this.room.reset();this.walkTime = 0;this.moveDirection = 0;this.motion = 0;this.gaitTime = 0;this.gaitMoving = false;this.gaitDirection = 0;this.legsTransition.setVisible(false);this.clearInput();this.updateCamera();
+  private resetPose(): void {
+    this.walkTime=0;this.moveDirection=0;this.motion=0;this.gaitTime=0;this.gaitMoving=false;this.gaitDirection=0;this.legsTransition.setVisible(false);
   }
 
   private updateCamera() {
@@ -212,13 +184,9 @@ export class TrainingScene extends Phaser.Scene {
     const view = this.updateCamera();
     const rect = this.game.canvas.getBoundingClientRect();
     const aim = screenToWorld({x:(this.pointer.x-rect.left)*this.scale.width/rect.width,y:(this.pointer.y-rect.top)*this.scale.height/rect.height},view);
-    const moveX = Number(this.keys.has('KeyD'))-Number(this.keys.has('KeyA'));
-    const moveY = Number(this.keys.has('KeyS'))-Number(this.keys.has('KeyW'));
-    const wasReading=this.room.snapshot.reading;
-    this.room.update({moveX,moveY,aim,interact:this.interact||this.interactPulse,fire:this.fire||this.firePulse,pointerInside:this.inside(),...this.skills},dt);
-    this.interactPulse = false;this.firePulse = false;this.skills = {pierce:false,rain:false,dodge:false};
-    const s = this.room.snapshot,p = s.player;
-    if(s.reading!==wasReading)this.clearInput();
+    const {moveX,moveY}=this.controls.movement;
+    const s=this.controls.update(aim,this.inside(),dt),p=s.player;
+    if(s.runId!==this.lastRunId){this.lastRunId=s.runId;this.resetPose();}
     if (!s.paused && s.status !== 'failed') this.clock += dt;
     if (p.moving && !s.paused) { this.walkTime += dt;this.moveDirection = this.direction(s.dodge > 0 ? Math.atan2(s.dodgeDirection.y,s.dodgeDirection.x) : Math.atan2(moveY,moveX)); }
     if (!s.paused) this.motion = Phaser.Math.Linear(this.motion,p.moving ? 1 : 0,Math.min(1,dt*18));
@@ -268,15 +236,15 @@ export class TrainingScene extends Phaser.Scene {
       const row = e.phase==='dead'?6:e.flash>0?5:e.phase==='warn'?3:e.phase==='swing'?4:e.phase==='recover'?(e.timer<0.18?0:5):e.phase==='chase'?1+Math.floor(this.clock*8)%2:0;
       const texture = ENEMY_TEXTURES[e.appearance];
       this.pose(v.body,texture,atlases[texture].frames[row*4+this.direction(e.angle)],e.x,e.y);
-      v.body.setDepth(e.y+0.1).setAlpha(e.phase==='dead'?e.timer/0.6:1).setTint(e.flash>0?0xffd89b:0xffffff);v.shadow.setPosition(e.x,e.y).setAlpha(e.phase==='dead'?e.timer*0.5:0.35);
+      v.body.setDepth(e.y+0.1).setAlpha(e.phase==='dead'?e.timer/ENEMY_STATS.deathFade:1).setTint(e.flash>0?0xffedc5:0xffffff);v.shadow.setPosition(e.x,e.y).setAlpha(e.phase==='dead'?e.timer*0.5:0.35);
       if (e.phase !== 'dead') {
         air.fillStyle(0x151714,0.85).fillRect(e.x-20,e.y-88,40,4);
-        air.fillStyle(0xbc6745,0.95).fillRect(e.x-20,e.y-88,40*e.health/60,4);
+        air.fillStyle(0xbc6745,0.95).fillRect(e.x-20,e.y-88,40*e.health/ENEMY_STATS.maxHealth,4);
       }
       if (e.phase==='warn'||e.phase==='swing') {
-        ground.fillStyle(0xb34830,e.phase==='swing'?0.48:0.16).slice(e.x,e.y,70,e.angle-Math.PI/4,e.angle+Math.PI/4,false).fillPath();
-        ground.lineStyle(e.phase==='swing'?3:1.5,0xef8860,0.95).beginPath().arc(e.x,e.y,70,e.angle-Math.PI/4,e.angle+Math.PI/4,false).strokePath();
-        for(const offset of [-Math.PI/4,Math.PI/4])ground.lineBetween(e.x,e.y,e.x+Math.cos(e.angle+offset)*70,e.y+Math.sin(e.angle+offset)*70);
+        ground.fillStyle(0xb34830,e.phase==='swing'?0.48:0.16).slice(e.x,e.y,ENEMY_STATS.attackRange,e.angle-Math.PI/4,e.angle+Math.PI/4,false).fillPath();
+        ground.lineStyle(e.phase==='swing'?3:1.5,0xef8860,0.95).beginPath().arc(e.x,e.y,ENEMY_STATS.attackRange,e.angle-Math.PI/4,e.angle+Math.PI/4,false).strokePath();
+        for(const offset of [-Math.PI/4,Math.PI/4])ground.lineBetween(e.x,e.y,e.x+Math.cos(e.angle+offset)*ENEMY_STATS.attackRange,e.y+Math.sin(e.angle+offset)*ENEMY_STATS.attackRange);
       }
     }
     if (s.rainPreview) this.rainCircle(ground,s.rainPreview,0.7,true);
@@ -291,7 +259,7 @@ export class TrainingScene extends Phaser.Scene {
       if(!image){image=this.add.image(a.x,a.y,'arrow').setOrigin(1509/1536,0.5).setScale(a.kind==='pierce'?0.037:0.029);this.arrows.set(a.id,image);}
       image.setPosition(a.x,a.y).setRotation(a.angle).setDepth(a.y+52).setTint(a.kind==='pierce'?0xffd06c:0xffffff);
     }
-    if(s.hurt>0){air.lineStyle(1.5,0xc97c59,s.hurt/0.12);for(let i=0;i<5;i++){const a=i*Math.PI*2/5;air.lineBetween(p.x+Math.cos(a)*18,p.y-40+Math.sin(a)*18,p.x+Math.cos(a)*26,p.y-40+Math.sin(a)*26);}}
+    if(s.hurt>0){air.lineStyle(1.5,0xc97c59,s.hurt/PLAYER_STATS.hurtDuration);for(let i=0;i<5;i++){const a=i*Math.PI*2/5;air.lineBetween(p.x+Math.cos(a)*18,p.y-40+Math.sin(a)*18,p.x+Math.cos(a)*26,p.y-40+Math.sin(a)*26);}}
     this.combatEffects.update(s,dt,this.clock);
     this.crosshair.clear();
     if(this.inside()&&!s.paused&&s.status!=='failed')this.crosshair.lineStyle(1.2,0xf5dbad,0.9).strokeCircle(aim.x,aim.y,6).lineBetween(aim.x-11,aim.y,aim.x-4,aim.y).lineBetween(aim.x+4,aim.y,aim.x+11,aim.y).lineBetween(aim.x,aim.y-11,aim.x,aim.y-4).lineBetween(aim.x,aim.y+4,aim.x,aim.y+11);
@@ -307,11 +275,12 @@ export class TrainingScene extends Phaser.Scene {
 
   private updateHUD(s: TrainingRoom['snapshot']): void {
     document.getElementById('health')!.textContent=String(s.health);
-    (document.getElementById('health-fill') as HTMLElement).style.width=`${s.health}%`;
+    (document.getElementById('health-fill') as HTMLElement).style.width=`${s.health/PLAYER_STATS.maxHealth*100}%`;
     const remaining=s.enemies.filter(e=>e.group===s.encounter&&e.phase!=='dead').length;
-    document.getElementById('encounter')!.textContent=s.status==='complete'?'三庭肃清':`遭遇 ${Math.min(s.encounter+1,3)} / 3 · 影偶 ${remaining}`;
-    document.getElementById('region')!.textContent=s.player.y<470&&s.player.x<1180?'碑林幽径':s.player.y>1040&&s.player.x>1400?'祭火林地':s.player.x<1160?'扶桑残径':s.player.x<1770?'断垣之道':'日鸟石庭';
-    document.getElementById('landmark')!.textContent=s.status==='complete'?'主路已肃清 · 可回头探索':`下一地标 · ${['扶桑石庭','断垣庭院','日鸟石庭'][Math.min(s.encounter,2)]}`;
+    document.getElementById('encounter')!.textContent=s.status==='complete'?'三庭肃清':`遭遇 ${Math.min(s.encounter+1,s.totalEncounters)} / ${s.totalEncounters} · 影偶 ${remaining}`;
+    const guidance=tangguGuidance(s.player,s.encounter,s.status==='complete');
+    document.getElementById('region')!.textContent=guidance.region;
+    document.getElementById('landmark')!.textContent=guidance.landmark;
     for(const key of ['pierce','rain','dodge'] as const){const max=SKILL_COOLDOWNS[key];const el=document.getElementById(key)!;const cd=s.cooldowns[key];el.dataset.cooling=String(cd>0);el.style.setProperty('--cooldown',`${cd/max*100}%`);el.querySelector('.seconds')!.textContent=cd>0?cd.toFixed(1):'';}
     const status=document.getElementById('status')!;
     status.hidden=!s.paused&&s.status!=='failed';

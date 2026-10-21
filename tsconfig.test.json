@@ -9,6 +9,8 @@
   "include": [
     "src/game/TrainingRoom.ts",
     "src/game/Tanggu.ts",
-    "src/game/CameraView.ts"
+    "src/game/CameraView.ts",
+    "src/game/HitFeedback.ts",
+    "src/game/PlayerControls.ts"
   ]
 }

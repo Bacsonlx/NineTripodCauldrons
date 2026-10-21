@@ -1,3 +1,5 @@
+import { ATTACK_STATS, ENEMY_STATS, PLAYER_STATS } from './CombatBalance';
+
 export type Point = { x: number; y: number };
 export type RoomInput = {
   moveX: number;
@@ -53,6 +55,7 @@ type Hit = Point & { target: number | null; enemy?: number };
 type Enemy = Point & {
   id: number; group: number; appearance: EnemyAppearance; health: number; phase: 'inactive' | 'chase' | 'warn' | 'swing' | 'recover' | 'dead';
   timer: number; angle: number; struck: boolean; flash: number; route: Point[]; repath: number;
+  knockX: number; knockY: number; knockTime: number;
 };
 
 function rectangleContact(from: Point, to: Point, left: number, top: number, right: number, bottom: number): number | null {
@@ -91,7 +94,8 @@ function targetContact(from: Point, to: Point, target: Point, face = ROOM.target
 export class TrainingRoom {
   private player = { x: 400, y: 440, moving: false, angle: 0, facing: 0 };
   private arrows: Arrow[] = [];
-  private effects: (Hit & { id: number; kind: 'normal' | 'pierce' | 'rain'; remaining: number })[] = [];
+  private effects: (Hit & { id: number; kind: 'normal' | 'pierce' | 'rain'; remaining: number; damage: number; angle: number; damagePosition: Point | null })[] = [];
+  private runId = 0;
   private nextEffectId = 0;
   private flashes = [0, 0];
   private hits = 0;
@@ -106,7 +110,7 @@ export class TrainingRoom {
   private interactHeld = false;
   private exploration = { steleRead: false, altarUsed: false, gateOpen: false };
   private feedback: { text: string; remaining: number; healed: boolean } | null = null;
-  private health = 100;
+  private health: number = PLAYER_STATS.maxHealth;
   private hurt = 0;
   private protection = 0;
   private status: 'running' | 'failed' | 'complete' = 'running';
@@ -136,8 +140,9 @@ export class TrainingRoom {
 
   private createEnemies(): void {
     this.enemies = (this.layout.encounters ?? []).flatMap((g, group) => g.enemies.map((p, i) => ({
-      ...p, id: group * 100 + i, group, appearance: p.appearance ?? 'bird', health: 60, phase: 'inactive' as const,
+      ...p, id: group * 100 + i, group, appearance: p.appearance ?? 'bird', health: ENEMY_STATS.maxHealth, phase: 'inactive' as const,
       timer: 0, angle: 0, struck: false, flash: 0, route: [], repath: 0,
+      knockX: 0, knockY: 0, knockTime: 0,
     })));
   }
 
@@ -156,6 +161,7 @@ export class TrainingRoom {
 
   get snapshot() {
     return {
+      runId: this.runId,
       player: { ...this.player }, grip: this.grip, hits: this.hits, windup: this.windup, paused: this.paused || this.reading,
       reading: this.reading, gateOpening: this.gateOpening, exploration: { ...this.exploration }, interaction: this.nearestInteraction(), feedback: this.feedback ? { ...this.feedback } : null,
       attack: this.attackPhase, health: this.health, hurt: this.hurt, protection: this.protection, status: this.status,
@@ -167,7 +173,7 @@ export class TrainingRoom {
       encounter: this.encounter, totalEncounters: this.layout.encounters?.length ?? 0,
       enemies: this.enemies.map(({ route, repath, ...e }) => ({ ...e })),
       arrows: this.arrows.map(a => ({ ...a, hitEnemies: [...a.hitEnemies] })),
-      effects: this.effects.map(e => ({ ...e })),
+      effects: this.effects.map(e => ({ ...e, damagePosition: e.damagePosition ? {...e.damagePosition} : null })),
       targets: this.layout.targets.map((t, i) => ({ ...t, flash: this.flashes[i] })),
     };
   }
@@ -181,8 +187,19 @@ export class TrainingRoom {
     this.dodgeHeld = true; this.pierceHeld = true; this.piercing = null; this.rainHeld = true; this.raining = null;
   }
 
+  cancelPendingAttacks(): void {
+    this.windup=null;this.piercing=null;this.raining=null;this.attackReleased=false;
+    this.needsRelease=false;
+  }
+
+  cancelInput(): void {
+    this.cancelPendingAttacks();
+    this.pierceHeld=false;this.rainHeld=false;this.dodgeHeld=false;this.interactHeld=false;
+  }
+
   reset(): void {
     if (this.paused || this.reading) return;
+    this.runId++;
     this.exploration = { steleRead: false, altarUsed: false, gateOpen: false };
     this.feedback = null; this.interactHeld = true; this.gateOpening = 0;
     this.player = { ...(this.layout.spawn ?? { x: 400, y: 440 }), moving: false, angle: 0, facing: 0 };
@@ -190,7 +207,7 @@ export class TrainingRoom {
     this.effects = [];
     this.nextEffectId = 0;
     this.flashes = this.layout.targets.map(() => 0);
-    this.health = 100; this.hurt = 0; this.protection = 0; this.status = 'running';
+    this.health = PLAYER_STATS.maxHealth; this.hurt = 0; this.protection = 0; this.status = 'running';
     this.encounter = 0; this.createEnemies();
     this.dodgeTime = 0; this.dodgeInvulnerability = 0; this.dodgeCooldown = 0; this.dodgeHeld = true;
     this.piercing = null; this.pierceCooldown = 0; this.pierceHeld = true; this.skillRecovery = 0; this.lastSkill = null;
@@ -240,9 +257,9 @@ export class TrainingRoom {
       this.windup = null; this.piercing = null; this.raining = null; this.attackReleased = false;
       this.needsRelease = true;
     } else if (target.id === 'altar') {
-      if (this.health === 100) this.feedback = { text: '无需恢复', remaining: 1.6, healed: false };
+      if (this.health === PLAYER_STATS.maxHealth) this.feedback = { text: '无需恢复', remaining: 1.6, healed: false };
       else {
-        const amount = Math.min(40,100-this.health); this.health += amount; this.exploration.altarUsed = true;
+        const amount = Math.min(40,PLAYER_STATS.maxHealth-this.health); this.health += amount; this.exploration.altarUsed = true;
         this.feedback = { text: `生命恢复 +${amount}`, remaining: 1.6, healed: true };
       }
     } else {
@@ -302,13 +319,13 @@ export class TrainingRoom {
     const dashing = this.dodgeTime > 0;
     const length = Math.max(1, Math.hypot(input.moveX, input.moveY));
     const start = { ...this.player };
-    const steps = Math.max(1, Math.ceil(seconds * (dashing ? 600 : 220) / 2));
+    const steps = Math.max(1, Math.ceil(seconds * (dashing ? 600 : PLAYER_STATS.moveSpeed) / 2));
     const interval = seconds / steps;
     for (let i = 0; i < steps; i++) {
       const dash = dashing ? Math.max(0, Math.min(interval, this.dodgeTime - i * interval)) : 0;
       const walk = interval - dash;
-      const dx = this.hurt > 0 ? 0 : this.dodgeDirection.x * 600 * dash + input.moveX / length * 220 * walk;
-      const dy = this.hurt > 0 ? 0 : this.dodgeDirection.y * 600 * dash + input.moveY / length * 220 * walk;
+      const dx = this.hurt > 0 ? 0 : this.dodgeDirection.x * 600 * dash + input.moveX / length * PLAYER_STATS.moveSpeed * walk;
+      const dy = this.hurt > 0 ? 0 : this.dodgeDirection.y * 600 * dash + input.moveY / length * PLAYER_STATS.moveSpeed * walk;
       if (this.canWalk(this.player.x + dx, this.player.y)) this.player.x += dx;
       if (this.canWalk(this.player.x, this.player.y + dy)) this.player.y += dy;
     }
@@ -370,7 +387,7 @@ export class TrainingRoom {
       const next = { x: arrow.x + Math.cos(arrow.angle) * speed * elapsed, y: arrow.y + Math.sin(arrow.angle) * speed * elapsed };
       let hit = this.contact(arrow, next, arrow.hitEnemies);
       while (hit) {
-        this.impact(hit, arrow.kind === 'pierce' ? 40 : 15, arrow.kind);
+        this.impact(hit, arrow.kind, arrow.angle);
         if (arrow.kind !== 'pierce' || hit.enemy === undefined) return false;
         arrow.hitEnemies.push(hit.enemy);
         hit = this.contact(arrow, next, arrow.hitEnemies);
@@ -383,7 +400,7 @@ export class TrainingRoom {
       rain.age += seconds;
       while (rain.pulse < ATTACK_TIMING.rainPulses && rain.age >= rain.pulse * ATTACK_TIMING.rainInterval) {
         for (const e of this.enemies) {
-          if (e.phase !== 'inactive' && e.phase !== 'dead' && Math.hypot(e.x - rain.x, e.y - rain.y) <= RAIN_RADIUS) this.impact({ x: e.x, y: e.y - 35, target: null, enemy: e.id },15,'rain');
+          if (e.phase !== 'inactive' && e.phase !== 'dead' && Math.hypot(e.x - rain.x, e.y - rain.y) <= RAIN_RADIUS) this.impact({ x: e.x, y: e.y - 35, target: null, enemy: e.id },'rain',Math.hypot(e.x-rain.x,e.y-rain.y)>0.01?Math.atan2(e.y-rain.y,e.x-rain.x):this.player.angle);
         }
         rain.pulse++;
       }
@@ -397,7 +414,7 @@ export class TrainingRoom {
     const blocked = this.contact({ x: this.player.x, y: this.player.y - this.layout.shoulderHeight }, muzzle);
     const hitEnemies: number[] = [];
     if (blocked) {
-      this.impact(blocked, kind === 'pierce' ? 40 : 15,kind);
+      this.impact(blocked,kind);
       if (kind !== 'pierce' || blocked.enemy === undefined) return;
       hitEnemies.push(blocked.enemy);
     }
@@ -447,16 +464,27 @@ export class TrainingRoom {
     for (const e of this.enemies) {
       e.flash = Math.max(0, e.flash - seconds);
       if (e.phase === 'inactive') continue;
+      const pushed = e.knockTime > 0;
+      if (pushed) {
+        const elapsed = Math.min(seconds,e.knockTime);
+        const steps = Math.max(1,Math.ceil(Math.hypot(e.knockX,e.knockY)*elapsed/2));
+        for(let i=0;i<steps;i++){
+          const x=e.x+e.knockX*elapsed/steps,y=e.y+e.knockY*elapsed/steps;
+          if(this.canWalk(x,e.y))e.x=x;
+          if(this.canWalk(e.x,y))e.y=y;
+        }
+        e.knockTime=Math.max(0,e.knockTime-seconds);
+      }
       if (e.phase === 'dead') { e.timer = Math.max(0, e.timer - seconds); continue; }
       // Keep the actual overlap with the swing, including a frame crossing its end.
       const swingUntil = e.phase === 'swing' ? Math.min(seconds, e.timer)
-        : e.phase === 'warn' && seconds > e.timer ? Math.min(seconds, e.timer + 0.10) : null;
+        : e.phase === 'warn' && seconds > e.timer ? Math.min(seconds, e.timer + ENEMY_STATS.swing) : null;
       e.timer -= seconds;
       const distance = Math.hypot(this.player.x - e.x, this.player.y - e.y);
       if (e.phase === 'chase') {
         e.angle = Math.atan2(this.player.y - e.y, this.player.x - e.x);
-        if (distance <= 70) { e.phase = 'warn'; e.timer = 0.45; e.struck = false; }
-        else {
+        if (distance <= ENEMY_STATS.attackRange) { e.phase = 'warn'; e.timer = ENEMY_STATS.warning; e.struck = false; }
+        else if (!pushed) {
           let destination: Point = this.player;
           e.repath -= seconds;
           if (!this.clearPath(e, this.player)) {
@@ -467,7 +495,7 @@ export class TrainingRoom {
             destination = e.route[0];
           }
           e.angle = Math.atan2(destination.y - e.y, destination.x - e.x);
-          const travel = Math.min(Math.hypot(destination.x - e.x, destination.y - e.y), 120 * seconds);
+          const travel = Math.min(Math.hypot(destination.x - e.x, destination.y - e.y), ENEMY_STATS.moveSpeed * seconds);
           const x = e.x + Math.cos(e.angle) * travel;
           const y = e.y + Math.sin(e.angle) * travel;
           if (this.canWalk(x, e.y)) e.x = x;
@@ -485,14 +513,14 @@ export class TrainingRoom {
           }
         }
       } else {
-        if (e.phase === 'warn' && e.timer <= 0) { e.phase = 'swing'; e.timer += 0.10; }
-        if (e.phase === 'swing' && e.timer <= 0) { e.phase = 'recover'; e.timer += 0.65; }
+        if (e.phase === 'warn' && e.timer <= 0) { e.phase = 'swing'; e.timer += ENEMY_STATS.swing; }
+        if (e.phase === 'swing' && e.timer <= 0) { e.phase = 'recover'; e.timer += ENEMY_STATS.recovery; }
         if (e.phase === 'recover' && e.timer <= 0) { e.phase = 'chase'; e.timer = 0; }
       }
       if (swingUntil !== null && !e.struck) {
         const a = Math.atan2(this.player.y - e.y, this.player.x - e.x) - e.angle;
-        if (distance <= 70 && Math.abs(Math.atan2(Math.sin(a), Math.cos(a))) <= Math.PI / 4 && protectionAtStart < swingUntil && dodgeInvulnerabilityAtStart < swingUntil && this.protection <= 0) {
-          e.struck = true; this.health = Math.max(0, this.health - 20); this.hurt = 0.12; this.protection = 0.6;
+        if (distance <= ENEMY_STATS.attackRange && Math.abs(Math.atan2(Math.sin(a), Math.cos(a))) <= Math.PI / 4 && protectionAtStart < swingUntil && dodgeInvulnerabilityAtStart < swingUntil && this.protection <= 0) {
+          e.struck = true; this.health = Math.max(0, this.health - ENEMY_STATS.damage); this.hurt = PLAYER_STATS.hurtDuration; this.protection = PLAYER_STATS.protectionDuration;
           this.windup = null; this.piercing = null; this.raining = null; this.attackReleased = false; this.needsRelease = true;
           if (this.health === 0) { this.status = 'failed'; this.player.moving = false; return; }
         }
@@ -504,14 +532,23 @@ export class TrainingRoom {
     }
   }
 
-  private impact(hit: Hit, damage = 15, kind: 'normal' | 'pierce' | 'rain' = 'normal'): void {
+  private impact(hit: Hit, kind: 'normal' | 'pierce' | 'rain' = 'normal', angle = this.player.angle): void {
+    let damage = 0;
+    let damagePosition: Point | null = null;
     if (hit.target !== null) { this.hits++; this.flashes[hit.target] = 0.1; }
     if (hit.enemy !== undefined) {
       const enemy = this.enemies.find(e => e.id === hit.enemy)!;
+      damagePosition={x:enemy.x,y:enemy.y};
+      const stats = ATTACK_STATS[kind];
+      damage = Math.min(enemy.health,stats.damage);
       enemy.health = Math.max(0, enemy.health - damage); enemy.flash = 0.12; this.hits++;
-      if (enemy.health === 0) { enemy.phase = 'dead'; enemy.timer = 0.6; }
+      enemy.knockX = Math.cos(angle)*stats.knockDistance/stats.knockDuration;
+      enemy.knockY = Math.sin(angle)*stats.knockDistance/stats.knockDuration;
+      enemy.knockTime = stats.knockDuration;
+      enemy.route = []; enemy.repath = 0;
+      if (enemy.health === 0) { enemy.phase = 'dead'; enemy.timer = ENEMY_STATS.deathFade; }
     }
-    this.effects.push({ ...hit, id: this.nextEffectId++, kind, remaining: 0.15 });
+    this.effects.push({ ...hit, id: this.nextEffectId++, kind, remaining: 0.15, damage, angle, damagePosition });
   }
 
   private contact(from: Point, to: Point, ignored: number[] = []): Hit | null {

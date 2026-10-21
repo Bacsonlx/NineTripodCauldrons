@@ -11,22 +11,22 @@ export class TangguBackdrop {
   private feedback: Phaser.GameObjects.Graphics;
 
   constructor(scene: Phaser.Scene) {
-    scene.add.rectangle(1280,720,2560,1440,0x121c18).setDepth(-12);
-    scene.add.tileSprite(1280,720,2560,1440,'terrain','forest').setTileScale(0.55).setTint(0x647258).setDepth(-11);
+    scene.add.rectangle(TANGGU.width/2,TANGGU.height/2,TANGGU.width,TANGGU.height,0x121c18).setDepth(-12);
+    scene.add.tileSprite(TANGGU.width/2,TANGGU.height/2,TANGGU.width,TANGGU.height,'terrain','forest').setTileScale(0.55).setTint(0x647258).setDepth(-11);
     const mask = scene.make.graphics({x:0,y:0});
-    TANGGU.walkableAreas.forEach((a,i)=>{
+    TANGGU.walkableAreas.forEach(a=>{
       mask.fillStyle(0xffffff).fillRect(a.left,a.top,a.right-a.left,a.bottom-a.top);
-      scene.add.tileSprite(a.left,a.top,a.right-a.left,a.bottom-a.top,'terrain',[1,3,5].includes(i)?'stone':'path')
+      scene.add.tileSprite(a.left,a.top,a.right-a.left,a.bottom-a.top,'terrain',a.material)
         .setOrigin(0).setTileScale(0.5).setTilePosition(a.left*2,a.top*2).setDepth(-9);
     });
     scene.events.once('shutdown',()=>mask.destroy());
-    for(const [x,y,w,h] of [[930,820,740,500],[1440,630,490,420],[2100,760,610,450]])
-      scene.add.image(x,y,'junctionGround').setDisplaySize(w,h).setDepth(-7).setMask(mask.createGeometryMask());
+    for(const p of TANGGU.groundPatches)
+      scene.add.image(p.x,p.y,'junctionGround').setDisplaySize(p.width,p.height).setDepth(-7).setMask(mask.createGeometryMask());
 
     // Paving follows the actual main route; optional paths retain leaf-covered earth.
-    const route=[[400,820],[850,820],[1100,790],[1430,720],[1800,720],[2110,750],[2270,870]];
+    const route=TANGGU.mainRoute;
     for(let i=1;i<route.length;i++){
-      const [x,y]=route[i-1],[nx,ny]=route[i],length=Math.hypot(nx-x,ny-y);
+      const {x,y}=route[i-1],{x:nx,y:ny}=route[i],length=Math.hypot(nx-x,ny-y);
       scene.add.tileSprite((x+nx)/2,(y+ny)/2,length+12,44,'terrain','paving').setTileScale(0.2).setRotation(Math.atan2(ny-y,nx-x)).setDepth(-6).setAlpha(0.75);
     }
     const edges=scene.add.graphics().setDepth(-5);
@@ -61,7 +61,8 @@ export class TangguBackdrop {
     this.altarLight=scene.add.image(altar.x,altar.y-20,'vfx','halo').setDisplaySize(150,70).setAlpha(0.12).setDepth(altar.y-1);
     this.feedback=scene.add.graphics().setDepth(4);
     const signs=scene.add.graphics().setDepth(-4);
-    for(const [x,y] of [[515,770],[1375,765],[2240,900]]){
+    for(const p of TANGGU.obstacles)if('markerOffsetY' in p){
+      const x=p.x,y=p.y+p.markerOffsetY;
       signs.lineStyle(1,0xb09958,0.45).strokeEllipse(x,y,80,35).strokeEllipse(x,y,68,28);
     }
   }

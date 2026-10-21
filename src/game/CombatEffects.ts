@@ -1,9 +1,10 @@
 import Phaser from 'phaser';
 import type { Point, TrainingRoom } from './TrainingRoom';
 import { ATTACK_TIMING, RAIN_RADIUS } from './TrainingRoom';
+import { HitFeedback } from './HitFeedback';
 
 type Snapshot = TrainingRoom['snapshot'];
-type Burst = Point & { age: number; kind: 'normal' | 'pierce' | 'rain' | 'dust' };
+type Burst = Point & { age: number; kind: 'normal' | 'pierce' | 'rain' | 'dust'; enemy?: number; angle?: number };
 type Ghost = { lower: Phaser.GameObjects.Sprite; upper: Phaser.GameObjects.Sprite; age: number };
 
 export class CombatEffects {
@@ -11,10 +12,11 @@ export class CombatEffects {
   private used = 0;
   private bursts: Burst[] = [];
   private trails = new Map<number,Point[]>();
-  private lastImpact = -1;
+  private feedback = new HitFeedback();
   private ghostTimer = 0;
   private wasDodging = false;
   private ghosts: Ghost[];
+  private damageNumbers: Phaser.GameObjects.Text[] = [];
 
   constructor(private scene: Phaser.Scene,private legs: Phaser.GameObjects.Sprite,private torso: Phaser.GameObjects.Sprite) {
     this.ghosts=Array.from({length:4},()=>({lower:scene.add.sprite(0,0,'lower').setVisible(false),upper:scene.add.sprite(0,0,'upper').setVisible(false),age:1}));
@@ -26,10 +28,11 @@ export class CombatEffects {
     image.setFrame(frame).setPosition(x,y).setOrigin(0.5).setDisplaySize(width,height).setRotation(angle).setAlpha(alpha).setDepth(depth).setVisible(true);
   }
 
-  reset(): void {
-    this.bursts=[];this.trails.clear();this.lastImpact=-1;this.wasDodging=false;this.ghostTimer=0;
+  private reset(): void {
+    this.bursts=[];this.trails.clear();this.wasDodging=false;this.ghostTimer=0;
     for(const image of this.stamps)image.setVisible(false);
     for(const ghost of this.ghosts){ghost.age=1;ghost.lower.setVisible(false);ghost.upper.setVisible(false);}
+    for(const number of this.damageNumbers)number.setVisible(false);
   }
 
   private fallingArrows(point: Point,progress: number): void {
@@ -43,12 +46,16 @@ export class CombatEffects {
   update(s: Snapshot,delta: number,clock: number): void {
     const dt=s.paused||s.status==='failed'?0:delta;
     this.used=0;
-    for(const hit of s.effects)if(hit.id>this.lastImpact){
-      this.bursts.push({x:hit.x,y:hit.y,kind:hit.kind,age:0});
-      this.lastImpact=hit.id;
+    const feedback=this.feedback.update(s,delta);
+    if(feedback.changedRun)this.reset();
+    for(const number of this.damageNumbers)number.setVisible(false);
+    for(const number of feedback.numbers){
+      const text=this.damageNumbers[number.slot]??(this.damageNumbers[number.slot]=this.scene.add.text(0,0,'',{fontFamily:'Georgia, serif',fontSize:'24px',fontStyle:'bold',stroke:'#241c17',strokeThickness:4}).setOrigin(0.5).setDepth(4500));
+      const progress=number.age/0.65;
+      text.setText(String(number.damage)).setColor(number.kind==='pierce'?'#ffe5a0':'#f6e8cd').setVisible(true).setPosition(number.x,number.y-30*progress).setAlpha(Math.min(1,(1-progress)*3)).setScale(1+0.22*Math.max(0,1-progress/0.2));
     }
     this.bursts=this.bursts.filter(b=>{b.age+=dt;return b.age<(b.kind==='dust'?0.3:0.24);});
-    for(const b of this.bursts){
+    for(const b of [...this.bursts,...feedback.bursts]){
       const progress=b.age/(b.kind==='dust'?0.3:0.24),alpha=1-progress;
       if(b.kind==='dust')this.stamp('dust',b.x,b.y+3,30+progress*35,15+progress*12,alpha*0.26,0,3);
       else {
@@ -57,6 +64,16 @@ export class CombatEffects {
         for(let i=0;i<3;i++){
           const a=i*2.1+0.4,d=8+progress*(b.kind==='pierce'?30:20);
           this.stamp('shards',b.x+Math.cos(a)*d,b.y+Math.sin(a)*d+progress*6,12,12,alpha*0.72,a);
+        }
+        if(b.enemy!==undefined){
+          const angle=b.angle??0,strong=b.kind==='pierce';
+          this.stamp('halo',b.x,b.y,18+progress*42,18+progress*42,alpha*alpha*0.48);
+          this.stamp('streak',b.x,b.y,(strong?60:38)+progress*20,8,alpha*0.9,angle);
+          this.stamp('streak',b.x,b.y,12,30+progress*12,alpha*0.75,angle);
+          for(let i=0;i<5;i++){
+            const a=angle+(i-2)*0.48,d=9+progress*(strong?52:34);
+            this.stamp('embers',b.x+Math.cos(a)*d,b.y+Math.sin(a)*d+progress*8,8-i*0.6,8-i*0.6,alpha*0.85,a);
+          }
         }
       }
     }
