@@ -30,10 +30,13 @@ func run() -> void:
 		for door in maps[id].doors:
 			var path: Array = room.find_route(TrainingRoom.point(maps[id].spawn),TrainingRoom.point(door.point))
 			check(not path.is_empty(),id+"可到达门前："+door.id)
-		var clear: bool = true
-		for x in [-200,0,200]:
-			for y in [-100,0,100]: clear=clear and room.can_walk(Vector2(720+x,550+y))
-		check(clear,id+"圆庭中央净空")
+		if id=="court2":
+			check(not room.can_walk(Vector2(750,630)) and not room.clear_path(Vector2(610,630),Vector2(890,630)) and not room.find_route(Vector2(610,630),Vector2(890,630)).is_empty(),"扶桑残庭残石阻挡直穿且能绕行")
+		else:
+			var clear: bool = true
+			for x in [-200,0,200]:
+				for y in [-100,0,100]: clear=clear and room.can_walk(Vector2(720+x,550+y))
+			check(clear,id+"圆庭中央净空")
 	var game: Node2D = load("res://scenes/tanggu_first_level.tscn").instantiate()
 	root.add_child(game); game.set_physics_process(false)
 	check(game.room.snapshot().roomId=="entry","默认入口加载房间流程")

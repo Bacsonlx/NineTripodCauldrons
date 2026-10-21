@@ -1,0 +1,20 @@
+{
+  "route": "host_image",
+  "tool": "image_gen.imagegen",
+  "model": "未由工具返回",
+  "transparent_background": true,
+  "reference": "godot/scenes/rooms/court2.tscn at 12c0355b (before redesign), open-state offline composition",
+  "reference_sha256": "df0332423443b86c88975a5eabe19176556bb6a477e7bcde290440d8ecc26724",
+  "image": "ruin_stone.png",
+  "image_sha256": "45b0e675cb20184d568be18a0484a1c28c1e91595b44c591c8d4729bc137eab6",
+  "prompt_file": "prompt.txt",
+  "cost": "未由工具返回",
+  "source_preview": "output/level-design/tanggu-room-prototype-20261021/court2-detail-v3/index.html",
+  "atlas_region": [
+    133,
+    220,
+    1649,
+    437
+  ],
+  "runtime_image": "godot/assets/world/ruin_stone.png"
+}
