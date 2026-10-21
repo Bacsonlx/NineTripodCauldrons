@@ -1,0 +1,16 @@
+{
+  "name": "nine-tripods-godot-mcp-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "postinstall": "node patch.mjs",
+    "verify": "node verify.mjs"
+  },
+  "dependencies": {
+    "@coding-solo/godot-mcp": "git+https://github.com/Coding-Solo/godot-mcp.git#1209744fad78f3998f98c7394fd0f6ef50da5281",
+    "@modelcontextprotocol/sdk": "0.6.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

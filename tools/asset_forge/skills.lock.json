@@ -1,0 +1,19 @@
+{
+  "repository": "https://github.com/0x0funky/agent-sprite-forge",
+  "ref": "5324342fdfab72430f4e9604f3fe427009f8596d",
+  "version": "0.4.0",
+  "skills": {
+    "generate2dsprite": {
+      "files": 31,
+      "sha256": "2d0841ec05843b64180669fa8e8d7685aca408a16b61bc202fe82bf34f57c69e"
+    },
+    "generate2dmedia": {
+      "files": 20,
+      "sha256": "d5eb68ddce6295840b49efb2a2a6c1abbdb973a11109af90161648af654a9b97"
+    },
+    "video2dsprite": {
+      "files": 30,
+      "sha256": "10174fef7d92ab5c3f723334e79be65acff8865de5d412e76f9704abe8486c33"
+    }
+  }
+}

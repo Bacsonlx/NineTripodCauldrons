@@ -5,6 +5,10 @@ coverage/
 .test-build/
 godot/.godot/
 build/godot/
+.codex/config.toml
+tools/asset_forge/.venv/
+/.scratch/
+/output/
 *.log
 .DS_Store
 .env

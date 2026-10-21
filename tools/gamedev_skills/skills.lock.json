@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "repository": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+  "commit": "0a70cfc64672d512c5b5b6006b5dcb5cf90dbdbd",
+  "installed_on": "2026-10-20",
+  "license": "Apache-2.0",
+  "skills": [
+    {
+      "name": "game-feel",
+      "source_path": "skills/disciplines/game-feel",
+      "destination": ".agents/skills/game-feel",
+      "files": {
+        "SKILL.md": "68fc818ad939151be2db9e358e4295a71830c19d61f3aff849f1599307f39f9d",
+        "references/feedback-recipes.md": "c1d0c4d9480bf4cd729ca99f2b36ebc1f3f264a873b408f2145898841e5d6685"
+      }
+    },
+    {
+      "name": "godot-animation",
+      "source_path": "skills/godot/godot-animation",
+      "destination": ".agents/skills/godot-animation",
+      "files": {
+        "SKILL.md": "9d32ef721eaa227494180b6ffb0208624a76e93217a2e39c2286eb0b5701e8e5",
+        "references/animation-tree-and-tween.md": "455ef0e15357428f250035fd5b0c587500b9d565f3bbcc33f95f378a986380a6"
+      }
+    },
+    {
+      "name": "godot-audio",
+      "source_path": "skills/godot/godot-audio",
+      "destination": ".agents/skills/godot-audio",
+      "files": {
+        "SKILL.md": "b75829c3c47539f4e1fa2b623ebfce6fa4f5eef2ddc950d00265c27cfae2e0db",
+        "references/buses-and-effects.md": "da6a33ae46b21f3526e74c5e383781e02f1f6ca0bd755475b21e14f124a52526"
+      }
+    },
+    {
+      "name": "godot-export",
+      "source_path": "skills/godot/godot-export",
+      "destination": ".agents/skills/godot-export",
+      "files": {
+        "SKILL.md": "e97f0a889b8e06934aced7fdcee667d5bb848e33bc44d500c92f580e60295305",
+        "references/presets-and-cli.md": "ddb73ed10a107d806e883a1d13c6a78377226223d57b536201dda9c97505ae62"
+      }
+    },
+    {
+      "name": "godot-gdscript",
+      "source_path": "skills/godot/godot-gdscript",
+      "destination": ".agents/skills/godot-gdscript",
+      "files": {
+        "SKILL.md": "b2625f5651fc9373e057ea47b5e2372319c4ed027fffc958f8a91d25cdea5a39",
+        "references/annotations-and-typing.md": "f1cea898e0346be3fac816093b577b30ef0f112d83cc2c1472c44d4a936700b3"
+      }
+    },
+    {
+      "name": "godot-gdscript-headless-testing",
+      "source_path": "skills/godot/godot-gdscript-headless-testing",
+      "destination": ".agents/skills/godot-gdscript-headless-testing",
+      "files": {
+        "SKILL.md": "556b63c125cd01864411a07a7d9c067b5b5df26db9cd60c745edf871edabb47e"
+      }
+    },
+    {
+      "name": "godot-nodes-scenes",
+      "source_path": "skills/godot/godot-nodes-scenes",
+      "destination": ".agents/skills/godot-nodes-scenes",
+      "files": {
+        "SKILL.md": "27beea0d3994e6bc502f9dc3fb6089afcdc083e41790a4cf6a7d32314e079e3d",
+        "references/tree-and-instancing.md": "be3c86180bd18dd46bfdfd7a47317bdb50fc6942cfc3e3d7342b4d0f7834b7a4"
+      }
+    },
+    {
+      "name": "godot-resources",
+      "source_path": "skills/godot/godot-resources",
+      "destination": ".agents/skills/godot-resources",
+      "files": {
+        "SKILL.md": "c44678e5ce98171d21fb6899f8e7e3983f5599a98e45b3c24bb80a19468e44ab",
+        "references/resource-patterns.md": "f0474f71c843c4c9cfd05609129984a4facf3444a764b2c71f24f066a51dbbb9"
+      }
+    },
+    {
+      "name": "godot-shaders",
+      "source_path": "skills/godot/godot-shaders",
+      "destination": ".agents/skills/godot-shaders",
+      "files": {
+        "SKILL.md": "15bf46f7b0af586f026c1bb58beaeba2579009b70398f43859b7ab286a45e63e",
+        "references/shading-language.md": "582b146d8d47b61d80eb8def8e48923d87ef1c7964542f0a12e9e05645c517e9"
+      }
+    },
+    {
+      "name": "godot-ui-control",
+      "source_path": "skills/godot/godot-ui-control",
+      "destination": ".agents/skills/godot-ui-control",
+      "files": {
+        "SKILL.md": "9ac89920e74bbf8d939b4d565e350d53b07c9afbe0970345c97d4122f590cfd5",
+        "references/layout-and-theming.md": "2b5a7d64f00709640385adda215aa3f9a839c2d461c53c886ba9c320723a9f3d"
+      }
+    },
+    {
+      "name": "level-design",
+      "source_path": "skills/disciplines/level-design",
+      "destination": ".agents/skills/level-design",
+      "files": {
+        "SKILL.md": "f1656cb00b9af8dc625a9655448b410b37ce6f1e523048a5abf09fda25cbfd32",
+        "references/pacing-and-flow.md": "e8e3940f585e376f353aefea009befe8199a1871f99d34d7b2340cb35cb61872"
+      }
+    },
+    {
+      "name": "performance-optimization",
+      "source_path": "skills/disciplines/performance-optimization",
+      "destination": ".agents/skills/performance-optimization",
+      "files": {
+        "SKILL.md": "ddfc68c927f9a482d78cc0e103edb2e2711bc876a5965ff53eabd9a7d308dfab",
+        "references/profiling-and-budgets.md": "fb161af3797b364c5a9032dc3836bc25f05762508f2831f6a19a6aa416811dd8"
+      }
+    }
+  ],
+  "support_files": {
+    "tools/gamedev_skills/LICENSE": "6f82dcfeb95a1c0a0452180a3b16f21bf82111780018fed59d95a052b5b75f6c",
+    "tools/gamedev_skills/NOTICE": "2dcb65b1c5be24e5ba11e937f3996100f4e980d8cf8ac5b30ba1d70dae6c40f8",
+    "tools/gamedev_skills/UPSTREAM-VERSION-SUPPORT.md": "cd2fa7743ebb1f5527f4eaad8c82f6fa13f48b2651b0b2eeba5ba4d48ec1f2f2"
+  }
+}

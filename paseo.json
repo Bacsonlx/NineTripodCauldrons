@@ -1,0 +1,7 @@
+{
+  "metadataGeneration": {
+    "branchName": {
+      "instructions": "分支以feat进行开头，如果是修复则以fix开头"
+    }
+  }
+}

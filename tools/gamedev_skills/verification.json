@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-20",
+  "source_commit": "0a70cfc64672d512c5b5b6006b5dcb5cf90dbdbd",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "upstream_validator": {
+    "skill_files": 75,
+    "exit_code": 0,
+    "summary": "All checks passed."
+  },
+  "tests": [
+    {
+      "case": "pass",
+      "input_sha256": "bff7c9085f67860f4ee6655e93510527c9b6e69189e44f5255809246b4c7980b",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nResults: 1 passed, 0 failed",
+      "stderr": "ERROR: Could not create directory: '/Users/linxin/Library/Application Support/Godot/app_userdata/Skill Smoke'.\n   at: make_dir_recursive (core/io/dir_access.cpp:179)\nERROR: Error attempting to create data dir: /Users/linxin/Library/Application Support/Godot/app_userdata/Skill Smoke.\n   at: ensure_user_data_dir (core/os/os.cpp:442)\nERROR: Could not create directory: 'user://logs'.\n   at: make_dir_recursive (core/io/dir_access.cpp:179)\nERROR: Failed to open log file for writing: user://logs/godot.log\n   at: rotate_file (core/io/logger.cpp:169)\nERROR: Condition \"ret != noErr\" is true. Returning: \"\"\n   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)"
+    },
+    {
+      "case": "intentional_failure",
+      "input_sha256": "ac55cc129b916855c3b15ba1ad428409f8b5d76094d5d27fd69b0507ff4ea449",
+      "expected_exit": 1,
+      "actual_exit": 1,
+      "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nResults: 0 passed, 1 failed",
+      "stderr": "ERROR: Could not create directory: '/Users/linxin/Library/Application Support/Godot/app_userdata/Skill Smoke'.\n   at: make_dir_recursive (core/io/dir_access.cpp:179)\nERROR: Error attempting to create data dir: /Users/linxin/Library/Application Support/Godot/app_userdata/Skill Smoke.\n   at: ensure_user_data_dir (core/os/os.cpp:442)\nERROR: Could not create directory: 'user://logs'.\n   at: make_dir_recursive (core/io/dir_access.cpp:179)\nERROR: Failed to open log file for writing: user://logs/godot.log\n   at: rotate_file (core/io/logger.cpp:169)\nERROR: Condition \"ret != noErr\" is true. Returning: \"\"\n   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)\nERROR: FAIL test_add: expected 5, got 4\n   at: push_error (core/variant/variant_utility.cpp:1023)\n   GDScript backtrace (most recent call first):\n       [0] assert_eq (res://intentional_failure.gd:18)\n       [1] test_add (res://intentional_failure.gd:21)\n       [2] _initialize (res://intentional_failure.gd:9)"
+    },
+    {
+      "case": "async_timer",
+      "input_sha256": "24070e86e4f85c172b0f6571652232e532f4f831977bc1c03c1ae9ab147d75a9",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "stdout": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nResults: 1 passed, 0 failed",
+      "stderr": "ERROR: Could not create directory: '/Users/linxin/Library/Application Support/Godot/app_userdata/Skill Smoke'.\n   at: make_dir_recursive (core/io/dir_access.cpp:179)\nERROR: Error attempting to create data dir: /Users/linxin/Library/Application Support/Godot/app_userdata/Skill Smoke.\n   at: ensure_user_data_dir (core/os/os.cpp:442)\nERROR: Could not create directory: 'user://logs'.\n   at: make_dir_recursive (core/io/dir_access.cpp:179)\nERROR: Failed to open log file for writing: user://logs/godot.log\n   at: rotate_file (core/io/logger.cpp:169)\nERROR: Condition \"ret != noErr\" is true. Returning: \"\"\n   at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)"
+    }
+  ],
+  "boundaries": [
+    "仅临时独立工程，无前台窗口和系统键鼠",
+    "未改游戏代码、资产与预设，未重跑完整游戏检查",
+    "未验证原生画面、声音、性能、Windows 或 Agent 自动触发成功率"
+  ],
+  "clean_import_exit": 0,
+  "quit_after_help": [
+    "--quit-after <int>                R  Quit after the given number of iterations. Set to 0 to disable.",
+    "--quit-after can be used to specify the number of frames to write."
+  ],
+  "time_process_units": {
+    "source": "https://docs.godotengine.org/en/stable/classes/class_performance.html#class-performance-constant-time-process",
+    "checked_on": "2026-10-20",
+    "unit": "seconds",
+    "local_doctool_description": "本机构建导出的该常量说明为空，因此以官方文档核实单位"
+  },
+  "integrity_checker": {
+    "baseline_exit": 0,
+    "tampered_temp_copy_exit": 1,
+    "scope": "仅修改临时副本；项目技能原文未变"
+  },
+  "local_document_links": {
+    "checked": 39,
+    "missing": 0
+  }
+}

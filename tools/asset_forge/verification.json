@@ -1,0 +1,231 @@
+{
+  "verified_at": "2026-10-20",
+  "upstream_ref": "5324342fdfab72430f4e9604f3fe427009f8596d",
+  "host": {
+    "os": "Darwin",
+    "os_release": "26.0",
+    "architecture": "arm64",
+    "python": "3.13.3",
+    "dependencies": {
+      "numpy": "2.5.4",
+      "Pillow": "13.0.0",
+      "scipy": "1.18.1"
+    },
+    "godot": "4.7.2.stable.official.ed1daf0bf"
+  },
+  "scope": "Temporary fixtures and temporary headless Godot project only; production assets and runtime unchanged.",
+  "checks": {
+    "installed_skills": {
+      "status": "pass",
+      "command": "tools/asset_forge/.venv/bin/python tools/asset_forge/verify.py",
+      "files_verified": 81
+    },
+    "existing_image_crop": {
+      "status": "pass_with_warning",
+      "source": "assets/mvp02/child-lower-unified-v2.png",
+      "source_sha256": "b5431c80309bebb1c10f03a35073916ebe26553f6c0643afe5d98befc260fa7f",
+      "frame": "lower-0-0",
+      "crop_box": [
+        66,
+        46,
+        250,
+        203
+      ],
+      "anchor_px": [
+        102.0,
+        154.0
+      ],
+      "rgba_preserved": true,
+      "command": "assemble_frames.py --sheet <source> --crop-boxes <existing rectangle> --duration 100 --allow-spill --output-dir <new>",
+      "default_rejects_cross_cell_spill": true,
+      "allow_spill_reason": "Existing accepted lower-layer crop intentionally excludes the repeated waist; preserve the exact project metadata rectangle. Not a default for newly generated sheets.",
+      "spill_check": {
+        "threshold": 16,
+        "min_area": 4,
+        "connectivity": 8,
+        "components": 28,
+        "crossing": [
+          {
+            "label": 2,
+            "area": 18622,
+            "bbox": [
+              68,
+              25,
+              248,
+              201
+            ],
+            "owner": 0,
+            "owner_id": "lower-0-0",
+            "pixels_over": 1462,
+            "overhang_px": 21,
+            "pixels_per_box": {
+              "lower-0-0": 17160
+            },
+            "pixels_outside_every_box": 1462
+          }
+        ],
+        "specks_crossing": 0,
+        "unboxed_components": 27,
+        "unboxed_px": 518400,
+        "verdict": "spill",
+        "background_share": 0.658571,
+        "status": "allowed"
+      },
+      "qa": {
+        "status": "warn",
+        "checks": [
+          {
+            "id": "png_rgba_exact",
+            "status": "pass",
+            "value": true,
+            "threshold": null
+          },
+          {
+            "id": "atlas_rgba_exact",
+            "status": "pass",
+            "value": true,
+            "threshold": null
+          },
+          {
+            "id": "webp_timeline",
+            "status": "pass",
+            "value": 100,
+            "threshold": null
+          },
+          {
+            "id": "cross_cell_spill",
+            "status": "warn",
+            "value": 1462,
+            "threshold": 0
+          },
+          {
+            "id": "loop_seam",
+            "status": "skipped",
+            "value": null,
+            "threshold": null
+          }
+        ]
+      },
+      "metadata_source": "assets/mvp02/atlases.json",
+      "metadata_sha256": "e878647a97548383ef8098844c71841bdd9b5320b5dc280010be3e243ec5de2b"
+    },
+    "registered_alignment": {
+      "status": "pass",
+      "fixture": "Two 256x256 transparent cells made from the same existing cropped frame, placed at (30,40) and (30,48).",
+      "command": "generate2dsprite.py process --input <fixture> --target asset --mode sheet --rows 1 --cols 2 --cell-size 256 --scale-strategy registered --anchor-px 120,128 --background-mode native_alpha --alpha-hygiene none --resampler nearest --pixel-scale 1 --logical-pixel 1 --strict-qc --output-dir <new>",
+      "shared_translation_px": [
+        8,
+        0
+      ],
+      "intentional_relative_displacement_px": [
+        0,
+        8
+      ],
+      "alpha_exact": true,
+      "visible_rgb_exact": true,
+      "transparent_rgb_may_normalize": true,
+      "qa": {
+        "status": "pass",
+        "checks": [
+          {
+            "id": "empty_frames",
+            "status": "pass",
+            "value": [],
+            "threshold": []
+          },
+          {
+            "id": "paste_clamped_frames",
+            "status": "pass",
+            "value": [],
+            "threshold": []
+          },
+          {
+            "id": "output_edge_touch_frames",
+            "status": "pass",
+            "value": [],
+            "threshold": []
+          },
+          {
+            "id": "source_edge_touch_frames",
+            "status": "pass",
+            "value": [],
+            "threshold": []
+          },
+          {
+            "id": "body_scale_cv",
+            "status": "skipped",
+            "value": 0.0,
+            "threshold": null
+          },
+          {
+            "id": "anchor_y_std",
+            "status": "skipped",
+            "value": 0.0,
+            "threshold": null
+          },
+          {
+            "id": "pixel_grid",
+            "status": "pass",
+            "value": 0,
+            "threshold": 0
+          }
+        ]
+      }
+    },
+    "clip_build": {
+      "status": "pass",
+      "frames": 1,
+      "anchor_px": [
+        102.0,
+        154.0
+      ],
+      "duration_ms": 100,
+      "loop": true,
+      "visual_review": "not performed; single-frame fixture verifies metadata only"
+    },
+    "godot_export": {
+      "status": "pass",
+      "target": "godot-spriteframes",
+      "files": [
+        {
+          "path": "godot/probe-atlas-00.png",
+          "sha256": "dde08f1f52ad2041d5002bac5c66c3446df8e4169373256f66f3ce128018ce71",
+          "bytes": 52560
+        },
+        {
+          "path": "godot/probe.tres",
+          "sha256": "fe98872868a3b7aeefefe7292df0b5bb6022e7c6d38f92836113fe962f00263e",
+          "bytes": 426
+        },
+        {
+          "path": "godot/probe.tscn",
+          "sha256": "10f09fc1fb222891b1f051ced2a8e210ac33e5113ca45acf1a61afae3882ac2b",
+          "bytes": 293
+        }
+      ],
+      "parse_roundtrip_qa": "pass"
+    },
+    "godot_clean_import_and_load": {
+      "status": "pass",
+      "commands": [
+        "godot --headless --path <temporary project> --editor --import",
+        "godot --headless --path <temporary project> --script res://verify.gd"
+      ],
+      "error_lines": 0,
+      "marker": "SPRITE_FORGE_GODOT_PASS",
+      "assertions": [
+        "PackedScene loads and instantiates as AnimatedSprite2D",
+        "centered=false and offset=(-102,-154)",
+        "idle has one frame, loops and plays at 10 FPS with relative duration 1.0 (100 ms)",
+        "AtlasTexture region=(3,3,184,157) and atlas texture loads"
+      ]
+    }
+  },
+  "not_verified": [
+    "Visual quality and complete animation playback",
+    "Video generation, model APIs, credentials or billing routes",
+    "Full multi-layer character integration and per-frame project scale/hand anchors",
+    "Windows execution or native foreground performance",
+    "Whole production Godot regression suite (runtime was not changed)"
+  ]
+}
