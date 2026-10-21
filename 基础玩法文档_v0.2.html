@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《十日》· 基础玩法文档 v0.2（六器系统层）</title>
+<style>
+  :root{
+    --ink:#2a2521; --ink-2:#5c534a; --ink-3:#8d8278;
+    --paper:#faf7f1; --paper-2:#ffffff; --line:#e2dbcf;
+    --red:#8c2f2f; --red-l:#f3e6e4;
+    --gold:#9c7526; --gold-l:#f7f0e0;
+    --teal:#2f6b63; --teal-l:#e6f1ef;
+    --blue:#2f5478; --blue-l:#e8eff6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",system-ui,sans-serif;
+    font-size:15px; line-height:1.9;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:56px 32px 120px;}
+
+  .kicker{font-size:12px;letter-spacing:.32em;color:var(--gold);margin-bottom:14px;}
+  h1{font-family:Georgia,"Songti SC","Noto Serif SC",serif;font-size:44px;line-height:1.15;margin:0 0 8px;font-weight:600;letter-spacing:.06em;}
+  .sub{font-size:14.5px;color:var(--ink-2);margin:0 0 26px;letter-spacing:.05em;}
+
+  .logline{border-left:3px solid var(--red);background:var(--red-l);padding:18px 22px;border-radius:0 10px 10px 0;font-size:16.5px;line-height:1.85;color:#5a2626;}
+  .logline b{color:var(--red);}
+
+  h2{font-family:Georgia,"Songti SC",serif;font-size:24px;margin:64px 0 6px;font-weight:600;letter-spacing:.04em;padding-bottom:10px;border-bottom:2px solid var(--ink);}
+  h2 .num{color:var(--gold);font-size:13px;letter-spacing:.2em;display:block;margin-bottom:4px;font-family:system-ui;}
+  h3{font-size:17px;margin:34px 0 8px;font-weight:600;color:var(--red);}
+  h4{font-size:15px;margin:20px 0 4px;font-weight:600;color:var(--ink);}
+  p{margin:10px 0;}
+  ul,ol{padding-left:22px;margin:10px 0;}
+  li{margin:5px 0;}
+  em{font-style:normal;color:var(--ink-3);}
+  strong{color:var(--ink);}
+
+  .card{background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin:16px 0;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0;}
+  .grid.g3{grid-template-columns:1fr 1fr 1fr;}
+  .grid .card{margin:0;}
+  @media(max-width:780px){.grid,.grid.g3{grid-template-columns:1fr;}}
+
+  .reveal{border:1px solid #e6c9c6;background:#fdf6f5;border-radius:12px;padding:16px 20px;margin:20px 0;position:relative;}
+  .reveal::before{content:attr(data-tag);position:absolute;top:-11px;left:16px;background:var(--red);color:#fff;font-size:11px;letter-spacing:.16em;padding:2px 10px;border-radius:20px;}
+  .reveal.flat{border-color:var(--line);background:#fdfbf7;}
+  .reveal.flat::before{background:var(--ink-3);}
+  .reveal.gd{border-color:#e0cfa4;background:#fdf9ef;}
+  .reveal.gd::before{background:var(--gold);}
+
+  .hook{border-left:3px solid var(--gold);background:var(--gold-l);padding:12px 18px;margin:14px 0;border-radius:0 8px 8px 0;font-size:14.5px;}
+  .hook b{color:var(--gold);}
+  .warn{border-left:3px solid var(--red);background:#fdf3f2;padding:14px 18px;margin:14px 0;border-radius:0 8px 8px 0;font-size:14.5px;}
+  .warn b{color:var(--red);}
+  .v3{border-left:3px solid var(--teal);background:var(--teal-l);padding:12px 18px;margin:14px 0;border-radius:0 8px 8px 0;font-size:14.5px;}
+  .v3 b{color:var(--teal);}
+  .say{font-family:Georgia,"Songti SC",serif;font-size:16.5px;line-height:1.95;color:#4a3f35;padding:6px 0 6px 20px;border-left:2px solid var(--line);margin:14px 0;}
+
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;}
+  th{background:var(--ink);color:#f7f3ec;text-align:left;padding:10px 12px;font-weight:500;font-size:12.5px;letter-spacing:.06em;}
+  td{border-bottom:1px solid var(--line);padding:9px 12px;vertical-align:top;line-height:1.7;}
+  tr:nth-child(even) td{background:#fdfbf7;}
+  td:first-child{font-weight:600;white-space:nowrap;}
+  td.c{text-align:center;}
+  .t4{color:var(--red);font-weight:600;}
+
+  .tag{display:inline-block;font-size:11.5px;letter-spacing:.08em;border:1px solid var(--line);border-radius:20px;padding:1px 9px;color:var(--ink-2);background:#fff;margin-right:4px;white-space:nowrap;}
+  .tag.red{border-color:#dcb9b5;color:var(--red);background:var(--red-l);}
+  .tag.gold{border-color:#e0cfa4;color:var(--gold);background:var(--gold-l);}
+  .tag.teal{border-color:#b8d6d1;color:var(--teal);background:var(--teal-l);}
+  .tag.blue{border-color:#c3d3e2;color:var(--blue);background:var(--blue-l);}
+  .tag.dim{color:#9a9188;border-color:#e2dbcf;background:#f6f3ed;}
+
+  .q{display:inline-block;width:15px;height:15px;line-height:15px;text-align:center;font-size:10px;font-family:system-ui;color:#fff;border-radius:3px;}
+  .q.w{background:#9a938b;} .q.b{background:#3f7d94;} .q.p{background:#6c5aa8;}
+  .q.o{background:#a8682c;} .q.r{background:#8c2f2f;}
+
+  /* 背包示意 */
+  .bp{display:grid;grid-template-rows:3fr 1fr 4fr;gap:5px;margin:18px 0;}
+  .bp .z{position:relative;border-radius:6px;display:flex;align-items:center;justify-content:center;background-color:#fffdf8;border:1px solid var(--line);}
+  .bp .z.eq{background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.07) 0 1px,transparent 1px 10%),repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0 1px,transparent 1px 33.333%);}
+  .bp .z.me{background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.07) 0 1px,transparent 1px 10%);background-color:#f4efe4;}
+  .bp .z.st{background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.07) 0 1px,transparent 1px 10%),repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0 1px,transparent 1px 25%);}
+  .bp .z span{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:2px 12px;font-size:11.5px;letter-spacing:.14em;color:var(--ink-2);}
+
+  /* 祭坛示意：仓库 | 祭坛 | 仓库 */
+  .al{display:grid;grid-template-columns:3fr 4fr 3fr;gap:5px;margin:18px 0;}
+  .al .z{position:relative;border-radius:6px;height:96px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:7px;}
+  .al .a{background-color:#fdf6e6;border:1px solid #e0cfa4;
+    background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.08) 0 1px,transparent 1px 25%),repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0 1px,transparent 1px 25%);
+    box-shadow:inset 0 0 22px rgba(156,117,38,.16);}
+  .al .b{background-color:#f7f4ee;border:1px dashed var(--line);
+    background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.05) 0 1px,transparent 1px 33.333%),repeating-linear-gradient(0deg,rgba(0,0,0,.05) 0 1px,transparent 1px 25%);}
+  .al .z span{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:1px 10px;font-size:11px;letter-spacing:.12em;color:var(--ink-2);}
+  .al .a span{border-color:#e0cfa4;color:var(--gold);}
+
+  .shp{display:inline-grid;grid-template-columns:repeat(3,7px);grid-template-rows:repeat(3,7px);gap:2px;vertical-align:middle;margin-right:8px;}
+  .shp i{background:var(--ink);border-radius:1px;}
+  .shp.t i{background:var(--teal);}
+  .shp.g i{background:var(--gold);}
+
+  .flow{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:18px 0;}
+  .flow .s{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 8px;text-align:center;}
+  .flow .s .n{font-size:11px;letter-spacing:.12em;color:var(--gold);margin-bottom:4px;}
+  .flow .s .t{font-size:13px;font-weight:600;line-height:1.5;}
+  .flow .s .d{font-size:11px;color:var(--ink-3);line-height:1.5;margin-top:3px;}
+  @media(max-width:780px){.flow{grid-template-columns:repeat(2,1fr);}}
+
+  hr{border:0;border-top:1px solid var(--line);margin:44px 0;}
+  .end{margin-top:64px;padding:26px;background:var(--ink);color:#efe9de;border-radius:12px;text-align:center;font-family:Georgia,"Songti SC",serif;font-size:17px;letter-spacing:.1em;line-height:2;}
+  .foot{margin-top:34px;font-size:12.5px;color:var(--ink-3);text-align:center;line-height:1.9;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- SIX_SYSTEM_CURRENT_RULES_START -->
+  <aside class="warn" role="note" aria-label="历史版本与最新规则入口">
+    <b>历史参考稿 · 2026-10-20 访谈已更新规则</b><br>
+    本页保留 v0.2 原文。最新已确认主干、未定内容及两关验证方案见
+    <a href="docs/九鼎_六器系统_玩法主干确认稿_v0.3.md">《九鼎：六器系统玩法主干确认稿 v0.3》</a>；
+    逐项来由见 <a href="docs/十日_玩法与运行规则.md">玩法确认记录 Q29—Q93</a>。
+    已确认修订优先于本页旧表述；未补齐的效果仍为候选，规则确认不代表已实现或验收通过。
+  </aside>
+  <!-- SIX_SYSTEM_CURRENT_RULES_END -->
+
+  <div class="kicker">《十日》· 基础玩法文档 v0.2 &nbsp;|&nbsp; 六器（系统层）</div>
+  <h1>十日</h1>
+  <p class="sub">并入世界观 v1.2 &nbsp;|&nbsp; 六系统：装备 · 技能 · 生肖道具 · 羁绊 · 背包 · 神兽 &nbsp;|&nbsp; v0.2 重写羁绊、道具 150 件、新增局内外方案</p>
+
+  <div class="logline">
+    这六个系统的真正落点，不是"国风收集"，是《十日》的那句话：<b>被记住的，才存在。</b><br>
+    所以十种羁绊不是金木水火土，是<b>十种被记住的方式</b>——你的名字被铸进鼎里、供进祠里、沉进归墟、烧成灰、
+    埋进土里、遭天雷劈、镇在塔下、挂在角斗场上、丢在荒草里没人认、或者，映在镜子里那个不是你的脸上。
+  </div>
+
+  <!-- ══════════ §00 ══════════ -->
+  <h2><span class="num">§ 00</span>本版改了什么</h2>
+
+  <table>
+    <tr><th style="width:8%">项</th><th style="width:30%">v0.1</th><th>v0.2（你拍的板）</th></tr>
+    <tr><td>归属</td><td>A / B 未定</td><td class="t4"><b>并轨：《十日》· 六器（系统层）</b>。世界观不变，本稿只做系统层</td></tr>
+    <tr><td>羁绊</td><td>五行 × 阴阳 = 10</td><td class="t4"><b>推翻重写</b>。十种容器（金鼎 / 木祠 / 水沉 / 火焚 / 土葬 / 雷刑 / 塔镇 / 场斗 / 草野 / 镜影），且<b>不再是"凑件数激活"</b>（§08）</td></tr>
+    <tr><td>道具</td><td>780 全量 · v1.0 建议 150</td><td class="t4"><b>150 件定死</b>：10 肖 × 3 形制 × 5 词缀（§07）</td></tr>
+    <tr><td>局内 / 局外</td><td>未给方案</td><td class="t4"><b>新增 §11</b>。一条铁律 + 三条线 + 传承残影</td></tr>
+    <tr><td>背包</td><td>装备区 / 经脉区 / 储物区</td><td>储物区中央切出<b>祭坛 4×4</b>，成为全系统的舞台（§03）</td></tr>
+  </table>
+
+  <div class="v3">
+    <b>十肖与十容器一一对应，一格不差</b>（§07）。上版本那个"三个系统是同一张表"的结构性巧合，在换掉羁绊定义之后不但没丢，反而更结实了——因为十个容器的名字现在本身就是《十日》的世界观。
+  </div>
+
+  <!-- ══════════ §01 ══════════ -->
+  <h2><span class="num">§ 01</span>核心主张：六个系统，一块背包</h2>
+
+  <p>这条不变，且因为并入了《十日》，它更有理由成立。</p>
+
+  <div class="say">
+    装备是占格子的形状，技能是占格子的书，神兽是占格子的活物，道具是占格子的饲料，
+    强化材料是占格子的骨，羁绊是格子与格子之间的相邻关系。<br>
+    于玩家而言，<b>每一次决策都是同一个决策——这块地方，给谁？</b>
+  </div>
+
+  <table>
+    <tr><th style="width:12%">系统</th><th style="width:24%">在背包里的实体</th><th>咬住了谁</th></tr>
+    <tr><td>装备</td><td>六种形状，摆装备区才生效</td><td>咬 <b>腰带</b>（负重解锁储物格）</td></tr>
+    <tr><td>技能</td><td>技能书，摆经脉区才生效</td><td>咬 <b>装备</b>（可镶嵌省格，代价见 §05）</td></tr>
+    <tr><td>道具</td><td>十肖三形制</td><td>咬 <b>祭坛</b>（进祭坛 = 投票）+ 咬 <b>神兽</b>（是饲料）</td></tr>
+    <tr><td>羁绊</td><td>不是物品，是<b>祭坛上的票数排名</b></td><td class="t4">咬 <b>背包</b>（票数由摆放决定）</td></tr>
+    <tr><td>背包</td><td>唯一容器</td><td>咬 <b>所有系统</b></td></tr>
+    <tr><td>神兽</td><td>2×2 的活物，气息外扩一圈</td><td>咬 <b>祭坛</b>（气息圈内物品票数 ×2，§08）</td></tr>
+  </table>
+
+  <div class="hook">
+    <b>为什么这对动作肉鸽有价值</b>：肉鸽的「选择」通常长在一个三选一弹窗里，玩家在点菜单，不是在玩。
+    背包把「选择」变成<b>空间操作</b>——你在<b>摆</b>，不是在<b>选</b>。
+    《背包英雄》的核心洞见就是这个，但它在回合制里成立；把它搬进动作肉鸽，空间会成为节奏的一部分。
+  </div>
+
+  <h3>心流冲突与解法（沿用 v0.1）</h3>
+  <div class="grid">
+    <div class="card">
+      <h4>战斗中 · 拾取 = 3 秒决策</h4>
+      <p>拾取瞬间，角落弹出<b>背包缩略图 + 新物品轮廓</b>，3 秒内决定：进祭坛、进仓库，还是扔掉。</p>
+      <p>超时 → <b>自动塞进仓库</b>（不进祭坛）。这是软惩罚，因为它不投票。</p>
+      <p><em>每次拾取因此是 2~3 秒的呼吸点，它不打断节奏，它就是节拍。</em></p>
+    </div>
+    <div class="card">
+      <h4>营地 · 整理 = 无限时</h4>
+      <p>全屏背包、时间静止、随便摆。强化、附魔、镶嵌、喂兽、重铸、点燃全在营地。</p>
+      <p><em>「摆」在战斗中是本能，在营地中是思考。两种快感分开给。</em></p>
+    </div>
+  </div>
+
+  <!-- ══════════ §02 ══════════ -->
+  <h2><span class="num">§ 02</span>背包：唯一容器</h2>
+
+  <div class="bp">
+    <div class="z eq"><span>装 备 区 &nbsp;10×3</span></div>
+    <div class="z me"><span>经 脉 区 &nbsp;10×1</span></div>
+    <div class="z st"><span>储 物 区 &nbsp;10×4 &nbsp;（中央 4×4 = 祭坛）</span></div>
+  </div>
+
+  <div class="al">
+    <div class="z b"><span>仓 库 3×4</span></div>
+    <div class="z a"><span>祭 坛 4×4 &nbsp;· 投 票 区</span></div>
+    <div class="z b"><span>仓 库 3×4</span></div>
+  </div>
+
+  <table>
+    <tr><th style="width:12%">区域</th><th style="width:10%">格数</th><th style="width:18%">放什么</th><th>规则</th></tr>
+    <tr><td>装备区</td><td class="c">30</td><td>六部位装备 + 神兽</td><td>只有摆在这里的装备才生效。形状对得上才能放</td></tr>
+    <tr><td>经脉区</td><td class="c">10</td><td>四本技能书</td><td>可镶嵌进装备省格（代价：装备没了技能跟着没）</td></tr>
+    <tr><td class="t4">祭坛</td><td class="c t4">16</td><td class="t4">任何物品</td><td class="t4"><b>只有进祭坛的物品才投票（算羁绊票数）</b>。神兽气息圈内票数 ×2</td></tr>
+    <tr><td>仓库</td><td class="c">24</td><td>存着不用的</td><td><b>不投票</b>。仓库是"我暂时不想让它说话"的地方</td></tr>
+  </table>
+
+  <div class="reveal gd" data-tag="为什么祭坛是 4×4">
+    <b>16 格，十种容器，平均每种 1.6 格。</b>这个数字是算出来的：<br>
+    它必须<b>小到装不下你想要的，大到能同时养活两三种</b>。<br><br>
+    16 格塞满 = 摆不下任何新东西 = 玩家每次拾取都在挤掉旧东西。<br>
+    16 格空着 = 票数分散 = 没有容器能显灵。<br><br>
+    <em>祭坛是这个游戏的真正主角。它比角色更值得做原型。</em>
+  </div>
+
+  <p><b>起手解锁 60 格（装备 30 + 经脉 10 + 储物 20，其中祭坛 16 + 仓库 4），满配 80 格（仓库 24）。</b>差的 20 格全由腰带的负重提供。</p>
+
+  <!-- ══════════ §03 ══════════ -->
+  <h2><span class="num">§ 03</span>装备系统</h2>
+
+  <h3>五档品质</h3>
+  <table>
+    <tr><th style="width:12%">品质</th><th style="width:8%">色</th><th style="width:14%">附加词条</th><th style="width:10%">强化上限</th><th style="width:12%">掉落权重</th><th style="width:14%">容器票权</th><th>定位</th></tr>
+    <tr><td><span class="q w">凡</span> 凡品</td><td class="c">白</td><td class="c">0</td><td class="c">+3</td><td class="c">60%</td><td class="c">1</td><td>过渡件，随时可扔</td></tr>
+    <tr><td><span class="q b">精</span> 精致</td><td class="c">青</td><td class="c">1</td><td class="c">+5</td><td class="c">28%</td><td class="c">1</td><td>主力件</td></tr>
+    <tr><td><span class="q p">仙</span> 仙品</td><td class="c">蓝</td><td class="c">2</td><td class="c">+7</td><td class="c">9%</td><td class="c">2</td><td>值得为它改摆放</td></tr>
+    <tr><td><span class="q o">神</span> 神器</td><td class="c">橙</td><td class="c">3</td><td class="c">+9</td><td class="c">2.6%</td><td class="c">3</td><td>一局的目标物</td></tr>
+    <tr><td><span class="q r">专</span> 专属</td><td class="c">赤</td><td class="c">4 + 唯一</td><td class="c">+12</td><td class="c">0.4%</td><td class="c">4</td><td><b>同名唯一</b>，掉落全场提示</td></tr>
+  </table>
+  <p><b>「容器票权」是本版新增</b>：装备摆在祭坛区时，按品质投 1~4 票给它的容器（见 §08）。这让品质第一次有了数值之外的意义。</p>
+
+  <h3>六部位 · 形状</h3>
+  <table>
+    <tr><th style="width:10%">部位</th><th style="width:14%">形状</th><th style="width:8%">占格</th><th style="width:26%">基础属性（数值型）</th><th>定位</th></tr>
+    <tr><td>武器</td><td><span class="shp"><i style="grid-column:span 2;grid-row:span 3"></i></span>2×3</td><td class="c">6</td><td>攻击力%、暴击率、暴击伤害</td><td>最大占位，摆包主要难题</td></tr>
+    <tr><td>衣服</td><td><span class="shp"><i style="grid-column:span 2;grid-row:span 3"></i></span>2×3</td><td class="c">6</td><td>生命、防御、减伤</td><td>同上</td></tr>
+    <tr><td>头盔</td><td><span class="shp"><i style="grid-column:span 2;grid-row:span 2"></i></span>2×2</td><td class="c">4</td><td>生命%、韧性、暴击抗性</td><td>方形，最好塞</td></tr>
+    <tr><td>腰带</td><td><span class="shp"><i style="grid-column:span 3;grid-row:span 1"></i></span>1×3</td><td class="c">3</td><td><b>负重</b>、药水效果</td><td class="t4">负重直接解锁仓库格</td></tr>
+    <tr><td>鞋子</td><td><span class="shp"><i style="grid-column:span 2;grid-row:span 1"></i></span>1×2</td><td class="c">2</td><td>移动速度、闪避率</td><td>小，但常是流派关键</td></tr>
+    <tr><td>项链</td><td><span class="shp"><i style="grid-column:span 1;grid-row:span 1"></i></span>1×1</td><td class="c">1</td><td>暴击伤害、技能急速</td><td>万能填充件</td></tr>
+  </table>
+  <div class="v3"><b>六件共 22 格，装备区 30 格，余 8 格</b>（留给神兽 2×2 与一点富余）。余量必须刚好够难受，不能更多。</div>
+
+  <h3>特殊属性 = 身法（不是数值）</h3>
+  <div class="reveal" data-tag="核心纪律">
+    <b>每件装备的特殊属性，必须是一个「身法」——一个改变操作方式的动作，而不是一个 +X%。</b><br><br>
+    动作肉鸽的爽在心流不中断。数值型词条会强迫玩家站下来算数，当场杀死手感；
+    而<b>改变操作方式的词条会长进肌肉记忆</b>，玩家不需要看面板就知道自己变强了——他的手变了。<br><br>
+    <em>判定标准：如果一条特殊属性写成 +15% 也成立，它就还不合格。</em>
+  </div>
+
+  <table>
+    <tr><th style="width:10%">部位</th><th style="width:16%">身法名</th><th>它改造了哪个操作</th></tr>
+    <tr><td rowspan="2">武器</td><td><b>落日</b></td><td>满蓄力的箭<b>钉在地上不消失</b>，走过去可拾回。→ 新增「回收」动作</td></tr>
+    <tr><td><b>连珠</b></td><td>射出的箭在空中<b>可被后续的箭击中</b>而改变轨迹。→ 射的目标从敌人变成自己的箭</td></tr>
+    <tr><td rowspan="2">头盔</td><td><b>重瞳</b></td><td>受伤瞬间视野真的收窄 0.5 秒，此后 2 秒暴击必中。→ 挨打从惩罚变成起手式</td></tr>
+    <tr><td><b>闭目</b></td><td>看不见血量与敌人数值，改为<b>听声辨位</b>。→ 换掉一个感官</td></tr>
+    <tr><td rowspan="2">衣服</td><td><b>逆鳞</b></td><td>受击时<b>反向位移</b>——不被击退，而是向前冲</td></tr>
+    <tr><td><b>负荆</b></td><td>受击完全不位移，改为原地硬直 0.3 秒。→ 用机动换输出窗口</td></tr>
+    <tr><td rowspan="2">项链</td><td><b>续命</b></td><td>闪避不再是位移，改为<b>原地留一具残影</b>吸引敌人。→ 闪避从求生变布置</td></tr>
+    <tr><td><b>借寿</b></td><td>每次攻击自扣 1% 生命，攻速可叠至翻倍。→ 血条变成油门</td></tr>
+    <tr><td rowspan="2">腰带</td><td><b>负山</b></td><td>负重 +10（多解锁 10 格），翻滚距离 −30%。→ <b>用身法直接换背包空间</b></td></tr>
+    <tr><td><b>悬壶</b></td><td>药水改为<b>放在地上</b>，踩过才生效。→ 省格，代价是要走位去捡</td></tr>
+    <tr><td rowspan="2">鞋子</td><td><b>踏雪</b></td><td>可二段闪，但二段无敌帧减半。→ 闪避从一次决策变两次</td></tr>
+    <tr><td><b>钉</b></td><td>闪避改为短突进，且<b>无敌帧后置 0.2 秒</b>。→ 不能躲即时伤害，必须预判</td></tr>
+  </table>
+
+  <div class="hook">
+    <b>看最后两条鞋子。</b>「踏雪」和「钉」数值完全等价（都是闪避位移 + 无敌帧），
+    但一个是「能多躲一次」，一个是「必须提前躲」。<b>玩家不看面板，上手 3 秒就知道自己换了流派。</b>
+  </div>
+
+  <h3>强化与附魔</h3>
+  <div class="warn">
+    <b>强化必定成功，不设随机失败。</b>肉鸽里「随机失败 + 掉级」是最廉价的负反馈——它不产生任何决策，只产生挫败。
+    本稿用<b>成本递增</b>替代：越高越贵，且贵的不是金币，是<b>背包格子</b>。
+  </div>
+  <table>
+    <tr><th style="width:12%">强化段</th><th style="width:24%">消耗（器魂）</th><th style="width:14%">附加词条</th><th>说明</th></tr>
+    <tr><td>+1 ~ +3</td><td>凡品器魂 ×（1/2/3）</td><td>—</td><td>任何品质都能白嫖到 +3</td></tr>
+    <tr><td>+4 ~ +6</td><td>精致器魂 ×（2/3/4）</td><td class="t4">+3 解锁 1 条</td><td>凡品到此为止</td></tr>
+    <tr><td>+7 ~ +9</td><td>仙品器魂 ×（3/4/5）</td><td class="t4">+6 解锁 1 条</td><td>精致到此为止</td></tr>
+    <tr><td>+10 ~ +12</td><td>神器器魂 ×（4/5/6）</td><td class="t4">+9 解锁 1 条</td><td>仅仙品以上，仅专属可达 +12</td></tr>
+  </table>
+  <p><b>器魂占格子</b>（1×3，同品质 5 个叠 1 格）。所以「要不要强化」的真实问题是：<b>要不要为强化留 9 格仓库</b>。</p>
+
+  <h4>附魔</h4>
+  <ul>
+    <li>附魔材料是<b>「符」</b>（1×1），符本身是生肖道具的一种形制 → 直接咬住道具系统</li>
+    <li>每件装备最多嵌 <b>3 张符</b>，符提供<b>容器归属</b>（决定它投谁的票）+ 一条小型身法</li>
+    <li><b>符一旦嵌入不可取下</b>——换装备时符跟着走。这是附魔的代价</li>
+  </ul>
+
+  <h4>打造 NPC</h4>
+  <p>只在<b>营地</b>出现。三件事：强化、附魔、重铸。<br>
+  <b>本局有效，局终清零</b>（§11 有完整论证）。</p>
+
+  <!-- ══════════ §04 ══════════ -->
+  <h2><span class="num">§ 04</span>技能系统</h2>
+
+  <table>
+    <tr><th style="width:14%">槽</th><th style="width:18%">来源</th><th style="width:12%">形状</th><th>可否替换</th></tr>
+    <tr><td>专属技能</td><td>角色自带（请来的那位神）</td><td><span class="shp"><i style="grid-column:span 1;grid-row:span 2"></i></span>1×2</td><td><b>不可卸</b>。它是这一局你借来的身份</td></tr>
+    <tr><td>特殊技能 ×2</td><td>技能书</td><td>轻 1×2 / 重 2×2</td><td>可换</td></tr>
+    <tr><td>神兽技能</td><td>所选神兽</td><td><span class="shp t"><i style="grid-column:span 1;grid-row:span 3"></i></span>1×3</td><td>换神兽则整套跟着换</td></tr>
+  </table>
+  <p>四本全带 = 2+2+2+3 = <b>9 格</b>（经脉区 10 格）。但带<b>两本重型</b>就是 2+4+4+3 = 13 → 爆。<b>这个爆掉是故意的。</b></p>
+
+  <div class="reveal flat" data-tag="沿用 v0.1 判定">
+    <b>特殊技能走【技能书】，不走【装备自带】。</b>四条理由：<br>
+    ① 装备自带技能会被装备掉率二次污染，<b>成型难度控制直接失效</b><br>
+    ② 技能书能囤积、比较、延迟决策——这三件事是背包存在的全部意义<br>
+    ③ 技能书占经脉区 = 技能有空间成本，玩家必须取舍，而不是四槽全填满<br>
+    ④ 避免「好装备 = 好技能」，玩家被逼穿不想穿的装备
+  </div>
+  <p><b>咬合</b>：技能书可<b>镶嵌进装备</b>（每件最多 1 本），镶嵌后不占经脉区；代价是<b>该装备被替换或摧毁时，技能书跟着消失</b>。→ 同一个技能书，激进玩家镶在装备上，保守玩家摆在经脉区，游戏不评判谁对。</p>
+
+  <h3>技能池与 Build 成型难度</h3>
+  <table>
+    <tr><th style="width:20%">项</th><th style="width:14%">值</th><th>理由</th></tr>
+    <tr><td>特殊技能池</td><td class="c"><b>24</b></td><td>6 类 × 4 个：位移 / 反击 / 召唤 / 增幅 / 领域 / 转化</td></tr>
+    <tr><td>每局三选一</td><td class="c"><b>4 次</b></td><td>3 精英 + 1 Boss 后</td></tr>
+    <tr><td>目标</td><td class="c t4">4 局内 ≥ 75%</td><td>肉鸽标准：核心 Build 应在 3~5 局内自然成型</td></tr>
+  </table>
+  <ul>
+    <li><b>倾向值（Lean）</b>：每选一个技能，该类别后续出现权重 <b>×1.4</b>，其余 <b>×0.85</b>。锁在 1.4 以内，<b>滚雪球但不锁死</b></li>
+    <li><b>防锁死保底</b>：每局第一次三选一<b>必含至少一个全新类别</b></li>
+    <li><b>保底出口</b>：营地花仙品器魂<b>重铸</b>一本技能书 → 同类随机另一本</li>
+  </ul>
+  <table>
+    <tr><th style="width:12%">局数</th><th style="width:16%">累计三选一</th><th style="width:22%">拿到指定 2 件（无加权）</th><th>有倾向值</th></tr>
+    <tr><td>第 1 局</td><td class="c">4</td><td class="c">11%</td><td class="c">11%</td></tr>
+    <tr><td>第 2 局</td><td class="c">8</td><td class="c">24%</td><td class="c">35%</td></tr>
+    <tr><td>第 3 局</td><td class="c">12</td><td class="c">37%</td><td class="c">58%</td></tr>
+    <tr><td>第 4 局</td><td class="c">16</td><td class="c">48%</td><td class="c t4">75%</td></tr>
+    <tr><td>第 5 局</td><td class="c">20</td><td class="c">57%</td><td class="c">85%</td></tr>
+    <tr><td>第 6 局</td><td class="c">24</td><td class="c">65%</td><td class="c">91%</td></tr>
+  </table>
+  <div class="reveal flat" data-tag="说明">
+    这张表是<b>估算模型，不是实测</b>（池 24、每次三选一、目标指定两件、允许重复）。
+    落地第一件事是蒙特卡洛跑真值再调 1.4 这个系数。<b>别拿它当承诺。</b>
+  </div>
+
+  <!-- ══════════ §05 ══════════ -->
+  <h2><span class="num">§ 05</span>神兽系统</h2>
+
+  <p>十二种，每条都必须是一个<b>能独立成立的玩法</b>。判定标准：<b>换了神兽，玩家的手要做的事必须不同。</b></p>
+
+  <table>
+    <tr><th style="width:9%">神兽</th><th style="width:11%">容器归属</th><th style="width:26%">神兽技能（主动）</th><th>专属 BUFF / 玩法分工</th></tr>
+    <tr><td><b>青龙</b></td><td><span class="tag teal">木·祠</span></td><td><b>引风</b>：冲刺，路径留风道，风道内可再冲刺一次</td><td><b>位移型</b>——唯一让位移能连着用的神兽</td></tr>
+    <tr><td><b>白虎</b></td><td><span class="tag">场·斗</span></td><td><b>斩铁</b>：下次攻击必暴击，且对满血目标必暴击</td><td><b>爆发型</b>——价值全在起手那一刀</td></tr>
+    <tr><td><b>朱雀</b></td><td><span class="tag teal">火·焚</span></td><td><b>焚身</b>：死亡时原地爆炸并复活一次，每局限一次</td><td><b>容错型</b>——新手的第二条命</td></tr>
+    <tr><td><b>玄武</b></td><td><span class="tag teal">水·沉</span></td><td><b>覆甲</b>：护盾，护盾存在时移速 −10%，<b>被打破时向外反弹</b></td><td><b>反打型</b>——把挨打变成陷阱</td></tr>
+    <tr><td><b>麒麟</b></td><td><span class="tag teal">土·葬</span></td><td><b>呈瑞</b>：下一个开启的箱子必出高一档品质</td><td><b>经济型</b>——把运气变成确定性</td></tr>
+    <tr><td><b>饕餮</b></td><td><span class="tag gold">金·鼎</span></td><td><b>吞</b>：吞掉背包最多 3 件道具，转本局全属性 +X%</td><td class="t4"><b>背包清道夫</b>——背包溢出的唯一出口</td></tr>
+    <tr><td><b>烛龙</b></td><td><span class="tag">镜·影</span></td><td><b>昼夜</b>：昼 = 视野远、伤害 +10%；夜 = 敌人视野 −30%、我方暴击 +15%</td><td><b>节奏型</b>——全局唯一的<b>开关型</b>玩法</td></tr>
+    <tr><td><b>白泽</b></td><td><span class="tag">塔·镇</span></td><td><b>显形</b>：标记全场精英弱点，击破弱点额外掉落</td><td><b>知识型</b>——奖励「知道该打哪里」的玩家</td></tr>
+    <tr><td><b>鲲鹏</b></td><td><span class="tag teal">水·沉</span></td><td><b>化</b>：变大（伤害 +30%、受击面 +50%）／变小（反之）</td><td><b>体型型</b>——它改的是<b>你占多少空间</b></td></tr>
+    <tr><td><b>应龙</b></td><td><span class="tag">雷·刑</span></td><td><b>行雨</b>：范围内降雨，敌人减速 25%，我方冷却 −15%</td><td><b>领域型</b>——要求玩家「站在雨里打」</td></tr>
+    <tr><td><b>九尾狐</b></td><td><span class="tag">草·野</span></td><td><b>分身</b>：生成 2 个分身<b>复制你上 3 秒的动作</b>，无伤害只吸仇恨</td><td><b>诱饵型</b>——奖励动作熟练，惩罚乱按</td></tr>
+    <tr><td><b>犼</b></td><td><span class="tag teal">土·葬</span></td><td><b>起尸</b>：把最近死亡的敌人复活为你作战 8 秒，它死时爆炸</td><td><b>亡者型</b>——把尸体变成资源</td></tr>
+  </table>
+
+  <div class="v3"><b>十二神兽铺满十容器</b>（水沉与土葬各重复一次：鲲鹏 / 犼）。容器归属决定它<b>的气息给谁加权</b>（§08）。</div>
+
+  <h3>神兽的三重身份</h3>
+  <div class="grid g3">
+    <div class="card">
+      <h4>① 气息加权器</h4>
+      <p>神兽在装备区占 <b>2×2</b>，气息外扩一圈共 <b>16 格</b>。<br>
+      <b>气息圈内的祭坛物品，票数 ×2</b>。<br>
+      <em>选神兽 = 在祭坛上钉下一个加权区，此后所有摆放都要围着它。</em></p>
+    </div>
+    <div class="card">
+      <h4>② 技能来源</h4>
+      <p>神兽技能书（1×3）占经脉区。换神兽 = 换技能 + 换气息归属 + 换加权位置，<b>一次换三样</b>。<br>
+      <em>所以换神兽是最重的决策，不该在局内随手换。</em></p>
+    </div>
+    <div class="card">
+      <h4>③ 吃道具的活物</h4>
+      <p>神兽<b>吃生肖道具</b>成长，且只吃自己容器那一系的。喂满 N 个 → 技能升 1 级（共 3 级）。<br>
+      <em>道具的唯一长期出口，背包满溢时的解法。</em></p>
+    </div>
+  </div>
+
+  <div class="hook">
+    <b>饕餮是枢纽。</b>它不挑食（吃任意容器）、技能是吞背包，
+    把「背包满了怎么办」从后勤问题变成主动战术动作。<b>背包一爆满，玩家第一反应不该是骂街，应是「早知道带饕餮」。</b>
+  </div>
+
+  <!-- ══════════ §06 ══════════ -->
+  <h2><span class="num">§ 06</span>生肖道具：150 件</h2>
+
+  <h3>十肖 → 十容器（一一对应）</h3>
+
+  <div class="say">
+    十二肖中，<b>龙与牛各有去处</b>——龙升格为神兽（青龙），牛留作神兽二批候选（兕 / 夔牛）。<br>
+    余下十者为人间之肖。而在《十日》里，每一肖守着一个容器：<b>它决定这一肖的道具，会把票投给谁。</b>
+  </div>
+
+  <table>
+    <tr><th style="width:7%">肖</th><th style="width:13%">容器</th><th style="width:20%">为什么是它</th><th>道具气质</th></tr>
+    <tr><td><b>鼠</b></td><td class="t4">金·鼎</td><td>鼠储粮于穴，鼎储名于器。<b>囤积者</b></td><td>偷取、储藏、先手</td></tr>
+    <tr><td><b>虎</b></td><td class="t4">场·斗</td><td>虎是战兽，被斗、被围、被挂起来给人看</td><td>突进、爆发、示众</td></tr>
+    <tr><td><b>兔</b></td><td class="t4">镜·影</td><td>兔居月。<b>月是镜，月中那个是倒影</b></td><td>替身、倒影、以假乱真</td></tr>
+    <tr><td><b>蛇</b></td><td class="t4">草·野</td><td>蛇伏草间。<b>草野无名，等于不被记住</b></td><td>潜行、延时、无人知晓</td></tr>
+    <tr><td><b>马</b></td><td class="t4">雷·刑</td><td>马之驰，迅疾如雷。天罚亦如雷</td><td>疾行、冲锋、一击</td></tr>
+    <tr><td><b>羊</b></td><td class="t4">木·祠</td><td>羊为祭品。<b>被供上去的那个</b></td><td>牺牲、献祭、以损换益</td></tr>
+    <tr><td><b>猴</b></td><td class="t4">塔·镇</td><td>猴被压于山下。<b>不是死了，是被镇住</b></td><td>封印、压制、动弹不得</td></tr>
+    <tr><td><b>鸡</b></td><td class="t4">火·焚</td><td>鸡司晨唤日。<b>它叫来的那个东西会烧死你</b></td><td>点燃、焚烧、报晓</td></tr>
+    <tr><td><b>狗</b></td><td class="t4">土·葬</td><td>狗守冢。<b>它守的是一座空的</b></td><td>守卫、留守、埋藏</td></tr>
+    <tr><td><b>猪</b></td><td class="t4">水·沉</td><td>沉猪于河，献给水底。<b>归墟就在下面</b></td><td>下沉、淹没、献给水</td></tr>
+  </table>
+
+  <div class="v3">
+    <b>十个容器全部是《十日》世界观的现成零件</b>：九鼎（= 九位古神的棺材）、祠堂、归墟、焚、葬、
+    天刑、镇塔、角斗场（封神榜之争）、荒冢（被遗忘）、镜子（镜子里不是你的脸）。
+    <b>这套羁绊不需要新写一个字的世界观，它就是从世界观里长出来的。</b>
+  </div>
+
+  <h3>150 件的组成</h3>
+
+  <table>
+    <tr><th style="width:12%">形制</th><th style="width:12%">形状</th><th style="width:20%">用途</th><th>咬住了谁</th></tr>
+    <tr><td><b>器</b></td><td>1×2</td><td>投掷 / 消耗</td><td>战斗消耗品主力</td></tr>
+    <tr><td><b>符</b></td><td>1×1</td><td>附魔材料</td><td>咬 <b>装备</b>（嵌入不可取下）</td></tr>
+    <tr><td><b>契</b></td><td>1×2</td><td>本局规则改写</td><td class="t4"><b>契是「身法」的临时版</b>——临时改一条操作规则，本局有效</td></tr>
+  </table>
+
+  <p><b>10 肖 × 3 形制 × 5 词缀 = 150 件。</b>另加 3 种<b>器魂</b>（不分肖，只分凡 / 精 / 仙）= <b>153 件</b>。</p>
+
+  <p>词缀五档：<span class="tag dim">残</span><span class="tag dim">常</span><span class="tag dim">良</span><span class="tag dim">珍</span><span class="tag dim">异</span>——只改边框颜色、名字前缀、数值档位。</p>
+
+  <div class="reveal" data-tag="成本钥匙">
+    <b>词缀不换图标。</b>一件道具的图标由「肖 + 形制」决定 = <b>10 × 3 = 30 张底图</b>。<br>
+    词缀只改边框颜色、名字、粒子。品质也不换底图。<br><br>
+    <b>全套内容图标量 = 30（道具）+ 6（装备）+ 12（神兽）+ 24（技能书）+ 3（器魂）= 75 张。</b><br><br>
+    <em>没有这条纪律，150 件就是要画 150 张图；有了它，是 30 张。
+    <b>这条必须在美术量产前立死，一旦有人开始「给珍品的符单独画一张」，成本就不可逆地往回跑。</b></em>
+  </div>
+
+  <p><b>v1.5 再扩</b>：加形制「骨」（1×3，器魂分肖）与「偶」（2×2，召唤），词缀扩到 8 档 → 10 × 5 × 8 = <b>400 件</b>，底图仍只有 50 张。</p>
+
+  <!-- ══════════ §07 ══════════ -->
+  <h2><span class="num">§ 07</span>羁绊：十容器 · 争位 · 香引</h2>
+
+  <p class="sub" style="margin-top:-14px">本版推翻重写。你说「凑件数激活不好玩」——你是对的，但问题不在件数那个数字上。</p>
+
+  <h3>诊断：为什么「凑 N 件激活」不好玩</h3>
+
+  <div class="warn">
+    <b>五条，按致命程度排序：</b>
+    <ol style="margin:10px 0 0;padding-left:20px;">
+      <li><b>它是一个到达即结束的机制。</b>凑够第 5 件那一刻是峰值，此后玩家对羁绊零操作。<b>肉鸽需要的是持续操作，不是一次性到达。</b></li>
+      <li><b>它是一次决策，不是几百次。</b>自走棋一局只有一次阵容决策，所以凑件数成立；肉鸽一局要做几百次决策，把「一次决策的机制」搬进来，它必然寡淡。<b>这是品类错配，不是数值问题。</b></li>
+      <li><b>它是会计工作，不是玩法。</b>玩家在做的是「数我还有几件火」，这是记账。</li>
+      <li><b>它不需要空间、时机、操作。</b>于是它和背包这个核心动作完全脱节——玩家摆背包只是为了凑数，不是为了连线。</li>
+      <li><b>它有静态最优解。</b>玩家第三局就算出「火 5 最强」，此后每一局都在做同一件事。</li>
+    </ol>
+  </div>
+
+  <p><b>所以修补件数没用（把 5 改成 3 也还是会计）。要换掉的是「激活」这个动词本身。</b></p>
+
+  <h3>方案：不「激活」，让它们「争」</h3>
+
+  <div class="say">
+    十个容器在祭坛上<b>抢</b>。不是你点亮它们，是它们互相抢你那 16 格。<br>
+    《十日》里所有人都在抢封神榜最后一个空位——<b>现在抢的那件事，发生在你的背包上。</b>
+  </div>
+
+  <h4>五条规则</h4>
+  <table>
+    <tr><th style="width:16%">规则</th><th>内容</th></tr>
+    <tr><td class="t4">① 投票</td><td>祭坛（4×4）上每件物品按品质投 1~4 票给它的容器。仓库里的不投票。<b>进祭坛 = 让它说话。</b></td></tr>
+    <tr><td class="t4">② 显灵</td><td><b>票数第一</b>的容器 → <b>显灵</b>：正面效果生效</td></tr>
+    <tr><td class="t4">③ 作祟</td><td class="t4"><b>票数第二</b>的容器 → <b>作祟</b>：负面效果<b>也生效</b>。第三名往下无效</td></tr>
+    <tr><td class="t4">④ 冲</td><td>若第二名为 0 票或与第一名并列 → <b>由第一名的「冲」自动补位作祟</b>。<b>堆满一种，招来的就是它的死对头</b></td></tr>
+    <tr><td class="t4">⑤ 点燃</td><td>可随时<b>烧掉当前第一名在祭坛上的全部物品</b> → 该容器<b>终极效果生效 20 秒</b>，然后这些物品变成灰（占格、无用），祭坛空出，争位从头开始</td></tr>
+  </table>
+
+  <div class="reveal gd" data-tag="为什么这就好玩了">
+    <b>玩家的核心决策从「凑什么」变成「让谁当第二」。</b><br><br>
+    堆满 16 格火焚 → 第一名火焚显灵，但第二名 0 票 → 触发规则④，<b>火焚的冲「金·鼎」自动补位作祟</b>，
+    于是你招来了「祭坛被锁死 2 格」。<b>越极端，反噬越狠。</b><br><br>
+    真正的最优解是：<b>把第二名停在那个「我恰好不在乎它的负面」的容器上。</b>
+    比如玩远程的玩家不在乎「移速 −10%」，他会把木祠喂到第二；
+    打 Boss 前的人绝不能让「技能冷却 +15%」的塔镇当第二。<br><br>
+    <em>这个决策不存在静态最优解——因为它取决于你捡到了什么，以及你这一局在打谁。</em>
+  </div>
+
+  <h3>十容器 · 五对冲</h3>
+
+  <table>
+    <tr><th style="width:12%">容器</th><th style="width:24%">显灵（第一名）</th><th style="width:26%">作祟（第二名）</th><th>终极（点燃，20 秒）</th></tr>
+    <tr><td class="t4">金 · 鼎</td><td>击杀铭刻：本局攻击 +1（可叠）</td><td class="t4">祭坛被锁死 2 格</td><td>刻名：击杀永久 +2 攻</td></tr>
+    <tr><td class="t4">木 · 祠</td><td>每 30 秒回血 15%</td><td>移速 −10%（要守祠）</td><td>每 5 秒回血 8%</td></tr>
+    <tr><td class="t4">水 · 沉</td><td>受击后 1.5 秒无敌</td><td>视野收窄（在水下）</td><td>20 秒全无敌，结束沉底 3 秒</td></tr>
+    <tr><td class="t4">火 · 焚</td><td>击杀时爆炸</td><td>自身持续掉血</td><td>全场持续燃烧</td></tr>
+    <tr><td class="t4">土 · 葬</td><td>减伤 18%</td><td>翻滚距离 −25%（被土拖住）</td><td>减伤 50%</td></tr>
+    <tr><td class="t4">雷 · 刑</td><td>暴击时落雷</td><td>受伤时额外挨一记雷</td><td>每次攻击落雷</td></tr>
+    <tr><td class="t4">塔 · 镇</td><td>光环内敌人减速 25%</td><td>技能冷却 +15%（被镇）</td><td class="t4">全场敌人不能移动</td></tr>
+    <tr><td class="t4">场 · 斗</td><td>击杀后攻速叠加</td><td>敌人增援 +1（被围观）</td><td>攻速无限叠加</td></tr>
+    <tr><td class="t4">草 · 野</td><td>低血时隐身</td><td>掉落 −25%（无人拾取）</td><td>完全隐身且不被锁定</td></tr>
+    <tr><td class="t4">镜 · 影</td><td>影子复制你的动作</td><td>影子受伤，你受 25%</td><td class="t4">影子替你承下全部伤害</td></tr>
+  </table>
+
+  <div class="al" style="grid-template-columns:repeat(5,1fr);margin:22px 0;">
+    <div class="z" style="background:#fdf6f5;border:1px solid #e6c9c6;height:60px;align-items:center"><span style="border-color:#dcb9b5;color:var(--red)">金鼎 ↔ 火焚</span></div>
+    <div class="z" style="background:#fdf6f5;border:1px solid #e6c9c6;height:60px;align-items:center"><span style="border-color:#dcb9b5;color:var(--red)">木祠 ↔ 雷刑</span></div>
+    <div class="z" style="background:#fdf6f5;border:1px solid #e6c9c6;height:60px;align-items:center"><span style="border-color:#dcb9b5;color:var(--red)">水沉 ↔ 土葬</span></div>
+    <div class="z" style="background:#fdf6f5;border:1px solid #e6c9c6;height:60px;align-items:center"><span style="border-color:#dcb9b5;color:var(--red)">塔镇 ↔ 场斗</span></div>
+    <div class="z" style="background:#fdf6f5;border:1px solid #e6c9c6;height:60px;align-items:center"><span style="border-color:#dcb9b5;color:var(--red)">草野 ↔ 镜影</span></div>
+  </div>
+
+  <p style="text-align:center;font-size:13px;color:var(--ink-3);margin-top:-8px">五对冲 —— 相邻的两个容器是死对头。<b>若某容器的票被相邻冲容器贴着，双方各 −1 票。</b>所以摆放位置也直接改票数。</p>
+
+  <h3>点燃：把「推倒重来」压缩进单局</h3>
+
+  <div class="reveal" data-tag="本稿最看重的一处">
+    <b>肉鸽的精髓是「这局废了，再来一把」。而点燃，是在一局之内反复推倒重来。</b><br><br>
+    玩家可以随时烧掉第一名在祭坛上的全部物品，换 20 秒的终极效果。<br>
+    20 秒后：那些物品<b>变成灰</b>——依然占着格子，却再也不能投票（只能喂饕餮或找 NPC 处理）。<br>
+    于是祭坛空出一片，<b>争位从零开始</b>。<br><br>
+    一局之内会经历 <b>3~5 次</b>「养出一个第一名 → 在最需要的时机点燃 → 推倒重来」。<br><br>
+    <em>而且它天然接上了《十日》的「一炷香 = 一局」：<b>你在局里烧的每一条，都是一炷小香。</b>香的灰是证据。</em>
+  </div>
+
+  <table>
+    <tr><th style="width:22%">时机</th><th>典型操作</th></tr>
+    <tr><td>被围时</td><td>点燃<b>塔·镇</b> → 全场敌人 20 秒不能动 → 趁机清场。<b>代价：塔镇物品全成灰</b></td></tr>
+    <tr><td>Boss 前</td><td>点燃<b>镜·影</b> → 影子替你承下 20 秒全部伤害 → 打完它就没了</td></tr>
+    <tr><td>残血时</td><td>点燃<b>水·沉</b> → 20 秒无敌 → 但结束后沉底 3 秒不能动，<b>必须提前找好位置</b></td></tr>
+    <tr><td>贪婪时</td><td>点燃<b>金·鼎</b> → 20 秒内每杀一个 +2 攻 → <b>要在这 20 秒里尽量多杀</b></td></tr>
+    <tr><td>忍到最后一刻</td><td>不点燃 → 显灵效果虽弱，但<b>可以一直用</b>。<b>养着还是烧掉，就是这一局的核心节奏</b></td></tr>
+  </table>
+
+  <h3>备选方案（以及我为什么不选）</h3>
+  <table>
+    <tr><th style="width:20%">方案</th><th style="width:34%">它怎么做</th><th>否决理由</th></tr>
+    <tr><td><b>阵</b>（地面摆放）</td><td>把物品扔在地上连成阵，阵生效</td><td>玩家要在<b>两个空间摆两次</b>（背包 + 地面），动作肉鸽里这太重。且敌人踩散阵会导致不可控</td></tr>
+    <tr><td><b>献祭</b>（攒够就炸）</td><td>攒够 N 件后一次性全部献祭，换巨大收益，之后归零</td><td>仍然是<b>到达即结束</b>，且中间过程无操作。只是把凑 5 件改成了攒 5 件</td></tr>
+    <tr><td><b>云顶式</b>（3/5/7 阈值）</td><td>按件数解锁递增效果</td><td>就是我们在否决的那个。<b>它是为自走棋设计的一次性决策机制，品类错配</b></td></tr>
+  </table>
+
+  <div class="hook">
+    <b>给策划的一句话校验</b>：如果你能在一个机制上，「这一把该怎么玩」这个问题<b>在开局 5 分钟内就有唯一答案</b>，
+    那这个机制就不适合肉鸽。<b>争位不会——因为你永远不知道下一件捡到什么。</b>
+  </div>
+
+  <!-- ══════════ §08 ══════════ -->
+  <h2><span class="num">§ 08</span>局内 / 局外：方案</h2>
+
+  <p class="sub" style="margin-top:-14px">你没想好的那部分。我的方案是一句铁律加三条线。</p>
+
+  <div class="reveal" data-tag="铁律">
+    <b>局外传承的东西，必须改变你「怎么玩」，绝不能让你「变强」。</b><br><br>
+    理由：数值型局外成长（+5% 攻击 / +10% 生命）会让第 50 局和第 1 局的手感脱节到无法调试，
+    而且玩家赢了以后会说不清「是我玩得好，还是我肝得多」。<b>这是肉鸽的死穴。</b><br><br>
+    <em>推论：<b>局外绝不提供任何一条 +X% 攻击 / 生命 / 暴击 / 掉率。</b>一条都没有。</em>
+  </div>
+
+  <h3>总表</h3>
+
+  <table>
+    <tr><th style="width:11%">系统</th><th style="width:26%">局内（本局有效，局终清零）</th><th style="width:26%">局外（永久传承）</th><th>说明</th></tr>
+    <tr><td>装备</td><td class="t4">全部装备、强化、附魔</td><td class="c"><b>无</b></td><td>一件都不留。否则第一局就能囤出神装</td></tr>
+    <tr><td>技能</td><td class="t4">全部技能书</td><td><b>技能池的解锁</b></td><td>解锁的是"能选哪些"，不是"变强"</td></tr>
+    <tr><td>道具</td><td class="t4">全部 150 件</td><td class="c"><b>无</b></td><td>—</td></tr>
+    <tr><td>神兽</td><td class="t4">神兽本次出战、喂食等级</td><td><b>神兽的「脾气」</b></td><td>见线 2</td></tr>
+    <tr><td>背包</td><td class="t4">全部摆放</td><td>仓库格数 60 → 80</td><td>见线 3，<b>这条最危险</b></td></tr>
+    <tr><td>羁绊</td><td class="t4">十容器的票数</td><td><b>羁绊图鉴</b>（纯记载）</td><td>无数值，只是"你见过哪些组合"</td></tr>
+    <tr><td class="t4">传承</td><td>—</td><td class="t4"><b>残影</b>（每局留 1~3 件）</td><td>见下，这是本方案的原创部分</td></tr>
+  </table>
+
+  <h3>线 1 · 技能池解锁</h3>
+  <ul>
+    <li>24 个技能，<b>起手只有 8 个在池里</b>。达成条件解锁 1~2 个（例：第一次点燃金鼎 → 解锁「铭刻」系列）</li>
+    <li>解锁增加的是<b>可能性，不是强度</b>。玩家第 30 局和第 3 局的伤害上限一样</li>
+    <li><b>解锁速度要慢于玩家的理解速度</b>——玩家应该在 10 局内把已解锁的吃透，而不是一直在追解锁</li>
+  </ul>
+
+  <h3>线 2 · 神兽的「脾气」</h3>
+  <ul>
+    <li>喂食 → 亲密度 → 解锁的不是 +10% 攻击，而是<b>神兽的新行为</b></li>
+    <li>例：青龙亲密度 3 级 → 获得脾气「逆鳞」：<b>血量低于 30% 时自动触发一次引风</b>（不用你按）</li>
+    <li>例：饕餮亲密度 3 级 → 脾气「贪」：<b>背包满溢时自动吞掉最不值钱的一件</b></li>
+    <li><b>依然是"改变你怎么玩"</b>，且带有代价（自动触发会打乱你的节奏）</li>
+  </ul>
+
+  <h3>线 3 · 仓库格数（<span class="t4">最危险，建议 v1.0 不做</span>）</h3>
+  <ul>
+    <li>60 → 80 格，缓慢解锁</li>
+    <li><b>它不是纯增益</b>：格子越多，摆得越累，决策负担越大</li>
+    <li><b>但祭坛 16 格永远不变</b>——所以这条线不增加战力上限，只增加容错</li>
+    <li class="t4"><b>我的建议：v1.0 直接锁死 60 格，不做这条线。</b>老玩家摆包时间变长是纯负收益</li>
+  </ul>
+
+  <h3>传承：你带走的不是东西，是记忆</h3>
+
+  <div class="reveal gd" data-tag="本方案的原创部分">
+    每局结束时，可以选择留 <b>1~3 件物品的「残影」</b>带进下一局。<br><br>
+    残影<b>没有任何实际属性</b>——不能用、不能强化、不能喂神兽、不能点燃。<br>
+    但它<b>能投票</b>，而且<b>不能被移动</b>（它在祭坛上钉死，占着格子）。<br><br>
+    <b>于是：你留住的是记忆，代价是下一局的祭坛少了几个活位置。</b><br><br>
+    <em>《十日》的世界观里，<b>被记住 = 存在 = 力量</b>。所以这条机制不是隐喻，它就是那条规则照着字面实现了一遍。</em>
+  </div>
+
+  <table>
+    <tr><th style="width:26%">项</th><th>内容</th></tr>
+    <tr><td>带几件</td><td>1~3 件，由<b>香火档位</b>决定（无名 1 件 / 有姓 2 件 / 一方 3 件 / 真名 3 件 + 可选保留品质）</td></tr>
+    <tr><td>留在哪</td><td>钉死在祭坛上，位置由系统决定（不让你挑）</td></tr>
+    <tr><td>能做什么</td><td>投票（按原品质 1~4 票）、可被点燃（点燃后化为乌有，<b>永远消失</b>）</td></tr>
+    <tr><td class="t4">代价</td><td class="t4">它占着的格子不能用、它的票是死票（会因为摆放变化而变得碍事）、<b>点燃它 = 这件东西永久消失</b></td></tr>
+    <tr><td>叙事</td><td>《十日》一炷香烧完一切归零。<b>你留不住东西，你只能留住"它被记住"这件事本身</b></td></tr>
+  </table>
+
+  <div class="hook">
+    <b>这条的狠处在最后一行</b>：玩家可以点燃自己的残影换 20 秒的救命时间，
+    <b>但那件东西就再也不会回来了</b>——连记忆都没了。<br>
+    这是本作唯一一个「玩家会真的心疼」的操作，因为它消耗的不是资源，是上一局的自己。
+  </div>
+
+  <h3>与《十日》香火档位的关系</h3>
+  <table>
+    <tr><th style="width:16%">香火档</th><th style="width:12%">局数</th><th>它改变什么（<b>不是数值</b>）</th></tr>
+    <tr><td>无名</td><td class="c">1–3</td><td>世界只给你痕迹。可传承 1 件残影</td></tr>
+    <tr><td>有姓</td><td class="c">4–9</td><td>世界开始给你招式。可传承 2 件</td></tr>
+    <tr><td>一方</td><td class="c">10–18</td><td>你开始看见"该有人的地方没人"。可传承 3 件</td></tr>
+    <tr><td>真名</td><td class="c">19+</td><td class="t4">另一套规则。残影可保留仙品以上</td></tr>
+  </table>
+  <p><b>香火档位 = 唯一的局外系统，但它提供的是"世界对你的态度"，不是"你的数字"。</b>六大系统全部局内清零，只在这条线上向外走。这样第 50 局的玩家和第 1 局的玩家<b>伤害上限相同，但看到的世界不同</b>。</p>
+
+  <h3>反面清单：这些常见做法不要做</h3>
+  <ul>
+    <li class="t4"><b>不要做「永久 +X% 攻击」</b>——包括任何形式的局外属性成长</li>
+    <li class="t4"><b>不要做局外金币</b>——它会让局内经济失去意义</li>
+    <li><b>不要做"局外解锁更强的装备品质"</b>——品质应由局内掉落决定</li>
+    <li><b>不要让局外影响战斗数值的任何一个环节</b>——局外只碰"可能性、知识、记忆"</li>
+  </ul>
+
+  <!-- ══════════ §09 ══════════ -->
+  <h2><span class="num">§ 09</span>咬合矩阵</h2>
+
+  <table>
+    <tr><th style="width:11%">↓ 给 ＼ 收 →</th><th>装备</th><th>技能</th><th>道具</th><th>羁绊</th><th>背包</th><th>神兽</th></tr>
+    <tr><td><b>装备</b></td><td class="c">—</td><td class="c">嵌技能书<br><em>省格·有风险</em></td><td class="c">符来自道具</td><td class="c t4">进祭坛按品质<br>投 1~4 票</td><td class="c t4">形状占格<br><b>腰带解锁格数</b></td><td class="c">—</td></tr>
+    <tr><td><b>技能</b></td><td class="c">嵌进装备</td><td class="c">—</td><td class="c">—</td><td class="c">技能书可进祭坛<br><em>也算一票</em></td><td class="c t4">占经脉区</td><td class="c">神兽技能书</td></tr>
+    <tr><td><b>道具</b></td><td class="c">符 / 器魂</td><td class="c">—</td><td class="c">—</td><td class="c t4">十肖 = 十容器<br><b>决定投谁</b></td><td class="c t4">进祭坛 or 进仓库</td><td class="c t4"><b>喂神兽成长</b></td></tr>
+    <tr><td><b>羁绊</b></td><td class="c">品质 = 票权</td><td class="c">决定技能书<br>该不该进祭坛</td><td class="c">决定捡<br>哪一肖</td><td class="c">—</td><td class="c t4"><b>摆放位置改票数</b><br>（冲则各 −1）</td><td class="c t4">气息圈内<br><b>票数 ×2</b></td></tr>
+    <tr><td><b>背包</b></td><td class="c t4">形状卡位</td><td class="c t4">爆格逼取舍</td><td class="c t4">祭坛投票<br>仓库不投票</td><td class="c t4">16 格 = 争位舞台</td><td class="c">—</td><td class="c t4">气息圈 16 格</td></tr>
+    <tr><td><b>神兽</b></td><td class="c">—</td><td class="c">提供技能书</td><td class="c t4">吃掉道具</td><td class="c t4">气息 ×2<br>容器归属</td><td class="c t4">占 2×2 中央</td><td class="c">—</td></tr>
+  </table>
+
+  <p><b>空格只有 4 处，且都是有意为之。</b>检查方法：<b>任意两个系统之间，玩家必须能在至少一个具体场合感受到「我为了 A 而放弃了 B」。</b></p>
+
+  <!-- ══════════ §10 ══════════ -->
+  <h2><span class="num">§ 10</span>单局节奏</h2>
+
+  <div class="flow">
+    <div class="s"><div class="n">00:00</div><div class="t">上香</div><div class="d">选角色<br>选神兽<br>带几件残影</div></div>
+    <div class="s"><div class="n">00:30</div><div class="t">战斗</div><div class="d">拾取 = 3 秒<br>进祭坛 or 仓库</div></div>
+    <div class="s"><div class="n">05:00</div><div class="t">争位</div><div class="d">第一名显灵<br>第二名作祟</div></div>
+    <div class="s"><div class="n">08:00</div><div class="t">点燃</div><div class="d">20 秒终极<br>然后推倒重来</div></div>
+    <div class="s"><div class="n">14:00</div><div class="t">营地</div><div class="d">摆包 · 强化<br>喂兽 · 重铸</div></div>
+    <div class="s"><div class="n">25:00</div><div class="t">焚香</div><div class="d">死亡 → 留残影<br><b>下一局</b></div></div>
+  </div>
+
+  <table>
+    <tr><th style="width:14%">时段</th><th>玩家在做的事</th></tr>
+    <tr><td>上香</td><td>选角色 + 选神兽 + <b>决定带几件残影进来</b>（这三件事奠定本局全部约束）</td></tr>
+    <tr><td>战斗</td><td>砍杀。每次拾取是 2~3 秒决策：<b>进祭坛（投票）还是进仓库（不投票）</b></td></tr>
+    <tr><td>争位</td><td>十根票数条实时可见。玩家盯着：谁第一、<b>谁第二</b>、我能接受吗</td></tr>
+    <tr><td>点燃</td><td>在时机上赌一把。3~5 次 / 局</td></tr>
+    <tr><td>营地</td><td>唯一能慢慢摆的地方</td></tr>
+    <tr><td>焚香</td><td>死亡 → 留 1~3 件残影 → 下一局</td></tr>
+  </table>
+
+  <p><b>单局 20~30 分钟。</b>重开动力有两个：<b>换一只神兽</b>（换气息归属与加权位置）+ <b>换一套摆法</b>（换争位策略）。<b>缺一个都不够。</b></p>
+
+  <!-- ══════════ §11 ══════════ -->
+  <h2><span class="num">§ 11</span>v1.0 范围与成本</h2>
+
+  <table>
+    <tr><th style="width:18%">内容</th><th style="width:12%">全量</th><th style="width:14%">v1.0</th><th>说明</th></tr>
+    <tr><td>可请之神（角色）</td><td class="c">4</td><td class="c t4"><b>1</b></td><td>后羿。动画成本，四人团队首批只做一个</td></tr>
+    <tr><td>神兽</td><td class="c">12</td><td class="c t4"><b>6</b></td><td>青龙 / 白虎 / 朱雀 / 玄武 / 麒麟 / 饕餮。<b>饕餮必做</b>，它是背包枢纽</td></tr>
+    <tr><td>生肖</td><td class="c">10</td><td class="c t4"><b>10</b></td><td class="t4">十个全做——它等于十个容器，砍一半争位就塌了</td></tr>
+    <tr><td>道具</td><td class="c">400</td><td class="c t4"><b>153</b></td><td>10 肖 × 3 形制 × 5 词缀 + 3 器魂</td></tr>
+    <tr><td>容器（羁绊）</td><td class="c">10</td><td class="c t4"><b>10</b></td><td class="t4">全做。十个容器是摆逻辑的底层</td></tr>
+    <tr><td>技能</td><td class="c">24</td><td class="c t4"><b>12</b></td><td>6 类 × 2 个，先验证倾向值模型</td></tr>
+    <tr><td>身法（特殊属性）</td><td class="c">12+</td><td class="c t4"><b>12</b></td><td>每部位 2 条。<b>这是最不能省的部分</b></td></tr>
+    <tr><td>仓库格数</td><td class="c">80</td><td class="c t4"><b>锁死 60</b></td><td>线 3 不做</td></tr>
+  </table>
+
+  <div class="reveal" data-tag="美术成本">
+    <b>图标总量 75 张</b>：道具底图 30 + 装备 6 + 神兽 12 + 技能书 24 + 器魂 3。<br>
+    品质不换底图，词缀不换底图。<br><br>
+    <em>这条纪律必须在美术量产开始前立死。一旦有人开始给某个珍品单独画一张，
+    成本就从 75 张往 400 张跑，且不可逆。</em>
+  </div>
+
+  <!-- ══════════ §12 ══════════ -->
+  <h2><span class="num">§ 12</span>与世界观的咬合</h2>
+
+  <div class="reveal gd" data-tag="十容器 = 十种被记住的方式">
+    <b>《十日》的核心规则是：被记住的，才存在；越被记住，越强。</b><br>
+    而十种容器，全部是<b>存放名字的地方</b>——<br><br>
+    铸进鼎里 · 供进祠里 · 沉进归墟 · 烧成灰 · 埋进土里 ·
+    遭天雷劈 · 镇在塔下 · 挂在角斗场上 · 丢在荒草里没人认 · 映在镜子里。<br><br>
+    <b>所以这套羁绊不需要新写一个字的世界观。它就是从世界观里长出来的。</b>
+  </div>
+
+  <table>
+    <tr><th style="width:22%">系统零件</th><th style="width:26%">世界观来源</th><th>咬合方式</th></tr>
+    <tr><td>容器 · 金鼎</td><td>九鼎 = 九位古神的棺材</td><td class="t4">鼎是容器，也是棺材。<b>铸进去 = 入编 = 死</b></td></tr>
+    <tr><td>容器 · 镜影</td><td>「镜子里不是你的脸」</td><td class="t4">兔居月，月是镜。<b>这个容器是《十日》核心意象的居所</b></td></tr>
+    <tr><td>容器 · 水沉</td><td>归墟</td><td>沉猪于河 → 归墟在下面</td></tr>
+    <tr><td>容器 · 草野</td><td>被遗忘 = 不存在</td><td class="t4"><b>草野是这套系统的"反义词"</b>：它什么都不给你，它让你不存在</td></tr>
+    <tr><td>容器 · 场斗</td><td>封神榜之争</td><td>被当作战利品展示 = 被记住的最响亮方式</td></tr>
+    <tr><td class="t4">点燃</td><td class="t4">一炷香 = 一局</td><td class="t4"><b>局内烧的每一条，都是一炷小香。香灰是证据</b></td></tr>
+    <tr><td class="t4">残影</td><td class="t4">被记住 = 存在</td><td class="t4"><b>你留不住东西，只能留住"它被记住"这件事本身</b></td></tr>
+    <tr><td class="t4">争位</td><td class="t4">所有人都在抢封神榜最后一个空位</td><td class="t4"><b>抢的那件事，现在发生在玩家的背包上</b></td></tr>
+  </table>
+
+  <h3>终局二择可以落在这里</h3>
+  <div class="say">
+    真名档终局的二择是：签<b>自愿</b>（中方记法）还是<b>他杀</b>（北欧记法）。<br>
+    现在它可以多一层：<b>你签完之后，名字进哪个容器？</b><br><br>
+    签自愿的人，名字进木祠——被供起来。<br>
+    签他杀的人，名字进草野——没人认领。<br>
+    <b>而那十个容器，正是你这几十局一直在摆的东西。</b>
+  </div>
+
+  <h3>下一步，按顺序</h3>
+  <table>
+    <tr><th style="width:8%">序</th><th style="width:30%">事</th><th>产出 / 判据</th></tr>
+    <tr><td class="c">1</td><td class="t4">白盒原型：只做祭坛</td><td>4×4 网格 + 十种颜色的方块 + 五对冲。<b>判据：让人摆 10 分钟还想摆</b>。这个过不了，后面全是空的</td></tr>
+    <tr><td class="c">2</td><td class="t4">争位原型：十根票数条</td><td>判据：<b>玩家会主动想把第二名挪走</b>。如果玩家只盯着第一名，规则③就白写了</td></tr>
+    <tr><td class="c">3</td><td>战斗原型：拾取 3 秒决策</td><td>判据：<b>战斗节奏不被打断</b>。过不了则祭坛决策退回营地</td></tr>
+    <tr><td class="c">4</td><td>蒙特卡洛校准倾向值</td><td>把 §04 的估算表换成实测表，调 1.4 这个系数</td></tr>
+    <tr><td class="c">5</td><td>才轮到填满装备与道具表</td><td>——这是最后一步，不是第一步</td></tr>
+  </table>
+
+  <div class="end">
+    十个容器在你背包上抢十六个格子。<br>
+    <span style="font-size:14px;color:#b8ae9f;letter-spacing:.06em;font-family:system-ui;">在填满任何一张表之前，先做一个 4×4 的框，和十个塞不进去的名字。</span>
+  </div>
+
+  <div class="foot">
+    《十日》· 基础玩法文档 v0.2（六器系统层）&nbsp;|&nbsp; 2026-10-19&nbsp;|&nbsp; 并入世界观 v1.2<br>
+    本版推翻 v0.1 的羁绊（五行×阴阳）改为十容器争位；道具定 150 件；新增 §08 局内外方案。<br>
+    仍待拍板：① 点燃的 20 秒是否合适 ② 传承残影 1~3 件的档位 ③ 线 3（仓库格数）是否保留
+  </div>
+
+</div>
+</body>
+</html>

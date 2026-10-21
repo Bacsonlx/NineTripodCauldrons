@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《十日》· 道具图鉴 v0.1（生肖道具 153 件）</title>
+<style>
+  :root{
+    --ink:#2a2521; --ink-2:#5c534a; --ink-3:#8d8278;
+    --paper:#faf7f1; --paper-2:#ffffff; --line:#e2dbcf;
+    --red:#8c2f2f; --red-l:#f3e6e4;
+    --gold:#9c7526; --gold-l:#f7f0e0;
+    --teal:#2f6b63; --teal-l:#e6f1ef;
+    --blue:#2f5478; --blue-l:#e8eff6;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",system-ui,sans-serif;
+    font-size:14.5px;line-height:1.85;}
+  .wrap{max-width:1020px;margin:0 auto;padding:56px 32px 120px;}
+
+  .kicker{font-size:12px;letter-spacing:.32em;color:var(--gold);margin-bottom:14px;}
+  h1{font-family:Georgia,"Songti SC","Noto Serif SC",serif;font-size:40px;line-height:1.15;margin:0 0 8px;font-weight:600;letter-spacing:.05em;}
+  .sub{font-size:14px;color:var(--ink-2);margin:0 0 26px;letter-spacing:.05em;}
+
+  .logline{border-left:3px solid var(--red);background:var(--red-l);padding:18px 22px;border-radius:0 10px 10px 0;font-size:16px;line-height:1.85;color:#5a2626;}
+  .logline b{color:var(--red);}
+
+  h2{font-family:Georgia,"Songti SC",serif;font-size:23px;margin:60px 0 6px;font-weight:600;letter-spacing:.04em;padding-bottom:10px;border-bottom:2px solid var(--ink);}
+  h2 .num{color:var(--gold);font-size:13px;letter-spacing:.2em;display:block;margin-bottom:4px;font-family:system-ui;}
+  h3{font-size:17px;margin:30px 0 6px;font-weight:600;color:var(--red);}
+  h4{font-size:14.5px;margin:16px 0 2px;font-weight:600;color:var(--ink);}
+  p{margin:9px 0;}
+  ul{margin:9px 0;padding-left:22px;}
+  li{margin:4px 0;}
+  em{font-style:normal;color:var(--ink-3);}
+
+  .card{background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;}
+  .grid.g3{grid-template-columns:1fr 1fr 1fr;}
+  .grid .card{margin:0;}
+  @media(max-width:800px){.grid,.grid.g3{grid-template-columns:1fr;}}
+
+  .reveal{border:1px solid #e6c9c6;background:#fdf6f5;border-radius:12px;padding:16px 20px;margin:18px 0;position:relative;}
+  .reveal::before{content:attr(data-tag);position:absolute;top:-11px;left:16px;background:var(--red);color:#fff;font-size:11px;letter-spacing:.16em;padding:2px 10px;border-radius:20px;}
+  .reveal.flat{border-color:var(--line);background:#fdfbf7;}
+  .reveal.flat::before{background:var(--ink-3);}
+  .reveal.gd{border-color:#e0cfa4;background:#fdf9ef;}
+  .reveal.gd::before{background:var(--gold);}
+
+  .hook{border-left:3px solid var(--gold);background:var(--gold-l);padding:11px 16px;margin:12px 0;border-radius:0 8px 8px 0;font-size:14px;}
+  .hook b{color:var(--gold);}
+  .warn{border-left:3px solid var(--red);background:#fdf3f2;padding:12px 16px;margin:12px 0;border-radius:0 8px 8px 0;font-size:14px;}
+  .warn b{color:var(--red);}
+  .v3{border-left:3px solid var(--teal);background:var(--teal-l);padding:11px 16px;margin:12px 0;border-radius:0 8px 8px 0;font-size:14px;}
+  .v3 b{color:var(--teal);}
+  .say{font-family:Georgia,"Songti SC",serif;font-size:16px;line-height:1.9;color:#4a3f35;padding:4px 0 4px 20px;border-left:2px solid var(--line);margin:12px 0;}
+
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px;}
+  th{background:var(--ink);color:#f7f3ec;text-align:left;padding:8px 10px;font-weight:500;font-size:12px;letter-spacing:.06em;}
+  td{border-bottom:1px solid var(--line);padding:7px 10px;vertical-align:top;line-height:1.65;}
+  tr:nth-child(even) td{background:#fdfbf7;}
+  td.c{text-align:center;}
+  .nm{font-weight:600;white-space:nowrap;}
+
+  .lv{display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;border-radius:4px;font-size:11.5px;font-family:Georgia,serif;}
+  .lv.a{background:#efeae1;color:#7d7368;}
+  .lv.b{background:#e6eef2;color:#40606f;}
+  .lv.c{background:#e4efe9;color:#2f6b63;}
+  .lv.d{background:#f5e9d4;color:#8a6516;}
+  .lv.e{background:#f3e2e0;color:#8c2f2f;}
+
+  .tag{display:inline-block;font-size:11px;letter-spacing:.06em;border:1px solid var(--line);border-radius:20px;padding:0 8px;color:var(--ink-2);background:#fff;margin-right:4px;white-space:nowrap;}
+  .tag.gold{border-color:#e0cfa4;color:var(--gold);background:var(--gold-l);}
+  .tag.red{border-color:#dcb9b5;color:var(--red);background:var(--red-l);}
+  .tag.blue{border-color:#c3d3e2;color:var(--blue);background:var(--blue-l);}
+  .tag.teal{border-color:#b8d6d1;color:var(--teal);background:var(--teal-l);}
+  .tag.dim{color:#9a9188;border-color:#e2dbcf;background:#f6f3ed;}
+
+  .xiao{display:flex;align-items:baseline;gap:12px;margin:46px 0 4px;padding-bottom:8px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .xiao .big{font-family:Georgia,"Songti SC",serif;font-size:27px;font-weight:600;letter-spacing:.06em;}
+  .xiao .ct{font-size:14px;color:var(--red);font-weight:600;letter-spacing:.06em;}
+  .xiao .ds{font-size:13px;color:var(--ink-3);}
+
+  .shp{display:inline-grid;grid-template-columns:repeat(2,6px);grid-template-rows:repeat(2,6px);gap:2px;vertical-align:-1px;margin-right:5px;}
+  .shp i{background:var(--ink);border-radius:1px;}
+
+  hr{border:0;border-top:1px solid var(--line);margin:40px 0;}
+  .end{margin-top:60px;padding:24px;background:var(--ink);color:#efe9de;border-radius:12px;text-align:center;font-family:Georgia,"Songti SC",serif;font-size:16.5px;letter-spacing:.1em;line-height:2;}
+  .foot{margin-top:30px;font-size:12.5px;color:var(--ink-3);text-align:center;line-height:1.9;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- SIX_SYSTEM_CURRENT_RULES_START -->
+  <aside class="warn" role="note" aria-label="历史版本与最新规则入口">
+    <b>历史候选图鉴 · 2026-10-20 访谈已更新规则</b><br>
+    本页保留 v0.1 原文，153 件为候选总表，不代表全部可制作或可掉落。
+    最新修订、准入要求及未定内容见
+    <a href="docs/九鼎_六器系统_玩法主干确认稿_v0.3.md">《九鼎：六器系统玩法主干确认稿 v0.3》</a>；
+    逐项来由见 <a href="docs/十日_玩法与运行规则.md">玩法确认记录 Q29—Q93</a>。
+    逐件准入评审与平衡进入后续阶段，已确认修订优先于本页旧效果。
+  </aside>
+  <!-- SIX_SYSTEM_CURRENT_RULES_END -->
+
+  <div class="kicker">《十日》· 六器 · 生肖道具 &nbsp;|&nbsp; v0.1</div>
+  <h1>道具图鉴</h1>
+  <p class="sub">十肖 × 三形制 × 五词缀 = 150 件 &nbsp;+&nbsp; 器魂 3 种 &nbsp;|&nbsp; 配套《基础玩法文档 v0.2》</p>
+
+  <div class="logline">
+    肉鸽的灵魂是道具，但<b>灵魂不是数量</b>。150 件如果都是同一件东西加了五个数值档，那是 30 件道具和 120 个废物。<br>
+    所以本图鉴立了一条硬规矩：<b>词缀不是数值递增，是效果本身变了。</b>
+    残档的「窃粟」偷一枚铜钱，异档的「太仓」把你上一局的残影偷成活物——它们不是一件东西的两个强度，是两件东西。
+  </div>
+
+  <!-- ══════════ §00 ══════════ -->
+  <h2><span class="num">§ 00</span>三条设计原则</h2>
+
+  <div class="grid g3">
+    <div class="card">
+      <h4>① 每档是不同效果</h4>
+      <p>五档词缀 = 五个<b>不同的效果</b>，不是同一效果 ×1.5。<br>
+      <em>判定：如果某两档写成「+20% / +40% / +60%」也能成立，那这两档就是偷懒。</em></p>
+    </div>
+    <div class="card">
+      <h4>② 异档改写规则</h4>
+      <p>最高档「异」几乎不给数值，它给<b>规则改写</b>：改票数、改点燃、改传承、改一个系统的默认行为。<br>
+      <em>异档是让玩家截图发群里的那一件。</em></p>
+    </div>
+    <div class="card">
+      <h4>③ 三分之一碰系统</h4>
+      <p>150 件里 <b>39 件</b>会碰到祭坛 / 票数 / 点燃 / 神兽 / 残影。<br>
+      <em>其余是纯战斗与生存道具——它们负责手感，不负责系统。</em></p>
+    </div>
+  </div>
+
+  <h3>三形制</h3>
+  <table>
+    <tr><th style="width:10%">形制</th><th style="width:10%">形状</th><th style="width:16%">用法</th><th>与系统的关系</th></tr>
+    <tr><td><b>器</b></td><td><span class="shp"><i style="grid-column:span 1;grid-row:span 2"></i></span>1×2</td><td>投掷 / 消耗，用了就没</td><td>纯战斗。是道具的"手感层"</td></tr>
+    <tr><td><b>符</b></td><td><span class="shp"><i></i></span>1×1</td><td>嵌进装备，<b>不可取下</b></td><td class="nm">嵌了就跟着装备走——换装备时要权衡</td></tr>
+    <tr><td><b>契</b></td><td><span class="shp"><i style="grid-column:span 1;grid-row:span 2"></i></span>1×2</td><td>摆在祭坛上，<b>本局持续生效</b></td><td class="nm">占着祭坛格子 → 带契 = 少一个投票位。<b>这是契的代价</b></td></tr>
+  </table>
+
+  <h3>五词缀</h3>
+  <table>
+    <tr><th style="width:10%">档</th><th style="width:18%">气质</th><th>说明</th></tr>
+    <tr><td><span class="lv a">残</span></td><td>能用，但不值一提</td><td>新手过渡。效果简单直白，不掉率也无所谓</td></tr>
+    <tr><td><span class="lv b">常</span></td><td>主力</td><td>一局里真正会用的那一批</td></tr>
+    <tr><td><span class="lv c">良</span></td><td>值得为它改摆放</td><td>效果开始有"条件"或"代价"</td></tr>
+    <tr><td><span class="lv d">珍</span></td><td>一局的目标物</td><td>通常直接碰到系统（票数/点燃/传承）</td></tr>
+    <tr><td><span class="lv e">异</span></td><td class="nm">改写规则</td><td class="nm">不给数值，改一条规则。<b>玩家会截图发群的那一档</b></td></tr>
+  </table>
+
+  <div class="reveal" data-tag="成本钥匙">
+    <b>词缀不换图标。</b>150 件的图标由「肖 + 形制」决定 = <b>30 张底图</b>；词缀只改边框颜色、名字、粒子。<br>
+    所以这 153 件的美术成本是 <b>30 张底图</b>，不是 153 张。<b>这条必须在量产前立死。</b>
+  </div>
+
+  <div class="hook">
+    <b>系统标记</b>：<span class="tag gold">祭坛</span> 影响票数或摆放 ·
+    <span class="tag red">点燃</span> 与点燃互动 ·
+    <span class="tag blue">残影</span> 与局外传承互动 ·
+    <span class="tag teal">神兽</span> 与神兽互动
+  </div>
+
+  <!-- ══════════ 鼠 ══════════ -->
+  <div class="xiao">
+    <span class="big">鼠</span>
+    <span class="ct">金 · 鼎</span>
+    <span class="ds">鼠储粮于穴，鼎储名于器。囤积者 —— 这一肖的道具都在「拿别人的东西」</span>
+  </div>
+
+  <table>
+    <tr><th style="width:9%">形制·档</th><th style="width:11%">名</th><th>效果</th></tr>
+    <tr><td>器 · <span class="lv a">残</span></td><td class="nm">窃粟</td><td>掷出。偷取目标 1 枚掉落物（不掉则偷 5 金）</td></tr>
+    <tr><td>器 · <span class="lv b">常</span></td><td class="nm">穿窬</td><td>掷出。偷取敌人身上的一件道具；无可偷则偷 20 金</td></tr>
+    <tr><td>器 · <span class="lv c">良</span></td><td class="nm">盗声</td><td>掷出。偷走敌人的下一次攻击（它这一击打空），你获得它的攻击力 3 秒</td></tr>
+    <tr><td>器 · <span class="lv d">珍</span></td><td class="nm">窃名</td><td>掷出。<span class="tag gold">祭坛</span>偷走目标所属容器的 <b>1 票</b>，加到你的金鼎上</td></tr>
+    <tr><td>器 · <span class="lv e">异</span></td><td class="nm">太仓</td><td>掷出。<span class="tag blue">残影</span>偷走<b>你上一局的一件残影</b>，使它本局变回活物（可移动、可被点燃）</td></tr>
+    <tr><td>符 · <span class="lv a">残</span></td><td class="nm">鼠毫</td><td>嵌入装备：拾取范围 +5%</td></tr>
+    <tr><td>符 · <span class="lv b">常</span></td><td class="nm">仓廪</td><td>嵌入装备：击杀有 8% 概率不掉金币，改掉一件道具</td></tr>
+    <tr><td>符 · <span class="lv c">良</span></td><td class="nm">积仓</td><td>嵌入装备：仓库里每有一件物品，攻速 +0.5%（上限 10%）</td></tr>
+    <tr><td>符 · <span class="lv d">珍</span></td><td class="nm">天仓</td><td>嵌入装备：<span class="tag gold">祭坛</span>仓库格 +4，但<b>仓库物品永远不投票</b></td></tr>
+    <tr><td>符 · <span class="lv e">异</span></td><td class="nm">鼠窃天下</td><td>嵌入装备：<span class="tag gold">祭坛</span>此装备被替换时，<b>这张符自己跑到祭坛上</b>（不消失）</td></tr>
+    <tr><td>契 · <span class="lv a">残</span></td><td class="nm">囤积</td><td>摆祭坛：本局每拾取一件道具，最大生命 +1%（上限 15%）</td></tr>
+    <tr><td>契 · <span class="lv b">常</span></td><td class="nm">居奇</td><td>摆祭坛：<span class="tag gold">祭坛</span>仓库里的物品也能投<b>半票</b>（向下取整）</td></tr>
+    <tr><td>契 · <span class="lv c">良</span></td><td class="nm">奇货</td><td>摆祭坛：<span class="tag red">点燃</span>本局<b>第一次点燃不消耗祭坛物品</b>（终极生效，东西还在）</td></tr>
+    <tr><td>契 · <span class="lv d">珍</span></td><td class="nm">窃国</td><td>摆祭坛：<span class="tag blue">残影</span>击杀 Boss 后，可将其<b>名字</b>带进下一局作为残影（不占残影数量上限）</td></tr>
+    <tr><td>契 · <span class="lv e">异</span></td><td class="nm">硕鼠</td><td>摆祭坛：<span class="tag gold">祭坛</span>本局所有容器的票数<b>每 30 秒重新洗牌一次</b></td></tr>
+  </table>
+
+  <!-- ══════════ 虎 ══════════ -->
+  <div class="xiao">
+    <span class="big">虎</span>
+    <span class="ct">场 · 斗</span>
+    <span class="ds">虎是战兽，被斗、被围、被挂起来给人看 —— 这一肖负责突进与示众</span>
+  </div>
+
+  <table>
+    <tr><th style="width:9%">形制·档</th><th style="width:11%">名</th><th>效果</th></tr>
+    <tr><td>器 · <span class="lv a">残</span></td><td class="nm">扑食</td><td>掷出。向前突进 3 米，撞到的敌人受伤</td></tr>
+    <tr><td>器 · <span class="lv b">常</span></td><td class="nm">虎跃</td><td>掷出。突进，落点产生一圈冲击波</td></tr>
+    <tr><td>器 · <span class="lv c">良</span></td><td class="nm">三扑</td><td>掷出。连续突进 3 次，每次距离递减（60% / 35% / 15%）</td></tr>
+    <tr><td>器 · <span class="lv d">珍</span></td><td class="nm">示众</td><td>掷出。将击中的敌人<b>挂起</b>悬空 3 秒：不能行动，受到伤害 +30%</td></tr>
+    <tr><td>器 · <span class="lv e">异</span></td><td class="nm">虎伥</td><td>掷出。突进击杀敌人后，<b>它的尸体替你挡下下一次攻击</b></td></tr>
+    <tr><td>符 · <span class="lv a">残</span></td><td class="nm">虎牙</td><td>嵌入装备：暴击率 +6%</td></tr>
+    <tr><td>符 · <span class="lv b">常</span></td><td class="nm">虎威</td><td>嵌入装备：对满血敌人伤害 +12%</td></tr>
+    <tr><td>符 · <span class="lv c">良</span></td><td class="nm">虎贲</td><td>嵌入装备：击杀后 2 秒内攻速 +20%</td></tr>
+    <tr><td>符 · <span class="lv d">珍</span></td><td class="nm">枭首</td><td>嵌入装备：击杀精英时，场上<b>所有同类小怪四散 3 秒</b></td></tr>
+    <tr><td>符 · <span class="lv e">异</span></td><td class="nm">虎符调兵</td><td>嵌入装备：<span class="tag gold">祭坛</span>此装备摆在祭坛时，<b>票数翻倍</b></td></tr>
+    <tr><td>契 · <span class="lv a">残</span></td><td class="nm">逞威</td><td>摆祭坛：本局每次击杀 +2% 伤害（上限 20%）</td></tr>
+    <tr><td>契 · <span class="lv b">常</span></td><td class="nm">围观</td><td>摆祭坛：场上每有 1 个敌人，伤害 +1.5%（上限 15%）</td></tr>
+    <tr><td>契 · <span class="lv c">良</span></td><td class="nm">斗兽</td><td>摆祭坛：<span class="tag gold">祭坛</span><b>场·斗</b>的作祟改为「敌人增援 +2」，但你伤害 +10%</td></tr>
+    <tr><td>契 · <span class="lv d">珍</span></td><td class="nm">困兽</td><td>摆祭坛：血量低于 25% 时，<b>全场敌人必须攻击你</b></td></tr>
+    <tr><td>契 · <span class="lv e">异</span></td><td class="nm">虎落平阳</td><td>摆祭坛：本局所有攻击<b>必定命中</b>，但伤害 −15%</td></tr>
+  </table>
+
+  <!-- ══════════ 兔 ══════════ -->
+  <div class="xiao">
+    <span class="big">兔</span>
+    <span class="ct">镜 · 影</span>
+    <span class="ds">兔居月。月是镜，月中那个是倒影 —— 这一肖负责替身与以假乱真</span>
+  </div>
+
+  <table>
+    <tr><th style="width:9%">形制·档</th><th style="width:11%">名</th><th>效果</th></tr>
+    <tr><td>器 · <span class="lv a">残</span></td><td class="nm">脱兔</td><td>掷出。向后瞬移 4 米</td></tr>
+    <tr><td>器 · <span class="lv b">常</span></td><td class="nm">狡兔三窟</td><td>掷出。原地留下 1 个替身，替身 3 秒后炸开</td></tr>
+    <tr><td>器 · <span class="lv c">良</span></td><td class="nm">顾兔</td><td>掷出。瞬移并留下一个<b>会复制你上一个动作</b>的影子（8 秒）</td></tr>
+    <tr><td>器 · <span class="lv d">珍</span></td><td class="nm">捣药</td><td>掷出。将当前血量的 30% 转移给影子，影子替你承受接下来 10 秒的伤害</td></tr>
+    <tr><td>器 · <span class="lv e">异</span></td><td class="nm">月影</td><td>掷出。本局你受到的<b>第一次致命伤不发生</b>（转移到影子身上）</td></tr>
+    <tr><td>符 · <span class="lv a">残</span></td><td class="nm">兔毫</td><td>嵌入装备：闪避 +4%</td></tr>
+    <tr><td>符 · <span class="lv b">常</span></td><td class="nm">顾影</td><td>嵌入装备：闪避后 1 秒内暴击 +10%</td></tr>
+    <tr><td>符 · <span class="lv c">良</span></td><td class="nm">分身</td><td>嵌入装备：暴击时生成 1 个 1 秒的残影吸引仇恨</td></tr>
+    <tr><td>符 · <span class="lv d">珍</span></td><td class="nm">镜花</td><td>嵌入装备：<span class="tag gold">祭坛</span>你受到的 15% 伤害由「票数最少的容器」承担（转为其 −1 票）</td></tr>
+    <tr><td>符 · <span class="lv e">异</span></td><td class="nm">对影成三</td><td>嵌入装备：<span class="tag gold">祭坛</span>此装备在祭坛上时，<b>镜·影</b>的票数按<b>双倍</b>计算</td></tr>
+    <tr><td>契 · <span class="lv a">残</span></td><td class="nm">望月</td><td>摆祭坛：每 20 秒随机复制你身上的一个身法（持续 10 秒）</td></tr>
+    <tr><td>契 · <span class="lv b">常</span></td><td class="nm">兔死狐悲</td><td>摆祭坛：<span class="tag gold">祭坛</span>当一个容器<b>从第一名掉下来</b>时，你回 8% 生命</td></tr>
+    <tr><td>契 · <span class="lv c">良</span></td><td class="nm">镜中缘</td><td>摆祭坛：<span class="tag gold">祭坛</span>祭坛上<b>对称位置</b>的两件物品票数互通（相加后平分）</td></tr>
+    <tr><td>契 · <span class="lv d">珍</span></td><td class="nm">破镜</td><td>摆祭坛：<span class="tag gold">祭坛</span><b>镜·影</b>显灵时，你获得一个<b>永久的影子</b>，复制你 70% 的伤害</td></tr>
+    <tr><td>契 · <span class="lv e">异</span></td><td class="nm">镜中人</td><td>摆祭坛：本局你死亡时，<b>由影子替你继续战斗 15 秒</b>（之后真死）</td></tr>
+  </table>
+
+  <!-- ══════════ 蛇 ══════════ -->
+  <div class="xiao">
+    <span class="big">蛇</span>
+    <span class="ct">草 · 野</span>
+    <span class="ds">蛇伏草间。草野无名，等于不被记住 —— 这一肖负责潜行、延时、无人知晓</span>
+  </div>
+
+  <table>
+    <tr><th style="width:9%">形制·档</th><th style="width:11%">名</th><th>效果</th></tr>
+    <tr><td>器 · <span class="lv a">残</span></td><td class="nm">蛇信</td><td>掷出。造成 3 秒中毒</td></tr>
+    <tr><td>器 · <span class="lv b">常</span></td><td class="nm">蝮螫</td><td>掷出。中毒效果会<b>传染</b>给附近的敌人</td></tr>
+    <tr><td>器 · <span class="lv c">良</span></td><td class="nm">埋伏</td><td>掷出。在地面埋一条蛇，敌人踩到才触发（无上限，永久存在）</td></tr>
+    <tr><td>器 · <span class="lv d">珍</span></td><td class="nm">衔尾</td><td>掷出。中毒的敌人死亡时，<b>毒传给最近的敌人</b>（可链式传播）</td></tr>
+    <tr><td>器 · <span class="lv e">异</span></td><td class="nm">化龙</td><td>掷出。埋伏的蛇存活满 60 秒，<b>变成一条龙</b>（一次性强力 AOE）</td></tr>
+    <tr><td>符 · <span class="lv a">残</span></td><td class="nm">蛇蜕</td><td>嵌入装备：受击后 1 秒移速 +8%</td></tr>
+    <tr><td>符 · <span class="lv b">常</span></td><td class="nm">草行</td><td>嵌入装备：原地不动 2 秒后进入<b>潜行</b>（敌人失去目标）</td></tr>
+    <tr><td>符 · <span class="lv c">良</span></td><td class="nm">蔓草</td><td>嵌入装备：你经过的地面留下草，草中的你移速 +15%</td></tr>
+    <tr><td>符 · <span class="lv d">珍</span></td><td class="nm">无名</td><td>嵌入装备：<span class="tag gold">祭坛</span><b>草·野</b>的作祟（掉落 −25%）<b>对你无效</b></td></tr>
+    <tr><td>符 · <span class="lv e">异</span></td><td class="nm">百草</td><td>嵌入装备：你的中毒伤害<b>改为治疗</b>——敌人中毒时你在回血</td></tr>
+    <tr><td>契 · <span class="lv a">残</span></td><td class="nm">蛰伏</td><td>摆祭坛：不攻击 5 秒后，下次攻击 +50% 伤害</td></tr>
+    <tr><td>契 · <span class="lv b">常</span></td><td class="nm">草莽</td><td>摆祭坛：场上敌人数量 &gt; 6 时，移速 +20% 且免疫减速</td></tr>
+    <tr><td>契 · <span class="lv c">良</span></td><td class="nm">荒冢</td><td>摆祭坛：<span class="tag gold">祭坛</span>每有一个容器票数为 0，你减伤 +5%</td></tr>
+    <tr><td>契 · <span class="lv d">珍</span></td><td class="nm">人不知</td><td>摆祭坛：本局你<b>不产生威胁值</b>，敌人只在近距离才攻击你</td></tr>
+    <tr><td>契 · <span class="lv e">异</span></td><td class="nm">野有死鹿</td><td>摆祭坛：本局<b>第一次进入新区域时，该区域的敌人已经死了</b>——你只看到尸体，和杀它们的那个不在场的东西</td></tr>
+  </table>
+
+  <div class="v3">
+    <b>「野有死鹿」是本图鉴里唯一一件纯叙事道具。</b>它不给你任何战斗收益，
+    它给你的是《十日》里那句「该有人的地方没有人」。<b>这件道具存在的意义，是让玩家自己去问一句：谁干的。</b>
+  </div>
+
+  <!-- ══════════ 马 ══════════ -->
+  <div class="xiao">
+    <span class="big">马</span>
+    <span class="ct">雷 · 刑</span>
+    <span class="ds">马之驰，迅疾如雷。天罚亦如雷 —— 这一肖负责疾行与一击</span>
+  </div>
+
+  <table>
+    <tr><th style="width:9%">形制·档</th><th style="width:11%">名</th><th>效果</th></tr>
+    <tr><td>器 · <span class="lv a">残</span></td><td class="nm">快马</td><td>掷出。3 秒内移速 +40%</td></tr>
+    <tr><td>器 · <span class="lv b">常</span></td><td class="nm">奔雷</td><td>掷出。冲刺，路径留下雷痕（敌人踩到受伤）</td></tr>
+    <tr><td>器 · <span class="lv c">良</span></td><td class="nm">一骑</td><td>掷出。冲刺结束后 2 秒内，下一次攻击<b>必定暴击</b></td></tr>
+    <tr><td>器 · <span class="lv d">珍</span></td><td class="nm">绝尘</td><td>掷出。冲刺期间<b>无敌</b>，穿过敌人时将其<b>钉在原地</b> 1 秒</td></tr>
+    <tr><td>器 · <span class="lv e">异</span></td><td class="nm">天驷</td><td>掷出。本局冲刺累计满 100 米后，下次攻击<b>召唤一道天雷</b></td></tr>
+    <tr><td>符 · <span class="lv a">残</span></td><td class="nm">马蹄</td><td>嵌入装备：移速 +5%</td></tr>
+    <tr><td>符 · <span class="lv b">常</span></td><td class="nm">雷蹄</td><td>嵌入装备：移动时留下电痕，触碰的敌人受伤（每 3 秒一次）</td></tr>
+    <tr><td>符 · <span class="lv c">良</span></td><td class="nm">驰刑</td><td>嵌入装备：移速转化为暴伤（每 10% 移速 = +8% 暴伤）</td></tr>
+    <tr><td>符 · <span class="lv d">珍</span></td><td class="nm">天罚</td><td>嵌入装备：<span class="tag gold">祭坛</span><b>雷·刑</b>显灵时，落雷改为<b>劈向场上血量最高的敌人</b></td></tr>
+    <tr><td>符 · <span class="lv e">异</span></td><td class="nm">雷车</td><td>嵌入装备：<span class="tag red">点燃</span>此装备被点燃时，<b>额外触发一次天雷</b></td></tr>
+    <tr><td>契 · <span class="lv a">残</span></td><td class="nm">疾驰</td><td>摆祭坛：脱离战斗 3 秒后移速 +30%</td></tr>
+    <tr><td>契 · <span class="lv b">常</span></td><td class="nm">连坐</td><td>摆祭坛：你击杀的敌人，<b>其周围的敌人也受到 20% 伤害</b></td></tr>
+    <tr><td>契 · <span class="lv c">良</span></td><td class="nm">雷霆</td><td>摆祭坛：你的暴击<b>必定命中最远的敌人</b>（而非最近的）</td></tr>
+    <tr><td>契 · <span class="lv d">珍</span></td><td class="nm">天刑</td><td>摆祭坛：本局每受到 10 次伤害，天雷自动劈向随机敌人</td></tr>
+    <tr><td>契 · <span class="lv e">异</span></td><td class="nm">代天巡狩</td><td>摆祭坛：本局你的攻击附带「<b>定罪</b>」——被定罪的敌人 5 秒后<b>自动死亡</b>（对 Boss 无效）</td></tr>
+  </table>
+
+  <!-- ══════════ 羊 ══════════ -->
+  <div class="xiao">
+    <span class="big">羊</span>
+    <span class="ct">木 · 祠</span>
+    <span class="ds">羊为祭品。被供上去的那个 —— 这一肖负责牺牲与以损换益</span>
+  </div>
+
+  <table>
+    <tr><th style="width:9%">形制·档</th><th style="width:11%">名</th><th>效果</th></tr>
+    <tr><td>器 · <span class="lv a">残</span></td><td class="nm">献帛</td><td>掷出。消耗 10% 生命，5 秒后返还 20%</td></tr>
+    <tr><td>器 · <span class="lv b">常</span></td><td class="nm">少牢</td><td>掷出。献祭背包中一件道具，换 15% 生命</td></tr>
+    <tr><td>器 · <span class="lv c">良</span></td><td class="nm">太牢</td><td>掷出。<span class="tag gold">祭坛</span>献祭祭坛上<b>票数最多的物品</b>，换 30% 生命，并将其容器票数归零</td></tr>
+    <tr><td>器 · <span class="lv d">珍</span></td><td class="nm">替罪</td><td>掷出。献祭一件物品，将你的<b>下一次致命伤转移给它</b>（物品毁灭，你活）</td></tr>
+    <tr><td>器 · <span class="lv e">异</span></td><td class="nm">羔羊</td><td>掷出。献祭身上<b>一件装备</b>，本局该装备的<b>身法永久保留</b>（即使不再穿着）</td></tr>
+    <tr><td>符 · <span class="lv a">残</span></td><td class="nm">羊角</td><td>嵌入装备：最大生命 +30</td></tr>
+    <tr><td>符 · <span class="lv b">常</span></td><td class="nm">供奉</td><td>嵌入装备：每 30 秒自动献祭 1 件仓库物品，回 5% 生命</td></tr>
+    <tr><td>符 · <span class="lv c">良</span></td><td class="nm">血食</td><td>嵌入装备：<span class="tag gold">祭坛</span><b>木·祠</b>显灵时，回血效果<b>翻倍</b></td></tr>
+    <tr><td>符 · <span class="lv d">珍</span></td><td class="nm">祠主</td><td>嵌入装备：<span class="tag gold">祭坛</span>祭坛<b>中央 2×2 四格</b>视为「祠」，其中的物品票数 ×1.5</td></tr>
+    <tr><td>符 · <span class="lv e">异</span></td><td class="nm">三牲</td><td>嵌入装备：<span class="tag gold">祭坛</span>可<b>献祭一个容器的全部票数</b>，使另一个容器立刻成为第一名</td></tr>
+    <tr><td>契 · <span class="lv a">残</span></td><td class="nm">素食</td><td>摆祭坛：每 10 秒不击杀敌人，生命回复 +3%</td></tr>
+    <tr><td>契 · <span class="lv b">常</span></td><td class="nm">献祭</td><td>摆祭坛：本局每献祭一件物品，全属性 +1%（上限 15%）</td></tr>
+    <tr><td>契 · <span class="lv c">良</span></td><td class="nm">代死</td><td>摆祭坛：<span class="tag red">点燃</span>本局第一次死亡时，<b>烧掉祭坛上所有物品</b>原地复活（祭坛清空）</td></tr>
+    <tr><td>契 · <span class="lv d">珍</span></td><td class="nm">血祠</td><td>摆祭坛：<span class="tag gold">祭坛</span>生命上限 −20%，但所有<b>木·祠</b>物品票数 ×2</td></tr>
+    <tr><td>契 · <span class="lv e">异</span></td><td class="nm">牂羊坟首</td><td>摆祭坛：本局<b>不能回血</b>，但每受到 100 点伤害，<b>永久 +2% 攻击</b></td></tr>
+  </table>
+
+  <div class="hook">
+    <b>「牂羊坟首」出自《诗经》：羊瘦得只剩一个大头，无肉可献。</b>
+    它是一件纯粹的<b>风险偏好道具</b>——敢带它的人，是那些相信自己不会挨打的人。
+    而它旁边的<b>「血祠」</b>是它的孪生兄弟：一个拿血换票，一个拿血换攻。<b>这两件放一起，就是一条完整的流派。</b>
+  </div>
+
+  <!-- ══════════ 猴 ══════════ -->
+  <div class="xiao">
+    <span class="big">猴</span>
+    <span class="ct">塔 · 镇</span>
+    <span class="ds">猴被压于山下。不是死了，是被镇住 —— 这一肖负责封印与动弹不得</span>
+  </div>
+
+  <table>
+    <tr><th style="width:9%">形制·档</th><th style="width:11%">名</th><th>效果</th></tr>
+    <tr><td>器 · <span class="lv a">残</span></td><td class="nm">沐猴</td><td>掷出。随机变成一只小怪的样子 5 秒（敌人不打你）</td></tr>
+    <tr><td>器 · <span class="lv b">常</span></td><td class="nm">窃桃</td><td>掷出。偷取敌人的<b>一个动作</b>，本局你可以使用它一次</td></tr>
+    <tr><td>器 · <span class="lv c">良</span></td><td class="nm">千变</td><td>掷出。将敌人<b>变成一只猴子</b> 3 秒（它会攻击自己的同伴）</td></tr>
+    <tr><td>器 · <span class="lv d">珍</span></td><td class="nm">缚猴</td><td>掷出。<span class="tag gold">祭坛</span>将敌人定在原地 3 秒，且其所属容器 <b>−2 票</b></td></tr>
+    <tr><td>器 · <span class="lv e">异</span></td><td class="nm">压山</td><td>掷出。原地生成一座<b>小塔</b>，塔内敌人无法移动（12 秒）</td></tr>
+    <tr><td>符 · <span class="lv a">残</span></td><td class="nm">猴毛</td><td>嵌入装备：技能急速 +3%</td></tr>
+    <tr><td>符 · <span class="lv b">常</span></td><td class="nm">拔毛</td><td>嵌入装备：每次暴击生成一个 1 秒的分身</td></tr>
+    <tr><td>符 · <span class="lv c">良</span></td><td class="nm">镇物</td><td>嵌入装备：你击杀的敌人<b>不会复活</b>（克制某些敌人类型）</td></tr>
+    <tr><td>符 · <span class="lv d">珍</span></td><td class="nm">不动明王</td><td>嵌入装备：<b>站着不动</b>时减伤 +25% 且免疫击退</td></tr>
+    <tr><td>符 · <span class="lv e">异</span></td><td class="nm">五指山</td><td>嵌入装备：<span class="tag gold">祭坛</span><b>塔·镇</b>显灵时，光环改为<b>全场敌人完全静止</b></td></tr>
+    <tr><td>契 · <span class="lv a">残</span></td><td class="nm">禁声</td><td>摆祭坛：本局敌人不会呼叫增援</td></tr>
+    <tr><td>契 · <span class="lv b">常</span></td><td class="nm">封坛</td><td>摆祭坛：<span class="tag gold">祭坛</span>可<b>封印祭坛上的一格</b>（该格不可用，但其他格票数 +1）</td></tr>
+    <tr><td>契 · <span class="lv c">良</span></td><td class="nm">镇压</td><td>摆祭坛：场上每有一个被定身的敌人，你伤害 +3%</td></tr>
+    <tr><td>契 · <span class="lv d">珍</span></td><td class="nm">六字</td><td>摆祭坛：你的攻击有 20% 概率使敌人<b>无法行动 1 秒</b></td></tr>
+    <tr><td>契 · <span class="lv e">异</span></td><td class="nm">镇海</td><td>摆祭坛：<span class="tag red">点燃</span>本局所有<b>塔·镇</b>物品<b>不会被点燃消耗</b>（可无限点燃）</td></tr>
+  </table>
+
+  <!-- ══════════ 鸡 ══════════ -->
+  <div class="xiao">
+    <span class="big">鸡</span>
+    <span class="ct">火 · 焚</span>
+    <span class="ds">鸡司晨唤日。它叫来的那个东西会烧死你 —— 这一肖负责点燃与焚烧</span>
+  </div>
+
+  <table>
+    <tr><th style="width:9%">形制·档</th><th style="width:11%">名</th><th>效果</th></tr>
+    <tr><td>器 · <span class="lv a">残</span></td><td class="nm">晨鸣</td><td>掷出。打断附近敌人的当前动作</td></tr>
+    <tr><td>器 · <span class="lv b">常</span></td><td class="nm">焚羽</td><td>掷出。点燃一片地面（持续 6 秒）</td></tr>
+    <tr><td>器 · <span class="lv c">良</span></td><td class="nm">司晨</td><td>掷出。鸣叫，<b>全场敌人停止行动 1 秒</b>（每局限 3 次）</td></tr>
+    <tr><td>器 · <span class="lv d">珍</span></td><td class="nm">焚身</td><td>掷出。点燃自己：8 秒内攻速 +40%，每秒掉 2% 生命</td></tr>
+    <tr><td>器 · <span class="lv e">异</span></td><td class="nm">金鸡</td><td>掷出。鸣叫时，<b>所有燃烧的敌人立即承受其剩余燃烧伤害的总和</b></td></tr>
+    <tr><td>符 · <span class="lv a">残</span></td><td class="nm">鸡冠</td><td>嵌入装备：攻击力 +6%</td></tr>
+    <tr><td>符 · <span class="lv b">常</span></td><td class="nm">燧火</td><td>嵌入装备：你的攻击点燃敌人（小额持续伤害）</td></tr>
+    <tr><td>符 · <span class="lv c">良</span></td><td class="nm">焚风</td><td>嵌入装备：燃烧的敌人<b>移动时留下火焰</b></td></tr>
+    <tr><td>符 · <span class="lv d">珍</span></td><td class="nm">燔祭</td><td>嵌入装备：<span class="tag teal">神兽</span>击杀敌人时将其<b>烧成灰</b>——灰是饕餮最好的饲料</td></tr>
+    <tr><td>符 · <span class="lv e">异</span></td><td class="nm">十日</td><td>嵌入装备：<span class="tag red">点燃</span><b>火·焚</b>点燃时，终极改为<b>天上出现第二个太阳</b>：全场持续燃烧，直到本局结束</td></tr>
+    <tr><td>契 · <span class="lv a">残</span></td><td class="nm">报晓</td><td>摆祭坛：每 60 秒，全场敌人现形（显示血量与弱点）3 秒</td></tr>
+    <tr><td>契 · <span class="lv b">常</span></td><td class="nm">焚书</td><td>摆祭坛：<span class="tag red">点燃</span>本局每点燃一次，<b>永久 +1% 攻击</b></td></tr>
+    <tr><td>契 · <span class="lv c">良</span></td><td class="nm">燎原</td><td>摆祭坛：<span class="tag gold">祭坛</span>燃烧的敌人死亡时，其<b>所属容器 +1 票</b></td></tr>
+    <tr><td>契 · <span class="lv d">珍</span></td><td class="nm">焦土</td><td>摆祭坛：你站过的地方留下焦土，敌人经过减速 30%</td></tr>
+    <tr><td>契 · <span class="lv e">异</span></td><td class="nm">焚如</td><td>摆祭坛：本局所有伤害<b>改为燃烧伤害</b>，且<b>不能暴击</b></td></tr>
+  </table>
+
+  <div class="reveal gd" data-tag="标题的落点">
+    <b>「十日」—— 火焚点燃的最高级，是天上多出一个太阳。</b><br><br>
+    这个游戏叫《十日》。九个太阳已经被射下来了，只剩一个。<br>
+    而当玩家把火焚推到第一名、再把它烧掉的时候，<b>天上会回到两个太阳。</b><br><br>
+    <em>标题不该只写在封面上。它应该是一件道具的效果。</em>
+  </div>
+
+  <!-- ══════════ 狗 ══════════ -->
+  <div class="xiao">
+    <span class="big">狗</span>
+    <span class="ct">土 · 葬</span>
+    <span class="ds">狗守冢。它守的是一座空的 —— 这一肖负责守卫、留守、埋藏</span>
+  </div>
+
+  <table>
+    <tr><th style="width:9%">形制·档</th><th style="width:11%">名</th><th>效果</th></tr>
+    <tr><td>器 · <span class="lv a">残</span></td><td class="nm">吠</td><td>掷出。吸引附近敌人仇恨 3 秒</td></tr>
+    <tr><td>器 · <span class="lv b">常</span></td><td class="nm">守冢</td><td>掷出。原地留下一个<b>墓碑</b>，敌人优先攻击它（墓碑有生命值）</td></tr>
+    <tr><td>器 · <span class="lv c">良</span></td><td class="nm">忠犬</td><td>掷出。召唤一只狗跟随你 20 秒，它会咬住敌人不放</td></tr>
+    <tr><td>器 · <span class="lv d">珍</span></td><td class="nm">守夜</td><td>掷出。原地留下一个守卫，<b>范围内的敌人不能离开</b>（15 秒）</td></tr>
+    <tr><td>器 · <span class="lv e">异</span></td><td class="nm">黄耳</td><td>掷出。召唤一只狗，<b>把你身上的一件物品叼回营地</b>（立刻进仓库，不占祭坛）</td></tr>
+    <tr><td>符 · <span class="lv a">残</span></td><td class="nm">犬牙</td><td>嵌入装备：韧性 +4%</td></tr>
+    <tr><td>符 · <span class="lv b">常</span></td><td class="nm">埋骨</td><td>嵌入装备：你击杀的敌人<b>留在原地成为障碍</b>（挡住其他敌人）</td></tr>
+    <tr><td>符 · <span class="lv c">良</span></td><td class="nm">守灵</td><td>嵌入装备：<span class="tag blue">残影</span>你死亡时，<b>祭坛上的物品不会成灰</b>——全部作为残影留到下一局</td></tr>
+    <tr><td>符 · <span class="lv d">珍</span></td><td class="nm">葬身</td><td>嵌入装备：<span class="tag gold">祭坛</span><b>土·葬</b>显灵时，减伤的<b>溢出部分转化为护盾</b></td></tr>
+    <tr><td>符 · <span class="lv e">异</span></td><td class="nm">犬戎</td><td>嵌入装备：<span class="tag gold">祭坛</span>你的<b>仓库物品也会攻击</b>靠近的敌人（每 5 秒一次）</td></tr>
+    <tr><td>契 · <span class="lv a">残</span></td><td class="nm">看门</td><td>摆祭坛：<span class="tag gold">祭坛</span>可<b>锁住祭坛上一件物品</b>（本局不能被移动或点燃）</td></tr>
+    <tr><td>契 · <span class="lv b">常</span></td><td class="nm">守财</td><td>摆祭坛：本局你不会丢失任何金币</td></tr>
+    <tr><td>契 · <span class="lv c">良</span></td><td class="nm">殉葬</td><td>摆祭坛：本局第一次死亡时，<b>随机一件装备陪葬</b>（永久消失），换你满血重来</td></tr>
+    <tr><td>契 · <span class="lv d">珍</span></td><td class="nm">义冢</td><td>摆祭坛：场上每有一具尸体，减伤 +2%（上限 20%）</td></tr>
+    <tr><td>契 · <span class="lv e">异</span></td><td class="nm">守墓人</td><td>摆祭坛：本局所有<b>死去的敌人会在 10 秒后为你而战</b>（变成友方骷髅 8 秒）</td></tr>
+  </table>
+
+  <!-- ══════════ 猪 ══════════ -->
+  <div class="xiao">
+    <span class="big">猪</span>
+    <span class="ct">水 · 沉</span>
+    <span class="ds">沉猪于河，献给水底。归墟就在下面 —— 这一肖负责下沉、淹没、献给水</span>
+  </div>
+
+  <table>
+    <tr><th style="width:9%">形制·档</th><th style="width:11%">名</th><th>效果</th></tr>
+    <tr><td>器 · <span class="lv a">残</span></td><td class="nm">沉石</td><td>掷出。将敌人<b>压入地面</b> 2 秒（不能移动）</td></tr>
+    <tr><td>器 · <span class="lv b">常</span></td><td class="nm">豕涉</td><td>掷出。原地生成一片水洼，进入的敌人减速 40%</td></tr>
+    <tr><td>器 · <span class="lv c">良</span></td><td class="nm">豢豕</td><td>掷出。吞下一件道具，10 秒后<b>吐出一件更高词缀的同形制道具</b></td></tr>
+    <tr><td>器 · <span class="lv d">珍</span></td><td class="nm">沉渊</td><td>掷出。原地打开一个<b>归墟口</b>，8 秒内经过的敌人被吸入（小怪秒杀）</td></tr>
+    <tr><td>器 · <span class="lv e">异</span></td><td class="nm">冯夷</td><td>掷出。本局你的水洼<b>连成一片</b>，形成一条可<b>潜行移动</b>的地下水道</td></tr>
+    <tr><td>符 · <span class="lv a">残</span></td><td class="nm">豕牙</td><td>嵌入装备：生命 +5%</td></tr>
+    <tr><td>符 · <span class="lv b">常</span></td><td class="nm">溺水</td><td>嵌入装备：你的攻击使敌人<b>湿润</b>（受到的雷系伤害 +30%）<span class="tag dim">咬马·雷刑</span></td></tr>
+    <tr><td>符 · <span class="lv c">良</span></td><td class="nm">浮沉</td><td>嵌入装备：受伤时<b>沉入地下 1 秒</b>（无敌，但不能攻击）</td></tr>
+    <tr><td>符 · <span class="lv d">珍</span></td><td class="nm">归墟</td><td>嵌入装备：<span class="tag red">点燃</span><b>水·沉</b>点燃时，终极改为<b>将全场敌人吸入归墟</b>，10 秒后吐出并受伤</td></tr>
+    <tr><td>符 · <span class="lv e">异</span></td><td class="nm">豕负涂</td><td>嵌入装备：<span class="tag gold">祭坛</span>你的祭坛物品<b>被淹没</b>（不能投票），但最大生命 +25%</td></tr>
+    <tr><td>契 · <span class="lv a">残</span></td><td class="nm">涂炭</td><td>摆祭坛：移速 −10%，减伤 +10%</td></tr>
+    <tr><td>契 · <span class="lv b">常</span></td><td class="nm">泥涂</td><td>摆祭坛：你走过的地面变泥沼（敌人减速），你自己也减速 5%</td></tr>
+    <tr><td>契 · <span class="lv c">良</span></td><td class="nm">沉璧</td><td>摆祭坛：本局<b>扔进水洼的东西</b>会在 30 秒后<b>以更高词缀浮回</b></td></tr>
+    <tr><td>契 · <span class="lv d">珍</span></td><td class="nm">河伯</td><td>摆祭坛：每进入一个新区域，该区域随机一片地面变成水域（水域战斗）</td></tr>
+    <tr><td>契 · <span class="lv e">异</span></td><td class="nm">冯夷娶妇</td><td>摆祭坛：本局<b>每 90 秒必须献祭一件物品</b>，否则受到一次重创</td></tr>
+  </table>
+
+  <div class="warn">
+    <b>「冯夷娶妇」是全套道具里唯一一件「会咬主人」的。</b>它给的是猪系最强的水域控制，
+    代价是一个<b>每 90 秒响一次的闹钟</b>。<br>
+    玩家带上它，就必须在接下来的 20 分钟里一直记着这件事。<b>这是压力，也是节奏——而压力正是肉鸽要卖的东西。</b>
+  </div>
+
+  <!-- ══════════ 器魂 ══════════ -->
+  <h2><span class="num">§ 11</span>器魂（3 种 · 不分肖）</h2>
+
+  <table>
+    <tr><th style="width:16%">名</th><th style="width:10%">形状</th><th style="width:18%">堆叠</th><th>用途</th></tr>
+    <tr><td class="nm"><span class="lv a">凡</span> 凡品器魂</td><td><span class="shp"><i style="grid-column:span 1;grid-row:span 2"></i></span>1×3</td><td>5 个叠 1 格</td><td>强化 +1 ~ +3</td></tr>
+    <tr><td class="nm"><span class="lv b">精</span> 精致器魂</td><td><span class="shp"><i style="grid-column:span 1;grid-row:span 2"></i></span>1×3</td><td>5 个叠 1 格</td><td>强化 +4 ~ +6</td></tr>
+    <tr><td class="nm"><span class="lv c">仙</span> 仙品器魂</td><td><span class="shp"><i style="grid-column:span 1;grid-row:span 2"></i></span>1×3</td><td>5 个叠 1 格</td><td>强化 +7 ~ +9</td></tr>
+  </table>
+
+  <div class="v3">
+    <b>器魂 = 会占格子的钱。</b>把一件装备从 +0 推到 +9 需要 45 个器魂 = <b>9 格</b>。
+    所以「我这局要不要强化」的真实问题永远是：<b>我愿不愿意为它留 9 格背包。</b>
+  </div>
+
+  <!-- ══════════ §12 ══════════ -->
+  <h2><span class="num">§ 12</span>系统咬合统计</h2>
+
+  <table>
+    <tr><th style="width:8%">肖</th><th style="width:10%">祭坛</th><th style="width:10%">点燃</th><th style="width:10%">残影</th><th style="width:10%">神兽</th><th>系统类道具 / 15</th></tr>
+    <tr><td><b>鼠</b></td><td class="c">5</td><td class="c">1</td><td class="c">2</td><td class="c">0</td><td class="c t4">8</td></tr>
+    <tr><td><b>虎</b></td><td class="c">2</td><td class="c">0</td><td class="c">0</td><td class="c">0</td><td class="c">2</td></tr>
+    <tr><td><b>兔</b></td><td class="c">5</td><td class="c">0</td><td class="c">0</td><td class="c">0</td><td class="c t4">5</td></tr>
+    <tr><td><b>蛇</b></td><td class="c">2</td><td class="c">0</td><td class="c">0</td><td class="c">0</td><td class="c">2</td></tr>
+    <tr><td><b>马</b></td><td class="c">1</td><td class="c">1</td><td class="c">0</td><td class="c">0</td><td class="c">2</td></tr>
+    <tr><td><b>羊</b></td><td class="c">5</td><td class="c">1</td><td class="c">0</td><td class="c">0</td><td class="c t4">6</td></tr>
+    <tr><td><b>猴</b></td><td class="c">3</td><td class="c">1</td><td class="c">0</td><td class="c">0</td><td class="c t4">4</td></tr>
+    <tr><td><b>鸡</b></td><td class="c">1</td><td class="c">2</td><td class="c">0</td><td class="c">1</td><td class="c t4">4</td></tr>
+    <tr><td><b>狗</b></td><td class="c">3</td><td class="c">0</td><td class="c">1</td><td class="c">0</td><td class="c t4">4</td></tr>
+    <tr><td><b>猪</b></td><td class="c">1</td><td class="c">1</td><td class="c">0</td><td class="c">0</td><td class="c">2</td></tr>
+    <tr><td class="c"><b>合计</b></td><td class="c t4"><b>28</b></td><td class="c t4"><b>7</b></td><td class="c t4"><b>3</b></td><td class="c t4"><b>1</b></td><td class="c t4"><b>39 / 150</b></td></tr>
+  </table>
+
+  <div class="hook">
+    <b>39 件（26%）直接碰系统，其余 111 件负责手感。</b><br>
+    这个比例是我故意压住的：<b>如果每件道具都改系统，玩家会累死；如果都不改，道具就退化成消耗品。</b>
+    <b>目标是 v1.5 把它提到三分之一</b>——但提升方式是补"祭坛"类，不是把战斗道具都改成系统道具。
+  </div>
+
+  <!-- ══════════ §13 ══════════ -->
+  <h2><span class="num">§ 13</span>化学反应：让道具互相说话</h2>
+
+  <p class="sub" style="margin-top:-10px">真正让肉鸽被记住的，从来不是某一件道具，而是<b>两件道具撞在一起的那一下</b>。这十条是我设计时就埋好的。</p>
+
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:26%">组合</th><th>发生了什么</th></tr>
+    <tr><td class="c">1</td><td class="nm">猴契·镇海 + 塔·镇第一</td><td class="t4">塔镇物品不被点燃消耗 → 可以<b>无限点燃</b> → 全场敌人永远静止。
+      <b>这是全套最强的一档组合，也是最难凑的。</b></td></tr>
+    <tr><td class="c">2</td><td class="nm">鸡符·十日（异）</td><td class="t4">火焚点燃 → 天上出现第二个太阳 → 全场烧到本局结束。
+      <b>游戏叫《十日》，这件道具就是标题本身。</b></td></tr>
+    <tr><td class="c">3</td><td class="nm">羊契·牂羊坟首 + 羊契·血祠</td><td>不能回血 + 掉血加攻 + 木祠票数 ×2 → 一个<b>越挨打越强、但一滴血都回不来</b>的流派</td></tr>
+    <tr><td class="c">4</td><td class="nm">羊符·祠主 + 兔契·镜中缘</td><td>中央 2×2 ×1.5，对称位票数互通 → <b>用 8 格养出 16 格的效果</b>，代价是必须严格对称摆放</td></tr>
+    <tr><td class="c">5</td><td class="nm">猪器·沉渊 + 马符·天罚</td><td>把敌人吸进归墟 → 落雷劈向血量最高的 → <b>归墟里的雷伤翻倍</b>（湿润 + 密闭）</td></tr>
+    <tr><td class="c">6</td><td class="nm">狗符·守灵 + 传承残影</td><td>死亡时祭坛物品不成灰 → <b>全部变成下局的残影</b> → 下一局开局祭坛就满了。<b>是福是祸取决于你摆了什么</b></td></tr>
+    <tr><td class="c">7</td><td class="nm">鸡契·焚如 + 火·焚第一</td><td>所有伤害变燃烧、不能暴击 → 但火焚显灵是「击杀爆炸」 → <b>于是你走引爆流，全程没有一次暴击</b></td></tr>
+    <tr><td class="c">8</td><td class="nm">鼠契·硕鼠 + 点燃</td><td>每 30 秒洗牌 → <b>可以算准时间，在洗牌前把最高的那家烧掉</b>。这是本作唯一需要看表的玩法</td></tr>
+    <tr><td class="c">9</td><td class="nm">鸡符·燔祭 + 饕餮</td><td>杀敌烧成灰 → 灰喂饕餮 → 饕餮吞灰变强 → <b>强了杀得更快，灰更多。一个自我加速的循环</b></td></tr>
+    <tr><td class="c">10</td><td class="nm">鼠器·太仓 + 任意残影</td><td>把上一局的残影偷成活物 → <b>但那件东西一旦被点燃，就永远消失了</b>。
+      这条链唯一的作用，是让玩家亲手毁掉自己上一局留下的东西</td></tr>
+  </table>
+
+  <div class="reveal gd" data-tag="第 10 条是本图鉴最重要的一条">
+    <b>「太仓」让玩家有能力把记忆变回实物。</b><br>
+    但变回来的代价是——它会再一次变得<b>可以被烧掉</b>。<br><br>
+    而一旦烧掉，连残影都没了。<b>你失去的不是一件道具，是你上一次活着的那段证明。</b><br><br>
+    <em>这条规则不是隐喻。它就是《十日》那句「被记住的才存在」，照着字面实现了一遍。</em>
+  </div>
+
+  <!-- ══════════ §14 ══════════ -->
+  <h2><span class="num">§ 14</span>v1.0 制作顺序</h2>
+
+  <table>
+    <tr><th style="width:8%">批</th><th style="width:22%">内容</th><th style="width:12%">件数</th><th>理由</th></tr>
+    <tr><td class="c">1</td><td class="nm">十肖「器」的常/良档</td><td class="c">20</td><td>先验证手感。器是玩家最常接触的，20 件足够跑一局</td></tr>
+    <tr><td class="c">2</td><td class="nm">十肖「契」全档</td><td class="c">50</td><td>契是系统道具，是争位能不能玩起来的关键。<b>这 50 件比 150 件里其余的所有都重要</b></td></tr>
+    <tr><td class="c">3</td><td class="nm">十肖「符」全档</td><td class="c">50</td><td>附魔层</td></tr>
+    <tr><td class="c">4</td><td class="nm">「器」的残/珍/异</td><td class="c">30</td><td>补齐</td></tr>
+    <tr><td class="c">5</td><td class="nm">器魂 3 种</td><td class="c">3</td><td>强化层</td></tr>
+  </table>
+
+  <div class="warn">
+    <b>注意第 2 批。</b>150 件里，真正决定这套系统成不成立的，是<b>那 50 件契</b>——
+    因为它们是唯一「摆在祭坛上、且持续改写规则」的东西。<br>
+    <b>如果时间只够做 20 件道具，就做十肖的「常」档契和「珍」档契。</b>
+  </div>
+
+  <div class="end">
+    一百五十件东西，三十张底图。<br>
+    <span style="font-size:14px;color:#b8ae9f;letter-spacing:.06em;font-family:system-ui;">
+      玩家不会记住第 87 件叫什么，但会记住那一次——天上出现了第二个太阳。</span>
+  </div>
+
+  <div class="foot">
+    《十日》· 道具图鉴 v0.1 &nbsp;|&nbsp; 2026-10-19 &nbsp;|&nbsp; 配套《基础玩法文档 v0.2》<br>
+    153 件（150 生肖道具 + 3 器魂）· 底图 30 张 · 系统咬合 39 件<br>
+    待补：① 器魂的掉落来源表 ② 「残/异」两档的掉率权重 ③ 神兽食谱（哪一兽吃哪一肖）
+  </div>
+
+</div>
+</body>
+</html>

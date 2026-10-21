@@ -1,0 +1,283 @@
+{
+  "schemaVersion": 1,
+  "status": "published",
+  "createdDate": "2026-10-17",
+  "source": {
+    "repository": "Bacsonlx/NineTripodCauldrons",
+    "number": 2,
+    "title": "[Spec] MVP-02：汤谷大地图、全屏与弓箭战斗切片（macOS／Windows）",
+    "url": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/2",
+    "bodySha256": "11685a27cfea7953a0cadf684fadc59f616ac730d3c5c605aa5b4f2ae30096bc",
+    "comments": 0
+  },
+  "tickets": [
+    {
+      "id": "T01",
+      "title": "稳定现有跑射基线与实际场景输入",
+      "file": "01-playable-baseline.md",
+      "blockedBy": [],
+      "acceptanceRefs": [
+        "AC-07"
+      ],
+      "assetGroups": [],
+      "issueNumber": 3,
+      "issueUrl": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/3"
+    },
+    {
+      "id": "T02",
+      "title": "大地图中的跟随移动与世界坐标瞄准",
+      "file": "02-world-camera-aim.md",
+      "blockedBy": [
+        "T01"
+      ],
+      "acceptanceRefs": [
+        "AC-02",
+        "AC-03",
+        "AC-04",
+        "AC-05"
+      ],
+      "assetGroups": [],
+      "issueNumber": 4,
+      "issueUrl": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/4"
+    },
+    {
+      "id": "T03",
+      "title": "默认最大化、全屏与任意比例铺满",
+      "file": "03-window-fullscreen-resize.md",
+      "blockedBy": [
+        "T02"
+      ],
+      "acceptanceRefs": [
+        "AC-03",
+        "AC-25"
+      ],
+      "assetGroups": [],
+      "issueNumber": 5,
+      "issueUrl": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/5"
+    },
+    {
+      "id": "T04",
+      "title": "影偶近战、敌我生命与失败重试",
+      "file": "04-enemy-melee-health.md",
+      "blockedBy": [
+        "T02"
+      ],
+      "acceptanceRefs": [
+        "AC-08",
+        "AC-18",
+        "AC-20"
+      ],
+      "assetGroups": [],
+      "issueNumber": 6,
+      "issueUrl": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/6"
+    },
+    {
+      "id": "T05",
+      "title": "闪避、无敌窗与基础动作打断",
+      "file": "05-dodge-interruption.md",
+      "blockedBy": [
+        "T04"
+      ],
+      "acceptanceRefs": [
+        "AC-14",
+        "AC-15",
+        "AC-17"
+      ],
+      "assetGroups": [],
+      "issueNumber": 7,
+      "issueUrl": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/7"
+    },
+    {
+      "id": "T06",
+      "title": "Q 穿透箭的贯穿战斗与冷却反馈",
+      "file": "06-piercing-arrow.md",
+      "blockedBy": [
+        "T05"
+      ],
+      "acceptanceRefs": [
+        "AC-09",
+        "AC-10",
+        "AC-16"
+      ],
+      "assetGroups": [],
+      "issueNumber": 8,
+      "issueUrl": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/8"
+    },
+    {
+      "id": "T07",
+      "title": "E 固定地面箭雨与合法落点反馈",
+      "file": "07-arrow-rain.md",
+      "blockedBy": [
+        "T05"
+      ],
+      "acceptanceRefs": [
+        "AC-11",
+        "AC-12",
+        "AC-13",
+        "AC-16",
+        "AC-17"
+      ],
+      "assetGroups": [],
+      "issueNumber": 9,
+      "issueUrl": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/9"
+    },
+    {
+      "id": "T08",
+      "title": "三组遭遇推进、完成与整轮重试",
+      "file": "08-encounters-completion-retry.md",
+      "blockedBy": [
+        "T04"
+      ],
+      "acceptanceRefs": [
+        "AC-19",
+        "AC-20",
+        "AC-21",
+        "AC-22"
+      ],
+      "assetGroups": [],
+      "issueNumber": 10,
+      "issueUrl": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/10"
+    },
+    {
+      "id": "T09",
+      "title": "完整人物动画与弓箭精修接入",
+      "file": "09-player-animation-weapons.md",
+      "blockedBy": [
+        "T06",
+        "T07"
+      ],
+      "acceptanceRefs": [
+        "AC-06",
+        "AC-27"
+      ],
+      "assetGroups": [
+        "M02-A01",
+        "M02-A02",
+        "M02-A03",
+        "M02-A04",
+        "M02-A05",
+        "M02-A07",
+        "M02-A08"
+      ],
+      "issueNumber": 11,
+      "issueUrl": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/11"
+    },
+    {
+      "id": "T10",
+      "title": "影偶完整动作与近战预警精修接入",
+      "file": "10-enemy-animation.md",
+      "blockedBy": [
+        "T04"
+      ],
+      "acceptanceRefs": [
+        "AC-18",
+        "AC-26",
+        "AC-27"
+      ],
+      "assetGroups": [
+        "M02-A06"
+      ],
+      "issueNumber": 12,
+      "issueUrl": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/12"
+    },
+    {
+      "id": "T11",
+      "title": "汤谷整图精修、分层遮挡与通路接入",
+      "file": "11-tanggu-environment.md",
+      "blockedBy": [
+        "T08"
+      ],
+      "acceptanceRefs": [
+        "AC-02",
+        "AC-26",
+        "AC-27"
+      ],
+      "assetGroups": [
+        "M02-A09",
+        "M02-A10",
+        "M02-A11",
+        "M02-A12",
+        "M02-A13"
+      ],
+      "issueNumber": 13,
+      "issueUrl": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/13"
+    },
+    {
+      "id": "T12",
+      "title": "战斗特效、HUD 与全状态整合复验",
+      "file": "12-vfx-hud-integration.md",
+      "blockedBy": [
+        "T03",
+        "T09",
+        "T10",
+        "T11"
+      ],
+      "acceptanceRefs": [
+        "AC-16",
+        "AC-17",
+        "AC-22",
+        "AC-23",
+        "AC-24",
+        "AC-26",
+        "AC-27",
+        "AC-28"
+      ],
+      "assetGroups": [
+        "M02-A14",
+        "M02-A15",
+        "M02-A16",
+        "M02-A17",
+        "M02-A18",
+        "M02-A19"
+      ],
+      "issueNumber": 14,
+      "issueUrl": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/14"
+    },
+    {
+      "id": "T13",
+      "title": "最终双平台 ZIP 交付与 macOS 实机验收",
+      "file": "13-zips-macos-acceptance.md",
+      "blockedBy": [
+        "T12"
+      ],
+      "acceptanceRefs": [
+        "AC-01",
+        "AC-29",
+        "AC-30"
+      ],
+      "assetGroups": [],
+      "issueNumber": 15,
+      "issueUrl": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/15"
+    },
+    {
+      "id": "T14",
+      "title": "Windows 实机验证与双平台结果收束",
+      "file": "14-windows-acceptance.md",
+      "blockedBy": [
+        "T13"
+      ],
+      "acceptanceRefs": [
+        "AC-01",
+        "AC-25",
+        "AC-29",
+        "AC-30"
+      ],
+      "assetGroups": [],
+      "issueNumber": 16,
+      "issueUrl": "https://github.com/Bacsonlx/NineTripodCauldrons/issues/16"
+    }
+  ],
+  "externalInputs": {
+    "T14": "Windows x64 实机或用户基于 T13 最终 ZIP 回传的完整验收数据"
+  },
+  "publication": {
+    "approved": true,
+    "published": true,
+    "publishedDate": "2026-10-17",
+    "verifiedAt": "2026-10-17T14:09:39+08:00",
+    "ticketCount": 14,
+    "nativeSubIssueCount": 14,
+    "nativeDependencyCount": 17,
+    "parentBodyLabelsStateUnchanged": true
+  }
+}
