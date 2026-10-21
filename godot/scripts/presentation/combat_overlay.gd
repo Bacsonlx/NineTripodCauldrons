@@ -2,14 +2,31 @@ extends Node2D
 var state: Dictionary = {}
 var aim: Vector2 = Vector2.ZERO
 var pointer_inside: bool = false
+var enemy_bars: Dictionary = {}
 func update(snapshot: Dictionary,world_aim: Vector2,inside: bool) -> void:
-	state=snapshot; aim=world_aim; pointer_inside=inside; queue_redraw()
-func _draw() -> void:
-	if state.is_empty(): return
+	state=snapshot; aim=world_aim; pointer_inside=inside
+	for bar in enemy_bars.values(): bar.visible=false
 	for enemy in state.enemies:
 		if enemy.phase in ["inactive","dead"]: continue
-		draw_rect(Rect2(enemy.x-20,enemy.y-88,40,4),Color("151714"))
-		draw_rect(Rect2(enemy.x-20,enemy.y-88,40*enemy.health/60.0,4),Color("bc6745"))
+		if not enemy_bars.has(enemy.id):
+			var bar: ProgressBar = ProgressBar.new()
+			bar.name="EnemyHealth%d" % enemy.id
+			bar.max_value=60; bar.show_percentage=false; bar.mouse_filter=Control.MOUSE_FILTER_IGNORE
+			var background: StyleBoxFlat = StyleBoxFlat.new()
+			background.bg_color=Color("242821"); background.border_color=Color("a48b55")
+			background.set_border_width_all(1)
+			bar.add_theme_stylebox_override("background",background)
+			var fill: StyleBoxFlat = StyleBoxFlat.new()
+			fill.bg_color=Color("c8533e"); fill.set_content_margin_all(1)
+			bar.add_theme_stylebox_override("fill",fill)
+			add_child(bar); enemy_bars[enemy.id]=bar
+		var bar: ProgressBar = enemy_bars[enemy.id]
+		bar.position=Vector2(enemy.x-24,enemy.y-92); bar.size=Vector2(48,6)
+		bar.value=enemy.health; bar.visible=true
+		bar.get_theme_stylebox("fill").bg_color=Color("f4c388") if enemy.flash>0 else Color("c8533e")
+	queue_redraw()
+func _draw() -> void:
+	if state.is_empty(): return
 	if state.invalid!=null:
 		var center: Vector2 = Vector2(state.invalid.x,state.invalid.y)
 		draw_line(center-Vector2(9,9),center+Vector2(9,9),Color("e87956"),2)

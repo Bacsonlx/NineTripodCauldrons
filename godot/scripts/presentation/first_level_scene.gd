@@ -2,21 +2,26 @@ extends "res://scripts/presentation/training_scene.gd"
 
 var overview: bool = false
 var overview_button: Button
+var hud: Control
 
 func create_backdrop() -> Node2D:
 	return load("res://scripts/presentation/first_level_backdrop.gd").new()
 
 func build_hud() -> void:
-	super.build_hud()
-	var entry: Button = find_child("OpenFirstLevelMap",true,false)
-	var toolbar: Node = entry.get_parent()
-	entry.get_parent().remove_child(entry); entry.queue_free()
-	var alpha_entry: Button = find_child("OpenAlpha",true,false)
-	alpha_entry.get_parent().remove_child(alpha_entry); alpha_entry.queue_free()
+	var layer: CanvasLayer = CanvasLayer.new()
+	add_child(layer)
+	hud=load("res://scripts/presentation/combat_hud.gd").new(); layer.add_child(hud)
+	encounter_label=hud.encounter; interaction_label=hud.interaction
+	status_label=hud.status; reading_panel=hud.reading
+	fullscreen=Button.new(); fullscreen.text="全屏"; fullscreen.focus_mode=Control.FOCUS_NONE
+	fullscreen.pressed.connect(toggle_fullscreen); hud.toolbar.add_child(fullscreen)
 	overview_button=Button.new()
 	overview_button.text="地图总览 · M"; overview_button.focus_mode=Control.FOCUS_NONE
 	overview_button.pressed.connect(toggle_overview)
-	toolbar.add_child(overview_button)
+	hud.toolbar.add_child(overview_button)
+
+func update_hud(snapshot: Dictionary) -> void:
+	hud.update_state(snapshot)
 
 func present(snapshot: Dictionary,seconds: float) -> void:
 	super.present(snapshot,seconds)

@@ -1,0 +1,50 @@
+{
+  "art_source": "host_image",
+  "route": "built-in image_gen",
+  "model": "not reported by host tool",
+  "estimateUsd": null,
+  "size": [
+    1536,
+    1024
+  ],
+  "regions_xywh": {
+    "portrait": [
+      20,
+      25,
+      478,
+      460
+    ],
+    "attack": [
+      585,
+      80,
+      370,
+      358
+    ],
+    "pierce": [
+      1112,
+      80,
+      366,
+      358
+    ],
+    "rain": [
+      80,
+      573,
+      361,
+      356
+    ],
+    "dodge": [
+      586,
+      573,
+      371,
+      356
+    ]
+  },
+  "alpha": "native RGBA retained; no keying, scaling or image edits",
+  "source_sha256": "6109129ee61da14643839fad4a76a1d1a3443cadc785bafb3fd5e1610d392f92",
+  "reference": "assets/ui/hud-v1/prototype.png",
+  "display_px": {
+    "portrait": 88,
+    "actions": 60
+  },
+  "usage": "Godot AtlasTexture, labels and cooldown drawn at runtime"
+}

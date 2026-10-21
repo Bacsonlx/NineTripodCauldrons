@@ -222,18 +222,21 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 			arrows.erase(id)
 	combat_effects.update(state,_seconds,clock)
 	overlay.update(state,aim,pointer_inside)
-	health_label.text="生命  %d / 100" % state.health
+	update_hud(state)
 	var guidance: Dictionary = guidance_at(point)
 	var remaining: int = 0
 	for enemy in state.enemies:
 		if enemy.group==state.encounter and enemy.phase!="dead": remaining+=1
 	encounter_label.text=guidance.region+" · "+guidance.landmark+("\n三庭肃清" if state.status=="complete" else "\n遭遇 %d / %d · 影偶 %d" % [mini(state.encounter+1,state.totalEncounters),state.totalEncounters,remaining])
-	skills_label.text="Q 穿透箭 %s  ·  E 箭雨 %s  ·  空格 闪避 %s" % [cooldown_text(state.cooldowns.pierce),cooldown_text(state.cooldowns.rain),cooldown_text(state.cooldowns.dodge)]
 	interaction_label.text=state.feedback.text if state.feedback!=null else ("F · "+state.interaction.label+(" · "+state.interaction.reason if state.interaction.reason!=null else "")) if state.interaction!=null else "残碑藏于北侧林径 · 祭火位于南侧支路"
 	status_label.visible=(state.paused and not state.reading) or state.status=="failed"
 	status_label.text="已暂停\nEsc 继续" if state.paused else "影散于汤谷\nR 从起点重试"
 	reading_panel.visible=state.reading
 	fullscreen.text = "退出全屏" if get_window().mode == Window.MODE_FULLSCREEN else "全屏"
+
+func update_hud(snapshot: Dictionary) -> void:
+	health_label.text="生命  %d / 100" % snapshot.health
+	skills_label.text="Q 穿透箭 %s  ·  E 箭雨 %s  ·  空格 闪避 %s" % [cooldown_text(snapshot.cooldowns.pierce),cooldown_text(snapshot.cooldowns.rain),cooldown_text(snapshot.cooldowns.dodge)]
 
 func direction(angle: float) -> int:
 	return posmod(floori(angle / (PI / 2.0) + 0.5), 4)
