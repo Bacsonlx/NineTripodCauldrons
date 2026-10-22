@@ -37,6 +37,12 @@ Mac ZIP 位于 `build/godot/NineTripods-godot-macos.zip`，为包含 arm64 的 U
 
 小样入口 `scenes/sample.tscn` 继续复用现有脚本；已批准小样的原包与源码校验保存在 sample 路径及 `docs/migration/sample-verification.json`，不把当前脚本追溯称为用户已批准版本。
 
+## 索尔独立 Boss 灰盒
+
+启动命令：`godot --path godot res://scenes/boss_test.tscn`。该入口复用现有玩家、技能、能耗、闪避、输入和HUD，包含1200生命索尔、横锤、往返雷锤、三点落雷及锤离手承伤提高25%。右上可切换满资源、44蓝、零蓝、40生命和零精力，切换会重开；R按当前条件重试，Esc暂停，返回汤谷按钮回到原有入口。
+
+几何占位用于验证预告、判定、收招与反击，不是最终美术。镜头固定覆盖测试场，默认七房不接入Boss。设计、B01—B04后台实现及后续B05—B07边界见[实施记录](../docs/mvp/首关Boss_索尔_实施记录_2026-10-22.md)。只测Boss规则可运行 `godot --headless --path godot --script res://tests/run_tests.gd -- --boss-only`；完整检查仍使用项目脚本。前台试玩等待用户安排，Windows实测暂缓。
+
 ## 默认汤谷房间地图
 
 2026-10-21 首关三庭增加为4＋5、4＋5＋6、5＋6＋7影偶，清波后1.2秒自动续波，全部清完开门；普通箭命中与Q／E／闪避动效已强化。伤害、技能判定范围和冷却保持原值，见 [调校与动效预览](../output/combat-feel-20261021/README.md)。后台通过不替代原生密集战斗性能和用户爽感验收。

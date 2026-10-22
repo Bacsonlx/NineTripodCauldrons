@@ -187,7 +187,7 @@ func step(input: Dictionary, seconds: float) -> void:
 		if spend_energy("pierce"):
 			piercing=0.18; pierce_cooldown=4; last_skill="pierce"; attack_released=false
 	if can_start and piercing<0 and rain_pressed and rain_cooldown==0 and input.get("pointerInside",true):
-		if aim.distance_to(Vector2(player.x,player.y))<=480 and can_walk(aim):
+		if aim.distance_to(Vector2(player.x,player.y))<=480 and rain_target_valid(aim):
 			if spend_energy("rain"):
 				raining={"remaining":0.45,"point":aim}; rain_cooldown=8; last_skill="rain"; attack_released=false; invalid={}
 		else: invalid={"x":aim.x,"y":aim.y,"remaining":0.35}
@@ -255,6 +255,9 @@ func launch(kind: String, initial_step: float) -> void:
 		hit_enemies.append(blocked.enemy)
 	arrows.append({"id":next_arrow,"x":muzzle.x,"y":muzzle.y,"angle":player.angle,"age":0.0,"kind":kind,"initialStep":initial_step,"hitEnemies":hit_enemies})
 	next_arrow+=1
+
+func rain_target_valid(position: Vector2) -> bool:
+	return can_walk(position)
 
 func impact(hit: Dictionary, kind: String, angle: float) -> void:
 	var damage: int = 0
