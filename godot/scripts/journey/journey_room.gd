@@ -12,7 +12,7 @@ func _init(data: Dictionary) -> void:
 func update(input: Dictionary,seconds: float) -> void:
 	super.update(input,seconds)
 	if health<=0 or reading: return
-	if layout.objective=="combat" and status=="complete": completed=true
+	if layout.objective in ["combat","boss"] and status=="complete": completed=true
 	if layout.objective=="explore" and exploration.steleRead: completed=true
 
 func update_enemies(seconds: float,protection_at_start: float,dodge_at_start: float) -> void:

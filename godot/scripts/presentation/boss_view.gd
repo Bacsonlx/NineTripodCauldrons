@@ -3,6 +3,11 @@ extends Node2D
 const Rules = preload("res://scripts/combat/boss_room.gd")
 var state: Dictionary = {}
 
+func _ready() -> void:
+	var floor: Node2D = preload("res://scripts/presentation/boss_floor.gd").new()
+	floor.name="Floor"; floor.z_as_relative=false; floor.z_index=-1000
+	add_child(floor)
+
 func setup(_layout: Dictionary,_atlas: Dictionary,_textures: Dictionary) -> void:
 	z_index=-100
 
@@ -11,11 +16,6 @@ func update(snapshot: Dictionary,_clock: float) -> void:
 	queue_redraw()
 
 func _draw() -> void:
-	draw_rect(Rect2(0,0,1440,1040),Color("151c1d"))
-	draw_rect(Rect2(96,96,1248,848),Color("343c3b"))
-	draw_rect(Rect2(96,96,1248,848),Color("b1a483"),false,3)
-	for x in range(96,1344,96): draw_line(Vector2(x,96),Vector2(x,944),Color(0.6,0.6,0.5,0.12))
-	for y in range(96,944,96): draw_line(Vector2(96,y),Vector2(1344,y),Color(0.6,0.6,0.5,0.12))
 	if state.is_empty(): return
 	var boss: Dictionary = state.boss
 	var center: Vector2 = Vector2(boss.x,boss.y)

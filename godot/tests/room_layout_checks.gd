@@ -9,7 +9,7 @@ func _initialize() -> void:
 	run.call_deferred()
 func run() -> void:
 	var maps: Dictionary = Journey.read_maps()
-	check(maps.size()==7,"七个独立房间及双向门配置合法")
+	check(maps.size()==8,"八个独立房间及双向门配置合法")
 	if maps.is_empty(): finish(); return
 	check(maps.court1.doors.size()==3 and maps.court2.doors.size()==3,"分支与汇合房均有三个独立门")
 	var editable: Node2D = load("res://scenes/rooms/stele.tscn").instantiate()

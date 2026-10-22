@@ -43,9 +43,14 @@ func _unhandled_input(event: InputEvent) -> void:
 func update_camera() -> void:
 	if not overview:
 		super.update_camera(); return
+	fit_room()
+
+func fit_room(top_margin: float = 0) -> void:
+	if camera==null: return
 	var size: Vector2 = get_viewport_rect().size
-	view_zoom=minf(size.x/room.layout.width,size.y/room.layout.height)
-	view_origin=(Vector2(room.layout.width,room.layout.height)-size/view_zoom)/2
+	view_zoom=maxf(0.1,minf(size.x/room.layout.width,(size.y-top_margin)/room.layout.height))
+	var center: Vector2 = Vector2(room.layout.width,room.layout.height)/2-Vector2(0,top_margin/(2*view_zoom))
+	view_origin=center-size/view_zoom/2
 	camera.zoom=Vector2.ONE*view_zoom
-	camera.position=Vector2(room.layout.width,room.layout.height)/2
+	camera.position=center
 	camera.force_update_scroll()

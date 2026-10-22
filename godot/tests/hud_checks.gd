@@ -17,8 +17,12 @@ func run() -> void:
 	var hud: Control = game.find_child("CombatHUD",true,false)
 	check(hud!=null,"正式首关显示头像、状态与左下动作栏")
 	if hud==null: finish(game); return
+	check(hud.get_node_or_null("RoomMinimap")!=null,"正式首关右上角显示房间关系小地图")
 	check(hud.get_node("PlayerStatus/Portrait").texture!=null and hud.health.value==100,"已接入头像素材并展示真实初始生命")
 	var font: Font = hud.health_value.get_theme_font("font")
+	var minimap: Control = hud.get_node("RoomMinimap")
+	check(minimap.mouse_filter==Control.MOUSE_FILTER_IGNORE and minimap.get_index()<hud.reading.get_index(),"小地图不截获射击，且阅读遮罩绘在其上方")
+	check(minimap.graph.rooms.size()==8 and minimap.graph.connections.size()==8,"小地图显示包含Boss的八房和八条互通连接")
 	check(font.resource_path=="res://assets/fonts/NineTripodsHudSong.ttf" and not font.allow_system_fallback,"HUD使用随包宋体，不依赖系统字体")
 	var covered: bool = true
 	for character in "无名之子生命蓝量精力未启用穿透箭箭雨闪避第波剩余0123456789 /":
@@ -88,6 +92,7 @@ func run() -> void:
 		var skills: Rect2 = hud.actions.get_rect()
 		check(Rect2(Vector2.ZERO,dimensions).encloses(skills) and skills.end.x<dimensions.x/2,"%s左下动作栏不越界、不遮中央" % dimensions)
 		check(not hud.encounter.get_rect().intersects(hud.get_node("PlayerStatus").get_rect()),"%s房间提示不重叠头像状态区" % dimensions)
+		check(Rect2(Vector2.ZERO,dimensions).encloses(minimap.get_rect()) and not minimap.get_rect().intersects(hud.toolbar.get_rect()) and not minimap.get_rect().intersects(hud.encounter.get_rect()) and not minimap.get_rect().intersects(hud.get_node("PlayerStatus").get_rect()),"%s小地图不出界、不遮工具栏与状态提示" % dimensions)
 	finish(game)
 
 func finish(game: Node) -> void:

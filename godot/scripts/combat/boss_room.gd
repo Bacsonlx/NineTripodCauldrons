@@ -1,4 +1,4 @@
-extends "res://scripts/combat/training_room.gd"
+extends "res://scripts/journey/journey_room.gd"
 
 const BOSS_ID: int = 0
 const MAX_HEALTH: int = 1200
@@ -20,6 +20,7 @@ var lightning_index: int = 0
 
 static func arena_layout() -> Dictionary:
 	return {"width":1440,"height":1040,"spawn":Vector2(300,520),
+		"roomId":"boss_test","roomTitle":"索尔独立原型","objective":"boss","doors":[],
 		"floor":[Vector2.ZERO,Vector2(1440,0),Vector2(1440,1040),Vector2(0,1040)],
 		"walkableAreas":[{"left":96,"top":96,"right":1344,"bottom":944}],
 		"pillars":[],"pillarBody":[],"obstacles":[],"targets":[],"targetFace":{},
@@ -27,7 +28,7 @@ static func arena_layout() -> Dictionary:
 
 func _init(fixture: Dictionary = {}) -> void:
 	initial=fixture.duplicate(true)
-	var data: Dictionary = arena_layout()
+	var data: Dictionary = fixture.duplicate(true) if fixture.has("width") else arena_layout()
 	data.spawn=initial.get("spawn",data.spawn)
 	super(data)
 	energy_enabled=true
@@ -35,6 +36,7 @@ func _init(fixture: Dictionary = {}) -> void:
 func reset() -> void:
 	if paused or reading: return
 	super.reset()
+	completed=false; requested_door=""; wave_delay=0
 	health=int(initial.get("health",100)); mana=int(initial.get("mana",100))
 	stamina=float(initial.get("stamina",100)); stamina_delay=float(initial.get("staminaDelay",0))
 	elapsed=0
@@ -45,16 +47,17 @@ func reset() -> void:
 		"health":MAX_HEALTH,"phase":"prepare","timer":1.2,"angle":PI,"flash":0.0,"struck":false}]
 
 func update(input: Dictionary,seconds: float) -> void:
-	if status!="running": return
+	if status=="failed" or (status=="complete" and layout.doors.is_empty()): return
 	super.update(input,seconds)
 
 func step(input: Dictionary,seconds: float) -> void:
-	if status!="running": return
+	if status=="failed" or (status=="complete" and layout.doors.is_empty()): return
 	super.step(input,seconds)
 	if status!="running":
 		hammer={}; lightning.clear(); arrows.clear(); rains.clear()
 
 func update_enemies(seconds: float,_protection: float,_dodge: float) -> void:
+	if status!="running": return
 	elapsed+=seconds
 	var boss: Dictionary = enemies[0]
 	boss.flash=maxf(0,boss.flash-seconds)

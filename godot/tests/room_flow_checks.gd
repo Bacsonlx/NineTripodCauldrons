@@ -4,6 +4,7 @@ var failures: Array[String] = []
 var checks: int = 0
 var journey: RefCounted
 var combat_runs: Array = []
+var game: Node2D
 func check(ok: bool,message: String) -> void:
 	checks+=1
 	if not ok: failures.append(message); push_error(message)
@@ -22,7 +23,9 @@ func pass_to(target: String) -> bool:
 		if door.target!=target: continue
 		if not walk(TrainingRoom.point(door.point)): return false
 		journey.update({"interact":false},0); journey.update({"interact":true},0)
-		return journey.snapshot().roomId==target
+		if journey.snapshot().roomId==target:
+			game.present_new_room(); return true
+		return false
 	return false
 func fight() -> bool:
 	if not walk(Vector2(510,550)): return false
@@ -50,7 +53,27 @@ func fight() -> bool:
 		journey.update({"moveX":move.x,"moveY":move.y,"aim":target-Vector2(0,52),"fire":true,"pierce":i%25==0,"rain":i%30==0,"dodge":player.distance_to(target)<100 and i%15==0},0.02)
 	return false
 func _initialize() -> void:
-	journey=Journey.new(Journey.read_maps())
+	run.call_deferred()
+
+func boss_fight() -> bool:
+	for i in 9000:
+		var state: Dictionary = journey.snapshot()
+		if state.roomComplete:
+			game.present(state,0)
+			combat_runs.append({"room":"boss","health":state.health,"mana":state.resources.mana,"seconds":i*0.01})
+			return true
+		if state.status=="failed": return false
+		var offset: Vector2 = TrainingRoom.point(state.player)-TrainingRoom.point(state.boss)
+		var move: Vector2 = (Vector2(-offset.y,offset.x).normalized()+offset.normalized()*(420-offset.length())/100).limit_length()
+		journey.update({"moveX":move.x,"moveY":move.y,"fire":true,"aim":Vector2(state.boss.x,state.boss.y-52)},0.01)
+		if i%30==0: game.present(journey.snapshot(),0)
+	return false
+
+func run() -> void:
+	game=load("res://scenes/tanggu_first_level.tscn").instantiate()
+	root.add_child(game); game.set_physics_process(false)
+	await process_frame
+	journey=game.journey
 	check(pass_to("court1"),"入口进入第一庭")
 	check(fight(),"真实跑射和技能完成第一庭两波9影偶")
 	if not journey.snapshot().roomComplete: finish(); return
@@ -63,10 +86,23 @@ func _initialize() -> void:
 	check(journey.snapshot().roomComplete,"祭火安全房无需回血即可通行")
 	check(pass_to("court2") and fight(),"两支汇合后完成第二庭三波15影偶")
 	check(pass_to("court3") and fight(),"进入第三庭并完成三波18影偶")
-	check(pass_to("end") and journey.snapshot().journeyComplete and journey.snapshot().visitedRooms==7,"到达终点且七房间均可探索")
-	check(pass_to("court3") and pass_to("court2") and pass_to("stele"),"通关后可跨多个已完成房间回溯")
+	check(not journey.snapshot().journeyComplete and pass_to("boss"),"第三庭清场后必须先进入Boss房")
+	check(game.boss_view.visible and game.boss_bar.visible and game.boss_bar.value==1200,"默认首关真实切房后显示索尔灰盒与1200生命条")
+	var visible: Rect2 = Rect2(game.view_origin,game.get_viewport_rect().size/game.view_zoom)
+	check(visible.encloses(Rect2(96,96,1248,848)),"首关Boss相机覆盖完整战斗区，不裁掉预警")
+	check(boss_fight(),"42影偶后保留现有生命与资源，真实走射击败索尔")
+	check(game.boss_bar.value==0 and not journey.snapshot().journeyComplete,"Boss生命条归零后开放通路，未到出口不提前完成")
+	var floor: Node2D = game.boss_view.get_node_or_null("Floor")
+	var passages_visible: bool = floor!=null and not floor.z_as_relative
+	for portal in game.get_node("TangguMap/Doors").get_children():
+		passages_visible=passages_visible and portal.get_node("Passage").visible and floor.z_index<portal.get_node("Passage").z_index
+	check(passages_visible,"击败Boss后的门漩涡高于独立地面层，不被灰盒底板遮住")
+	check(pass_to("end") and journey.snapshot().journeyComplete and journey.snapshot().visitedRooms==8,"到达原出口后完成首关，八房间均可探索")
+	check(not game.boss_view.visible and not game.boss_bar.visible,"离开Boss房后隐藏Boss呈现与专属血条")
+	check(pass_to("boss") and pass_to("court3") and pass_to("court2") and pass_to("stele"),"通关后可经过已击败Boss房跨房回溯")
 	check(journey.snapshot().roomComplete and journey.snapshot().exploration.steleRead,"跨房回溯保留任务进度")
 	finish()
 func finish() -> void:
 	print(JSON.stringify({"room_flow_checks":checks,"failures":failures,"combat_runs":combat_runs}))
+	if game!=null: game.free()
 	quit(0 if failures.is_empty() else 1)

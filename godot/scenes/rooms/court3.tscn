@@ -473,9 +473,9 @@ position = Vector2(140,-25)
 [node name="end" parent="Doors" instance=ExtResource("portal")]
 position = Vector2(1270,550)
 portal_id = "end"
-target_room = "end"
+target_room = "boss"
 target_portal = "court3"
-target_title = "汤谷出口"
+target_title = "索尔雷庭"
 [node name="Frame" parent="Doors/end" index="0"]
 mirror_art = true
 [node name="LeftPost" parent="Doors/end" index="2"]

@@ -1,0 +1,60 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/room_map.gd" id="map"]
+[ext_resource type="Script" path="res://scripts/world/map_item.gd" id="item"]
+[ext_resource type="PackedScene" path="res://scenes/world/room_portal.tscn" id="portal"]
+
+[node name="boss" type="Node2D"]
+script = ExtResource("map")
+room_id = "boss"
+room_title = "索尔雷庭"
+objective = "boss"
+world_size = Vector2(1440,1040)
+floor_polygon = PackedVector2Array(0,0,1440,0,1440,1040,0,1040)
+
+[node name="Walkable" type="Node2D" parent="."]
+visible = false
+[node name="Floor" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(96,96,1344,96,1344,944,96,944)
+
+[node name="Metrics" type="Node2D" parent="."]
+position = Vector2(720,520)
+script = ExtResource("item")
+category = "road"
+size = Vector2(1248,848)
+
+[node name="PlayerSpawn" type="Node2D" parent="."]
+position = Vector2(240,520)
+script = ExtResource("item")
+category = "spawn"
+
+[node name="Doors" type="Node2D" parent="."]
+[node name="court3" parent="Doors" instance=ExtResource("portal")]
+position = Vector2(0,545)
+portal_id = "court3"
+target_room = "court3"
+target_portal = "end"
+target_title = "赤日祭庭"
+[node name="Approach" parent="Doors/court3" index="4"]
+position = Vector2(200,-25)
+[node name="Arrival" parent="Doors/court3" index="5"]
+position = Vector2(240,-25)
+[editable path="Doors/court3"]
+
+[node name="end" parent="Doors" instance=ExtResource("portal")]
+position = Vector2(1440,545)
+portal_id = "end"
+target_room = "end"
+target_portal = "court3"
+target_title = "汤谷出口"
+[node name="Frame" parent="Doors/end" index="0"]
+mirror_art = true
+[node name="LeftPost" parent="Doors/end" index="2"]
+position = Vector2(65,-5)
+[node name="RightPost" parent="Doors/end" index="3"]
+position = Vector2(-65,-50)
+[node name="Approach" parent="Doors/end" index="4"]
+position = Vector2(-200,-25)
+[node name="Arrival" parent="Doors/end" index="5"]
+position = Vector2(-240,-25)
+[editable path="Doors/end"]

@@ -8,11 +8,11 @@
 | --- | --- | --- |
 | 产品范围、玩法与术语 | [玩法与运行规则](product/十日_玩法与运行规则.md)、[根目录术语表](../GLOSSARY.md) | [六器玩法主干](product/九鼎_六器系统_玩法主干确认稿_v0.3.md)、相关 [ADR](adr/) |
 | 当前技术方向 | [架构选型结论](architecture/九鼎_架构选型结论.md) | [ADR-0010](adr/0010-godot-migration-direction.md)、[Godot 迁移方案](architecture/九鼎_Godot架构评估与迁移落地方案_2026-10-19.md) |
-| 当前 Godot 工程与地图 | [Godot README](../godot/README.md)、[七房间地图说明](guides/汤谷房间地图使用说明.md) | [迁移实施记录](migration/Godot迁移_实施记录.md) |
+| 当前 Godot 工程与地图 | [Godot README](../godot/README.md)、[房间地图说明](guides/汤谷房间地图使用说明.md) | [迁移实施记录](migration/Godot迁移_实施记录.md) |
 | 故事与美术来源 | [世界观与故事框架 v1.2](story/十日_世界观与故事框架_v1.2.pdf)、[故事基线及影响](story/九鼎_故事基线_v1.2与架构影响.md) | [美术资产库](art/美术资产库_v0.1/README.md)、`assets/` 中的源文件与制作记录 |
 | 实施规格与验收 | [Godot 迁移 Spec](mvp/九鼎_Godot迁移_Spec.md) 或相应 MVP Spec | [候选验收记录](migration/Godot候选_验收记录.md)、`mvp/` 中相应实施记录 |
 
-首关 Boss 见[索尔原型与施工计划 v0.1](mvp/首关Boss_索尔_原型与施工计划_v0.1.md)与[灰盒实施记录](mvp/首关Boss_索尔_实施记录_2026-10-22.md)：B01—B04已进入独立原型，形象及数值待评审／试玩；不代表正式第一局出场身份已定。
+首关 Boss 见[索尔原型与施工计划 v0.1](mvp/首关Boss_索尔_原型与施工计划_v0.1.md)与[实施记录](mvp/首关Boss_索尔_实施记录_2026-10-22.md)：用户已确认独立灰盒测试通过，现将灰盒提前接入第三庭与原出口之间；正式形象和叙事出场档位仍待后续制作。
 
 同一主题有多份材料时，先按**用户确认的规则／Spec → ADR → 当前实施与验收记录 → 历史候选或研究材料**核对；实施记录说明现状，不自行扩大产品范围。故事 PDF 是叙事来源，其中未决建议不能替代确认规则。旧版 HTML 和票据草稿仅供追溯。
 
@@ -26,7 +26,7 @@
 | 功能规格、任务与验收 | [`mvp/`](mvp/) | `*Spec*` 和需求／范围讨论为规划，`*票据草稿*` 为历史拆票稿，`*实现与验收记录*`、发布记录和日志为实施证据；同目录存放是为了保持每轮 MVP 的资料链。 |
 | 迁移与交付证据 | [`migration/`](migration/) | Godot 实施状态、候选验收、行为映射、Steam 核查和冻结基线。T15—T18 的完整候选原生体验与双平台实机待验，Windows 实测暂缓，因此迁移文档仍需保留。`baseline-*`、`candidate-evidence/`、`sample-evidence/` 是历史可还原证据，不随当前路径重写。 |
 | 美术与其他资源 | [`art/`](art/)、[`../assets/`](../assets/) | `art/` 保存资产清单、来源／待定项和 Sprite Forge 指南；`assets/` 是源图、图集元数据及制作记录。`godot/assets/` 是游戏使用的资源，`output/` 是概念预览、生成过程与历史验证产物；不要把预览当正式资源。 |
-| 使用指南 | [`guides/`](guides/) | 七房间地图、旧首关地图候选、Godot MCP、游戏开发 Skills 的操作说明；素材制作另见 [`art/Agent_Sprite_Forge使用指南.md`](art/Agent_Sprite_Forge使用指南.md)。 |
+| 使用指南 | [`guides/`](guides/) | 房间地图、旧首关地图候选、Godot MCP、游戏开发 Skills 的操作说明；素材制作另见 [`art/Agent_Sprite_Forge使用指南.md`](art/Agent_Sprite_Forge使用指南.md)。 |
 | 研究与历史 | [`research/`](research/)、[`../output/`](../output/) | 工具与技能评估、专题研究，以及按任务留存的预览、日志和验证结果；不是当前决策入口。 |
 | 仓库入口与代理约定 | [根 README](../README.md)、[AGENTS.md](../AGENTS.md)、[GLOSSARY.md](../GLOSSARY.md)、[CHANGELOG.md](../CHANGELOG.md) | 分别用于运行入口、AI 取用规则、术语与版本历史。 |
 

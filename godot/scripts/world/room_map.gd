@@ -3,7 +3,7 @@ extends "res://scripts/world/map_definition.gd"
 
 @export var room_id: String = "entry"
 @export var room_title: String = "汤谷入口"
-@export_enum("safe","combat","explore") var objective: String = "safe"
+@export_enum("safe","combat","explore","boss") var objective: String = "safe"
 
 func build_layout() -> Dictionary:
 	var data: Dictionary = super.build_layout()

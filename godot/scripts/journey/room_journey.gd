@@ -1,7 +1,8 @@
 extends RefCounted
 
 const Stage = preload("res://scripts/journey/journey_room.gd")
-const ROOM_IDS: Array[String] = ["entry","court1","stele","altar","court2","court3","end"]
+const Boss = preload("res://scripts/combat/boss_room.gd")
+const ROOM_IDS: Array[String] = ["entry","court1","stele","altar","court2","court3","boss","end"]
 var layouts: Dictionary
 var rooms: Dictionary = {}
 var current_id: String = "entry"
@@ -39,7 +40,7 @@ func _init(definitions: Dictionary) -> void:
 
 func restart() -> void:
 	rooms.clear(); current_id="entry"; generation+=1
-	active=Stage.new(layouts[current_id]); rooms[current_id]=active
+	active=create_room(layouts[current_id]); rooms[current_id]=active
 	active.run_id=generation
 
 func update(input: Dictionary,seconds: float) -> void:
@@ -57,7 +58,7 @@ func consume_transition() -> bool:
 		active.cancel_input(); active.arrows.clear(); active.rains.clear(); active.effects.clear()
 		var travel: Dictionary = active.travel_state()
 		current_id=door.target
-		if not rooms.has(current_id): rooms[current_id]=Stage.new(layouts[current_id])
+		if not rooms.has(current_id): rooms[current_id]=create_room(layouts[current_id])
 		active=rooms[current_id]
 		for arrival in layouts[current_id].doors:
 			if arrival.id!=door.targetDoor: continue
@@ -69,5 +70,17 @@ func consume_transition() -> bool:
 func snapshot() -> Dictionary:
 	var data: Dictionary = active.snapshot()
 	data.visitedRooms=rooms.size()
-	data.journeyComplete=rooms.has("court3") and rooms.court3.completed and rooms.has("end")
+	data.journeyComplete=rooms.has("court3") and rooms.court3.completed and rooms.has("boss") and rooms.boss.completed and rooms.has("end")
+	var nodes: Array = []
+	var connections: Array = []
+	for id in layouts:
+		var visited: bool = rooms.has(id)
+		var complete: bool = visited and rooms[id].completed
+		nodes.append({"id":id,"title":layouts[id].roomTitle,"objective":layouts[id].objective,"visited":visited,"complete":complete,"current":id==current_id,"locked":layouts[id].objective!="safe" and not complete})
+		for door in layouts[id].doors:
+			if str(id)<str(door.target): connections.append({"from":id,"to":door.target})
+	data.roomGraph={"rooms":nodes,"connections":connections}
 	return data
+
+func create_room(data: Dictionary) -> TrainingRoom:
+	return Boss.new(data) if data.objective=="boss" else Stage.new(data)

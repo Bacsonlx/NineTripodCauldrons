@@ -34,7 +34,7 @@
 
 - 当前开发与运行工程为 `godot/`，采用原生 2D＋带类型 GDScript；启动用 `godot --path godot`，版本与模板以 `godot/engine-lock.json` 为准，编辑／测试／导出见 [Godot README](godot/README.md)。
 - 完整汤谷已接入 Godot，动态小样已获用户确认；当前功能与待验项以 [实施记录](docs/migration/Godot迁移_实施记录.md)和[候选验收记录](docs/migration/Godot候选_验收记录.md)为准。
-- 内容布局由 Godot 编辑器承载，用户调整与验收，AI 负责脚本和批量配置。当前默认采用 `godot/scenes/rooms/` 七个独立房间，运行入口 `tanggu_first_level.tscn`；门连接、任务与编辑方式见 [房间地图说明](docs/guides/汤谷房间地图使用说明.md)。原连续地图 `tanggu_first_level_map.tscn` 和旧 `tanggu_map.tscn` 保留用户编辑结果，冻结规则夹具仅用于回归参照。
+- 内容布局由 Godot 编辑器承载，用户调整与验收，AI 负责脚本和批量配置。当前默认采用 `godot/scenes/rooms/` 八个独立房间，第三庭后为索尔灰盒 Boss 房，再到原出口；运行入口 `tanggu_first_level.tscn`。门连接、任务与编辑方式见 [房间地图说明](docs/guides/汤谷房间地图使用说明.md)。原连续地图 `tanggu_first_level_map.tscn` 和旧 `tanggu_map.tscn` 保留用户编辑结果，冻结规则夹具仅用于回归参照。
 - `src/`、根 `tests/`、npm／Electron／Phaser 工具链保留为旧版参照与迁移制作工具；新增玩法在 Godot 实现，Node.js 不作为游戏运行依赖。
 - 手柄、正式肉鸽闭环、存档和 Steam 完整功能属于后续范围；构建、规则测试或单平台通过分别记录，不能替代双平台实机完成证据。
 

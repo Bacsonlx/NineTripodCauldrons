@@ -344,9 +344,9 @@ body_height = 250.0
 [node name="court3" parent="Doors" instance=ExtResource("portal")]
 position = Vector2(170,550)
 portal_id = "court3"
-target_room = "court3"
+target_room = "boss"
 target_portal = "end"
-target_title = "赤日祭庭"
+target_title = "索尔雷庭"
 [node name="Approach" parent="Doors/court3" index="4"]
 position = Vector2(100,-25)
 [node name="Arrival" parent="Doors/court3" index="5"]

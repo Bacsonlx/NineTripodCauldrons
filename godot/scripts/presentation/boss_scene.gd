@@ -53,12 +53,7 @@ func select_trial(index: int) -> void:
 	present(room.snapshot(),0)
 
 func update_camera() -> void:
-	if camera==null: return
-	var size: Vector2 = get_viewport_rect().size
-	view_zoom=maxf(0.1,minf(size.x/1440,(size.y-200)/1040))
-	view_origin=Vector2(720,400)-size/view_zoom/2
-	camera.zoom=Vector2.ONE*view_zoom; camera.position=Vector2(720,400)
-	camera.force_update_scroll()
+	fit_room(200)
 
 func guidance_at(_position: Vector2) -> Dictionary:
 	return {"region":"索尔 · 独立战斗原型","landmark":"锤离手时反击"}
