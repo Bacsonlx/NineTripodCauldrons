@@ -99,12 +99,21 @@ func run() -> void:
 	game.room.update({"fire":true,"aim":Vector2(720,468)},0.8)
 	game.present(game.room.snapshot(),0)
 	check(game.boss_bar.value<1200 and game.hud.mana.value==0,"零蓝测试房真实普攻扣Boss生命，血条同步")
-	for size in [Vector2i(1280,720),Vector2i(900,900),Vector2i(1920,800)]:
+	for size in [Vector2i(1280,720),Vector2i(900,900),Vector2i(1920,800),Vector2i(3840,1080),Vector2i(800,1200)]:
 		root.size=size
 		await process_frame
 		game.update_camera()
 		var visible: Rect2 = Rect2(game.view_origin,game.get_viewport_rect().size/game.view_zoom)
 		check(visible.encloses(Rect2(96,96,1248,848)),"窗口%s下所有预警与飞锤都处于镜头覆盖范围" % size)
+		check(visible.encloses(Rect2(16,16,1408,1008)),"窗口%s下边缘落雷的完整80半径预警不被裁切" % size)
+		var environment: Node2D = game.backdrop.get_node("Floor/Environment")
+		var surround: Polygon2D = environment.get_node_or_null("Surround")
+		var coverage: Rect2 = environment.get_node("Ground").get_rect()
+		coverage=environment.get_node("Ground").transform*coverage
+		if surround!=null:
+			coverage=Rect2(surround.polygon[0],Vector2.ZERO)
+			for point in surround.polygon: coverage=coverage.expand(point)
+		check(coverage.encloses(visible),"窗口%s下Boss环境铺满可见区域，不露场景外空底" % size)
 	game.queue_free()
 	await process_frame
 	check_skills()

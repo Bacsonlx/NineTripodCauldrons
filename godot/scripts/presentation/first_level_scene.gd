@@ -54,3 +54,21 @@ func fit_room(top_margin: float = 0) -> void:
 	camera.zoom=Vector2.ONE*view_zoom
 	camera.position=center
 	camera.force_update_scroll()
+
+func fit_boss_room() -> void:
+	if camera==null: return
+	var size: Vector2 = get_viewport_rect().size
+	var rules: Script = preload("res://scripts/combat/boss_room.gd")
+	var arena: Rect2 = rules.ARENA_BOUNDS.grow(rules.LIGHTNING_RADIUS)
+	var top: float = maxf(144,hud.encounter.position.y+80)
+	var bottom: float = 112
+	view_zoom=maxf(0.1,minf((size.x-48)/arena.size.x,maxf(160,size.y-top-bottom)/arena.size.y))
+	var center: Vector2 = arena.get_center()-Vector2(0,(top-bottom)/(2*view_zoom))
+	view_origin=center-size/view_zoom/2
+	camera.zoom=Vector2.ONE*view_zoom
+	camera.position=center
+	camera.force_update_scroll()
+	var environment: Node2D = get_node_or_null("TangguMap/Environment")
+	if environment==null and backdrop!=null:
+		environment=backdrop.get_node_or_null("Floor/Environment")
+	if environment!=null: environment.cover_view(Rect2(view_origin,size/view_zoom))

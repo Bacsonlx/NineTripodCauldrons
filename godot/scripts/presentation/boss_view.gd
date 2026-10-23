@@ -19,6 +19,7 @@ func setup(_layout: Dictionary,_atlas: Dictionary,_textures: Dictionary) -> void
 
 func update(snapshot: Dictionary,_clock: float) -> void:
 	state=snapshot
+	get_node("Floor").update_state(snapshot,_clock)
 	var hammer_position: Vector2 = Vector2(snapshot.boss.x,snapshot.boss.y-60)
 	if snapshot.vulnerable: hammer_position=Vector2(snapshot.hammer.x,snapshot.hammer.y-60)
 	if character!=null and character.has_node("hammer"):

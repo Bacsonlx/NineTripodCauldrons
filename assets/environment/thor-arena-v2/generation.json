@@ -1,0 +1,98 @@
+{
+  "date": "2026-10-23",
+  "route": "built-in image_gen.imagegen",
+  "art_source": "host_image",
+  "model": "unknown: tool did not return identifier",
+  "cost": "unknown: tool did not return cost",
+  "transparent_background": true,
+  "user_scope": "Boss page only: full viewport and richer environment details; approved v1 direction retained; v2 final visual not yet user accepted",
+  "runs": [
+    {
+      "prompt": {
+        "path": "assets/environment/thor-arena-v2/prompt.txt",
+        "sha256": "780312e81313149928cd810fc562f41db1fca2bc9e220e643eb1a8127caa9b01",
+        "bytes": 1729
+      },
+      "actual_image_inputs": [
+        {
+          "path": "assets/environment/thor-arena-v1/floor.png",
+          "sha256": "059a0fc393382238b152b8640c952e09a52c24d2a15461e53992602360d04a7a",
+          "bytes": 3644645
+        }
+      ],
+      "original_output": "/Users/linxin/.codex/generated_images/01a1689e-0999-7443-835d-b2e39de2411f/exec-fb0086c3-137a-468f-b128-a02bd2d3163a.png",
+      "preserved_output": {
+        "path": "assets/environment/thor-arena-v2/candidate-v1.png",
+        "sha256": "368ed95d466c1dec2e6579120c49fee17f3d9e9e28dba935896bc2739ba5af98",
+        "bytes": 2394290
+      },
+      "decision": "rejected: cross-cell visible pixels/components; not used at runtime"
+    },
+    {
+      "prompt": {
+        "path": "assets/environment/thor-arena-v2/gutter-fix-prompt.txt",
+        "sha256": "5ce4bec38009c108ca99805d33b04ca748df15bfd09b37f6e67ce9707a19ecc4",
+        "bytes": 961
+      },
+      "actual_image_inputs": [
+        {
+          "path": "assets/environment/thor-arena-v2/candidate-v1.png",
+          "sha256": "368ed95d466c1dec2e6579120c49fee17f3d9e9e28dba935896bc2739ba5af98",
+          "bytes": 2394290
+        }
+      ],
+      "input_path_at_generation": "assets/environment/thor-arena-v2/ground-details.png (contained candidate-v1 then; subsequently replaced)",
+      "original_output": "/Users/linxin/.codex/generated_images/01a1689e-0999-7443-835d-b2e39de2411f/exec-eb97a5a9-4242-4ae8-a422-bffd6d49ab1b.png",
+      "selected_source": {
+        "path": "assets/environment/thor-arena-v2/ground-details.png",
+        "sha256": "6295887709ea045af6301b24293b8c4467e1fc6b89191413de9cbdda10ed5603",
+        "bytes": 1439212
+      },
+      "runtime_copy": {
+        "path": "godot/assets/boss/thor-arena-v2/ground-details.png",
+        "sha256": "6295887709ea045af6301b24293b8c4467e1fc6b89191413de9cbdda10ed5603",
+        "bytes": 1439212
+      },
+      "decision": "AI selected after gutter edit: no cross-cell or outer-edge cutoff; retains safe-frame and faint-speck warnings"
+    }
+  ],
+  "size": [
+    1254,
+    1254
+  ],
+  "mode": "RGBA",
+  "processing": "Exact file copy; no pixel or alpha modification; native AtlasTexture region with filter_clip=true",
+  "regions": {
+    "scorch": [
+      0,
+      0,
+      627,
+      627
+    ],
+    "ash": [
+      627,
+      0,
+      627,
+      627
+    ],
+    "bronze": [
+      0,
+      627,
+      627,
+      627
+    ],
+    "scar": [
+      627,
+      627,
+      627,
+      627
+    ]
+  },
+  "anchor": "cell center (313.5,313.5), flat decal at z=-20",
+  "qa": {
+    "rejected": "../../../output/art/BOS-001/2026-10-23-arena-v2/decal-qc/sheet-qc.json",
+    "selected": "../../../output/art/BOS-001/2026-10-23-arena-v2/decal-qc-fixed/sheet-qc.json"
+  },
+  "runtime_scene": "godot/scenes/world/boss_environment.tscn",
+  "native_visual": "../../../output/art/BOS-001/2026-10-23-arena-v2/native-fullscreen-final.png"
+}

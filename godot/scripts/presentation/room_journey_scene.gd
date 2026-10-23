@@ -44,6 +44,7 @@ func _ready() -> void:
 	boss_view.z_index=1; add_child(boss_view)
 	loot_view=load("res://scripts/presentation/loot_view.gd").new(); add_child(loot_view)
 	super._ready()
+	if options.startRoom=="boss" and DisplayServer.get_name()!="headless": get_window().mode=Window.MODE_FULLSCREEN
 	overview_button.text="房间总览 · M"
 
 func toggle_overview() -> void:
@@ -52,7 +53,7 @@ func toggle_overview() -> void:
 
 func update_camera() -> void:
 	if journey!=null and journey.current_id=="boss":
-		fit_room(200); return
+		fit_boss_room(); return
 	super.update_camera()
 
 func mount_map() -> void:

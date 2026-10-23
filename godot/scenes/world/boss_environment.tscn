@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/boss/thor-arena-v1/floor.png" id="floor"]
 [ext_resource type="PackedScene" path="res://scenes/world/environment_prop.tscn" id="prop"]
@@ -7,98 +7,171 @@
 [ext_resource type="Texture2D" path="res://assets/world/root.tres" id="root"]
 [ext_resource type="Texture2D" path="res://assets/world/tree_red.tres" id="tree"]
 [ext_resource type="Texture2D" path="res://assets/world/rocks.tres" id="rocks"]
+[ext_resource type="Texture2D" path="res://assets/world/forest.png" id="forest"]
+[ext_resource type="Script" path="res://scripts/world/boss_environment.gd" id="environment"]
+[ext_resource type="Shader" path="res://scripts/world/boss_ground_edge.gdshader" id="edge"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-arena-v2/scorch.tres" id="scorch"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-arena-v2/ash.tres" id="ash"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-arena-v2/bronze.tres" id="bronze"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-arena-v2/scar.tres" id="scar"]
+
+[sub_resource type="ShaderMaterial" id="GroundEdge"]
+shader = ExtResource("edge")
 
 [node name="Environment" type="Node2D"]
+script = ExtResource("environment")
+
+[node name="Surround" type="Polygon2D" parent="."]
+z_as_relative = false
+z_index = -1050
+color = Color(0.38,0.34,0.29,1)
+polygon = PackedVector2Array(-2048,-2048,3488,-2048,3488,3088,-2048,3088)
+texture = ExtResource("forest")
+texture_repeat = 2
 
 [node name="Ground" type="Sprite2D" parent="."]
 z_as_relative = false
 z_index = -1000
 texture_filter = 2
+material = SubResource("GroundEdge")
 texture = ExtResource("floor")
 centered = false
 scale = Vector2(0.9756098,0.9756098)
+
+[node name="BoundaryInlay" type="Line2D" parent="."]
+z_as_relative = false
+z_index = -40
+points = PackedVector2Array(96,96,1344,96,1344,944,96,944,96,96)
+width = 3.0
+default_color = Color(0.48,0.34,0.18,0.6)
+antialiased = true
+
+[node name="ScorchWest" parent="." instance=ExtResource("prop")]
+position = Vector2(385,340)
+z_as_relative = false
+texture_asset = ExtResource("scorch")
+render_width = 280.0
+flat = true
+modulate = Color(0.70,0.68,0.65,0.65)
+[node name="ScorchEast" parent="." instance=ExtResource("prop")]
+position = Vector2(1110,815)
+z_as_relative = false
+texture_asset = ExtResource("scorch")
+render_width = 250.0
+flat = true
+mirror_art = true
+modulate = Color(0.65,0.63,0.6,0.6)
+[node name="AshNorth" parent="." instance=ExtResource("prop")]
+position = Vector2(1040,330)
+z_as_relative = false
+texture_asset = ExtResource("ash")
+render_width = 240.0
+flat = true
+modulate = Color(0.68,0.64,0.58,0.6)
+[node name="AshSouth" parent="." instance=ExtResource("prop")]
+position = Vector2(390,915)
+z_as_relative = false
+texture_asset = ExtResource("ash")
+render_width = 250.0
+flat = true
+mirror_art = true
+modulate = Color(0.68,0.64,0.58,0.65)
+[node name="BronzeRemnant" parent="." instance=ExtResource("prop")]
+position = Vector2(1180,380)
+z_as_relative = false
+texture_asset = ExtResource("bronze")
+render_width = 180.0
+flat = true
+modulate = Color(0.66,0.6,0.5,0.6)
+[node name="RitualScar" parent="." instance=ExtResource("prop")]
+position = Vector2(310,830)
+z_as_relative = false
+texture_asset = ExtResource("scar")
+render_width = 210.0
+flat = true
+modulate = Color(0.6,0.57,0.52,0.55)
 
 [node name="NorthWestWall" parent="." instance=ExtResource("prop")]
 position = Vector2(270,85)
 z_as_relative = false
 modulate = Color(0.64,0.60,0.55,1)
 texture_asset = ExtResource("stone")
-render_width = 260.0
+render_width = 360.0
 [node name="NorthWall" parent="." instance=ExtResource("prop")]
 position = Vector2(580,82)
 z_as_relative = false
 modulate = Color(0.62,0.59,0.55,1)
 texture_asset = ExtResource("stone")
-render_width = 240.0
+render_width = 380.0
 mirror_art = true
 [node name="NorthEastWall" parent="." instance=ExtResource("prop")]
 position = Vector2(930,90)
 z_as_relative = false
 modulate = Color(0.64,0.60,0.55,1)
 texture_asset = ExtResource("stone")
-render_width = 270.0
+render_width = 370.0
 [node name="NorthEndWall" parent="." instance=ExtResource("prop")]
 position = Vector2(1210,82)
 z_as_relative = false
 modulate = Color(0.60,0.57,0.52,1)
 texture_asset = ExtResource("stone")
-render_width = 210.0
+render_width = 300.0
 mirror_art = true
 
 [node name="SouthWestWall" parent="." instance=ExtResource("prop")]
-position = Vector2(290,1035)
+position = Vector2(260,1080)
 z_as_relative = false
 modulate = Color(0.64,0.60,0.55,1)
 texture_asset = ExtResource("stone")
-render_width = 250.0
+render_width = 370.0
 mirror_art = true
 [node name="SouthWall" parent="." instance=ExtResource("prop")]
-position = Vector2(610,1030)
+position = Vector2(620,1082)
 z_as_relative = false
 modulate = Color(0.62,0.59,0.55,1)
 texture_asset = ExtResource("stone")
-render_width = 250.0
+render_width = 380.0
 [node name="SouthEastWall" parent="." instance=ExtResource("prop")]
-position = Vector2(940,1036)
+position = Vector2(980,1085)
 z_as_relative = false
 modulate = Color(0.64,0.60,0.55,1)
 texture_asset = ExtResource("stone")
-render_width = 270.0
+render_width = 370.0
 mirror_art = true
 [node name="SouthEndWall" parent="." instance=ExtResource("prop")]
-position = Vector2(1240,1035)
+position = Vector2(1280,1072)
 z_as_relative = false
 modulate = Color(0.60,0.57,0.52,1)
 texture_asset = ExtResource("stone")
-render_width = 210.0
+render_width = 300.0
 
 [node name="WestNorthWall" parent="." instance=ExtResource("prop")]
 position = Vector2(42,360)
 z_as_relative = false
 modulate = Color(0.62,0.59,0.55,1)
 texture_asset = ExtResource("stone")
-render_width = 220.0
+render_width = 400.0
 ground_axis = Vector2(0.25,0.8)
 [node name="WestSouthWall" parent="." instance=ExtResource("prop")]
 position = Vector2(42,885)
 z_as_relative = false
 modulate = Color(0.64,0.60,0.55,1)
 texture_asset = ExtResource("stone")
-render_width = 200.0
+render_width = 380.0
 ground_axis = Vector2(0.25,0.8)
 [node name="EastNorthWall" parent="." instance=ExtResource("prop")]
 position = Vector2(1398,360)
 z_as_relative = false
 modulate = Color(0.62,0.59,0.55,1)
 texture_asset = ExtResource("stone")
-render_width = 220.0
+render_width = 400.0
 ground_axis = Vector2(0.25,-0.8)
 [node name="EastSouthWall" parent="." instance=ExtResource("prop")]
 position = Vector2(1398,885)
 z_as_relative = false
 modulate = Color(0.64,0.60,0.55,1)
 texture_asset = ExtResource("stone")
-render_width = 200.0
+render_width = 380.0
 ground_axis = Vector2(0.25,-0.8)
 
 [node name="NorthPillar1" parent="." instance=ExtResource("prop")]
@@ -106,72 +179,72 @@ position = Vector2(135,90)
 z_as_relative = false
 modulate = Color(0.64,0.61,0.57,1)
 texture_asset = ExtResource("pillar")
-render_width = 35.0
+render_width = 66.0
 [node name="NorthPillar2" parent="." instance=ExtResource("prop")]
 position = Vector2(754,92)
 z_as_relative = false
 modulate = Color(0.64,0.61,0.57,1)
 texture_asset = ExtResource("pillar")
-render_width = 38.0
+render_width = 70.0
 [node name="NorthPillar3" parent="." instance=ExtResource("prop")]
 position = Vector2(1320,92)
 z_as_relative = false
 modulate = Color(0.64,0.61,0.57,1)
 texture_asset = ExtResource("pillar")
-render_width = 36.0
+render_width = 68.0
 [node name="SouthPillar1" parent="." instance=ExtResource("prop")]
-position = Vector2(145,1033)
+position = Vector2(145,1130)
 z_as_relative = false
 modulate = Color(0.64,0.61,0.57,1)
 texture_asset = ExtResource("pillar")
-render_width = 35.0
+render_width = 66.0
 [node name="SouthPillar2" parent="." instance=ExtResource("prop")]
-position = Vector2(780,1038)
+position = Vector2(780,1138)
 z_as_relative = false
 modulate = Color(0.64,0.61,0.57,1)
 texture_asset = ExtResource("pillar")
-render_width = 37.0
+render_width = 70.0
 
 [node name="WestRoot" parent="." instance=ExtResource("prop")]
-position = Vector2(43,190)
+position = Vector2(-125,250)
 z_as_relative = false
 modulate = Color(0.50,0.46,0.42,1)
 texture_asset = ExtResource("root")
-render_width = 85.0
+render_width = 370.0
 [node name="EastRoot" parent="." instance=ExtResource("prop")]
-position = Vector2(1395,190)
+position = Vector2(1560,230)
 z_as_relative = false
 modulate = Color(0.50,0.46,0.42,1)
 texture_asset = ExtResource("root")
-render_width = 85.0
+render_width = 370.0
 mirror_art = true
 [node name="SouthRoot" parent="." instance=ExtResource("prop")]
-position = Vector2(470,1038)
+position = Vector2(430,1325)
 z_as_relative = false
 modulate = Color(0.48,0.44,0.40,1)
 texture_asset = ExtResource("root")
-render_width = 88.0
+render_width = 350.0
 [node name="WestRedTree" parent="." instance=ExtResource("prop")]
-position = Vector2(43,957)
+position = Vector2(-170,1060)
 z_as_relative = false
 modulate = Color(0.65,0.42,0.34,1)
 texture_asset = ExtResource("tree")
-render_width = 85.0
+render_width = 420.0
 [node name="EastRedTree" parent="." instance=ExtResource("prop")]
-position = Vector2(1396,1028)
+position = Vector2(1595,1260)
 z_as_relative = false
 modulate = Color(0.65,0.42,0.34,1)
 texture_asset = ExtResource("tree")
-render_width = 85.0
+render_width = 420.0
 [node name="NorthRubble" parent="." instance=ExtResource("prop")]
 position = Vector2(432,86)
 z_as_relative = false
 modulate = Color(0.54,0.51,0.46,1)
 texture_asset = ExtResource("rocks")
-render_width = 55.0
+render_width = 100.0
 [node name="SouthRubble" parent="." instance=ExtResource("prop")]
-position = Vector2(1100,1016)
+position = Vector2(1100,1060)
 z_as_relative = false
 modulate = Color(0.54,0.51,0.46,1)
 texture_asset = ExtResource("rocks")
-render_width = 55.0
+render_width = 100.0

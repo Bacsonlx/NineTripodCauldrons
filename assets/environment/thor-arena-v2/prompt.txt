@@ -1,0 +1,8 @@
+Use case: stylized-concept
+Asset type: production transparent 2D ground-detail decal atlas, square canvas, strict 2 columns x 2 rows grid, four independent FLAT decals for the approved 九鼎 Tanggu scorched thunder courtyard. Reference is the current arena stone-floor material and palette.
+Only ground details, actual transparent alpha behind all artwork, ink-edged painterly texture with subdued dark charcoal, rust-red leaf flecks and old bronze. All details should lie FLAT on the ground without height, shadows or obstacle-like silhouettes. No glow or live electricity.
+Top-left cell: an irregular branching LIGHTNING SCORCH imprinted on stone, broad dark charcoal fissure branches radiating diagonally, faint ash feathering, no blue, no emitted light.
+Top-right cell: a small asymmetrical drift of powdery grey ASH with very sparse burnt rust-red leaves and tiny charcoal flakes, scattered loose edges, generous empty gaps.
+Bottom-left cell: a broken worn BRONZE SUN INLAY fragment, thin engraved arcs and triangular sun motifs cracked into 3 separated flush fragments, tarnished near-black bronze with a few quiet copper edges, NO raised platform or thick rocks.
+Bottom-right cell: an old CHARRED RITUAL GROUND STAIN with thin faded circular ochre engraving, incomplete ring and scorched cuts, asymmetric worn patches, no magical glow, no fresh paint.
+CRITICAL: Four isolated decals centered in equal cells, plenty of true transparent padding, no piece reaches a grid line, no grid, no labels, no text, no background stone paving (runtime floor will show through alpha), no pillars, trees, characters, weapons, buildings or UI. Keep low-contrast so actual amber/cyan danger telegraphs remain dominant. No dramatic bloom.

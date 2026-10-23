@@ -7,6 +7,10 @@ const BossRoom = preload("res://scripts/combat/boss_room.gd")
 var boss_bar: ProgressBar
 var trial_selector: OptionButton
 
+func _ready() -> void:
+	super._ready()
+	if DisplayServer.get_name()!="headless": get_window().mode=Window.MODE_FULLSCREEN
+
 func create_room(_layout: Dictionary) -> TrainingRoom:
 	return BossRoom.new({"mana":starting_mana,"health":starting_health,"stamina":starting_stamina})
 
@@ -53,7 +57,7 @@ func select_trial(index: int) -> void:
 	present(room.snapshot(),0)
 
 func update_camera() -> void:
-	fit_room(200)
+	fit_boss_room()
 
 func guidance_at(_position: Vector2) -> Dictionary:
 	return {"region":"索尔 · 独立战斗原型","landmark":"锤离手时反击"}
