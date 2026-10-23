@@ -40,6 +40,7 @@ func _ready() -> void:
 	journey=Journey.new(maps,options)
 	mount_map()
 	boss_view=load("res://scripts/presentation/boss_art_view.gd").new()
+	boss_view.standalone_environment=false
 	boss_view.z_index=1; add_child(boss_view)
 	loot_view=load("res://scripts/presentation/loot_view.gd").new(); add_child(loot_view)
 	super._ready()
