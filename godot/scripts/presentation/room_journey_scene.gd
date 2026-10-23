@@ -86,6 +86,7 @@ func present_new_room() -> void:
 	backdrop.setup(room.layout,atlas,textures)
 	overview=false; overview_button.text="房间总览 · M"
 	walk_time=0; clock=0
+	boss_camera_time=-1
 	update_camera(); present(room.snapshot(),0)
 
 func _unhandled_input(event: InputEvent) -> void:

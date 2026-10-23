@@ -17,6 +17,7 @@ const JOINTS: Dictionary = {
 	"near_shin":[Vector2(0.52,0.13),Vector2(0.50,0.83),39.0],
 	"far_shin":[Vector2(0.50,0.13),Vector2(0.50,0.84),39.0],
 }
+var visual_scale: float = 1.0
 var pieces: Dictionary = {}
 var feet: Array[Vector2] = []
 var planted: Array[Vector2] = []
@@ -40,6 +41,7 @@ var last_body: Dictionary = {}
 
 func _ready() -> void:
 	name="ThorPuppet"
+	scale=Vector2.ONE*visual_scale
 	for part in PART_NAMES:
 		var sprite: Sprite2D = Sprite2D.new()
 		sprite.name=part; sprite.texture=load("res://assets/boss/thor-puppet-v1/%s.tres" % part)
@@ -82,7 +84,8 @@ func reset_pose(snapshot: Dictionary,origin: Vector2) -> void:
 func update_state(snapshot: Dictionary) -> void:
 	if pieces.is_empty(): return
 	var boss: Dictionary = snapshot.boss
-	var origin: Vector2 = Vector2(boss.x,boss.y)
+	var origin: Vector2 = Vector2(boss.x,boss.y)/visual_scale
+	scale=Vector2.ONE*visual_scale
 	if generation!=snapshot.runId or snapshot.elapsed<previous_time: reset_pose(snapshot,origin)
 	var delta: float = maxf(0,snapshot.elapsed-previous_time)
 	var travel: Vector2 = origin-previous_position
@@ -189,7 +192,7 @@ func update_state(snapshot: Dictionary) -> void:
 	last_body={"hip":hip,"chest":chest,"near_hand":near_hand,"far_hand":far_hand,"angle":torso_angle}
 	near_shoulder=chest+Vector2(-23,-19).rotated(torso_angle)
 	far_shoulder=chest+Vector2(23,-19).rotated(torso_angle)
-	position=origin; z_as_relative=false; z_index=int(origin.y)
+	position=origin*visual_scale; z_as_relative=false; z_index=int(boss.y)
 	for index in 2:
 		var prefix: String = "far" if index==0 else "near"
 		var foot: Vector2 = feet[index]-origin-Vector2(0,lift[index])
@@ -215,7 +218,7 @@ func update_state(snapshot: Dictionary) -> void:
 		limb(prefix+"_forearm",middle,hand)
 	var hammer: Sprite2D = pieces.hammer
 	if snapshot.vulnerable:
-		var point: Vector2 = Vector2(snapshot.hammer.x,snapshot.hammer.y)
+		var point: Vector2 = Vector2(snapshot.hammer.x,snapshot.hammer.y)/visual_scale
 		if last_phase!="flight": release_hand=held_hand
 		var span: float = snapshot.hammer.origin.distance_to(snapshot.hammer.target)
 		var total: float = span/500+span/650
@@ -223,7 +226,7 @@ func update_state(snapshot: Dictionary) -> void:
 		var height_offset: Vector2 = release_hand.lerp(near_hand,progress)-Vector2(0,sin(progress*PI)*22)
 		var rotation_angle: float = lerpf(0.3,PI-0.35+TAU*2,progress)
 		piece("hammer",point-origin+height_offset,54,Vector2(0.5,0.78),rotation_angle)
-		hammer.z_as_relative=false; hammer.z_index=int(point.y)+2
+		hammer.z_as_relative=false; hammer.z_index=int(snapshot.hammer.y)+2
 	else:
 		var angle: float = PI-0.35
 		if boss.phase in ["swing_warn","throw_warn"]:
@@ -245,7 +248,7 @@ func update_state(snapshot: Dictionary) -> void:
 func _draw() -> void:
 	if stance.is_empty(): return
 	for foot in feet:
-		draw_set_transform(foot-position,0,Vector2(1,0.28))
+		draw_set_transform(foot-position/visual_scale,0,Vector2(1,0.28))
 		draw_circle(Vector2.ZERO,16,Color(0.02,0.02,0.02,0.38))
 	draw_set_transform(Vector2.ZERO)
 

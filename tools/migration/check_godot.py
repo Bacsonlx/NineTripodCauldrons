@@ -19,6 +19,8 @@ for options in [[], ["--test=boss", "--health=40", "--mana=0", "--stamina=0", "-
     commands.append(["--script", "res://tests/launch_scene_checks.gd", "--", *options])
 commands.append(["--script", "res://tests/boss_art_checks.gd"])
 commands.append(["res://scenes/boss_art_test.tscn", "--quit-after", "3"])
+commands.append(["--script", "res://tests/boss_motion_candidate_checks.gd"])
+commands.append(["res://scenes/boss_motion_candidate_test.tscn", "--quit-after", "3"])
 for args in commands:
     result = subprocess.run(["godot", "--headless", "--path", str(root / "godot"), *args], capture_output=True, text=True)
     output = result.stdout + result.stderr

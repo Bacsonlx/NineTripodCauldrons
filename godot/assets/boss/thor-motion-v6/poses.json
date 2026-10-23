@@ -1,0 +1,721 @@
+{
+  "art_source": "existing",
+  "scope": "single-facing three-skill candidate only; not production actor replacement",
+  "units": "unscaled world pixels and explicit unwrapped degrees",
+  "source_parts": "godot/assets/boss/thor-puppet-v1/parts.json",
+  "clocks": "public boss phase/timer; rule durations unchanged",
+  "clips": {
+    "swing": [
+      {
+        "t": 0,
+        "hip": [
+          0,
+          0
+        ],
+        "pelvis": 0,
+        "torso": 0,
+        "near": [
+          112,
+          77
+        ],
+        "far": [
+          67,
+          101
+        ],
+        "hammer": 160
+      },
+      {
+        "t": 0.16,
+        "hip": [
+          -3,
+          4
+        ],
+        "pelvis": -3,
+        "torso": -4,
+        "near": [
+          130,
+          90
+        ],
+        "far": [
+          75,
+          110
+        ],
+        "hammer": 135
+      },
+      {
+        "t": 0.55,
+        "hip": [
+          -5,
+          6
+        ],
+        "pelvis": -6,
+        "torso": -12,
+        "near": [
+          155,
+          80
+        ],
+        "far": [
+          70,
+          135
+        ],
+        "hammer": 10
+      },
+      {
+        "t": 0.72,
+        "hip": [
+          -5,
+          6
+        ],
+        "pelvis": -6,
+        "torso": -12,
+        "near": [
+          155,
+          80
+        ],
+        "far": [
+          70,
+          135
+        ],
+        "hammer": 10
+      },
+      {
+        "t": 0.8,
+        "hip": [
+          0,
+          4
+        ],
+        "pelvis": 2,
+        "torso": -5,
+        "near": [
+          130,
+          65
+        ],
+        "far": [
+          75,
+          140
+        ],
+        "hammer": 40
+      },
+      {
+        "t": 0.86,
+        "hip": [
+          4,
+          2
+        ],
+        "pelvis": 6,
+        "torso": 7,
+        "near": [
+          75,
+          25
+        ],
+        "far": [
+          85,
+          145
+        ],
+        "hammer": 75
+      },
+      {
+        "t": 0.92,
+        "hip": [
+          6,
+          3
+        ],
+        "pelvis": 7,
+        "torso": 12,
+        "near": [
+          40,
+          5
+        ],
+        "far": [
+          85,
+          145
+        ],
+        "hammer": 100
+      },
+      {
+        "t": 1.1,
+        "hip": [
+          3,
+          6
+        ],
+        "pelvis": 3,
+        "torso": 8,
+        "near": [
+          62,
+          10
+        ],
+        "far": [
+          80,
+          130
+        ],
+        "hammer": 110
+      },
+      {
+        "t": 1.5,
+        "hip": [
+          -1,
+          2
+        ],
+        "pelvis": 0,
+        "torso": 3,
+        "near": [
+          95,
+          45
+        ],
+        "far": [
+          70,
+          110
+        ],
+        "hammer": 140
+      },
+      {
+        "t": 1.92,
+        "hip": [
+          0,
+          0
+        ],
+        "pelvis": 0,
+        "torso": 0,
+        "near": [
+          112,
+          77
+        ],
+        "far": [
+          67,
+          101
+        ],
+        "hammer": 160
+      }
+    ],
+    "load": [
+      {
+        "t": 0,
+        "hip": [
+          0,
+          0
+        ],
+        "pelvis": 0,
+        "torso": 0,
+        "near": [
+          112,
+          77
+        ],
+        "far": [
+          67,
+          101
+        ],
+        "hammer": 160
+      },
+      {
+        "t": 0.22,
+        "hip": [
+          -3,
+          5
+        ],
+        "pelvis": -4,
+        "torso": -6,
+        "near": [
+          150,
+          80
+        ],
+        "far": [
+          75,
+          120
+        ],
+        "hammer": 120
+      },
+      {
+        "t": 0.6,
+        "hip": [
+          -6,
+          6
+        ],
+        "pelvis": -6,
+        "torso": -10,
+        "near": [
+          240,
+          150
+        ],
+        "far": [
+          75,
+          145
+        ],
+        "hammer": -15
+      },
+      {
+        "t": 0.78,
+        "hip": [
+          -4,
+          4
+        ],
+        "pelvis": -3,
+        "torso": -8,
+        "near": [
+          270,
+          185
+        ],
+        "far": [
+          80,
+          150
+        ],
+        "hammer": -10
+      },
+      {
+        "t": 0.9,
+        "hip": [
+          0,
+          0
+        ],
+        "pelvis": 2,
+        "torso": 0,
+        "near": [
+          250,
+          180
+        ],
+        "far": [
+          85,
+          145
+        ],
+        "hammer": 25
+      },
+      {
+        "t": 1,
+        "hip": [
+          5,
+          0
+        ],
+        "pelvis": 7,
+        "torso": 10,
+        "near": [
+          210,
+          150
+        ],
+        "far": [
+          90,
+          140
+        ],
+        "hammer": 70
+      }
+    ],
+    "flight": [
+      {
+        "t": 0,
+        "hip": [
+          5,
+          0
+        ],
+        "pelvis": 7,
+        "torso": 10,
+        "near": [
+          210,
+          150
+        ],
+        "far": [
+          90,
+          140
+        ],
+        "hammer": 70
+      },
+      {
+        "t": 0.18,
+        "hip": [
+          7,
+          3
+        ],
+        "pelvis": 8,
+        "torso": 14,
+        "near": [
+          160,
+          90
+        ],
+        "far": [
+          95,
+          135
+        ],
+        "hammer": 95
+      },
+      {
+        "t": 0.4,
+        "hip": [
+          4,
+          4
+        ],
+        "pelvis": 4,
+        "torso": 7,
+        "near": [
+          130,
+          80
+        ],
+        "far": [
+          90,
+          125
+        ],
+        "hammer": 120
+      },
+      {
+        "t": 1,
+        "hip": [
+          4,
+          4
+        ],
+        "pelvis": 4,
+        "torso": 7,
+        "near": [
+          130,
+          80
+        ],
+        "far": [
+          90,
+          125
+        ],
+        "hammer": 120
+      }
+    ],
+    "catch": [
+      {
+        "t": 0,
+        "hip": [
+          4,
+          2
+        ],
+        "pelvis": 4,
+        "torso": 7,
+        "near": [
+          240,
+          160
+        ],
+        "far": [
+          85,
+          130
+        ],
+        "hammer": 70
+      },
+      {
+        "t": 0.16,
+        "hip": [
+          0,
+          7
+        ],
+        "pelvis": 0,
+        "torso": 2,
+        "near": [
+          200,
+          130
+        ],
+        "far": [
+          80,
+          125
+        ],
+        "hammer": 90
+      },
+      {
+        "t": 0.45,
+        "hip": [
+          0,
+          3
+        ],
+        "pelvis": 0,
+        "torso": 0,
+        "near": [
+          150,
+          100
+        ],
+        "far": [
+          72,
+          110
+        ],
+        "hammer": 125
+      },
+      {
+        "t": 0.8,
+        "hip": [
+          0,
+          0
+        ],
+        "pelvis": 0,
+        "torso": 0,
+        "near": [
+          112,
+          77
+        ],
+        "far": [
+          67,
+          101
+        ],
+        "hammer": 160
+      }
+    ],
+    "lightning": [
+      {
+        "t": 0,
+        "hip": [
+          0,
+          0
+        ],
+        "pelvis": 0,
+        "torso": 0,
+        "near": [
+          112,
+          77
+        ],
+        "far": [
+          67,
+          101
+        ],
+        "hammer": 160
+      },
+      {
+        "t": 0.15,
+        "hip": [
+          0,
+          6
+        ],
+        "pelvis": -2,
+        "torso": -3,
+        "near": [
+          130,
+          70
+        ],
+        "far": [
+          70,
+          125
+        ],
+        "hammer": 120
+      },
+      {
+        "t": 0.4,
+        "hip": [
+          -2,
+          2
+        ],
+        "pelvis": -2,
+        "torso": -4,
+        "near": [
+          220,
+          125
+        ],
+        "far": [
+          75,
+          135
+        ],
+        "hammer": 30
+      },
+      {
+        "t": 0.6,
+        "hip": [
+          0,
+          -3
+        ],
+        "pelvis": 0,
+        "torso": -2,
+        "near": [
+          278,
+          205
+        ],
+        "far": [
+          75,
+          135
+        ],
+        "hammer": 0
+      },
+      {
+        "t": 1.52,
+        "hip": [
+          0,
+          -3
+        ],
+        "pelvis": 0,
+        "torso": -2,
+        "near": [
+          278,
+          205
+        ],
+        "far": [
+          75,
+          135
+        ],
+        "hammer": 0
+      },
+      {
+        "t": 1.62,
+        "hip": [
+          0,
+          0
+        ],
+        "pelvis": 0,
+        "torso": 0,
+        "near": [
+          274,
+          200
+        ],
+        "far": [
+          75,
+          135
+        ],
+        "hammer": 5
+      },
+      {
+        "t": 1.78,
+        "hip": [
+          0,
+          -3
+        ],
+        "pelvis": 0,
+        "torso": -2,
+        "near": [
+          278,
+          205
+        ],
+        "far": [
+          75,
+          135
+        ],
+        "hammer": 0
+      },
+      {
+        "t": 2.22,
+        "hip": [
+          0,
+          -3
+        ],
+        "pelvis": 0,
+        "torso": -2,
+        "near": [
+          278,
+          205
+        ],
+        "far": [
+          75,
+          135
+        ],
+        "hammer": 0
+      },
+      {
+        "t": 2.32,
+        "hip": [
+          0,
+          0
+        ],
+        "pelvis": 0,
+        "torso": 0,
+        "near": [
+          274,
+          200
+        ],
+        "far": [
+          75,
+          135
+        ],
+        "hammer": 5
+      },
+      {
+        "t": 2.48,
+        "hip": [
+          0,
+          -3
+        ],
+        "pelvis": 0,
+        "torso": -2,
+        "near": [
+          278,
+          205
+        ],
+        "far": [
+          75,
+          135
+        ],
+        "hammer": 0
+      },
+      {
+        "t": 2.94,
+        "hip": [
+          0,
+          -3
+        ],
+        "pelvis": 0,
+        "torso": -2,
+        "near": [
+          278,
+          205
+        ],
+        "far": [
+          75,
+          135
+        ],
+        "hammer": 0
+      },
+      {
+        "t": 3.04,
+        "hip": [
+          0,
+          1
+        ],
+        "pelvis": 0,
+        "torso": 0,
+        "near": [
+          274,
+          200
+        ],
+        "far": [
+          75,
+          135
+        ],
+        "hammer": 5
+      },
+      {
+        "t": 3.25,
+        "hip": [
+          0,
+          5
+        ],
+        "pelvis": 0,
+        "torso": 3,
+        "near": [
+          245,
+          160
+        ],
+        "far": [
+          75,
+          135
+        ],
+        "hammer": 40
+      },
+      {
+        "t": 3.65,
+        "hip": [
+          0,
+          3
+        ],
+        "pelvis": 0,
+        "torso": 1,
+        "near": [
+          175,
+          105
+        ],
+        "far": [
+          70,
+          115
+        ],
+        "hammer": 115
+      },
+      {
+        "t": 4,
+        "hip": [
+          0,
+          0
+        ],
+        "pelvis": 0,
+        "torso": 0,
+        "near": [
+          112,
+          77
+        ],
+        "far": [
+          67,
+          101
+        ],
+        "hammer": 160
+      }
+    ]
+  }
+}

@@ -22,6 +22,9 @@ func check_skills() -> void:
 	view.standalone_environment=false
 	root.add_child(view)
 	var effects: Node2D = view.get_node("SkillEffects")
+	check(view.character.scale.is_equal_approx(Vector2.ONE*1.25),"正式Boss形象额外放大25%，规则范围不随角色缩放")
+	var original: Node2D = load("res://scripts/presentation/thor_puppet.gd").new()
+	root.add_child(original)
 	var close: TrainingRoom = load("res://scripts/combat/boss_room.gd").new({"spawn":Vector2(840,520)})
 	var saw_swing: bool = false
 	for i in 220:
@@ -47,7 +50,11 @@ func check_skills() -> void:
 		far.update({},0.01)
 		var state: Dictionary = far.snapshot()
 		view.update(state,0)
+		original.update_state(state)
 		if state.vulnerable:
+			var ground: Vector2 = Vector2(state.hammer.x,state.hammer.y)
+			var expected_hammer: Vector2 = ground+(original.get_node("hammer").global_position-ground)*1.25
+			check(view.character.get_node("hammer").global_position.distance_to(expected_hammer)<0.02,"角色放大只改变空中锤体高度／体量，不放大规则地面飞行距离")
 			var wake: Sprite2D = effects.get_node("HammerWake")
 			check(wake.visible and wake.position.is_equal_approx(view.character.get_node("hammer").global_position),"电流拖尾跟随实际空中锤体，保持地面路径独立")
 			var expected: Vector2 = Vector2.LEFT if state.hammer.leg=="out" else Vector2.RIGHT
@@ -72,7 +79,7 @@ func check_skills() -> void:
 	dying.boss.health=0; dying.boss.phase="dead"; dying.status="complete"
 	view.update(dying,0)
 	check(effects.get_child_count()==2 and not effects.get_node("SwingArc").visible,"Boss死亡后清理全部技能威胁表现")
-	view.free()
+	original.free(); view.free()
 
 func run() -> void:
 	var map: Node2D = load("res://scenes/rooms/boss.tscn").instantiate()
@@ -99,6 +106,15 @@ func run() -> void:
 	game.room.update({"fire":true,"aim":Vector2(720,468)},0.8)
 	game.present(game.room.snapshot(),0)
 	check(game.boss_bar.value<1200 and game.hud.mana.value==0,"零蓝测试房真实普攻扣Boss生命，血条同步")
+	game.select_trial(0)
+	root.size=Vector2i(1280,720)
+	await process_frame
+	game.update_camera()
+	check(game.view_zoom>=0.99,"Boss默认近景不再将完整房间缩进一屏，720高下缩放至少1")
+	var followed: Vector2 = game.view_origin
+	game.room.update({"moveY":1},0.4); game.update_camera()
+	check(game.view_origin.y>followed.y+40,"Boss近景随实际玩家移动，不固定在整房中心")
+	game.overview=true
 	for size in [Vector2i(1280,720),Vector2i(900,900),Vector2i(1920,800),Vector2i(3840,1080),Vector2i(800,1200)]:
 		root.size=size
 		await process_frame
@@ -114,6 +130,44 @@ func run() -> void:
 			coverage=Rect2(surround.polygon[0],Vector2.ZERO)
 			for point in surround.polygon: coverage=coverage.expand(point)
 		check(coverage.encloses(visible),"窗口%s下Boss环境铺满可见区域，不露场景外空底" % size)
+	game.overview=false
+	for size in [Vector2i(1280,720),Vector2i(900,900),Vector2i(1920,800),Vector2i(800,1200)]:
+		root.size=size
+		await process_frame
+		for spawn in [Vector2(240,520),Vector2(720,160),Vector2(720,880)]:
+			game.room=load("res://scripts/combat/boss_room.gd").new({"spawn":spawn})
+			game.boss_camera_run=-1; game.update_camera()
+			var near_zoom: float = game.view_zoom
+			var saw_throw: bool = false
+			var recovered: bool = false
+			var far_zoom: float = INF
+			for step in 360:
+				game.room.update({},0.02); game.update_camera()
+				var sample: Dictionary = game.room.snapshot()
+				var visible: Rect2 = Rect2(game.view_origin,game.get_viewport_rect().size/game.view_zoom)
+				check(visible.has_point(Vector2(sample.player.x,sample.player.y-96)) and visible.has_point(Vector2(sample.player.x,sample.player.y+24)),"跟随镜头保留玩家完整身体")
+				if sample.boss.phase in ["throw_warn","flight"]:
+					saw_throw=true; far_zoom=minf(far_zoom,game.view_zoom)
+					var target: Vector2 = sample.throwTarget if sample.boss.phase=="throw_warn" else sample.hammer.target
+					for point in [Vector2(sample.boss.x,sample.boss.y),target]:
+						check(visible.has_point(point-Vector2(72,240)) and visible.has_point(point+Vector2(72,48)),"预警及飞行阶段完整保留地面锤路和举起的空中锤体")
+					var zoom_before: float = game.view_zoom
+					var origin_before: Vector2 = game.view_origin
+					game.room.set_paused(true); game.room.update({},1); game.update_camera()
+					check(game.view_zoom==zoom_before and game.view_origin==origin_before,"暂停不推进镜头拉近或改变构图")
+					game.room.set_paused(false)
+				if saw_throw and sample.boss.phase=="lightning" and sample.boss.timer<3.0: recovered=game.view_zoom>=near_zoom-0.001
+			check(saw_throw and recovered,"接锤后恢复近景：窗口%s／起点%s／远景%.3f／当前%.3f／阶段%s" % [size,spawn,far_zoom,game.view_zoom,game.room.snapshot().boss.phase])
+	root.size=Vector2i(800,1200)
+	await process_frame
+	game.room=load("res://scripts/combat/boss_room.gd").new({"spawn":Vector2(240,520)})
+	game.boss_camera_run=-1
+	for step in 1100:
+		game.room.update({"moveX":1} if game.room.snapshot().boss.phase=="lightning" else {},0.01); game.update_camera()
+		var sample: Dictionary = game.room.snapshot()
+		var visible: Rect2 = Rect2(game.view_origin,game.get_viewport_rect().size/game.view_zoom)
+		for mark in sample.lightning:
+			check(visible.encloses(Rect2(mark.x-80,mark.y-80,160,160)),"竖屏持续走位仍完整显示此前锁定的落雷圆")
 	game.queue_free()
 	await process_frame
 	check_skills()

@@ -1,0 +1,131 @@
+{
+  "date": "2026-10-23",
+  "art_source": "existing",
+  "route": "AI-authored pose keys, rigid existing sprite transforms in Godot; offline RGBA composition for review",
+  "image_generation": false,
+  "video_generation": false,
+  "generation_model": "not applicable",
+  "generation_cost": "not applicable",
+  "user_decisions": {
+    "camera": "close follow; pull back as necessary for full throw route",
+    "body": "additional 25 percent visual scale only",
+    "motion": "same existing art; three full skills as independent comparison; approval before replacing default"
+  },
+  "references": [
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/cape.png",
+      "sha256": "229471b8892f29cd0cdaaaf1d1d4c26358538d98fcf511aa9e83cc46dd40ca83",
+      "bytes": 112624
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/chest.png",
+      "sha256": "7bbefc1f9072555c1892e6573c282e639453f61bbe9d6f0a4cfdd0d260f123b5",
+      "bytes": 181360
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/far_arm.png",
+      "sha256": "c2ef620dcfc84fdb0ab85c116bac3bd15686a586a2718088238f3992f3b25fb4",
+      "bytes": 82560
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/far_boot.png",
+      "sha256": "36be068b0e511347bd329b480209ecf56abeab57f027e22b8b3f1c340d19c0cd",
+      "bytes": 71277
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/far_forearm.png",
+      "sha256": "a398b16528caf0e2dd92a2a5f4e47066f416b4e954a3eb6bcbddd9d4e122a0c0",
+      "bytes": 91283
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/far_shin.png",
+      "sha256": "2bc4604ff7556cc6ad4e87fab209d492bdeceda78011bf80e6af37998538c886",
+      "bytes": 63217
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/far_thigh.png",
+      "sha256": "b8501626f2a7f36cd317d7d8019cb448ff67f95c585f1cd5fd47d0ec788b5d66",
+      "bytes": 94401
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/hammer.png",
+      "sha256": "d327ba01c168fea4afb1a717bc1be0f28ac9756a1e9116b49f3b1bb932775000",
+      "bytes": 99236
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/head.png",
+      "sha256": "47abba56e320dff7b71f1e780b625024aedb6735535623c3d9630f8f51cf5a90",
+      "bytes": 144135
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/near_arm.png",
+      "sha256": "2254a4553a229395e0f5a7a393e21dd7daad437ad3d9f200979d9906f0365330",
+      "bytes": 99452
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/near_boot.png",
+      "sha256": "e409328aa0398a481d8e7556a529cce608d71093db996dae01b6ee4ecec8a8d4",
+      "bytes": 100572
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/near_forearm.png",
+      "sha256": "9ecc389bdc63839901497e10551b4cd3d4ae5d8ad915069dfbb6412cab6a1eb0",
+      "bytes": 95412
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/near_shin.png",
+      "sha256": "743b9deab5c03ac4bc5ab7706eaa8ba64c385510b55232c3fbdd1f37a37b0c9b",
+      "bytes": 73077
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/near_thigh.png",
+      "sha256": "d056fe0ab91c7d6a60a70bcd5d0fd79d304c15696a069f49a45719ae5a23975f",
+      "bytes": 107321
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/parts.json",
+      "sha256": "01df77bc89274948e9bc0bb0c9def3020da944aaa5059ad1ef59f80902850f32",
+      "bytes": 3482
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/pelvis.png",
+      "sha256": "7fce30a76fa34723db16dc509a67961e29f02e5038d75ed0e3147261e5ceb869",
+      "bytes": 170266
+    },
+    {
+      "path": "godot/assets/boss/thor-puppet-v1/tail.png",
+      "sha256": "5925b563349a4d7e912171c5f1b2c943402f2343ad0aacddca28e63f56124afb",
+      "bytes": 69412
+    }
+  ],
+  "source": {
+    "path": "assets/characters/thor-motion-v6/poses.json",
+    "sha256": "eac740fd5b4e9e0a187e2fe5840c788b7939c3a4dd19cba0a86fca61bf8b7e9e",
+    "bytes": 10774
+  },
+  "runtime": {
+    "path": "godot/assets/boss/thor-motion-v6/poses.json",
+    "sha256": "eac740fd5b4e9e0a187e2fe5840c788b7939c3a4dd19cba0a86fca61bf8b7e9e",
+    "bytes": 10774
+  },
+  "runtime_scripts": [
+    {
+      "path": "godot/scripts/presentation/thor_motion_candidate.gd",
+      "sha256": "aea3d4067c43fc212d3e9ef177f8d4cc84bc9413c6a11f0f8065d6a684827870",
+      "bytes": 6343
+    },
+    {
+      "path": "godot/scenes/boss_motion_candidate_test.tscn",
+      "sha256": "f7bc42820bc998c96188e4d215638ead9b08d9dba503da3d81c4666d5accedcd",
+      "bytes": 363
+    }
+  ],
+  "review": {
+    "initial_rejected": "../../../output/art/BOS-001/2026-10-23-combat-focus-v3/iteration-1/key-poses.json",
+    "ai_reason": "reduced excessive throwing arm turn/face crossing; far hand now guards chest during lightning; inherits actual planted feet on attack entry",
+    "selected": "current poses.json as an AI candidate, not user-approved",
+    "visual_status": "awaiting user dynamic review; default action script unchanged except display scaling coordinates",
+    "preview": "../../../output/art/BOS-001/2026-10-23-combat-focus-v3/preview.html",
+    "evidence_type": "offline composition of actual Godot node transforms, not GPU screenshot"
+  }
+}
