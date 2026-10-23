@@ -537,6 +537,7 @@ func contact(from: Vector2,to: Vector2,ignored: Array = []) -> Dictionary:
 			var t: float = segment_rectangle(from,to,Rect2(pillar.x-body[0],pillar.y+body[1],body[0]*2,body[2]-body[1]))
 			if t>=0 and t<first: first=t; hit={"target":null}
 	for item in obstacles():
+		if not item.get("blocksProjectiles",true): continue
 		var t: float = segment_rectangle(from,to,Rect2(item.x-item.halfWidth,item.y-item.height,item.halfWidth*2,item.height+item.halfHeight))
 		if t>=0 and t<first: first=t; hit={"target":null}
 	for index in layout.targets.size():

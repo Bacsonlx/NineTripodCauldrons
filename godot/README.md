@@ -4,14 +4,15 @@
 
 已接入普通箭、Q 穿透箭、E 固定落点三段箭雨、空格闪避、三庭42影偶共8波、两条房间分支、残碑阅读与一次性回血祭火。完整实施和平台验收状态见 [实施记录](../docs/migration/Godot迁移_实施记录.md)。
 
-首关HUD采用左上孩子头像与状态条、左下四动作图标和实时冷却，怪物头顶显示随生命变化的描边血条。切角窄条、分行墨色底衬与随包宋体已按原型细化，见[HUD说明](../assets/ui/hud-v3/README.md)。默认房间流程正式启用蓝量与精力：Q耗12蓝、E耗28蓝、闪避耗25精力；击杀／清波回4／12蓝，精力停用1.2秒后每秒回10。消耗、退款和跨房规则见[资源规格](../docs/product/首关_蓝量与精力规划_v0.1.md)，旧小样／迁移参照保留历史无能耗行为。
+首关HUD采用左上孩子头像与状态条、左下四动作图标和实时冷却，怪物头顶显示随生命变化的描边血条。切角窄条、分行墨色底衬与随包宋体已按原型细化，见[HUD说明](../assets/ui/hud-v3/README.md)。默认房间流程正式启用蓝量、精力和药瓶：Q耗12蓝、E耗28蓝、闪避耗25精力；F 拾取药瓶即时补充，每波保底蓝瓶，原击杀／清波自动回蓝已替换；精力停用1.2秒后每秒回10。消耗、退款和跨房规则见[资源规格](../docs/product/首关_蓝量与精力规划_v0.1.md)，旧小样／迁移参照保留历史行为。
 
 安装 `engine-lock.json` 中的 Godot 及 Python 3；导出另需匹配的官方模板。在仓库根目录执行：
 
 ```sh
 python3 tools/migration/prepare_sample_assets.py
 python3 tools/migration/check_godot.py
-godot --path godot                 # 运行完整汤谷
+./play                            # 直接运行已集成首关
+./play --test boss --mana 0        # 同一首关中的索尔专项
 godot --editor --path godot        # 打开编辑器
 ```
 
@@ -37,13 +38,13 @@ Mac ZIP 位于 `build/godot/NineTripods-godot-macos.zip`，为包含 arm64 的 U
 
 小样入口 `scenes/sample.tscn` 继续复用现有脚本；已批准小样的原包与源码校验保存在 sample 路径及 `docs/migration/sample-verification.json`，不把当前脚本追溯称为用户已批准版本。
 
-## 药瓶掉落灰盒
+## 统一试玩入口
 
-启动：`godot --path godot res://scenes/loot_test.tscn`。独立入口复用完整八房，野怪随机掉血／蓝瓶、每波保底蓝瓶，F 单瓶即时补充；满值留地、可用药瓶优先于门、跨房保留、R 重新随机。此入口关闭击杀／清波自动回蓝，Boss 仅显示未入库奖励占位。默认 `tanggu_first_level.tscn` 尚未切换，待用户试玩确认后接入。
+`./play` 默认集成八房、技能与能量、索尔、血／蓝瓶与 F 补给；不需要 `--potion-drops` 等环境开关。专项使用 `./play --test boss`、`./play --test drops`、`./play --room court2`，可组合初始资源和固定种子。背包白盒用 `./play --test alpha`，后台规则用 `./play --test rules`。
 
-原生包以程序参数 `-- --potion-drops` 启用同一灰盒；官方导出模板不支持用命令行覆盖场景路径。示例：`"九鼎 · 汤谷.app/Contents/MacOS/九鼎 · 汤谷" -- --potion-drops`，Windows 为 `NineTripods.exe -- --potion-drops`。参数仅选择本轮灰盒模式，不改变默认启动行为。
+参数、原生包用法与后台约束见[试玩启动命令](../docs/guides/试玩启动命令.md)。源码旧 `loot_test.tscn` 仍可作为兼容入口，但玩法与默认首关一致；旧独立 Boss 场景保留原灰盒回归，不作为新快捷命令的 Boss 入口。尚未接通的背包效果不随默认集成扩大范围。
 
-专项后台规则：`godot --headless --path godot --script res://tests/run_tests.gd -- --loot-only`。完整检查已纳入灰盒场景和八波流程，参数、验收门与当前证据见[药瓶实施记录](../docs/mvp/野怪药瓶掉落_实施记录_2026-10-22.md)。
+专项药瓶规则仍可运行 `godot --headless --path godot --script res://tests/run_tests.gd -- --loot-only`。默认完整流程现在直接覆盖八波药瓶与索尔，集成、启动参数与当前证据见[统一启动实施记录](../docs/mvp/首关集成与快捷启动_实施记录_2026-10-22.md)。
 
 ## 索尔独立 Boss 灰盒
 

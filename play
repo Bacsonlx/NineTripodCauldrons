@@ -1,0 +1,85 @@
+#!/usr/bin/env python3
+"""快速启动当前 Godot 第一关，或选择已有专项内容。"""
+import argparse
+import json
+from pathlib import Path
+import shlex
+import shutil
+import subprocess
+import sys
+
+ROOT = Path(__file__).resolve().parent
+ROOMS = ["entry", "court1", "stele", "altar", "court2", "court3", "boss", "end"]
+
+
+def resource(text):
+    value = int(text)
+    if not 0 <= value <= 100:
+        raise argparse.ArgumentTypeError("资源须在 0—100 之间")
+    return value
+
+
+def nonnegative(text):
+    value = int(text)
+    if value < 0:
+        raise argparse.ArgumentTypeError("数值不能为负")
+    return value
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--test", choices=["level", "boss", "drops", "alpha", "rules"], help="专项内容；省略则正常进入第一关")
+    parser.add_argument("--room", choices=ROOMS, help="从指定房间开始，R 仍从该房间重试")
+    parser.add_argument("--health", type=resource, help="初始生命 1—100")
+    parser.add_argument("--mana", type=resource, help="初始蓝量 0—100")
+    parser.add_argument("--stamina", type=resource, help="初始精力 0—100")
+    parser.add_argument("--seed", type=nonnegative, help="固定掉落种子，仅用于重演")
+    parser.add_argument("--headless", action="store_true", help="后台运行，不打开窗口")
+    parser.add_argument("--quit-after", type=nonnegative, help="指定主循环次数后退出，用于后台启动检查")
+    parser.add_argument("--dry-run", action="store_true", help="只显示命令，不启动")
+    args = parser.parse_args()
+    gameplay = any(getattr(args, key) is not None for key in ["room", "health", "mana", "stamina", "seed"])
+    if args.test in ["alpha", "rules"] and gameplay:
+        parser.error("alpha／rules 不接受房间、资源或掉落种子参数")
+    if args.health == 0:
+        parser.error("初始生命须在 1—100 之间")
+    if args.test == "boss" and args.room not in [None, "boss"]:
+        parser.error("Boss 专项只能指定 boss 房间")
+    if args.quit_after == 0:
+        parser.error("--quit-after 须大于 0")
+    engine = shutil.which("godot")
+    command = [engine or "godot", "--path", str(ROOT / "godot")]
+    if args.headless or args.test == "rules":
+        command.append("--headless")
+    if args.quit_after is not None:
+        command += ["--quit-after", str(args.quit_after)]
+    if args.test == "rules":
+        command += ["--script", "res://tests/run_tests.gd"]
+    else:
+        options = [f"--test={args.test}"] if args.test else []
+        options += [f"--{key}={getattr(args, key)}" for key in ["room", "health", "mana", "stamina", "seed"] if getattr(args, key) is not None]
+        if options:
+            command += ["--", *options]
+    if args.dry_run:
+        print(shlex.join(command))
+        return 0
+    if engine is None:
+        parser.exit(1, "未找到 godot；请安装 godot/engine-lock.json 锁定的版本并加入 PATH。\n")
+    expected = json.loads((ROOT / "godot/engine-lock.json").read_text())["version"]
+    actual = subprocess.check_output([engine, "--version"], text=True).strip()
+    if actual != expected:
+        parser.exit(1, f"Godot 版本不符：{actual}；需要 {expected}\n")
+    if args.test == "rules":
+        result = subprocess.run(command, capture_output=True, text=True)
+        sys.stdout.write(result.stdout)
+        sys.stderr.write(result.stderr)
+        output = result.stdout + result.stderr
+        return result.returncode or int("SCRIPT ERROR:" in output or "ERROR:" in output)
+    try:
+        return subprocess.call(command)
+    except KeyboardInterrupt:
+        return 130
+
+
+if __name__ == "__main__":
+    sys.exit(main())

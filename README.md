@@ -9,13 +9,14 @@ Windows／macOS 单机动作肉鸽游戏，当前开发与运行工程为 **Godo
 安装 [engine-lock.json](godot/engine-lock.json) 锁定的 Godot 和 Python 3。导出需安装匹配的官方模板；Node.js 不作为 Godot 游戏运行依赖。在仓库根目录执行：
 
 ```sh
-godot --path godot                 # 运行完整汤谷
+./play                            # 直接运行已集成的第一关
+./play --test boss --mana 0        # 第一关索尔房，零蓝测试
 godot --editor --path godot        # 打开编辑器
 python3 tools/migration/check_godot.py   # 后台导入、规则检查和完整场景启动
 python3 tools/migration/export_godot.py  # 后台预检并导出双平台ZIP
 ```
 
-首次准备或更新源素材后运行 `python3 tools/migration/prepare_sample_assets.py`，再执行检查。完整环境与导出说明见 [Godot 开发说明](godot/README.md)。当前入口为 `godot/scenes/tanggu_first_level.tscn`，七个独立房间位于 `godot/scenes/rooms/`；门连接、任务与编辑规则见 [房间地图说明](docs/guides/汤谷房间地图使用说明.md)。原连续地图保留为历史布局。
+首次准备或更新源素材后运行 `python3 tools/migration/prepare_sample_assets.py`，再执行检查。快捷参数见[试玩启动命令](docs/guides/试玩启动命令.md)，环境与导出见 [Godot 开发说明](godot/README.md)。当前入口为 `godot/scenes/tanggu_first_level.tscn`，八个独立房间位于 `godot/scenes/rooms/`；门连接、任务与编辑规则见 [房间地图说明](docs/guides/汤谷房间地图使用说明.md)。原连续地图保留为历史布局。
 
 Codex 已接入项目级 `jiuding_godot` MCP，工程查询、场景／节点／精灵编辑与安装方法见 [Godot MCP 使用指南](docs/guides/Godot_MCP使用指南.md)。
 
@@ -23,7 +24,7 @@ Codex 已接入项目级 `jiuding_godot` MCP，工程查询、场景／节点／
 
 ## 当前交付与验收
 
-完整汤谷候选为 `0.3.0-godot-candidate.1`，后续已接入七房间互通、三庭 42 影偶／8 波、残碑阅读、一次性回血祭坛、房间门任务与通行标识，以及普通箭、Q 穿透箭、E 固定落点三段箭雨、闪避和 HUD 反馈。已批准动态小样 `0.3.0-godot-sample.1` 的确认仅覆盖对应小样版本；当前改动和待验项见 [实施记录](docs/migration/Godot迁移_实施记录.md)。
+完整汤谷候选为 `0.3.0-godot-candidate.1`，后续已接入八房间互通、三庭 42 影偶／8 波、索尔、野怪血／蓝瓶与 F 即时补给、残碑阅读、一次性回血祭坛、房间门任务与通行标识，以及普通箭、Q 穿透箭、E 固定落点三段箭雨、闪避和 HUD 反馈。所有已接入首关内容默认启用；背包与 Boss 正式装备奖励仍后续制作。已批准动态小样 `0.3.0-godot-sample.1` 的确认仅覆盖对应小样版本；当前改动和待验项见 [实施记录](docs/migration/Godot迁移_实施记录.md)。
 
 - [Mac候选ZIP](build/godot/NineTripods-godot-macos.zip)：含arm64的Universal 2，本地ad-hoc签名，未公证。
 - [Windows x64候选ZIP](build/godot/NineTripods-godot-windows.zip)：未签名，实机验收按用户要求暂缓。
@@ -33,11 +34,11 @@ Codex 已接入项目级 `jiuding_godot` MCP，工程查询、场景／节点／
 
 操作：WASD移动，鼠标独立瞄准，左键点按／按住射箭，Q穿透箭，E箭雨，空格闪避，F互动／过门，M地图总览，Esc暂停／合上残碑，R重试，F11全屏。残碑阅读冻结游戏时间；祭坛一次恢复40并封顶至100，满血不消耗；完成终点后仍可回溯探索，R重开整段流程。
 
-手柄、随机房间、Boss、成长、正式存档、神降／签署闭环和Steam完整功能属于后续范围。旧MVP-01／02／03的独立待验项保留，不因引擎迁移自动关闭。
+手柄、随机房间、正式背包与成长、Boss正式形象／奖励、正式存档、神降／签署闭环和Steam完整功能属于后续范围。旧MVP-01／02／03的独立待验项保留，不因引擎迁移自动关闭。
 
 ## 目录与维护
 
-- `godot/scenes/`：运行场景与编辑器地图；默认主场景为 `tanggu_first_level.tscn`，七个独立房间在 `rooms/`。
+- `godot/scenes/`：运行场景与编辑器地图；默认主场景为 `tanggu_first_level.tscn`，八个独立房间在 `rooms/`。
 - `godot/scripts/combat/`、`input/`：战斗规则与输入适配；`presentation/`：相机、动作、反馈及HUD；`world/`：编辑布局。
 - `godot/tests/`：公开边界检查与冻结规则对照；`godot/assets/generated/`：转换后的离线图集与锚点。
 - `tools/migration/`：素材转换、Godot检查和双平台导出；`build/godot/`：本地产物。

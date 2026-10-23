@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=23 format=3]
 [ext_resource type="Script" path="res://scripts/world/room_map.gd" id="map"]
 [ext_resource type="Script" path="res://scripts/world/map_item.gd" id="item"]
 [ext_resource type="PackedScene" path="res://scenes/world/environment_prop.tscn" id="prop"]
@@ -20,6 +20,7 @@
 [ext_resource type="Texture2D" path="res://assets/world/camp.tres" id="camp"]
 [ext_resource type="Texture2D" path="res://assets/world/gateway.tres" id="gateway"]
 [ext_resource type="Texture2D" path="res://assets/world/root.tres" id="root"]
+[ext_resource type="Texture2D" path="res://assets/world/ruin_stone.tres" id="ruin_stone"]
 [node name="stele" type="Node2D"]
 script = ExtResource("map")
 room_id = "stele"
@@ -37,13 +38,13 @@ texture = ExtResource("forest")
 texture_repeat = 2
 [node name="RoomFloor" type="Polygon2D" parent="Ground"]
 z_index = -50
-polygon = PackedVector2Array(140, 280, 300, 170, 1140, 170, 1300, 280, 1300, 790, 1140, 900, 300, 900, 140, 790)
+polygon = PackedVector2Array(160, 650, 160, 420, 600, 420, 600, 200, 1070, 200, 1070, 510, 1280, 510, 1280, 800, 810, 800, 810, 640, 370, 640, 370, 720)
 texture = ExtResource("path")
 texture_repeat = 2
 [node name="Walkable" type="Node2D" parent="."]
 visible = false
 [node name="Floor" type="Polygon2D" parent="Walkable"]
-polygon = PackedVector2Array(140, 280, 300, 170, 1140, 170, 1300, 280, 1300, 790, 1140, 900, 300, 900, 140, 790)
+polygon = PackedVector2Array(160, 650, 160, 420, 600, 420, 600, 200, 1070, 200, 1070, 510, 1280, 510, 1280, 800, 810, 800, 810, 640, 370, 640, 370, 720)
 [node name="Metrics" type="Node2D" parent="."]
 position = Vector2(720,535)
 script = ExtResource("item")
@@ -51,19 +52,12 @@ category = "road"
 size = Vector2(1160,730)
 region = "碑林遗径"
 [node name="PlayerSpawn" type="Node2D" parent="."]
-position = Vector2(310,525)
+position = Vector2(290,540)
 script = ExtResource("item")
 category = "spawn"
 size = Vector2(40,30)
-[node name="CourtFloor" parent="." instance=ExtResource("prop")]
-position = Vector2(720,813.9068564036222)
-category = "ground"
-size = Vector2(40,30)
-texture_asset = ExtResource("court")
-render_width = 850.0
-flat = true
 [node name="Stele" parent="." instance=ExtResource("prop")]
-position = Vector2(720,200)
+position = Vector2(850,240)
 category = "obstacle"
 size = Vector2(56,42)
 texture_asset = ExtResource("stele")
@@ -76,279 +70,104 @@ script = ExtResource("item")
 category = "interaction"
 size = Vector2(40,30)
 interaction_id = "stele"
-[node name="Tree0" parent="." instance=ExtResource("prop")]
-position = Vector2(45,60)
+[node name="SilentStele1" parent="." instance=ExtResource("prop")]
+position = Vector2(450,400)
 category = "obstacle"
-size = Vector2(42,30)
+size = Vector2(42,26)
+texture_asset = ExtResource("stele")
+render_width = 110.0
+obstacle_kind = "wall"
+[node name="SilentStele2" parent="." instance=ExtResource("prop")]
+position = Vector2(650,320)
+category = "obstacle"
+size = Vector2(42,26)
+texture_asset = ExtResource("stele")
+render_width = 100.0
+obstacle_kind = "wall"
+[node name="SilentStele3" parent="." instance=ExtResource("prop")]
+position = Vector2(1040,505)
+category = "obstacle"
+size = Vector2(42,26)
+texture_asset = ExtResource("stele")
+render_width = 115.0
+obstacle_kind = "wall"
+[node name="LostStone" parent="." instance=ExtResource("prop")]
+position = Vector2(630,740)
+category = "obstacle"
+size = Vector2(80,24)
+texture_asset = ExtResource("ruin_stone")
+render_width = 130.0
+obstacle_kind = "wall"
+blocks_projectiles = false
+[node name="TreeCluster0" parent="." instance=ExtResource("prop")]
+position = Vector2(110,360)
+category = "obstacle"
+size = Vector2(44,30)
 texture_asset = ExtResource("tree_red")
-render_width = 260.0
+render_width = 280.0
 obstacle_kind = "tree"
-[node name="Tree1" parent="." instance=ExtResource("prop")]
-position = Vector2(1395,60)
+[node name="TreeCluster1" parent="." instance=ExtResource("prop")]
+position = Vector2(370,210)
 category = "obstacle"
-size = Vector2(42,30)
+size = Vector2(44,30)
 texture_asset = ExtResource("tree_green")
-render_width = 272.0
+render_width = 250.0
 obstacle_kind = "tree"
-[node name="Tree2" parent="." instance=ExtResource("prop")]
-position = Vector2(45,180)
+[node name="TreeCluster2" parent="." instance=ExtResource("prop")]
+position = Vector2(1160,260)
 category = "obstacle"
-size = Vector2(42,30)
+size = Vector2(44,30)
 texture_asset = ExtResource("tree_green")
-render_width = 284.0
+render_width = 280.0
 obstacle_kind = "tree"
-[node name="Tree3" parent="." instance=ExtResource("prop")]
-position = Vector2(1395,180)
+[node name="TreeCluster3" parent="." instance=ExtResource("prop")]
+position = Vector2(1430,780)
 category = "obstacle"
-size = Vector2(42,30)
+size = Vector2(44,30)
 texture_asset = ExtResource("tree_green")
-render_width = 296.0
+render_width = 290.0
 obstacle_kind = "tree"
-[node name="Tree4" parent="." instance=ExtResource("prop")]
-position = Vector2(45,300)
+[node name="TreeCluster4" parent="." instance=ExtResource("prop")]
+position = Vector2(520,990)
 category = "obstacle"
-size = Vector2(42,30)
+size = Vector2(44,30)
 texture_asset = ExtResource("tree_green")
-render_width = 260.0
+render_width = 290.0
 obstacle_kind = "tree"
-[node name="Tree5" parent="." instance=ExtResource("prop")]
-position = Vector2(1395,300)
+[node name="TreeCluster5" parent="." instance=ExtResource("prop")]
+position = Vector2(850,1050)
 category = "obstacle"
-size = Vector2(42,30)
-texture_asset = ExtResource("tree_red")
-render_width = 272.0
-obstacle_kind = "tree"
-[node name="Tree6" parent="." instance=ExtResource("prop")]
-position = Vector2(45,420)
-category = "obstacle"
-size = Vector2(42,30)
+size = Vector2(44,30)
 texture_asset = ExtResource("tree_green")
-render_width = 284.0
+render_width = 270.0
 obstacle_kind = "tree"
-[node name="Tree7" parent="." instance=ExtResource("prop")]
-position = Vector2(1395,420)
-category = "obstacle"
-size = Vector2(42,30)
-texture_asset = ExtResource("tree_green")
-render_width = 296.0
-obstacle_kind = "tree"
-[node name="Tree8" parent="." instance=ExtResource("prop")]
-position = Vector2(45,540)
-category = "obstacle"
-size = Vector2(42,30)
-texture_asset = ExtResource("tree_green")
-render_width = 260.0
-obstacle_kind = "tree"
-[node name="Tree9" parent="." instance=ExtResource("prop")]
-position = Vector2(1395,540)
-category = "obstacle"
-size = Vector2(42,30)
-texture_asset = ExtResource("tree_green")
-render_width = 272.0
-obstacle_kind = "tree"
-[node name="Tree10" parent="." instance=ExtResource("prop")]
-position = Vector2(45,660)
-category = "obstacle"
-size = Vector2(42,30)
-texture_asset = ExtResource("tree_red")
-render_width = 284.0
-obstacle_kind = "tree"
-[node name="Tree11" parent="." instance=ExtResource("prop")]
-position = Vector2(1395,660)
-category = "obstacle"
-size = Vector2(42,30)
-texture_asset = ExtResource("tree_green")
-render_width = 296.0
-obstacle_kind = "tree"
-[node name="Tree12" parent="." instance=ExtResource("prop")]
-position = Vector2(45,780)
-category = "obstacle"
-size = Vector2(42,30)
-texture_asset = ExtResource("tree_green")
-render_width = 260.0
-obstacle_kind = "tree"
-[node name="Tree13" parent="." instance=ExtResource("prop")]
-position = Vector2(1395,780)
-category = "obstacle"
-size = Vector2(42,30)
-texture_asset = ExtResource("tree_green")
-render_width = 272.0
-obstacle_kind = "tree"
-[node name="Tree14" parent="." instance=ExtResource("prop")]
-position = Vector2(45,900)
-category = "obstacle"
-size = Vector2(42,30)
-texture_asset = ExtResource("tree_green")
-render_width = 284.0
-obstacle_kind = "tree"
-[node name="Tree15" parent="." instance=ExtResource("prop")]
-position = Vector2(1395,900)
-category = "obstacle"
-size = Vector2(42,30)
-texture_asset = ExtResource("tree_red")
-render_width = 296.0
-obstacle_kind = "tree"
-[node name="Tree16" parent="." instance=ExtResource("prop")]
-position = Vector2(45,1020)
-category = "obstacle"
-size = Vector2(42,30)
-texture_asset = ExtResource("tree_green")
-render_width = 260.0
-obstacle_kind = "tree"
-[node name="Tree17" parent="." instance=ExtResource("prop")]
-position = Vector2(1395,1020)
-category = "obstacle"
-size = Vector2(42,30)
-texture_asset = ExtResource("tree_green")
-render_width = 272.0
-obstacle_kind = "tree"
-[node name="Boundary0" parent="." instance=ExtResource("prop")]
-position = Vector2(360,130)
-category = "obstacle"
-size = Vector2(75,24)
-texture_asset = ExtResource("wall_west")
-render_width = 180.0
-obstacle_kind = "wall"
-[node name="Boundary1" parent="." instance=ExtResource("prop")]
-position = Vector2(595,130)
-category = "obstacle"
-size = Vector2(75,24)
-texture_asset = ExtResource("wall_east")
-render_width = 180.0
-obstacle_kind = "wall"
-[node name="Boundary2" parent="." instance=ExtResource("prop")]
-position = Vector2(830,130)
-category = "obstacle"
-size = Vector2(75,24)
-texture_asset = ExtResource("wall_west")
-render_width = 180.0
-obstacle_kind = "wall"
-[node name="Boundary3" parent="." instance=ExtResource("prop")]
-position = Vector2(1065,130)
-category = "obstacle"
-size = Vector2(75,24)
-texture_asset = ExtResource("wall_east")
-render_width = 180.0
-obstacle_kind = "wall"
-[node name="Boundary4" parent="." instance=ExtResource("prop")]
-position = Vector2(360,950)
-category = "obstacle"
-size = Vector2(75,24)
-texture_asset = ExtResource("wall_west")
-render_width = 180.0
-obstacle_kind = "wall"
-[node name="Boundary5" parent="." instance=ExtResource("prop")]
-position = Vector2(595,950)
-category = "obstacle"
-size = Vector2(75,24)
-texture_asset = ExtResource("wall_east")
-render_width = 180.0
-obstacle_kind = "wall"
-[node name="Boundary6" parent="." instance=ExtResource("prop")]
-position = Vector2(830,950)
-category = "obstacle"
-size = Vector2(75,24)
-texture_asset = ExtResource("wall_west")
-render_width = 180.0
-obstacle_kind = "wall"
-[node name="Boundary7" parent="." instance=ExtResource("prop")]
-position = Vector2(1065,950)
-category = "obstacle"
-size = Vector2(75,24)
-texture_asset = ExtResource("wall_east")
-render_width = 180.0
-obstacle_kind = "wall"
-[node name="Groundcover0" parent="." instance=ExtResource("prop")]
-position = Vector2(170,95)
-category = "ground"
-size = Vector2(40,30)
-texture_asset = ExtResource("ferns")
-render_width = 145.0
-[node name="Groundcover1" parent="." instance=ExtResource("prop")]
-position = Vector2(395,95)
+[node name="GroundDetail0" parent="." instance=ExtResource("prop")]
+position = Vector2(390,950)
 category = "ground"
 size = Vector2(40,30)
 texture_asset = ExtResource("grass")
-render_width = 145.0
-[node name="Groundcover2" parent="." instance=ExtResource("prop")]
-position = Vector2(620,95)
+render_width = 130.0
+obstacle_kind = "wall"
+flat = true
+[node name="GroundDetail1" parent="." instance=ExtResource("prop")]
+position = Vector2(900,1030)
 category = "ground"
 size = Vector2(40,30)
 texture_asset = ExtResource("ferns")
-render_width = 145.0
-[node name="Groundcover3" parent="." instance=ExtResource("prop")]
-position = Vector2(845,95)
+render_width = 130.0
+obstacle_kind = "wall"
+flat = true
+[node name="GroundDetail2" parent="." instance=ExtResource("prop")]
+position = Vector2(1230,860)
 category = "ground"
 size = Vector2(40,30)
 texture_asset = ExtResource("grass")
-render_width = 145.0
-[node name="Groundcover4" parent="." instance=ExtResource("prop")]
-position = Vector2(1070,95)
-category = "ground"
-size = Vector2(40,30)
-texture_asset = ExtResource("ferns")
-render_width = 145.0
-[node name="Groundcover5" parent="." instance=ExtResource("prop")]
-position = Vector2(1295,95)
-category = "ground"
-size = Vector2(40,30)
-texture_asset = ExtResource("grass")
-render_width = 145.0
-[node name="Groundcover6" parent="." instance=ExtResource("prop")]
-position = Vector2(170,1020)
-category = "ground"
-size = Vector2(40,30)
-texture_asset = ExtResource("ferns")
-render_width = 145.0
-[node name="Groundcover7" parent="." instance=ExtResource("prop")]
-position = Vector2(395,1020)
-category = "ground"
-size = Vector2(40,30)
-texture_asset = ExtResource("grass")
-render_width = 145.0
-[node name="Groundcover8" parent="." instance=ExtResource("prop")]
-position = Vector2(620,1020)
-category = "ground"
-size = Vector2(40,30)
-texture_asset = ExtResource("ferns")
-render_width = 145.0
-[node name="Groundcover9" parent="." instance=ExtResource("prop")]
-position = Vector2(845,1020)
-category = "ground"
-size = Vector2(40,30)
-texture_asset = ExtResource("grass")
-render_width = 145.0
-[node name="Groundcover10" parent="." instance=ExtResource("prop")]
-position = Vector2(1070,1020)
-category = "ground"
-size = Vector2(40,30)
-texture_asset = ExtResource("ferns")
-render_width = 145.0
-[node name="Groundcover11" parent="." instance=ExtResource("prop")]
-position = Vector2(1295,1020)
-category = "ground"
-size = Vector2(40,30)
-texture_asset = ExtResource("grass")
-render_width = 145.0
-[node name="FirePillar0" parent="." instance=ExtResource("prop")]
-position = Vector2(330,260)
-category = "obstacle"
-size = Vector2(28,24)
-texture_asset = ExtResource("pillar")
-render_width = 58.0
-obstacle_kind = "brazier"
-body_height = 150.0
-[node name="FirePillar1" parent="." instance=ExtResource("prop")]
-position = Vector2(1110,845)
-category = "obstacle"
-size = Vector2(28,24)
-texture_asset = ExtResource("pillar")
-render_width = 58.0
-obstacle_kind = "brazier"
-body_height = 150.0
+render_width = 130.0
+obstacle_kind = "wall"
+flat = true
 [node name="Doors" type="Node2D" parent="."]
 [node name="court1" parent="Doors" instance=ExtResource("portal")]
-position = Vector2(170,550)
+position = Vector2(150,565)
 portal_id = "court1"
 target_room = "court1"
 target_portal = "stele"
@@ -359,7 +178,7 @@ position = Vector2(100,-25)
 position = Vector2(140,-25)
 [editable path="Doors/court1"]
 [node name="court2" parent="Doors" instance=ExtResource("portal")]
-position = Vector2(1270,550)
+position = Vector2(1280,685)
 portal_id = "court2"
 target_room = "court2"
 target_portal = "stele"

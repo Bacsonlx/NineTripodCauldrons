@@ -1,7 +1,7 @@
 extends "res://scripts/presentation/first_level_scene.gd"
 
 const Journey = preload("res://scripts/journey/room_journey.gd")
-@export var potion_drop_trial: bool = false
+const PlayOptions = preload("res://scripts/input/play_options.gd")
 @export var potion_drop_seed: int = -1 # 非负值仅用于固定种子重演夹具。
 var journey: RefCounted
 var minimap: Control
@@ -28,12 +28,15 @@ func layout_boss_bar() -> void:
 	boss_bar.offset_bottom=boss_bar.offset_top+12
 
 func _ready() -> void:
-	potion_drop_trial=potion_drop_trial or "--potion-drops" in OS.get_cmdline_user_args()
-	if potion_drop_trial: print("药瓶掉落灰盒已启用")
+	var options: Dictionary = PlayOptions.parse(Array(OS.get_cmdline_user_args()))
+	if options.has("error"):
+		push_error(options.error); get_tree().quit(2); return
+	if options.mode=="alpha":
+		get_tree().change_scene_to_file.bind("res://scenes/tanggu_alpha.tscn").call_deferred()
+		return
 	var maps: Dictionary = Journey.read_maps()
 	if maps.is_empty(): get_tree().quit(1); return
-	var options: Dictionary = {"potionDrops":potion_drop_trial}
-	if potion_drop_seed>=0: options.dropSeed=potion_drop_seed
+	if potion_drop_seed>=0 and not options.has("dropSeed"): options.dropSeed=potion_drop_seed
 	journey=Journey.new(maps,options)
 	mount_map()
 	boss_view=load("res://scripts/presentation/boss_art_view.gd").new()
@@ -63,7 +66,7 @@ func create_room(_layout: Dictionary) -> TrainingRoom:
 
 func _physics_process(seconds: float) -> void:
 	super._physics_process(seconds)
-	if journey.consume_transition(): present_new_room()
+	if journey!=null and journey.consume_transition(): present_new_room()
 
 func present_new_room() -> void:
 	controls.interrupt()
@@ -96,7 +99,7 @@ func guidance_at(_position: Vector2) -> Dictionary:
 func present(snapshot: Dictionary,seconds: float) -> void:
 	super.present(snapshot,seconds)
 	var data: Dictionary = journey.snapshot()
-	loot_view.update_state(data)
+	loot_view.update_state(data,seconds)
 	minimap.update_state(data.roomGraph)
 	boss_view.visible=data.has("boss")
 	boss_bar.visible=data.has("boss")
@@ -112,4 +115,4 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 	if not data.get("rewardPlaceholders",[]).is_empty(): encounter_label.text+="\n装备／道具为未入库占位 · 背包后续接入"
 	if state.feedback==null and state.interaction==null:
 		interaction_label.text="走近门按 F 前往下一房间" if data.roomComplete else "完成本房任务后，来路与出口一起开放"
-		if potion_drop_trial and data.objective=="combat": interaction_label.text="血／蓝瓶落地后走近按 F 即时补充 · 满值留地"
+		if data.objective=="combat": interaction_label.text="血／蓝瓶落地后走近按 F 即时补充 · 满值留地"

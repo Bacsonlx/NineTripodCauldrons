@@ -1,0 +1,63 @@
+{
+  "art_source": "host_image",
+  "route": "built-in image_gen",
+  "model": "工具未披露",
+  "estimateUsd": null,
+  "selected": "A 皮影药囊，2026-10-23 用户确认",
+  "source_unchanged": true,
+  "world_height": 28,
+  "sampling": "linear",
+  "mipmaps": false,
+  "items": {
+    "health": {
+      "file": "health.png",
+      "canvas": [
+        1254,
+        1254
+      ],
+      "region": [
+        284,
+        245,
+        686,
+        782
+      ],
+      "origin": [
+        343.0,
+        782
+      ],
+      "sha256": "b7c3d50de5ed7d5b07772467d8d09631b9e919307dfbbb0a8d15a7e9bee8d041",
+      "alpha_zero_fraction": 0.7829828122575542,
+      "alpha_nonzero_bbox": [
+        35,
+        84,
+        1210,
+        1230
+      ]
+    },
+    "mana": {
+      "file": "mana.png",
+      "canvas": [
+        1254,
+        1254
+      ],
+      "region": [
+        307,
+        163,
+        642,
+        927
+      ],
+      "origin": [
+        321.0,
+        927
+      ],
+      "sha256": "2ed1feeff6bd8c09fcff7efb821bd54924b799edebededca3ba0e40afa6aabed",
+      "alpha_zero_fraction": 0.75960880525222,
+      "alpha_nonzero_bbox": [
+        25,
+        32,
+        1240,
+        1254
+      ]
+    }
+  }
+}

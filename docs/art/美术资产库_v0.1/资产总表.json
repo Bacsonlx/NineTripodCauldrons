@@ -2,8 +2,8 @@
   "schema_version": "0.1",
   "project": "九鼎",
   "sub_ip": "十日",
-  "date": "2026-10-16",
-  "purpose": "美术需求登记；不是运行时资源配置，也不是已批准制作排期",
+  "date": "2026-10-22",
+  "purpose": "美术需求登记与资产管理中心主数据",
   "record_count": 414,
   "assets": [
     {

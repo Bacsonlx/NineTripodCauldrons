@@ -8,7 +8,7 @@ var rooms: Dictionary = {}
 var current_id: String = "entry"
 var generation: int = 0
 var active: TrainingRoom
-var drop_options: Dictionary = {}
+var initial_options: Dictionary = {}
 var drop_seed: int = 0
 
 static func read_maps() -> Dictionary:
@@ -38,14 +38,17 @@ static func read_maps() -> Dictionary:
 
 func _init(definitions: Dictionary,options: Dictionary = {}) -> void:
 	layouts=definitions
-	drop_options=options.duplicate()
+	initial_options=options.duplicate()
 	restart()
 
 func restart() -> void:
-	rooms.clear(); current_id="entry"; generation+=1
-	drop_seed=int(drop_options.get("dropSeed",randi()))
+	rooms.clear(); current_id=initial_options.get("startRoom","entry"); generation+=1
+	drop_seed=int(initial_options.get("dropSeed",randi()))
 	active=create_room(layouts[current_id]); rooms[current_id]=active
 	active.run_id=generation
+	active.health=int(initial_options.get("health",100))
+	active.mana=int(initial_options.get("mana",100))
+	active.stamina=float(initial_options.get("stamina",100))
 
 func update(input: Dictionary,seconds: float) -> void:
 	if input.get("restart",false) and not active.snapshot().paused:
@@ -84,11 +87,11 @@ func snapshot() -> Dictionary:
 		for door in layouts[id].doors:
 			if str(id)<str(door.target): connections.append({"from":id,"to":door.target})
 	data.roomGraph={"rooms":nodes,"connections":connections}
-	if drop_options.get("potionDrops",false): data.dropSeed=drop_seed
+	if initial_options.get("potionDrops",false): data.dropSeed=drop_seed
 	return data
 
 func create_room(data: Dictionary) -> TrainingRoom:
-	if drop_options.get("potionDrops",false):
+	if initial_options.get("potionDrops",false):
 		data=data.duplicate(true)
 		data.potionDrops=true
 		data.dropSeed=drop_seed+str(data.roomId).hash()

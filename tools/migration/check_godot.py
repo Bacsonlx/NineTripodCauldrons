@@ -5,6 +5,7 @@ import subprocess
 import sys
 
 root = Path(__file__).resolve().parents[2]
+subprocess.run([sys.executable, str(root / "tools/tests/test_play.py")], check=True)
 lock = json.loads((root / "godot/engine-lock.json").read_text())
 version = subprocess.check_output(["godot", "--version"], text=True).strip()
 if version != lock["version"]:
@@ -14,8 +15,8 @@ commands.insert(-2, ["--script", "res://tests/boss_scene_checks.gd"])
 commands.insert(-2, ["--script", "res://tests/boss_integration_checks.gd"])
 commands.append(["res://scenes/boss_test.tscn", "--quit-after", "3"])
 commands.append(["--script", "res://tests/loot_scene_checks.gd"])
-commands.append(["--script", "res://tests/room_flow_checks.gd", "--", "--loot-flow"])
-commands.append(["--quit-after", "3", "--", "--potion-drops"])
+for options in [[], ["--test=boss", "--health=40", "--mana=0", "--stamina=0", "--seed=13"], ["--test=drops", "--health=60", "--mana=40", "--seed=13"], ["--room=court2"], ["--test=alpha"]]:
+    commands.append(["--script", "res://tests/launch_scene_checks.gd", "--", *options])
 commands.append(["--script", "res://tests/boss_art_checks.gd"])
 commands.append(["res://scenes/boss_art_test.tscn", "--quit-after", "3"])
 for args in commands:

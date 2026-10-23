@@ -20,12 +20,19 @@ func _initialize() -> void:
 	if script==null: check(false,"房间流程规则入口必须可加载"); finish(); return
 	var run: RefCounted = script.new({"entry":fixture("entry","safe","fight"),"fight":fixture("fight","combat","entry")})
 	check(run.snapshot().roomId=="entry" and run.snapshot().roomComplete,"安全入口直接开放")
+	var graph: Dictionary = run.snapshot().get("roomGraph",{})
+	check(graph.get("rooms",[]).size()==2 and graph.get("connections",[]).size()==1,"流程快照提供完整房间关系且双向门去重")
+	check(graph_room(run,"entry").current and graph_room(run,"entry").complete and not graph_room(run,"fight").visited,"初始图只将入口标为当前位置和已完成")
+	graph.rooms[0].id="外部修改"; graph.connections[0].to="外部修改"
+	check(graph_room(run,"entry").id=="entry" and run.snapshot().roomGraph.connections[0].to=="fight","修改图快照不反向修改真实房间或连接")
 	run.update({"interact":true},0)
 	check(run.snapshot().roomId=="fight" and not run.snapshot().roomComplete,"F过门进入独立战斗房并封门")
+	check(graph_room(run,"fight").current and graph_room(run,"fight").visited and graph_room(run,"fight").locked,"进战斗房同步当前位置、已访问和封门状态")
 	run.update({"interact":true},0)
 	check(run.snapshot().roomId=="fight","未完成战斗不能从来路离开")
 	run.update({"fire":true,"aim":Vector2(550,548)},1.5)
 	check(run.snapshot().roomComplete,"真实射箭清敌后房间开放")
+	check(graph_room(run,"fight").complete and not graph_room(run,"fight").locked,"真实清场后关系图解锁")
 	run.update({"interact":false},0); run.update({"interact":true},0)
 	check(run.snapshot().roomId=="entry","完成后允许返回入口房")
 	run.update({"interact":false},0); run.update({"interact":true},0)
@@ -41,6 +48,7 @@ func _initialize() -> void:
 	reader.update({"interact":true},0)
 	reader.update({"moveX":1},0.9); reader.update({"interact":true},0)
 	check(reader.snapshot().reading and not reader.snapshot().roomComplete,"探索房阅读期间继续封门")
+	check(graph_room(reader,"explore").locked,"阅读期间小地图不提前标成已完成")
 	var controls: PlayerControls = PlayerControls.new(reader.active)
 	controls.key_down(KEY_ESCAPE)
 	reader.update({},0)
@@ -50,7 +58,9 @@ func _initialize() -> void:
 	check(reader.snapshot().roomId=="explore" and reader.snapshot().exploration.steleRead and reader.snapshot().roomComplete,"往返保留残碑已读和房间完成状态")
 	reader.update({"restart":true},0)
 	check(reader.snapshot().roomId=="entry" and reader.snapshot().visitedRooms==1 and reader.snapshot().health==100,"R规则入口重开整段流程")
+	check(not graph_room(reader,"explore").visited and not graph_room(reader,"explore").complete and graph_room(reader,"entry").current,"重开清除旧图访问与完成状态")
 	var held: RefCounted = script.new({"entry":fixture("entry","safe","safe"),"safe":fixture("safe","safe","entry")})
+	check(not graph_room(held,"safe").visited and not graph_room(held,"safe").complete and not graph_room(held,"safe").locked,"未访问安全房不能提前画为已完成")
 	held.update({"interact":true},0); held.update({"interact":true},0)
 	check(held.snapshot().roomId=="safe","持续按住F不能在两个安全房之间反复切换")
 	var hurt_layout: Dictionary = fixture("fight","combat","entry")
@@ -72,6 +82,11 @@ func _initialize() -> void:
 	survivor.update({"interact":false},0); survivor.update({"interact":true},0)
 	check(survivor.snapshot().roomId=="entry" and survivor.snapshot().exploration.altarUsed,"跨房往返不刷新已用祭火")
 	finish()
+
+func graph_room(run: RefCounted,id: String) -> Dictionary:
+	for room in run.snapshot().roomGraph.rooms:
+		if room.id==id: return room
+	return {}
 
 func finish() -> void:
 	print(JSON.stringify({"room_journey_checks":checks,"failures":failures}))

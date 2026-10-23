@@ -16,6 +16,7 @@ func build_layout() -> Dictionary:
 			"road": layout.walkableAreas.append({"name":item.label,"region":item.region,"material":item.terrain_material,"priority":item.priority,"left":item.position.x-item.size.x/2,"top":item.position.y-item.size.y/2,"right":item.position.x+item.size.x/2,"bottom":item.position.y+item.size.y/2})
 			"obstacle":
 				position_data.merge({"kind":item.obstacle_kind,"halfWidth":item.size.x/2,"halfHeight":item.size.y/2,"height":item.body_height})
+				if not item.blocks_projectiles: position_data.blocksProjectiles=false
 				if not is_nan(item.marker_offset_y): position_data.markerOffsetY=item.marker_offset_y
 				if item.opens_after_encounter>=0: position_data.opensAfterEncounter=item.opens_after_encounter
 				layout.obstacles.append(position_data)

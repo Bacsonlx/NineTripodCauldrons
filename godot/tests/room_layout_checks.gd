@@ -32,7 +32,7 @@ func run() -> void:
 			check(not path.is_empty(),id+"可到达门前："+door.id)
 		if id=="court2":
 			check(not room.can_walk(Vector2(750,630)) and not room.clear_path(Vector2(610,630),Vector2(890,630)) and not room.find_route(Vector2(610,630),Vector2(890,630)).is_empty(),"扶桑残庭残石阻挡直穿且能绕行")
-		else:
+		elif maps[id].objective=="combat":
 			var clear: bool = true
 			for x in [-200,0,200]:
 				for y in [-100,0,100]: clear=clear and room.can_walk(Vector2(720+x,550+y))
@@ -40,12 +40,17 @@ func run() -> void:
 	var game: Node2D = load("res://scenes/tanggu_first_level.tscn").instantiate()
 	root.add_child(game); game.set_physics_process(false)
 	check(game.room.snapshot().roomId=="entry","默认入口加载房间流程")
-	# 通过真实移动输入走到门前，不改写角色位置或房间状态。
-	game.controls.key_down(KEY_D)
-	for i in 175: game._physics_process(0.02)
-	game.controls.key_up(KEY_D); game.controls.key_down(KEY_W)
-	for i in 28: game._physics_process(0.02)
-	game.controls.key_up(KEY_W)
+	# 通过真实键盘输入沿新山径走到门前，不改写角色位置或房间状态。
+	var entry_path: Array = game.room.find_route(TrainingRoom.point(game.room.snapshot().player),TrainingRoom.point(game.room.layout.doors[0].point))
+	for waypoint in entry_path:
+		for i in 500:
+			var delta: Vector2 = waypoint-TrainingRoom.point(game.room.snapshot().player)
+			if delta.length()<5: break
+			for pair in [[KEY_D,delta.x>2],[KEY_A,delta.x< -2],[KEY_S,delta.y>2],[KEY_W,delta.y< -2]]:
+				if pair[1]: game.controls.key_down(pair[0])
+				else: game.controls.key_up(pair[0])
+			game._physics_process(0.02)
+	for key in [KEY_D,KEY_A,KEY_S,KEY_W]: game.controls.key_up(key)
 	check(game.room.snapshot().interaction!=null and game.room.snapshot().interaction.id=="door:court1","实际呈现输入可走到门前并显示目标")
 	game.controls.key_down(KEY_ESCAPE); game.controls.key_down(KEY_F); game._physics_process(0)
 	check(game.room.snapshot().roomId=="entry","暂停期间F不能过门")

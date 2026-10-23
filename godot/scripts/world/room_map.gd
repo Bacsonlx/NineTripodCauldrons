@@ -15,14 +15,18 @@ func build_layout() -> Dictionary:
 		for foot in door.get_children():
 			if foot is MapItem and foot.category=="obstacle":
 				var point: Vector2 = $Doors.position+door.position+foot.position
-				data.obstacles.append({"x":point.x,"y":point.y,"kind":foot.obstacle_kind,"halfWidth":foot.size.x/2,"halfHeight":foot.size.y/2,"height":foot.body_height})
+				var obstacle_data: Dictionary = {"x":point.x,"y":point.y,"kind":foot.obstacle_kind,"halfWidth":foot.size.x/2,"halfHeight":foot.size.y/2,"height":foot.body_height}
+				if not foot.blocks_projectiles: obstacle_data.blocksProjectiles=false
+				data.obstacles.append(obstacle_data)
 	for item in get_children():
 		if not item is MapItem: continue
 		for foot in item.get_children():
 			if foot is MapItem and foot.category=="interaction":
 				data.exploration.append({"id":foot.interaction_id,"x":item.position.x+foot.position.x,"y":item.position.y+foot.position.y})
 			if foot is MapItem and foot.category=="obstacle":
-				data.obstacles.append({"x":item.position.x+foot.position.x,"y":item.position.y+foot.position.y,"kind":foot.obstacle_kind,"halfWidth":foot.size.x/2,"halfHeight":foot.size.y/2,"height":foot.body_height})
+				var obstacle_data: Dictionary = {"x":item.position.x+foot.position.x,"y":item.position.y+foot.position.y,"kind":foot.obstacle_kind,"halfWidth":foot.size.x/2,"halfHeight":foot.size.y/2,"height":foot.body_height}
+				if not foot.blocks_projectiles: obstacle_data.blocksProjectiles=false
+				data.obstacles.append(obstacle_data)
 	return data
 
 func validation_errors() -> Array[String]:

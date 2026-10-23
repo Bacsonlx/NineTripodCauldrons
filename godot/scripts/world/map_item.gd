@@ -7,6 +7,7 @@ extends Node2D
 @export var size: Vector2 = Vector2(100,100):
 	set(value): size=value; layout_changed()
 @export var body_height: float = 100.0
+@export var blocks_projectiles: bool = true
 @export_enum("tree","root","wall","gate","stele","altar","brazier","waystone") var obstacle_kind: String = "wall"
 @export var label: String = ""
 @export var region: String = "汤谷"
