@@ -31,8 +31,9 @@ func obstacles() -> Array:
 
 func nearest_interaction() -> Dictionary:
 	var closest: Dictionary = super.nearest_interaction()
+	if closest.has("dropId") and closest.reason==null: return closest
 	var origin: Vector2 = point(player)
-	var distance: float = origin.distance_to(closest.point) if not closest.is_empty() else INF
+	var distance: float = origin.distance_to(closest.point) if not closest.is_empty() and not closest.has("dropId") else INF
 	for door in layout.get("doors",[]):
 		var location: Vector2 = point(door.point)
 		var gap: float = origin.distance_to(location)

@@ -17,6 +17,7 @@ var elapsed: float = 0.0
 var hammer: Dictionary = {}
 var lightning: Array[Dictionary] = []
 var lightning_index: int = 0
+var reward_placeholders: Array[Dictionary] = []
 
 static func arena_layout() -> Dictionary:
 	return {"width":1440,"height":1040,"spawn":Vector2(300,520),
@@ -42,6 +43,7 @@ func reset() -> void:
 	elapsed=0
 	hammer={}
 	lightning.clear(); lightning_index=0
+	reward_placeholders.clear()
 	var position: Vector2 = keep_throw_space(point(initial.get("boss",Vector2(720,520))))
 	enemies=[{"id":BOSS_ID,"group":0,"appearance":"bird","x":position.x,"y":position.y,
 		"health":MAX_HEALTH,"phase":"prepare","timer":1.2,"angle":PI,"flash":0.0,"struck":false}]
@@ -189,6 +191,8 @@ func impact(hit: Dictionary,kind: String,angle: float) -> void:
 	effects.append(effect); next_effect+=1
 	if boss.health==0:
 		boss.phase="dead"; status="complete"
+		if potion_drops:
+			reward_placeholders=[{"kind":"equipment","label":"装备 · 未入库占位","x":boss.x-32,"y":boss.y},{"kind":"item","label":"道具 · 未入库占位","x":boss.x+32,"y":boss.y}]
 		cancel_pending(); arrows.clear(); rains.clear()
 
 func contact(from: Vector2,to: Vector2,ignored: Array = []) -> Dictionary:
@@ -223,4 +227,5 @@ func snapshot() -> Dictionary:
 	data.lightning=lightning.duplicate(true)
 	data.vulnerable=not hammer.is_empty()
 	data.throwTarget=throw_target() if not enemies.is_empty() else Vector2.ZERO
+	if potion_drops: data.rewardPlaceholders=reward_placeholders.duplicate(true)
 	return data

@@ -37,6 +37,14 @@ Mac ZIP 位于 `build/godot/NineTripods-godot-macos.zip`，为包含 arm64 的 U
 
 小样入口 `scenes/sample.tscn` 继续复用现有脚本；已批准小样的原包与源码校验保存在 sample 路径及 `docs/migration/sample-verification.json`，不把当前脚本追溯称为用户已批准版本。
 
+## 药瓶掉落灰盒
+
+启动：`godot --path godot res://scenes/loot_test.tscn`。独立入口复用完整八房，野怪随机掉血／蓝瓶、每波保底蓝瓶，F 单瓶即时补充；满值留地、可用药瓶优先于门、跨房保留、R 重新随机。此入口关闭击杀／清波自动回蓝，Boss 仅显示未入库奖励占位。默认 `tanggu_first_level.tscn` 尚未切换，待用户试玩确认后接入。
+
+原生包以程序参数 `-- --potion-drops` 启用同一灰盒；官方导出模板不支持用命令行覆盖场景路径。示例：`"九鼎 · 汤谷.app/Contents/MacOS/九鼎 · 汤谷" -- --potion-drops`，Windows 为 `NineTripods.exe -- --potion-drops`。参数仅选择本轮灰盒模式，不改变默认启动行为。
+
+专项后台规则：`godot --headless --path godot --script res://tests/run_tests.gd -- --loot-only`。完整检查已纳入灰盒场景和八波流程，参数、验收门与当前证据见[药瓶实施记录](../docs/mvp/野怪药瓶掉落_实施记录_2026-10-22.md)。
+
 ## 索尔独立 Boss 灰盒
 
 启动命令：`godot --path godot res://scenes/boss_test.tscn`。该入口复用现有玩家、技能、能耗、闪避、输入和HUD，包含1200生命索尔、横锤、往返雷锤、三点落雷及锤离手承伤提高25%。右上可切换满资源、44蓝、零蓝、40生命和零精力，切换会重开；R按当前条件重试，Esc暂停，返回汤谷按钮回到原有入口。

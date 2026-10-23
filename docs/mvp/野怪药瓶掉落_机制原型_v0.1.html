@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>九鼎 · 野怪药瓶机制原型</title>
+<style>
+:root{color-scheme:light;--ink:#292b28;--muted:#686c63;--line:#d8d9d1;--paper:#f4f3ed;--accent:#326451}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.65 system-ui,-apple-system,"PingFang SC",sans-serif}main{max-width:1120px;padding:40px 24px 64px;margin:auto}h1{font-size:32px;line-height:1.2;letter-spacing:-1px;margin:8px 0 18px}h2{font-size:18px;margin:0 0 12px}p{margin:8px 0}.eyebrow{color:var(--accent);font-size:12px;letter-spacing:2px}.muted,small{color:var(--muted)}.intro{max-width:850px}.grid{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;margin:24px 0}.panel{background:#fffefa;border:1px solid var(--line);padding:22px;border-radius:8px}.meters{display:flex;gap:24px;margin-bottom:14px}.meter{flex:1}.meter strong{font-size:25px;font-variant-numeric:tabular-nums}progress{display:block;width:100%;height:9px;accent-color:var(--accent)}.health progress{accent-color:#aa5147}.mana progress{accent-color:#487c96}dl{display:grid;grid-template-columns:90px 1fr;margin:16px 0;gap:6px 14px}dt{color:var(--muted)}dd{margin:0}button{font:inherit;cursor:pointer;border:1px solid #bfc6bb;background:#fffefa;color:var(--ink);border-radius:5px;padding:8px 12px}button:hover{background:#e9eee7}button:focus-visible{outline:3px solid #8bb7a0;outline-offset:2px}button:disabled{opacity:.45;cursor:default}.actions{display:flex;flex-wrap:wrap;gap:8px}.primary,button[aria-selected=true]{background:var(--accent);color:white;border-color:var(--accent)}.notice{border-left:3px solid var(--accent);padding:8px 12px;background:#edf1e9;min-height:65px;margin-top:16px}.stage{width:100%;height:auto;background:#eeeee7;border:1px solid var(--line);border-radius:5px;margin-top:14px}.stage text{font-size:13px;font-family:system-ui,sans-serif}.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 16px}.steps{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}.steps button.done{border-color:var(--accent);color:var(--accent)}table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}th,td{border-bottom:1px solid var(--line);text-align:left;padding:7px 4px}th{color:var(--muted);font-weight:500}.scroll{overflow:auto}.log{padding-left:22px;font-size:13px;margin-bottom:0}.foot{border-top:1px solid var(--line);padding-top:18px;margin-top:24px}kbd{font:inherit;border:1px solid #bbb;padding:0 5px;border-radius:3px}a{color:var(--accent)}@media(max-width:760px){main{padding:24px 16px}.grid{grid-template-columns:1fr}.panel{padding:16px}h1{font-size:28px}}
+</style>
+<main>
+<header class="intro"><div class="eyebrow">九鼎 / 机制评审 / 2026.10.22</div><h1>打倒野怪，再决定何时补给。</h1>
+<p>这个可丢弃原型验证：药瓶落地后，能否通过 F 单次拾取即时补充，同时处理满值留地、门边优先级和跨房保留。</p>
+<p class="muted">这是抽象机制演示，不是游戏试玩或正式画面。没有战斗、碰撞或时间推进；“靠近”按钮代替走位。所有状态仅存于本页内存，刷新即清空。Boss 奖励仅为未入库占位。</p></header>
+<div class="grid">
+<section class="panel"><h2>当前局内状态</h2><div class="meters"><div class="meter health">生命 <strong id="hp"></strong><progress id="hpBar" max="100"></progress></div><div class="meter mana">蓝量 <strong id="mp"></strong><progress id="mpBar" max="100"></progress></div></div>
+<dl id="facts"></dl><svg class="stage" viewBox="0 0 500 240" role="img" aria-label="抽象位置图，圆形为玩家，方形为药瓶，右侧为门" id="stage"></svg>
+<div class="notice" role="status" aria-live="polite" id="message"></div>
+<div class="scroll"><table><thead><tr><th>本房药瓶</th><th>来源</th><th>距离</th><th>当前可用性</th></tr></thead><tbody id="drops"></tbody></table></div><p id="rewards" class="muted"></p></section>
+<section class="panel"><h2>自由操作</h2><p class="muted">F 拾取只改变资源，不中断当前攻击。也可在键盘按 F，松开后才能再拾取；R 重演当前种子。</p>
+<div class="actions" id="actions"></div><p><small>血瓶 +20 · 蓝瓶 +20 · 普通怪：30% 蓝瓶 / 12% 血瓶 / 58% 无；每波此前无蓝瓶时，最后一只强制掉蓝瓶。均为待试玩参数。</small></p>
+<h2 style="margin-top:24px">动作记录</h2><ol class="log" id="log"></ol><p class="muted">药瓶范围暂取 80；满值药瓶不挡住其他可用药瓶或门；范围内一瓶也不可用且没有可用门时，F 只提示原因。等距按生成顺序。</p></section>
+</div>
+<section class="panel"><h2>引导场景</h2><p class="muted">切换标签会重置为受控情境；按顺序点击步骤，观察上方状态。自由操作会退出步骤流程。</p><div class="tabs" role="tablist" aria-label="机制情境" id="tabs"></div><p id="scenario"></p><div class="steps" id="steps"></div><p id="verdict" class="muted"></p></section>
+<footer class="foot"><p><strong>尚待游戏内验证：</strong>战中走位捡瓶的风险、提示遮挡、隔墙与合法落点、真实 F 输入中断，以及八波后的 Boss 续航。保底保证掉落机会，不保证每波都够施放 Q＋E。</p><p>本原型默认种子 20261022，可重演。正式 R 重开的随机种子策略留待实现规格确认。<a href="野怪药瓶掉落_原型与施工计划_v0.1.md">查看施工计划</a></p></footer>
+</main>
+<script>
+// 纯状态模型；DOM 只在下一个 script 中读取快照并派发动作。
+const Loot = (() => {
+ const names=['第一庭','第二庭','第三庭','索尔雷庭'], waves=[[4,5],[4,5,6],[5,6,7],[1]];
+ const room = i => ({wave:0,kills:0,blue:0,drops:[],defeated:false,rewards:[],counts:waves[i]});
+ const create = (seed=20261022) => ({seed,rng:seed,at:0,hp:60,mp:40,x:160,y:140,held:false,paused:false,attack:true,seq:0,forced:false,rooms:names.map((_,i)=>room(i)),log:[],message:'先击杀野怪，或选择下方引导场景。'});
+ const cleared = (s,r=s.rooms[s.at]) => s.at===3?r.defeated:r.wave===r.counts.length-1&&r.kills===r.counts[r.wave];
+ const distance = (s,d) => Math.hypot(s.x-d.x,s.y-d.y);
+ const usable = (s,d) => (d.kind==='hp'?s.hp:s.mp)<100;
+ const candidates = s => s.rooms[s.at].drops.filter(d=>usable(s,d)&&distance(s,d)<=80).sort((a,b)=>distance(s,a)-distance(s,b)||a.id-b.id);
+ const add = (s,kind,x,y,source) => s.rooms[s.at].drops.push({id:++s.seq,kind,x,y,source});
+ function draw(s){s.rng=(Math.imul(s.rng,1664525)+1013904223)>>>0;return s.rng/4294967296;}
+ function act(before,a){
+  let s=structuredClone(before),r=s.rooms[s.at]; const say=t=>{s.message=t;s.log.unshift(t);s.log=s.log.slice(0,8);return s;};
+  if(a.type==='reset')return create(s.seed);
+  if(a.type==='up'){s.held=false;return s;}
+  if(a.type==='pause'){s.paused=!s.paused;s.held=true;return say(s.paused?'已暂停，拾取与战斗输入无效。':'继续；请松开 F 后重新按下。');}
+  if(a.type==='tap'){s.held=false;return act(act(s,{type:'down'}),{type:'up'});}
+  if(a.type==='down'){
+   if(s.held)return say('F 仍按住：没有再次拾取。');s.held=true;
+   if(s.paused)return say('暂停中：药瓶与资源保持原状。');
+   const d=candidates(s)[0];
+   if(d){let old=s[d.kind];s[d.kind]=Math.min(100,old+20);r.drops=r.drops.filter(v=>v.id!==d.id);return say(`拾取${d.kind==='hp'?'血瓶':'蓝瓶'} #${d.id}，实际恢复 ${s[d.kind]-old}；未暂停，攻击状态保持。`);}
+   if(distance(s,{x:430,y:140})<=80&&cleared(s)){
+    if(s.at===3)return say('出口可通行；奖励占位不阻挡离房。本原型到此结束，不执行正式结算。');
+    s.at++;s.x=70;s.y=140;return say(`进入${names[s.at]}；原房药瓶留地，资源沿用。F 须松开再按。`);
+   }
+   return say(r.drops.some(d=>distance(s,d)<=80)?'对应资源已满：药瓶留地，没有消耗。':'附近没有可用药瓶或开放的门。');
+  }
+  if(s.paused)return say('暂停中：当前动作不执行。');
+  if(a.type==='kill'){
+   if(s.at===3)return say('这里是 Boss 房，请使用“击败 Boss”。');
+   if(r.kills>=r.counts[r.wave])return say('本波已清空，请进入下一波或前往门。');
+   const roll=draw(s),v=s.forced ? .99 : roll;r.kills++;
+   const guarantee=r.kills===r.counts[r.wave]&&r.blue===0;
+   const kind=guarantee?'mp':v<.30?'mp':v<.42?'hp':null;
+   if(kind){if(kind==='mp')r.blue++;add(s,kind,210+(r.kills-1)*35,120+(r.kills%2)*30,guarantee?'波次保底':'随机');}
+   return say(`野怪 ${r.kills}/${r.counts[r.wave]} 倒下：${kind?(kind==='hp'?'血瓶':'蓝瓶')+(guarantee?'（波次保底）':''):'未掉落'}。没有自动回蓝。`);
+  }
+  if(a.type==='next'){
+   if(s.at===3||r.kills<r.counts[r.wave]||r.wave>=r.counts.length-1)return say('下一波条件未满足，或本房已全部完成。');
+   r.wave++;r.kills=0;r.blue=0;return say(`进入第 ${r.wave+1} 波，旧药瓶继续留地。`);
+  }
+  if(a.type==='near'){const d=r.drops.slice().sort((a,b)=>a.id-b.id)[0];if(!d)return say('本房还没有药瓶。');s.x=d.x-12;s.y=d.y;return say('走到最早落地的药瓶旁；这只是位置模拟。');}
+  if(a.type==='door'){s.x=430;s.y=140;return say(cleared(s)?'已到开放门边，F 优先检查范围内可用药瓶。':'已到门边，房间任务未完成，门仍锁住。');}
+  if(a.type==='back'){if(s.at===0||!cleared(s))return say('必须完成本房任务才能返回；第一庭已是演示起点。');s.at--;s.x=430;s.y=140;s.held=true;return say('返回上一房：敌人和已拾取药瓶不刷新，未捡药瓶保留。');}
+  if(a.type==='hurt'){s.hp=Math.max(1,s.hp-12);return say('受控扣除 12 生命，最低保留 1；不模拟致命伤。');}
+  if(a.type==='cast'){if(s.mp<12)return say('蓝量不足，Q 未施放。');s.mp-=12;return say('模拟成功施放 Q，消耗 12 蓝；本页不模拟前摇与冷却。');}
+  if(a.type==='boss'){if(s.at!==3)return say('请先进入 Boss 引导场景。');if(r.defeated)return say('Boss 已倒下，没有再次生成奖励。');r.defeated=true;r.rewards=['装备奖励（未入库占位）','道具奖励（未入库占位）'];return say('Boss 倒下，展示两类奖励占位；不发属性、不入库、不阻挡出口。数量仅为演示。');}
+  return s;
+ }
+ function setup(kind){
+  let s=create(),r=s.rooms[0];const pot=(k,x=190)=>add(s,k,x,140,'受控样本');
+  if(kind==='supply'){pot('hp');pot('mp',220);}
+  if(kind==='full'){s.hp=100;s.mp=100;pot('hp');pot('mp',220);}
+  if(kind==='door'){r.wave=1;r.kills=5;s.x=420;pot('mp',410);}
+  if(kind==='travel'){r.wave=1;r.kills=5;pot('hp',180);s.x=430;let next=s.rooms[1];next.wave=2;next.kills=6;}
+  if(kind==='hold'){pot('hp');pot('mp',220);}
+  if(kind==='pause')pot('hp');
+  if(kind==='guarantee')s.forced=true;
+  if(kind==='boss'){s.at=3;s.x=410;}
+  s.message='受控场景已就绪。药瓶样本不计入随机掉落统计。';return s;
+ }
+ return {create,act,setup,cleared,distance,usable,candidates,names};
+})();
+</script>
+<script>
+const $=id=>document.getElementById(id);
+const scenarios=[
+ ['supply','即时补给','两瓶在范围内：一次 F 只取最近一瓶，生命与蓝量分别恢复。',[['拾取血瓶','tap'],['再拾取蓝瓶','tap']],'观察：每次只减少一个地面实例，资源分别增加 20，攻击仍进行中。'],
+ ['full','满值与溢出','满值时不消耗；扣除少量资源后拾取，恢复截断到 100。',[['满值尝试 F','tap'],['受伤 12','hurt'],['Q 耗蓝 12','cast'],['拾取血瓶','tap'],['拾取蓝瓶','tap']],'观察：实际恢复分别为 12，不储存剩余 8 点。'],
+ ['door','门边优先','可用蓝瓶比门优先；拾取当次不同时过门，须再次 F。',[['F 先捡蓝瓶','tap'],['F 再过门','tap']],'观察：第一次还在第一庭，第二次才进入第二庭。'],
+ ['hold','按住防重复','按下与松开是独立动作；按住不会连捡。',[['按下 F','down'],['继续按住 F','down'],['松开 F','up'],['重新按下 F','down'],['松开','up']],'观察：连续按住后第二瓶仍在；新按下才消耗它。'],
+ ['travel','跨房保留','这组夹具预先完成两房任务，只验证往返状态。',[['F 进入第二庭','tap'],['返回第一庭','back'],['靠近旧血瓶','near'],['F 拾取','tap'],['R 重开整段','reset']],'观察：往返不刷掉落；R 才清空所有药瓶和任务，本页回到统一演示初值 60 血／40 蓝。'],
+ ['pause','暂停保护','暂停时不能拾取，继续后需重新按 F。',[['暂停','pause'],['暂停中 F','tap'],['继续','pause'],['重新按 F','tap']],'观察：暂停不消耗药瓶；恢复后才增加生命。本页没有计时器。'],
+ ['guarantee','随机与保底','受控极端样本：所有普通随机结果都按“不掉落”处理，只验证保底出口。',[['击败第 1 只','kill'],['击败第 2 只','kill'],['击败第 3 只','kill'],['击败最后一只','kill'],['靠近保底蓝瓶','near'],['F 补蓝','tap']],'观察：最后一只在自己的死亡点产生蓝瓶；清波本身没有直接加蓝。'],
+ ['boss','Boss 奖励边界','击败后只展示装备／道具类别，数量和内容不构成正式奖励表。',[['击败 Boss','boss'],['重复结算尝试','boss'],['F 检查出口','tap']],'观察：占位只生成一次、没有背包或属性；未领取也能离房。']
+];
+const actions=[['普攻击杀一只','kill'],['进入下一波','next'],['靠近药瓶','near'],['F · 按下并松开','tap'],['只按下 F','down'],['松开 F','up'],['受伤 12','hurt'],['Q · 消耗 12 蓝','cast'],['走到门边','door'],['返回上一房','back'],['暂停 / 继续','pause'],['击败 Boss','boss'],['R · 重演当前种子','reset']];
+let state=Loot.create(),selected=-1,step=0;
+function send(type,fromGuide=false){if(!fromGuide)selected=-1;state=Loot.act(state,{type});render();}
+function button(text,fn){const b=document.createElement('button');b.textContent=text;b.onclick=fn;return b;}
+for(const [label,type] of actions){const b=button(label,()=>send(type));if(type==='tap')b.className='primary';b.dataset.action=type;$('actions').append(b);}
+for(let i=0;i<scenarios.length;i++){const b=button(scenarios[i][1],()=>{selected=i;step=0;state=Loot.setup(scenarios[i][0]);render();});b.setAttribute('role','tab');b.id='tab-'+i;b.setAttribute('aria-controls','steps');$('tabs').append(b);}
+function render(){
+ const r=state.rooms[state.at],clear=Loot.cleared(state),candidate=Loot.candidates(state)[0];
+ $('hp').textContent=state.hp+' / 100';$('mp').textContent=state.mp+' / 100';$('hpBar').value=state.hp;$('mpBar').value=state.mp;
+ const fields=[['房间',Loot.names[state.at]+(clear?' · 任务已完成':' · 任务进行中')],['波次',state.at===3?'Boss '+(r.defeated?'已败退':'未击败'):`${r.wave+1} / ${r.counts.length} · 击杀 ${r.kills} / ${r.counts[r.wave]} · 本波已掉蓝瓶 ${r.blue}`],['玩家位置',`${state.x}, ${state.y} · 拾取半径 80`],['操作状态',`${state.paused?'暂停':'进行中'} · F ${state.held?'按住':'松开'} · 攻击意图${state.attack?'保持':'关闭'}`],['F 候选',candidate?`${candidate.kind==='hp'?'血瓶':'蓝瓶'} #${candidate.id}`:clear&&Loot.distance(state,{x:430,y:140})<=80?'开放的门':'无可用目标'],['随机状态',`${state.seed} / ${state.rng}${state.forced?' · 强制不掉落夹具':''}`],['各房留地',state.rooms.map((v,i)=>`${Loot.names[i]} ${v.drops.length}`).join(' / ')]];
+ $('facts').replaceChildren(...fields.flatMap(([a,b])=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=a;dd.textContent=b;return [dt,dd];}));
+ $('message').textContent=state.message;
+ $('stage').innerHTML=`<rect x="25" y="30" width="450" height="180" fill="none" stroke="#b5b9af"/><circle cx="${state.x}" cy="${state.y}" r="80" fill="none" stroke="#b5c8b9" stroke-dasharray="4 4"/><rect x="420" y="112" width="20" height="56" fill="${clear?'#326451':'#999b92'}"/><text x="408" y="100">${clear?'开放门':'锁门'}</text>${r.drops.map(d=>`<rect x="${d.x-7}" y="${d.y-10}" width="14" height="20" rx="3" fill="${d.kind==='hp'?'#aa5147':'#487c96'}"/><text x="${d.x-14}" y="${d.y+27}">${d.kind==='hp'?'血':'蓝'}${d.id}</text>`).join('')}<circle cx="${state.x}" cy="${state.y}" r="10" fill="#292b28"/><text x="${Math.max(10,state.x-16)}" y="${state.y-18}">玩家</text>`;
+ $('drops').replaceChildren(...r.drops.map(d=>{const tr=document.createElement('tr');for(const v of [`${d.kind==='hp'?'血瓶':'蓝瓶'} #${d.id}`,d.source,Math.round(Loot.distance(state,d)),!Loot.usable(state,d)?'已满 · 留地':Loot.distance(state,d)>80?'范围外':'可拾取']){const td=document.createElement('td');td.textContent=v;tr.append(td);}return tr;}));
+ if(!r.drops.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=4;td.textContent='本房没有地面药瓶';tr.append(td);$('drops').append(tr);}
+ $('rewards').textContent=r.rewards.length?r.rewards.join(' / '):'Boss 奖励：尚未生成；没有背包入库状态。';
+ $('log').replaceChildren(...state.log.map(t=>{const li=document.createElement('li');li.textContent=t;return li;}));
+ [...$('tabs').children].forEach((b,i)=>b.setAttribute('aria-selected',String(selected===i)));
+ $('steps').replaceChildren();$('scenario').textContent=selected<0?'自由操作中。选择任一标签可从受控初始状态开始。':scenarios[selected][2];$('verdict').textContent='';
+ if(selected>=0){const sc=scenarios[selected];sc[3].forEach(([label,type],i)=>{const b=button(`${i+1}. ${label}`,()=>{step++;send(type,true);});b.disabled=i!==step;b.className=i<step?'done':'';$('steps').append(b);});if(step===sc[3].length)$('verdict').textContent=sc[4];}
+}
+document.addEventListener('keydown',e=>{if(e.code==='KeyF'){e.preventDefault();if(!e.repeat)send('down');}if(e.code==='KeyR'&&!e.repeat){e.preventDefault();send('reset');}});
+document.addEventListener('keyup',e=>{if(e.code==='KeyF')send('up');});
+window.addEventListener('blur',()=>{state.held=true;render();});
+render();
+</script>
+</html>

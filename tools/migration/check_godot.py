@@ -13,6 +13,9 @@ commands = [["--editor", "--import"], ["--script", "res://tests/run_tests.gd"], 
 commands.insert(-2, ["--script", "res://tests/boss_scene_checks.gd"])
 commands.insert(-2, ["--script", "res://tests/boss_integration_checks.gd"])
 commands.append(["res://scenes/boss_test.tscn", "--quit-after", "3"])
+commands.append(["--script", "res://tests/loot_scene_checks.gd"])
+commands.append(["--script", "res://tests/room_flow_checks.gd", "--", "--loot-flow"])
+commands.append(["--quit-after", "3", "--", "--potion-drops"])
 commands.append(["--script", "res://tests/boss_art_checks.gd"])
 commands.append(["res://scenes/boss_art_test.tscn", "--quit-after", "3"])
 for args in commands:

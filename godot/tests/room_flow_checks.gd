@@ -5,6 +5,25 @@ var checks: int = 0
 var journey: RefCounted
 var combat_runs: Array = []
 var game: Node2D
+var loot_trial: bool = "--loot-flow" in OS.get_cmdline_user_args()
+var observed_drops: Dictionary = {}
+var blue_waves: Dictionary = {}
+var collected: int = 0
+var restored_mana: int = 0
+var restored_health: int = 0
+
+func observe_loot(state: Dictionary) -> void:
+	for item in state.get("drops",[]):
+		observed_drops[item.id]=item.kind
+		if item.kind=="mana": blue_waves[state.roomId+":"+str(item.wave)]=true
+
+func collect_nearby() -> void:
+	var before: Dictionary = journey.snapshot()
+	if before.interaction==null or not before.interaction.has("dropId") or before.interaction.reason!=null: return
+	journey.update({"interact":false},0); journey.update({"interact":true},0)
+	var after: Dictionary = journey.snapshot()
+	if after.drops.size()==before.drops.size()-1:
+		collected+=1; restored_mana+=after.resources.mana-before.resources.mana; restored_health+=after.health-before.health
 func check(ok: bool,message: String) -> void:
 	checks+=1
 	if not ok: failures.append(message); push_error(message)
@@ -22,7 +41,9 @@ func pass_to(target: String) -> bool:
 	for door in journey.active.layout.doors:
 		if door.target!=target: continue
 		if not walk(TrainingRoom.point(door.point)): return false
-		journey.update({"interact":false},0); journey.update({"interact":true},0)
+		for attempt in (64 if loot_trial else 1):
+			journey.update({"interact":false},0); journey.update({"interact":true},0)
+			if journey.snapshot().roomId==target: break
 		if journey.snapshot().roomId==target:
 			game.present_new_room(); return true
 		return false
@@ -31,10 +52,16 @@ func fight() -> bool:
 	if not walk(Vector2(510,550)): return false
 	for i in 9000:
 		var state: Dictionary = journey.snapshot()
+		observe_loot(state)
 		if state.roomComplete:
-			combat_runs.append({"room":state.roomId,"waves":state.waveCount,"enemies":state.enemies.size(),"health":state.health,"seconds":i*0.02})
+			if loot_trial:
+				for item in state.drops:
+					if item.kind=="mana" and journey.snapshot().resources.mana==100 or item.kind=="health" and journey.snapshot().health==100: continue
+					if walk(TrainingRoom.point(item)): collect_nearby()
+			combat_runs.append({"room":state.roomId,"waves":state.waveCount,"enemies":state.enemies.size(),"health":journey.snapshot().health,"mana":journey.snapshot().resources.mana,"seconds":i*0.02})
 			return true
 		if state.status=="failed": return false
+		if loot_trial and i%2==0: collect_nearby()
 		var live: Array = state.enemies.filter(func(enemy: Dictionary): return enemy.phase not in ["dead","inactive"])
 		if live.is_empty(): journey.update({},0.02); continue
 		var player: Vector2 = TrainingRoom.point(state.player)
@@ -70,7 +97,10 @@ func boss_fight() -> bool:
 	return false
 
 func run() -> void:
-	game=load("res://scenes/tanggu_first_level.tscn").instantiate()
+	game=load("res://scenes/loot_test.tscn" if loot_trial else "res://scenes/tanggu_first_level.tscn").instantiate()
+	if loot_trial:
+		var arguments: PackedStringArray = OS.get_cmdline_user_args()
+		game.potion_drop_seed=int(arguments[arguments.find("--drop-seed")+1]) if "--drop-seed" in arguments else 13
 	root.add_child(game); game.set_physics_process(false)
 	await process_frame
 	journey=game.journey
@@ -104,8 +134,11 @@ func run() -> void:
 	check((actor==null or not actor.is_visible_in_tree()) and not game.boss_view.visible and not game.boss_bar.visible,"离开Boss房后隐藏Boss呈现与专属血条")
 	check(pass_to("boss") and pass_to("court3") and pass_to("court2") and pass_to("stele"),"通关后可经过已击败Boss房跨房回溯")
 	check(journey.snapshot().roomComplete and journey.snapshot().exploration.steleRead,"跨房回溯保留任务进度")
+	if loot_trial:
+		check(blue_waves.size()==8,"掉落灰盒八波均产生蓝瓶，包括最后一波")
+		check(collected>0 and restored_mana>0,"完整流程通过真实F拾取补充蓝量")
 	finish()
 func finish() -> void:
-	print(JSON.stringify({"room_flow_checks":checks,"failures":failures,"combat_runs":combat_runs}))
+	print(JSON.stringify({"room_flow_checks":checks,"failures":failures,"combat_runs":combat_runs,"loot_trial":loot_trial,"generated_drops":observed_drops.size(),"blue_waves":blue_waves.size(),"collected":collected,"restored_mana":restored_mana,"restored_health":restored_health}))
 	if game!=null: game.free()
 	quit(0 if failures.is_empty() else 1)

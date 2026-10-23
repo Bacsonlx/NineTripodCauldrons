@@ -17,6 +17,10 @@ var mana: int = 100
 var stamina: float = 100.0
 var stamina_delay: float = 0.0
 var pending_mana: int = 0
+var potion_drops: bool = false
+var drops: Array[Dictionary] = []
+var blue_waves: Dictionary = {}
+var drop_random: RandomNumberGenerator = RandomNumberGenerator.new()
 var alpha: RefCounted = null
 var layout: Dictionary = {}
 var obstacle: Rect2 = Rect2(720,430,80,36)
@@ -65,6 +69,7 @@ static func point(value: Variant) -> Vector2:
 	return value if value is Vector2 else Vector2(value.x, value.y)
 
 func _init(options: Dictionary = {}) -> void:
+	potion_drops=options.get("potionDrops",false)
 	if options.has("width"):
 		layout = options.duplicate(true)
 	else:
@@ -92,6 +97,9 @@ func reset() -> void:
 	for target in layout.targets: flashes.append(0.0)
 	health=100; hurt=0; protection=0; status="running"; encounter=0
 	pending_mana=0; mana=100; stamina=100; stamina_delay=0
+	drops.clear(); blue_waves.clear()
+	if layout.has("dropSeed"): drop_random.seed=int(layout.dropSeed)
+	else: drop_random.randomize()
 	cooldown=0; shots=0; hits=0; next_effect=0
 	dodge_time=0; dodge_invulnerability=0; dodge_cooldown=0; dodge_held=run_id>0
 	piercing=-1; pierce_cooldown=0; pierce_held=run_id>0; skill_recovery=0; last_skill=""
@@ -275,7 +283,8 @@ func impact(hit: Dictionary, kind: String, angle: float) -> void:
 			enemy.route=[]; enemy.repath=0
 			if enemy.health==0:
 				enemy.phase="dead"; enemy.timer=0.6
-				if energy_enabled: restore_mana(4)
+				if potion_drops: drop_potion(enemy)
+				elif energy_enabled: restore_mana(4)
 			break
 	var effect: Dictionary = hit.duplicate()
 	effect.merge({"id":next_effect,"kind":kind,"remaining":0.15,"age":0.0,"damage":damage,"angle":angle,"damagePosition":damage_position})
@@ -358,7 +367,7 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 		for enemy in enemies:
 			if enemy.group==encounter and enemy.phase!="dead": cleared=false
 		if cleared:
-			if energy_enabled: restore_mana(12)
+			if energy_enabled and not potion_drops: restore_mana(12)
 			encounter+=1
 			if encounter==groups.size(): status="complete"
 
@@ -386,6 +395,43 @@ func restore_mana(amount: int) -> void:
 	if restored>0:
 		var previous: int = int(feedback.get("mana",0))
 		feedback={"text":"蓝量 +%d" % (previous+restored),"mana":previous+restored,"remaining":0.8,"healed":false}
+
+func drop_potion(enemy: Dictionary) -> void:
+	var last: bool = true
+	for other in enemies:
+		if other.group==enemy.group and other.phase!="dead": last=false; break
+	var roll: float = drop_random.randf()
+	var guaranteed: bool = last and not blue_waves.has(enemy.group)
+	var kind: String = "mana" if guaranteed or roll<0.30 else "health" if roll<0.42 else ""
+	if kind.is_empty(): return
+	var location: Vector2 = potion_location(point(enemy))
+	if kind=="mana": blue_waves[enemy.group]=true
+	var id: String = "%s:%d:%d" % [layout.get("roomId","room"),run_id,enemy.id]
+	drops.append({"id":id,"kind":kind,"x":location.x,"y":location.y,"wave":enemy.group,"enemy":enemy.id,"guaranteed":guaranteed})
+
+func potion_location(origin: Vector2) -> Vector2:
+	if can_walk(origin): return origin
+	for radius in range(16,ceili(maxf(layout.width,layout.height)),16):
+		for direction in 16:
+			var location: Vector2 = origin+Vector2.from_angle(direction*TAU/16)*radius
+			if can_walk(location) and not find_route(player,location).is_empty(): return location
+	push_error("药瓶无合法落点："+str(origin))
+	return origin
+
+func nearest_potion() -> Dictionary:
+	var closest: Dictionary = {}
+	var distance: float = INF
+	for item in drops:
+		var location: Vector2 = point(item)
+		var gap: float = point(player).distance_to(location)
+		if gap>80 or not can_walk(location) or not clear_path(player,location): continue
+		var reason: Variant = "影散后无法拾取" if status=="failed" else "暂停中无法拾取" if paused or reading else "生命已满" if item.kind=="health" and health==100 else "蓝量已满" if item.kind=="mana" and mana==100 else null
+		# 可用瓶优先；同距保留生成顺序，满值瓶仅作无其他目标时的提示。
+		if not closest.is_empty() and (closest.reason==null and reason!=null or (closest.reason==null)==(reason==null) and gap>=distance): continue
+		closest={"id":"potion:"+item.id,"dropId":item.id,"point":location,"label":"拾取血瓶" if item.kind=="health" else "拾取蓝瓶","reason":reason}
+		distance=gap
+	return closest
+
 func cancel_input() -> void:
 	cancel_pending(); pierce_held=false; rain_held=false; dodge_held=false; interact_held=false
 func set_paused(value: bool) -> void:
@@ -514,6 +560,8 @@ func contact(from: Vector2,to: Vector2,ignored: Array = []) -> Dictionary:
 	return hit
 
 func nearest_interaction() -> Dictionary:
+	var potion: Dictionary = nearest_potion() if potion_drops else {}
+	if not potion.is_empty() and potion.reason==null: return potion
 	var candidates: Array[Dictionary] = []
 	var gate: Dictionary = {}
 	for item in layout.get("obstacles",[]):
@@ -532,11 +580,21 @@ func nearest_interaction() -> Dictionary:
 		var labels: Dictionary = {"stele":"再读残碑 · 已读" if exploration.steleRead else "阅读残碑","altar":"祭火恢复","gate":"开启栅门"}
 		var reason: Variant = "影散后无法互动" if status=="failed" else "暂停中无法互动" if paused else "先清除已苏醒的影偶" if active else "需从祭坛支路内侧开启" if candidate.outside else "祭火已熄灭" if candidate.id=="altar" and exploration.altarUsed else "栅门正在开启" if candidate.id=="gate" and gate_opening>0 else "栅门已开启" if candidate.id=="gate" and exploration.gateOpen else null
 		return {"id":candidate.id,"point":candidate.point,"label":labels[candidate.id],"reason":reason}
-	return {}
+	return potion
 func interact() -> void:
 	var target: Dictionary = nearest_interaction()
 	if target.is_empty(): return
 	if target.reason!=null: feedback={"text":target.reason,"remaining":1.6,"healed":false}; return
+	if target.has("dropId"):
+		for index in drops.size():
+			var item: Dictionary = drops[index]
+			if item.id!=target.dropId: continue
+			var amount: int = mini(20,100-(health if item.kind=="health" else mana))
+			if item.kind=="health": health+=amount
+			else: mana+=amount
+			feedback={"text":("生命" if item.kind=="health" else "蓝量")+" +%d" % amount,"remaining":1.2,"healed":item.kind=="health"}
+			drops.remove_at(index)
+			return
 	if target.id=="stele":
 		reading=true; exploration.steleRead=true; player.moving=false; dodge_time=0; dodge_invulnerability=0; cancel_pending(); needs_release=true
 	elif target.id=="altar":
@@ -563,4 +621,6 @@ func snapshot() -> Dictionary:
 		result.paused=result.paused or alpha.camp
 	if energy_enabled:
 		result.resources={"mana":mana,"stamina":stamina,"staminaDelay":stamina_delay,"pendingMana":pending_mana,"costs":ENERGY_COSTS.duplicate()}
+	if potion_drops:
+		result.drops=drops.duplicate(true)
 	return result

@@ -8,6 +8,8 @@ var rooms: Dictionary = {}
 var current_id: String = "entry"
 var generation: int = 0
 var active: TrainingRoom
+var drop_options: Dictionary = {}
+var drop_seed: int = 0
 
 static func read_maps() -> Dictionary:
 	var result: Dictionary = {}
@@ -34,12 +36,14 @@ static func read_maps() -> Dictionary:
 	if reachable.size()!=result.size(): push_error("有房间无法从入口到达"); return {}
 	return result
 
-func _init(definitions: Dictionary) -> void:
+func _init(definitions: Dictionary,options: Dictionary = {}) -> void:
 	layouts=definitions
+	drop_options=options.duplicate()
 	restart()
 
 func restart() -> void:
 	rooms.clear(); current_id="entry"; generation+=1
+	drop_seed=int(drop_options.get("dropSeed",randi()))
 	active=create_room(layouts[current_id]); rooms[current_id]=active
 	active.run_id=generation
 
@@ -80,7 +84,12 @@ func snapshot() -> Dictionary:
 		for door in layouts[id].doors:
 			if str(id)<str(door.target): connections.append({"from":id,"to":door.target})
 	data.roomGraph={"rooms":nodes,"connections":connections}
+	if drop_options.get("potionDrops",false): data.dropSeed=drop_seed
 	return data
 
 func create_room(data: Dictionary) -> TrainingRoom:
+	if drop_options.get("potionDrops",false):
+		data=data.duplicate(true)
+		data.potionDrops=true
+		data.dropSeed=drop_seed+str(data.roomId).hash()
 	return Boss.new(data) if data.objective=="boss" else Stage.new(data)

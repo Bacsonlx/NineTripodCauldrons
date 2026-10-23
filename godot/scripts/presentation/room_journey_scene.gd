@@ -1,10 +1,13 @@
 extends "res://scripts/presentation/first_level_scene.gd"
 
 const Journey = preload("res://scripts/journey/room_journey.gd")
+@export var potion_drop_trial: bool = false
+@export var potion_drop_seed: int = -1 # 非负值仅用于固定种子重演夹具。
 var journey: RefCounted
 var minimap: Control
 var boss_view: Node2D
 var boss_bar: ProgressBar
+var loot_view: Node2D
 
 func build_hud() -> void:
 	super.build_hud()
@@ -25,12 +28,17 @@ func layout_boss_bar() -> void:
 	boss_bar.offset_bottom=boss_bar.offset_top+12
 
 func _ready() -> void:
+	potion_drop_trial=potion_drop_trial or "--potion-drops" in OS.get_cmdline_user_args()
+	if potion_drop_trial: print("药瓶掉落灰盒已启用")
 	var maps: Dictionary = Journey.read_maps()
 	if maps.is_empty(): get_tree().quit(1); return
-	journey=Journey.new(maps)
+	var options: Dictionary = {"potionDrops":potion_drop_trial}
+	if potion_drop_seed>=0: options.dropSeed=potion_drop_seed
+	journey=Journey.new(maps,options)
 	mount_map()
 	boss_view=load("res://scripts/presentation/boss_art_view.gd").new()
 	boss_view.z_index=1; add_child(boss_view)
+	loot_view=load("res://scripts/presentation/loot_view.gd").new(); add_child(loot_view)
 	super._ready()
 	overview_button.text="房间总览 · M"
 
@@ -88,6 +96,7 @@ func guidance_at(_position: Vector2) -> Dictionary:
 func present(snapshot: Dictionary,seconds: float) -> void:
 	super.present(snapshot,seconds)
 	var data: Dictionary = journey.snapshot()
+	loot_view.update_state(data)
 	minimap.update_state(data.roomGraph)
 	boss_view.visible=data.has("boss")
 	boss_bar.visible=data.has("boss")
@@ -100,5 +109,7 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 		var remaining: int = data.enemies.filter(func(enemy: Dictionary): return enemy.group==data.encounter and enemy.phase!="dead").size()
 		encounter_label.text=room.layout.roomTitle+" · 第 %d / %d 波" % [data.wave,data.waveCount]+"\n"+("下一波 %.1f 秒后出现" % data.waveDelay if data.waveDelay>0 else "影偶剩余 %d · 清完全部波次后开门" % remaining)
 	if data.journeyComplete: encounter_label.text="汤谷流程完成 · 可返回探索\nR 重开整段流程"
+	if not data.get("rewardPlaceholders",[]).is_empty(): encounter_label.text+="\n装备／道具为未入库占位 · 背包后续接入"
 	if state.feedback==null and state.interaction==null:
 		interaction_label.text="走近门按 F 前往下一房间" if data.roomComplete else "完成本房任务后，来路与出口一起开放"
+		if potion_drop_trial and data.objective=="combat": interaction_label.text="血／蓝瓶落地后走近按 F 即时补充 · 满值留地"
