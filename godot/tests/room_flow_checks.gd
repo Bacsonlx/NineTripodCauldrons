@@ -117,7 +117,7 @@ func run() -> void:
 	var actor: Node2D = game.boss_view.get_node_or_null("ThorPuppet")
 	check(actor!=null and actor.get_child_count()==16,"默认首关实际进Boss房后使用16拆件美术角色")
 	var visible: Rect2 = Rect2(game.view_origin,game.get_viewport_rect().size/game.view_zoom)
-	check(game.view_zoom>=0.99 and visible.has_point(TrainingRoom.point(journey.snapshot().player)),"首关进Boss房采用放大的角色跟随视角")
+	check(visible.encloses(Rect2(16,16,1408,1008)) and is_equal_approx(game.camera.position.x,720),"首关进Boss房固定居中，并完整覆盖战斗与预警边界")
 	game.toggle_overview()
 	visible=Rect2(game.view_origin,game.get_viewport_rect().size/game.view_zoom)
 	check(visible.encloses(Rect2(16,16,1408,1008)),"M仍可临时查看完整Boss房及预警边界")

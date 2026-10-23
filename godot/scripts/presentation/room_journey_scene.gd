@@ -49,7 +49,7 @@ func _ready() -> void:
 
 func toggle_overview() -> void:
 	super.toggle_overview()
-	overview_button.text="跟随角色 · M" if overview else "房间总览 · M"
+	overview_button.text=("固定战斗视角 · M" if journey.current_id=="boss" else "跟随角色 · M") if overview else "房间总览 · M"
 
 func update_camera() -> void:
 	if journey!=null and journey.current_id=="boss":
@@ -86,7 +86,6 @@ func present_new_room() -> void:
 	backdrop.setup(room.layout,atlas,textures)
 	overview=false; overview_button.text="房间总览 · M"
 	walk_time=0; clock=0
-	boss_camera_time=-1
 	update_camera(); present(room.snapshot(),0)
 
 func _unhandled_input(event: InputEvent) -> void:
