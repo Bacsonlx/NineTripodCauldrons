@@ -14,3 +14,4 @@ tools/asset_forge/.venv/
 .env
 .env.*
 !.env.example
+__pycache__/

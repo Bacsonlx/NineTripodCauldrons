@@ -24,7 +24,8 @@
     "test": "npm run test:build && node --test tests/*.test.cjs",
     "package": "npm run check && electron-forge package",
     "make": "npm run check && electron-forge make",
-    "make:win-exe": "npm run make -- --platform=win32 --arch=x64 && electron-builder --win nsis --x64 --prepackaged out/九鼎-win32-x64 --config electron-builder.config.cjs --publish never"
+    "make:win-exe": "npm run make -- --platform=win32 --arch=x64 && electron-builder --win nsis --x64 --prepackaged out/九鼎-win32-x64 --config electron-builder.config.cjs --publish never",
+    "asset-center": "python3 tools/asset_center/run.py"
   },
   "dependencies": {
     "phaser": "3.90.0"

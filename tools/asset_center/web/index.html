@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>九鼎 · 十日 | 资产管理中心</title>
+  <meta name="description" content="九鼎 · 十日 游戏资产全生命周期管理与可视化中心，打通美术需求库、现役切片素材与六器玩法构筑。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Noto+Serif+SC:wght@400;600;700;900&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Background Aura -->
+  <div class="bg-vignette"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- App Container -->
+  <div id="app" class="app-layout">
+    
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="brand-seal">鼎</div>
+        <div class="brand-titles">
+          <div class="brand-eyebrow">NINE TRIPOD CAULDRONS · TEN SUNS</div>
+          <h1 class="brand-name">九鼎 · 十日 <span class="brand-sub">资产管理中心</span></h1>
+        </div>
+      </div>
+
+      <!-- Quick Global Search -->
+      <div class="header-search">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="global-search" placeholder="全局检索资产 ID、名称、用途、动作、来源..." autocomplete="off">
+        <kbd class="search-shortcut">ESC 清空</kbd>
+      </div>
+
+      <div class="header-actions">
+        <div class="status-indicator" title="本地数据同步连接正常">
+          <span class="pulse-dot"></span>
+          <span class="status-text" id="live-status">本地已联通</span>
+        </div>
+        <button id="btn-add-asset" class="btn btn-secondary">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 5v14M5 12h14"/></svg>
+          登记新资产
+        </button>
+        <div class="dropdown">
+          <button id="btn-export" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            导出主表
+          </button>
+          <div class="dropdown-menu" id="export-dropdown">
+            <a href="#" id="export-json">导出 JSON 快照</a>
+            <a href="#" id="export-csv">导出 CSV 格式 (Excel)</a>
+          </div>
+        </div>
+        <button id="btn-refresh" class="btn btn-icon" title="刷新最新数据">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="app-nav">
+      <button class="nav-tab active" data-tab="tab-dashboard">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span>全景看板</span>
+        <span class="tab-badge" id="badge-total">414</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-art">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polygon points="12 8 8 12 12 16 16 12 12 8"></polygon></svg>
+        <span>美术需求总库</span>
+        <span class="tab-badge" id="badge-art">414</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-gameplay">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        <span>六器与玩法构筑</span>
+        <span class="tab-badge" id="badge-gameplay">25+</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-media">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        <span>现役素材与工坊</span>
+        <span class="tab-badge" id="badge-media">实物预览</span>
+      </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      
+      <!-- TAB 1: 全景看板 (Dashboard) -->
+      <section id="tab-dashboard" class="tab-pane active">
+        <!-- Stat Cards Row -->
+        <div class="stats-row">
+          <div class="stat-card" data-filter-type="total">
+            <div class="stat-icon-wrap bronze">
+              <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-label">总纳管资产条目</div>
+              <div class="stat-value" id="stat-total">414</div>
+              <div class="stat-caption">覆盖首切片与首版全量规划</div>
+            </div>
+          </div>
+
+          <div class="stat-card" data-filter-type="slice-need">
+            <div class="stat-icon-wrap cinnabar">
+              <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-label">切片必需资产</div>
+              <div class="stat-value" id="stat-slice">21</div>
+              <div class="stat-caption">首关汤谷闭环直接对应核心</div>
+            </div>
+          </div>
+
+          <div class="stat-card" data-filter-type="has-media">
+            <div class="stat-icon-wrap jade">
+              <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-label">已关联实物/候选素材</div>
+              <div class="stat-value" id="stat-media">13+</div>
+              <div class="stat-caption">在磁盘中发现切片与动效文件</div>
+            </div>
+          </div>
+
+          <div class="stat-card" data-filter-type="gameplay-items">
+            <div class="stat-icon-wrap gold">
+              <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-label">六器构筑与战斗配置</div>
+              <div class="stat-value" id="stat-gameplay">25</div>
+              <div class="stat-caption">器·契·符·装·兽·技能书</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Grid: Funnels & Distributions -->
+        <div class="dashboard-grid">
+          <!-- Stage Funnel Card -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <h2 class="dash-card-title">
+                <span class="title-pillar"></span>
+                研发阶段分布矩阵 (Stage Breakdown)
+              </h2>
+              <span class="dash-card-hint">各规划范围资产占比</span>
+            </div>
+            <div class="dash-card-body" id="stage-breakdown-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Production Status Card -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <h2 class="dash-card-title">
+                <span class="title-pillar cinnabar"></span>
+                生产制作状态追踪 (Production Status)
+              </h2>
+              <span class="dash-card-hint">当前资产落地进展</span>
+            </div>
+            <div class="dash-card-body" id="status-breakdown-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Six Vessels Matrix -->
+        <div class="dash-card full-width">
+          <div class="dash-card-header">
+            <h2 class="dash-card-title">
+              <span class="title-pillar gold"></span>
+              六器五行容器构筑图谱 (Six Cauldrons & Elements)
+            </h2>
+            <span class="dash-card-hint">鼎·祠·沉·焚·敦·镜 构筑联动机制</span>
+          </div>
+          <div class="vessels-matrix" id="vessels-matrix">
+            <!-- Dynamically populated from gameplay data -->
+          </div>
+        </div>
+
+        <!-- Quick Categories Grid -->
+        <div class="dash-card full-width">
+          <div class="dash-card-header">
+            <h2 class="dash-card-title">
+              <span class="title-pillar jade"></span>
+              13类全景资产分类目录
+            </h2>
+            <span class="dash-card-hint">点击卡片可快速筛选并跳转至对应资产</span>
+          </div>
+          <div class="category-cards-grid" id="category-cards-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: 美术需求总库 (Art Catalog) -->
+      <section id="tab-art" class="tab-pane">
+        <!-- Controls & Filter Toolbar -->
+        <div class="filter-toolbar">
+          <div class="filter-group">
+            <label class="filter-label">一级分类：</label>
+            <div class="category-pills" id="category-pills">
+              <button class="pill active" data-category="ALL">全部 (414)</button>
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div class="filter-row-secondary">
+            <div class="filter-select-wrap">
+              <label for="select-stage">阶段范围：</label>
+              <select id="select-stage">
+                <option value="ALL">全部阶段</option>
+                <option value="切片必需">切片必需 (21)</option>
+                <option value="切片候选">切片候选 (32)</option>
+                <option value="首版规划">首版规划 (261)</option>
+                <option value="后续规划">后续规划 (79)</option>
+                <option value="候选未纳入">候选未纳入 (21)</option>
+              </select>
+            </div>
+
+            <div class="filter-select-wrap">
+              <label for="select-status">制作状态：</label>
+              <select id="select-status">
+                <option value="ALL">全部制作状态</option>
+                <option value="仅登记，未制作">仅登记，未制作</option>
+                <option value="概念草图">概念草图</option>
+                <option value="候选制作中">候选制作中</option>
+                <option value="候选预览">候选预览</option>
+                <option value="已入库交付">已入库交付</option>
+              </select>
+            </div>
+
+            <div class="filter-checkbox-wrap">
+              <label class="checkbox-container">
+                <input type="checkbox" id="check-has-media">
+                <span class="checkmark"></span>
+                <span>仅看包含实体素材/动图 (Live Media)</span>
+              </label>
+            </div>
+
+            <div class="view-toggles">
+              <button class="btn-toggle active" id="btn-view-grid" title="卡片网格视图">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                卡片
+              </button>
+              <button class="btn-toggle" id="btn-view-table" title="数据表格视图">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                表格
+              </button>
+            </div>
+
+            <div class="filter-results-count">
+              匹配项：<strong id="filtered-count">414</strong> / 414
+            </div>
+          </div>
+        </div>
+
+        <!-- Asset View Containers -->
+        <div id="art-grid-view" class="asset-grid">
+          <!-- Populated by JS -->
+        </div>
+
+        <div id="art-table-view" class="asset-table-wrap hidden">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th width="90">资产 ID</th>
+                <th width="110">一级分类</th>
+                <th width="120">二级分类</th>
+                <th width="150">资产名称</th>
+                <th width="120">地区/环节</th>
+                <th>用途与形态需求</th>
+                <th width="90">阶段</th>
+                <th width="100">制作状态</th>
+                <th width="80">素材</th>
+                <th width="100">操作</th>
+              </tr>
+            </thead>
+            <tbody id="art-table-body">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 3: 六器与玩法构筑 (Gameplay & Rules) -->
+      <section id="tab-gameplay" class="tab-pane">
+        <div class="gameplay-header">
+          <div class="gameplay-subnav">
+            <button class="subnav-btn active" data-subtab="subtab-chars">人物与影偶职责</button>
+            <button class="subnav-btn" data-subtab="subtab-skills">技能书与名额槽位</button>
+            <button class="subnav-btn" data-subtab="subtab-items">六器实物·契·符·装</button>
+            <button class="subnav-btn" data-subtab="subtab-vessels">容器显灵/作祟/点燃</button>
+          </div>
+          <div class="gameplay-source-badge">
+            数据来源：<code>godot/scripts/alpha/alpha_state.gd</code>
+          </div>
+        </div>
+
+        <!-- Subtab 1: Characters & Foes -->
+        <div id="subtab-chars" class="subtab-pane active">
+          <div class="cards-duo-grid" id="gameplay-characters-grid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Subtab 2: Skill Books -->
+        <div id="subtab-skills" class="subtab-pane">
+          <div class="cards-duo-grid" id="gameplay-skills-grid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Subtab 3: Items, Pacts, Talismans -->
+        <div id="subtab-items" class="subtab-pane">
+          <div class="items-tabs-row">
+            <button class="item-filter-pill active" data-item-kind="ALL">全部构筑物</button>
+            <button class="item-filter-pill" data-item-kind="器">生肖器 (主动实物)</button>
+            <button class="item-filter-pill" data-item-kind="契">生肖契 (祭坛被动)</button>
+            <button class="item-filter-pill" data-item-kind="符">嵌饰符 (装备附魔)</button>
+            <button class="item-filter-pill" data-item-kind="装备">装备载体</button>
+            <button class="item-filter-pill" data-item-kind="神兽">神兽气息</button>
+          </div>
+          <div class="items-cards-grid" id="gameplay-items-grid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Subtab 4: Vessels & Cauldrons -->
+        <div id="subtab-vessels" class="subtab-pane">
+          <div class="vessels-full-grid" id="gameplay-vessels-grid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: 现役素材与工坊 (Media Workshop) -->
+      <section id="tab-media" class="tab-pane">
+        <div class="workshop-layout">
+          <!-- Sidebar: Asset Media Navigator -->
+          <div class="workshop-sidebar">
+            <h3 class="sidebar-title">已连接实物资产</h3>
+            <div class="workshop-asset-list" id="workshop-asset-list">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Main Stage: Sprite Sheet & Animation Player -->
+          <div class="workshop-player-area">
+            <div class="player-toolbar">
+              <div class="player-info">
+                <span class="player-tag" id="player-asset-id">CHR-001</span>
+                <span class="player-name" id="player-asset-name">孩子／后羿向下普通射箭 v3</span>
+                <span class="player-file" id="player-filename">down-archery-v3.png</span>
+              </div>
+              <div class="player-controls-right">
+                <button class="btn-tool" id="btn-player-checker" title="切换深黑/浅灰/透明棋盘格背景">棋盘格</button>
+                <div class="zoom-controls">
+                  <button class="btn-tool" id="btn-zoom-out">-</button>
+                  <span id="zoom-text">100%</span>
+                  <button class="btn-tool" id="btn-zoom-in">+</button>
+                  <button class="btn-tool" id="btn-zoom-fit">适应</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Viewport Canvas Area -->
+            <div class="player-viewport" id="player-viewport">
+              <div class="viewport-canvas-wrap" id="viewport-canvas-wrap">
+                <img id="player-img" src="" alt="Asset Preview" class="preview-target">
+              </div>
+            </div>
+
+            <!-- Timeline & Animation Controls Bar -->
+            <div class="player-timeline-bar">
+              <div class="timeline-controls">
+                <button class="btn-play" id="btn-play-pause">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                </button>
+                <button class="btn-step" id="btn-step-prev" title="上一帧">⏮</button>
+                <button class="btn-step" id="btn-step-next" title="下一帧">⏭</button>
+                <div class="fps-selector">
+                  <label>帧率：</label>
+                  <select id="select-fps">
+                    <option value="6">6 FPS (步进慢放)</option>
+                    <option value="10" selected>10 FPS (游戏基准)</option>
+                    <option value="12">12 FPS (动画抽帧)</option>
+                    <option value="24">24 FPS (平滑流速)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Media Thumbnails Selector -->
+              <div class="media-thumbnails-strip" id="media-thumbnails-strip">
+                <!-- Thumbnails of available variations/files for this asset -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Asset Detail & Edit Drawer (Side Overlay) -->
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <aside class="asset-drawer" id="asset-drawer">
+      <div class="drawer-header">
+        <div class="drawer-id-badge" id="drawer-id">CHR-001</div>
+        <h2 class="drawer-title" id="drawer-name">孩子／玩家身体锚点</h2>
+        <button class="drawer-close" id="btn-drawer-close">&times;</button>
+      </div>
+
+      <div class="drawer-body">
+        <!-- Live Media Preview Inside Drawer -->
+        <div class="drawer-media-section" id="drawer-media-section">
+          <div class="section-heading">实物素材与切片动图预览</div>
+          <div class="drawer-media-gallery" id="drawer-media-gallery">
+            <!-- Thumbnails inserted here -->
+          </div>
+        </div>
+
+        <!-- Editable Form -->
+        <form id="drawer-form" class="drawer-form">
+          <div class="form-row">
+            <div class="form-group half">
+              <label for="edit-category">一级分类</label>
+              <input type="text" id="edit-category" readonly class="input-disabled">
+            </div>
+            <div class="form-group half">
+              <label for="edit-subcategory">二级分类</label>
+              <input type="text" id="edit-subcategory" readonly class="input-disabled">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group half">
+              <label for="edit-stage">范围阶段</label>
+              <select id="edit-stage">
+                <option value="切片必需">切片必需</option>
+                <option value="切片候选">切片候选</option>
+                <option value="首版规划">首版规划</option>
+                <option value="后续规划">后续规划</option>
+                <option value="候选未纳入">候选未纳入</option>
+              </select>
+            </div>
+            <div class="form-group half">
+              <label for="edit-status">制作状态 <span class="highlight-dot">●</span></label>
+              <select id="edit-status" class="select-emphasis">
+                <option value="仅登记，未制作">仅登记，未制作</option>
+                <option value="概念草图">概念草图</option>
+                <option value="候选制作中">候选制作中</option>
+                <option value="候选预览">候选预览</option>
+                <option value="已入库交付">已入库交付</option>
+                <option value="废弃/归档">废弃/归档</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-region">地区或环节</label>
+            <input type="text" id="edit-region">
+          </div>
+
+          <div class="form-group">
+            <label for="edit-purpose">用途说明</label>
+            <textarea id="edit-purpose" rows="2"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-forms">所需形态、状态与动作需求</label>
+            <textarea id="edit-forms" rows="3"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group half">
+              <label for="edit-basis">依据状态</label>
+              <input type="text" id="edit-basis">
+            </div>
+            <div class="form-group half">
+              <label for="edit-source">来源索引</label>
+              <input type="text" id="edit-source">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-reuse">复用或关联资产</label>
+            <input type="text" id="edit-reuse" placeholder="如：CHR-003, BOS-001">
+          </div>
+
+          <div class="form-group">
+            <label for="edit-notes">制作备注与核验要求</label>
+            <textarea id="edit-notes" rows="3" placeholder="填写技术合同、握点锚点或未定事项..."></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="drawer-footer">
+        <button type="button" class="btn btn-secondary" id="btn-drawer-cancel">取消</button>
+        <button type="button" class="btn btn-primary" id="btn-drawer-save">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          一键同步保存 (Save & Sync)
+        </button>
+      </div>
+    </aside>
+
+    <!-- Create Asset Modal -->
+    <div class="modal-backdrop" id="modal-create-backdrop">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3 class="modal-title">✨ 登记新资产</h3>
+          <button class="modal-close" id="btn-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="create-form" class="drawer-form">
+            <div class="form-row">
+              <div class="form-group half">
+                <label for="new-category">一级分类 *</label>
+                <select id="new-category">
+                  <option value="人物">人物 (CHR)</option>
+                  <option value="Boss 与对手">Boss 与对手 (BOS)</option>
+                  <option value="普通敌人与召唤物">普通敌人与召唤物 (MOB)</option>
+                  <option value="武器与装备">武器与装备 (WEA)</option>
+                  <option value="道具与收集物">道具与收集物 (ITM)</option>
+                  <option value="建筑与场景构件">建筑与场景构件 (BLD)</option>
+                  <option value="树木与植被">树木与植被 (VEG)</option>
+                  <option value="地形与环境">地形与环境 (TER)</option>
+                  <option value="环境小物与贴花">环境小物与贴花 (DEC)</option>
+                  <option value="视觉特效">视觉特效 (VFX)</option>
+                  <option value="界面与图标">界面与图标 (UI)</option>
+                  <option value="肖像与展示图">肖像与展示图 (PRT)</option>
+                  <option value="叙事画面与结局">叙事画面与结局 (NAR)</option>
+                </select>
+              </div>
+              <div class="form-group half">
+                <label for="new-id">资产 ID (留空自动顺延)</label>
+                <input type="text" id="new-id" placeholder="如 CHR-034">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label for="new-name">资产名称 *</label>
+                <input type="text" id="new-name" required placeholder="如：夸父金乌逐日姿态">
+              </div>
+              <div class="form-group half">
+                <label for="new-subcategory">二级分类</label>
+                <input type="text" id="new-subcategory" placeholder="如：玩家与叙事角色">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label for="new-stage">范围阶段</label>
+                <select id="new-stage">
+                  <option value="首版规划">首版规划</option>
+                  <option value="切片必需">切片必需</option>
+                  <option value="切片候选">切片候选</option>
+                  <option value="后续规划">后续规划</option>
+                  <option value="候选未纳入">候选未纳入</option>
+                </select>
+              </div>
+              <div class="form-group half">
+                <label for="new-region">地区或环节</label>
+                <input type="text" id="new-region" placeholder="如：汤谷／首阳山">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="new-purpose">用途说明</label>
+              <textarea id="new-purpose" rows="2" placeholder="为什么需要该资产，连接哪个玩法或叙事节点"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="new-forms">所需形态、状态与动作</label>
+              <textarea id="new-forms" rows="2" placeholder="所需姿态、帧数需求或状态外观"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="new-notes">备注与技术合同</label>
+              <textarea id="new-notes" rows="2" placeholder="备注"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-create-cancel">取消</button>
+          <button type="button" class="btn btn-primary" id="btn-create-submit">确认创建并同步</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
