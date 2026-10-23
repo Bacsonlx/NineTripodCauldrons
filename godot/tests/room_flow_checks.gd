@@ -87,10 +87,13 @@ func run() -> void:
 	check(pass_to("court2") and fight(),"两支汇合后完成第二庭三波15影偶")
 	check(pass_to("court3") and fight(),"进入第三庭并完成三波18影偶")
 	check(not journey.snapshot().journeyComplete and pass_to("boss"),"第三庭清场后必须先进入Boss房")
-	check(game.boss_view.visible and game.boss_bar.visible and game.boss_bar.value==1200,"默认首关真实切房后显示索尔灰盒与1200生命条")
+	check(game.boss_view.visible and game.boss_bar.visible and game.boss_bar.value==1200,"默认首关真实切房后显示索尔角色与1200生命条")
+	var actor: Node2D = game.boss_view.get_node_or_null("ThorPuppet")
+	check(actor!=null and actor.get_child_count()==16,"默认首关实际进Boss房后使用16拆件美术角色")
 	var visible: Rect2 = Rect2(game.view_origin,game.get_viewport_rect().size/game.view_zoom)
 	check(visible.encloses(Rect2(96,96,1248,848)),"首关Boss相机覆盖完整战斗区，不裁掉预警")
 	check(boss_fight(),"42影偶后保留现有生命与资源，真实走射击败索尔")
+	check(actor!=null and is_equal_approx(actor.get_node("chest").rotation,0.3),"Boss击败后规则时间停止，静态败退姿势仍应完整落定")
 	check(game.boss_bar.value==0 and not journey.snapshot().journeyComplete,"Boss生命条归零后开放通路，未到出口不提前完成")
 	var floor: Node2D = game.boss_view.get_node_or_null("Floor")
 	var passages_visible: bool = floor!=null and not floor.z_as_relative
@@ -98,7 +101,7 @@ func run() -> void:
 		passages_visible=passages_visible and portal.get_node("Passage").visible and floor.z_index<portal.get_node("Passage").z_index
 	check(passages_visible,"击败Boss后的门漩涡高于独立地面层，不被灰盒底板遮住")
 	check(pass_to("end") and journey.snapshot().journeyComplete and journey.snapshot().visitedRooms==8,"到达原出口后完成首关，八房间均可探索")
-	check(not game.boss_view.visible and not game.boss_bar.visible,"离开Boss房后隐藏Boss呈现与专属血条")
+	check((actor==null or not actor.is_visible_in_tree()) and not game.boss_view.visible and not game.boss_bar.visible,"离开Boss房后隐藏Boss呈现与专属血条")
 	check(pass_to("boss") and pass_to("court3") and pass_to("court2") and pass_to("stele"),"通关后可经过已击败Boss房跨房回溯")
 	check(journey.snapshot().roomComplete and journey.snapshot().exploration.steleRead,"跨房回溯保留任务进度")
 	finish()

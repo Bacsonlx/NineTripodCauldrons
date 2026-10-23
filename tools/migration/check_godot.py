@@ -13,6 +13,8 @@ commands = [["--editor", "--import"], ["--script", "res://tests/run_tests.gd"], 
 commands.insert(-2, ["--script", "res://tests/boss_scene_checks.gd"])
 commands.insert(-2, ["--script", "res://tests/boss_integration_checks.gd"])
 commands.append(["res://scenes/boss_test.tscn", "--quit-after", "3"])
+commands.append(["--script", "res://tests/boss_art_checks.gd"])
+commands.append(["res://scenes/boss_art_test.tscn", "--quit-after", "3"])
 for args in commands:
     result = subprocess.run(["godot", "--headless", "--path", str(root / "godot"), *args], capture_output=True, text=True)
     output = result.stdout + result.stderr

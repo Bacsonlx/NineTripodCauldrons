@@ -1,0 +1,166 @@
+{
+  "parts": {
+    "head": {
+      "file": "head.png",
+      "region": [
+        45,
+        77,
+        257,
+        287
+      ],
+      "sha256": "47abba56e320dff7b71f1e780b625024aedb6735535623c3d9630f8f51cf5a90"
+    },
+    "chest": {
+      "file": "chest.png",
+      "region": [
+        22,
+        59,
+        291,
+        313
+      ],
+      "sha256": "7bbefc1f9072555c1892e6573c282e639453f61bbe9d6f0a4cfdd0d260f123b5"
+    },
+    "pelvis": {
+      "file": "pelvis.png",
+      "region": [
+        5,
+        110,
+        330,
+        269
+      ],
+      "sha256": "7fce30a76fa34723db16dc509a67961e29f02e5038d75ed0e3147261e5ceb869"
+    },
+    "cape": {
+      "file": "cape.png",
+      "region": [
+        46,
+        59,
+        229,
+        320
+      ],
+      "sha256": "229471b8892f29cd0cdaaaf1d1d4c26358538d98fcf511aa9e83cc46dd40ca83"
+    },
+    "near_arm": {
+      "file": "near_arm.png",
+      "region": [
+        65,
+        67,
+        186,
+        281
+      ],
+      "sha256": "2254a4553a229395e0f5a7a393e21dd7daad437ad3d9f200979d9906f0365330"
+    },
+    "far_arm": {
+      "file": "far_arm.png",
+      "region": [
+        104,
+        71,
+        152,
+        275
+      ],
+      "sha256": "c2ef620dcfc84fdb0ab85c116bac3bd15686a586a2718088238f3992f3b25fb4"
+    },
+    "near_forearm": {
+      "file": "near_forearm.png",
+      "region": [
+        64,
+        64,
+        150,
+        293
+      ],
+      "sha256": "9ecc389bdc63839901497e10551b4cd3d4ae5d8ad915069dfbb6412cab6a1eb0"
+    },
+    "far_forearm": {
+      "file": "far_forearm.png",
+      "region": [
+        69,
+        69,
+        188,
+        303
+      ],
+      "sha256": "a398b16528caf0e2dd92a2a5f4e47066f416b4e954a3eb6bcbddd9d4e122a0c0"
+    },
+    "near_thigh": {
+      "file": "near_thigh.png",
+      "region": [
+        78,
+        45,
+        179,
+        283
+      ],
+      "sha256": "d056fe0ab91c7d6a60a70bcd5d0fd79d304c15696a069f49a45719ae5a23975f"
+    },
+    "far_thigh": {
+      "file": "far_thigh.png",
+      "region": [
+        101,
+        45,
+        168,
+        284
+      ],
+      "sha256": "b8501626f2a7f36cd317d7d8019cb448ff67f95c585f1cd5fd47d0ec788b5d66"
+    },
+    "near_shin": {
+      "file": "near_shin.png",
+      "region": [
+        98,
+        49,
+        140,
+        261
+      ],
+      "sha256": "743b9deab5c03ac4bc5ab7706eaa8ba64c385510b55232c3fbdd1f37a37b0c9b"
+    },
+    "far_shin": {
+      "file": "far_shin.png",
+      "region": [
+        90,
+        60,
+        127,
+        248
+      ],
+      "sha256": "2bc4604ff7556cc6ad4e87fab209d492bdeceda78011bf80e6af37998538c886"
+    },
+    "near_boot": {
+      "file": "near_boot.png",
+      "region": [
+        62,
+        34,
+        252,
+        270
+      ],
+      "sha256": "e409328aa0398a481d8e7556a529cce608d71093db996dae01b6ee4ecec8a8d4"
+    },
+    "far_boot": {
+      "file": "far_boot.png",
+      "region": [
+        106,
+        60,
+        192,
+        227
+      ],
+      "sha256": "36be068b0e511347bd329b480209ecf56abeab57f027e22b8b3f1c340d19c0cd"
+    },
+    "hammer": {
+      "file": "hammer.png",
+      "region": [
+        61,
+        6,
+        200,
+        330
+      ],
+      "sha256": "d327ba01c168fea4afb1a717bc1be0f28ac9756a1e9116b49f3b1bb932775000"
+    },
+    "tail": {
+      "file": "tail.png",
+      "region": [
+        124,
+        17,
+        134,
+        323
+      ],
+      "sha256": "5925b563349a4d7e912171c5f1b2c943402f2343ad0aacddca28e63f56124afb"
+    }
+  },
+  "bodyHeight": 182,
+  "art_source": "host_image"
+}

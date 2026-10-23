@@ -29,7 +29,7 @@ func _ready() -> void:
 	if maps.is_empty(): get_tree().quit(1); return
 	journey=Journey.new(maps)
 	mount_map()
-	boss_view=load("res://scripts/presentation/boss_view.gd").new()
+	boss_view=load("res://scripts/presentation/boss_art_view.gd").new()
 	boss_view.z_index=1; add_child(boss_view)
 	super._ready()
 	overview_button.text="房间总览 · M"

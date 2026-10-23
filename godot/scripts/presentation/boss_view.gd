@@ -2,6 +2,7 @@ extends Node2D
 
 const Rules = preload("res://scripts/combat/boss_room.gd")
 var state: Dictionary = {}
+var character: Node2D
 
 func _ready() -> void:
 	var floor: Node2D = preload("res://scripts/presentation/boss_floor.gd").new()
@@ -34,6 +35,11 @@ func _draw() -> void:
 		draw_circle(point,Rules.LIGHTNING_RADIUS,Color(0.4,0.8,1,0.20 if mark.remaining>0 else 0.75))
 		draw_arc(point,Rules.LIGHTNING_RADIUS,-PI/2,-PI/2+TAU*(1-mark.remaining),48,Color("bef4ff"),3)
 		if mark.remaining<=0: draw_line(point,point-Vector2(0,180),Color("f1feff"),9)
+	if state.vulnerable:
+		draw_arc(center-Vector2(0,65),48,0,TAU,32,Color("ffd280"),4)
+		draw_line(state.hammer.origin,state.hammer.target,Color(0.5,0.8,1,0.12),Rules.HAMMER_WARNING_WIDTH)
+		draw_circle(Vector2(state.hammer.x,state.hammer.y),Rules.HAMMER_RADIUS,Color(0.6,0.9,1,0.3))
+	if character!=null: return
 	if boss.health<=0: return
 	draw_circle(center,Rules.BODY_RADIUS,Color("161c20"))
 	draw_circle(center,Rules.BODY_RADIUS,Color("aa9676"),false,2)
@@ -42,10 +48,7 @@ func _draw() -> void:
 	draw_circle(center-Vector2(0,128),20,body_color)
 	draw_line(center-Vector2(20,90),center+Vector2(16,-20),Color("9a3e39"),12)
 	if state.vulnerable:
-		draw_arc(center-Vector2(0,65),48,0,TAU,32,Color("ffd280"),4)
 		var hammer: Vector2 = Vector2(state.hammer.x,state.hammer.y)
-		draw_line(state.hammer.origin,state.hammer.target,Color(0.5,0.8,1,0.12),Rules.HAMMER_WARNING_WIDTH)
-		draw_circle(hammer,Rules.HAMMER_RADIUS,Color(0.6,0.9,1,0.3))
 		draw_rect(Rect2(hammer-Vector2(24,18),Vector2(48,36)),Color("c4d8db"))
 	else:
 		var hand: Vector2 = center+direction*50-Vector2(0,60)
