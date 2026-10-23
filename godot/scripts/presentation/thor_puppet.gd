@@ -2,7 +2,10 @@ extends Node2D
 
 const PART_NAMES: Array[String] = ["cape","far_arm","far_forearm","far_shin","far_thigh","far_boot","near_shin","near_thigh","near_boot","pelvis","chest","head","tail","near_arm","near_forearm","hammer"]
 const HEIGHT: float = 182.0
-const STRIDE: float = 48.0
+const STRIDE: float = 68.0
+# 横锤挥击弧线关键帧：举锤过顶→命中位，控制点在前侧撑开弧线。
+const SWING_LIFT: Vector2 = Vector2(-58,-178)
+const SWING_STRIKE: Vector2 = Vector2(56,-94)
 # 每个点对应裁片中可见的解剖连接点，不能用包围框中心替代。
 const JOINTS: Dictionary = {
 	"near_arm":[Vector2(0.74,0.18),Vector2(0.25,0.78),30.0],
@@ -26,6 +29,7 @@ var distance: float = 0
 var stance: Dictionary = {}
 var held_hand: Vector2 = Vector2(-48,-176)
 var release_hand: Vector2 = Vector2(-48,-176)
+var hammer_angle: float = PI-0.35
 var last_phase: String = ""
 var landing: Array[Vector2] = []
 var lift: Array[float] = [0.0,0.0]
@@ -73,6 +77,7 @@ func reset_pose(snapshot: Dictionary,origin: Vector2) -> void:
 	planted=feet.duplicate(); swing_start=feet.duplicate()
 	previous_swing=[false,false]
 	landing=feet.duplicate(); lift=[0.0,0.0]; movement_weight=0; last_body={}; blend_from={}; pose_elapsed=0
+	hammer_angle=PI-0.35
 
 func update_state(snapshot: Dictionary) -> void:
 	if pieces.is_empty(): return
@@ -95,11 +100,11 @@ func update_state(snapshot: Dictionary) -> void:
 				if not previous_swing[index]:
 					swing_start[index]=feet[index]
 					landing[index]=origin+neutral+direction*(STRIDE*(0.38+0.62/2))
-					landing[index]=swing_start[index]+(landing[index]-swing_start[index]).limit_length(52)
+					landing[index]=swing_start[index]+(landing[index]-swing_start[index]).limit_length(74)
 				var progress: float = (phase-0.62)/0.38
 				var eased: float = progress*progress*progress*(progress*(progress*6-15)+10)
 				feet[index]=swing_start[index].lerp(landing[index],eased)
-				lift[index]=sin(progress*PI)*3
+				lift[index]=sin(progress*PI)*6
 			else:
 				if previous_swing[index]:
 					planted[index]=landing[index]
@@ -111,32 +116,37 @@ func update_state(snapshot: Dictionary) -> void:
 			feet[index]=feet[index].move_toward(origin+neutral,delta*100)
 			planted[index]=feet[index]; previous_swing[index]=false
 	var gait: float = distance/STRIDE*TAU
-	var bob: float = -sin(gait*2)*0.45*movement_weight+sin(snapshot.elapsed*2)*0.35*(1-movement_weight)
+	var bob: float = -sin(gait*2)*0.45*movement_weight+sin(snapshot.elapsed*1.7)*0.7*(1-movement_weight)
 	var hip: Vector2 = Vector2(0,-83+bob)
 	var chest: Vector2 = Vector2(0,-116+bob)
 	var torso_angle: float = sin(gait)*0.018*movement_weight
 	var near_shoulder: Vector2
 	var far_shoulder: Vector2
-	var near_hand: Vector2 = Vector2(-27,-77+bob)+Vector2(sin(gait)*1.5,cos(gait)*0.6)*movement_weight
-	var far_hand: Vector2 = Vector2(29,-77+bob)+Vector2(-sin(gait)*2, -cos(gait)*0.6)*movement_weight
+	# 摆臂沿实际移动方向、与对侧腿反相；肩胯反向但待机仍收拢贴身。
+	var arm_swing: Vector2 = direction*(-sin(gait)*10)*movement_weight
+	var near_hand: Vector2 = Vector2(-27,-77+bob)-arm_swing
+	var far_hand: Vector2 = Vector2(29,-77+bob)+arm_swing
 	var extension: Vector2 = Vector2.from_angle(boss.angle)
 	match boss.phase:
 		"swing_warn":
 			var charge: float = smoothstep(0,1,1-boss.timer/0.8)
-			near_hand=near_hand.lerp(Vector2(-58,-178),charge)
-			torso_angle=-charge*0.14
-			hip+=Vector2(-3,3)*charge; chest+=Vector2(-5,2)*charge
+			near_hand=near_hand.lerp(SWING_LIFT,charge)
+			torso_angle=-charge*0.3
+			hip+=Vector2(-7,4)*charge; chest+=Vector2(-9,3)*charge
 		"swing":
 			var progress: float = smoothstep(0,1,1-boss.timer/0.12)
-			near_hand=Vector2(-58,-178).lerp(Vector2(56,-94),progress)
-			torso_angle=lerpf(-0.14,0.14,progress)
-			hip+=Vector2(-3,3).lerp(Vector2(4,0),progress)
-			chest+=Vector2(-5,2).lerp(Vector2(6,1),progress)
+			# 手走过顶前侧弧线（二次贝塞尔），锤头划弧而非直线拉扯。
+			var arc_control: Vector2 = SWING_LIFT.lerp(SWING_STRIKE,0.5)+Vector2(14,-24)
+			near_hand=SWING_LIFT.lerp(arc_control,progress).lerp(arc_control.lerp(SWING_STRIKE,progress),progress)
+			torso_angle=lerpf(-0.3,0.3,progress)
+			hip+=Vector2(-7,4).lerp(Vector2(8,0),progress)
+			chest+=Vector2(-9,3).lerp(Vector2(7,1),progress)
 		"swing_recover":
-			var progress: float = smoothstep(0,1,1-boss.timer)
-			near_hand=Vector2(56,-94).lerp(near_hand,progress)
-			torso_angle=(1-progress)*0.14
-			hip+=Vector2(4,0)*(1-progress); chest+=Vector2(6,1)*(1-progress)
+			# 命中后先保持0.04秒发力收尾（纯视觉停顿，不改规则时钟），再回位。
+			var progress: float = smoothstep(0,1,clampf((1-boss.timer-0.04)/0.96,0,1))
+			near_hand=SWING_STRIKE.lerp(near_hand,progress)
+			torso_angle=(1-progress)*0.3
+			hip+=Vector2(8,0)*(1-progress); chest+=Vector2(7,1)*(1-progress)
 		"throw_warn":
 			var charge: float = smoothstep(0,1,1-boss.timer)
 			near_hand=near_hand.lerp(Vector2(-48,-176),charge)
@@ -160,7 +170,9 @@ func update_state(snapshot: Dictionary) -> void:
 		blend_from=last_body.duplicate(); pose_elapsed=0
 	pose_elapsed+=delta
 	if not blend_from.is_empty() and boss.phase!="dead":
-		var mix: float = smoothstep(0,1,pose_elapsed/(0.05 if boss.phase=="swing" else 0.12))
+		# 过渡分级：发力保持快 snap，收招回位用更长弧线过渡。
+		var blend_duration: float = 0.25 if boss.phase in ["swing_recover","throw_recover"] else (0.05 if boss.phase in ["swing","flight"] else 0.12)
+		var mix: float = smoothstep(0,1,pose_elapsed/blend_duration)
 		hip=blend_from.hip.lerp(hip,mix); chest=blend_from.chest.lerp(chest,mix)
 		near_hand=blend_from.near_hand.lerp(near_hand,mix); far_hand=blend_from.far_hand.lerp(far_hand,mix)
 		torso_angle=lerp_angle(blend_from.angle,torso_angle,mix)
@@ -188,7 +200,7 @@ func update_state(snapshot: Dictionary) -> void:
 		limb(prefix+"_thigh",joint,bend)
 		limb(prefix+"_shin",bend,ankle)
 		piece(prefix+"_boot",ankle,23,Vector2(0.38,0.18))
-	piece("cape",chest+Vector2(-10,-5),87,Vector2(0.5,0.1),0.12+sin(snapshot.elapsed*3-0.5)*0.035)
+	piece("cape",chest+Vector2(-10,-5),87,Vector2(0.5,0.1),0.12+sin(snapshot.elapsed*3-0.5)*(0.035+0.10*movement_weight))
 	piece("pelvis",hip+Vector2(0,-5),38,Vector2(0.5,0.15),-torso_angle*0.4)
 	piece("chest",chest,56,Vector2(0.5,0.5),torso_angle)
 	piece("head",chest+Vector2(7,-25).rotated(torso_angle),40,Vector2(0.5,0.78),torso_angle*0.35)
@@ -218,9 +230,11 @@ func update_state(snapshot: Dictionary) -> void:
 			var duration: float = 0.8 if boss.phase=="swing_warn" else 1.0
 			angle=lerpf(PI-0.35,0.3,smoothstep(0,1,1-boss.timer/duration))
 		elif boss.phase=="swing": angle=lerpf(0.3,PI/2,smoothstep(0,1,1-boss.timer/0.12))
-		elif boss.phase=="swing_recover": angle=lerpf(PI/2,PI-0.35,smoothstep(0,1,1-boss.timer))
+		elif boss.phase=="swing_recover": angle=lerpf(PI/2,PI-0.35,smoothstep(0,1,clampf((1-boss.timer-0.04)/0.96,0,1)))
 		elif boss.phase=="lightning": angle=lerpf(PI-0.35,0.3,smoothstep(0,0.6,4-boss.timer)*smoothstep(0,1,boss.timer))
-		piece("hammer",near_hand,54,Vector2(0.5,0.78),angle)
+		# 重锤滞后跟随持锤手，挥击时收紧跟随；重复快照 delta 为0时保持姿态不变。
+		hammer_angle=lerp_angle(hammer_angle,angle,minf(1.0,delta*(30.0 if boss.phase=="swing" else 14.0)))
+		piece("hammer",near_hand,54,Vector2(0.5,0.78),hammer_angle)
 		hammer.z_as_relative=true; hammer.z_index=0
 		held_hand=near_hand
 	modulate=Color("fff2c7") if boss.flash>0 else Color.WHITE
