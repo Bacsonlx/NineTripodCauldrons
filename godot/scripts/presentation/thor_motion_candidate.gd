@@ -1,5 +1,5 @@
 extends "res://scripts/presentation/thor_puppet.gd"
-## 独立三招候选：关键姿势以承重脚、骨盆、胸肩、肘腕顺序组织，不改变规则。
+## 已确认三招动作：关键姿势以承重脚、骨盆、胸肩、肘腕顺序组织，不改变规则。
 
 var attack_ground: Array[Vector2] = []
 var entering_lift: Array = []

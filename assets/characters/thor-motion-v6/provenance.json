@@ -9,7 +9,7 @@
   "user_decisions": {
     "camera": "close follow; pull back as necessary for full throw route",
     "body": "additional 25 percent visual scale only",
-    "motion": "same existing art; three full skills as independent comparison; approval before replacing default"
+    "motion": "User approved all three offline skill comparisons and explicitly requested integration into default Boss"
   },
   "references": [
     {
@@ -111,8 +111,8 @@
   "runtime_scripts": [
     {
       "path": "godot/scripts/presentation/thor_motion_candidate.gd",
-      "sha256": "aea3d4067c43fc212d3e9ef177f8d4cc84bc9413c6a11f0f8065d6a684827870",
-      "bytes": 6343
+      "sha256": "79a2b99f77c4fc0481229cc3c8d81364a335428c9d10e3d2d8b204bdc93502d4",
+      "bytes": 6346
     },
     {
       "path": "godot/scenes/boss_motion_candidate_test.tscn",
@@ -123,9 +123,22 @@
   "review": {
     "initial_rejected": "../../../output/art/BOS-001/2026-10-23-combat-focus-v3/iteration-1/key-poses.json",
     "ai_reason": "reduced excessive throwing arm turn/face crossing; far hand now guards chest during lightning; inherits actual planted feet on attack entry",
-    "selected": "current poses.json as an AI candidate, not user-approved",
-    "visual_status": "awaiting user dynamic review; default action script unchanged except display scaling coordinates",
+    "selected": "User-confirmed same source pose JSON; now integrated into production Boss",
+    "visual_status": "User approved offline dynamic comparison; integrated runtime GPU/interaction/performance acceptance not implied",
     "preview": "../../../output/art/BOS-001/2026-10-23-combat-focus-v3/preview.html",
     "evidence_type": "offline composition of actual Godot node transforms, not GPU screenshot"
+  },
+  "production_integration": {
+    "date": "2026-10-23",
+    "user_statement": "三招通过，接入默认 Boss",
+    "approved_preview": "output/art/BOS-001/2026-10-23-combat-focus-v3/preview.html",
+    "approved_pose_sha256": "eac740fd5b4e9e0a187e2fe5840c788b7939c3a4dd19cba0a86fca61bf8b7e9e",
+    "key_pose_files_unchanged": true,
+    "default_binding": {
+      "path": "godot/scripts/presentation/boss_art_view.gd",
+      "sha256": "f48807fda3eacde85c9573adb9a35534eec9ae8f461d04ce1be133f8945a8e01",
+      "bytes": 342
+    },
+    "evidence": "../../../output/art/BOS-001/2026-10-23-motion-v6-integrated/verification.json"
   }
 }

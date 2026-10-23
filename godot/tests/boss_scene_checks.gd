@@ -23,7 +23,7 @@ func check_skills() -> void:
 	root.add_child(view)
 	var effects: Node2D = view.get_node("SkillEffects")
 	check(view.character.scale.is_equal_approx(Vector2.ONE*1.25),"正式Boss形象额外放大25%，规则范围不随角色缩放")
-	var original: Node2D = load("res://scripts/presentation/thor_puppet.gd").new()
+	var original: Node2D = load("res://scripts/presentation/thor_motion_candidate.gd").new()
 	root.add_child(original)
 	var close: TrainingRoom = load("res://scripts/combat/boss_room.gd").new({"spawn":Vector2(840,520)})
 	var saw_swing: bool = false
@@ -31,6 +31,9 @@ func check_skills() -> void:
 		close.update({},0.01); view.update(close.snapshot(),0)
 		if close.snapshot().boss.phase!="swing": continue
 		saw_swing=effects.get_node("SwingArc").visible
+		var forearm: Sprite2D = view.character.get_node("far_forearm")
+		var tip: Vector2 = forearm.to_global(forearm.offset+forearm.texture.get_size()*view.character.JOINTS.far_forearm[1])
+		check(absf(tip.distance_to(forearm.global_position)-38.75)<0.02,"默认Boss实际横锤使用已确认的31单位远前臂，不再沿用39单位错长")
 		for vertex in effects.get_node("SwingArc").polygon:
 			check(vertex.length()<=180.001,"锤弧纹理不越过180单位真实危险扇区")
 		close.set_paused(true)
