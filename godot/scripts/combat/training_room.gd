@@ -8,7 +8,7 @@ const SKILL_GRIPS: Dictionary = {
 	"rain": [Vector2(14,-68), Vector2(21,-70), Vector2(-21,-67), Vector2(-20,-68)],
 	"dodge": [Vector2(16,-39), Vector2(-3,-39), Vector2(-13,-37), Vector2(-8,-45)]
 }
-const ATTACKS: Dictionary = {"normal":{"damage":15,"distance":14,"duration":0.10}, "pierce":{"damage":40,"distance":36,"duration":0.14}, "rain":{"damage":15,"distance":8,"duration":0.08}}
+const ATTACKS: Dictionary = {"normal":{"damage":15,"distance":14,"duration":0.10}, "pierce":{"damage":40,"distance":36,"duration":0.14}, "rain":{"damage":15,"distance":8,"duration":0.08},"burn":{"damage":2,"distance":0,"duration":1.0}}
 const AlphaState = preload("res://scripts/alpha/alpha_state.gd")
 const ENERGY_COSTS: Dictionary = {"pierce":12,"rain":28,"dodge":25,"backwind":12,"charge":16,"wind":16}
 # 只在正式独立房间启用；冻结迁移参照和旧小样保留原规则。
@@ -38,6 +38,7 @@ var charge_remaining: float = 0.0
 var charge_layers: int = 0
 var beast_held: bool = false
 var wind_path: Dictionary = {}
+var item_aim: Vector2 = Vector2.ZERO
 var gameplay: bool = false
 var layout: Dictionary = {}
 var obstacle: Rect2 = Rect2(720,430,80,36)
@@ -135,14 +136,15 @@ func reset() -> void:
 	if alpha!=null: alpha.reset(spawn,layout.get("roomId",""))
 
 func update(input: Dictionary, seconds: float) -> void:
+	item_aim=point(input.get("aim",point(player)+Vector2.from_angle(player.angle)*100))
 	if alpha!=null:
 		if input.has("alpha"):
 			alpha.command(input.alpha,self)
 			alpha.recount()
-			if alpha.gameplay:
-				health_max=alpha.applied_equipment.healthMax
+			if alpha.gameplay and not alpha.camp:
+				health_max=alpha.max_health()
 				health=mini(health,health_max)
-		if not paused and not reading:
+		if not paused and not reading and status!="failed":
 			alpha.burn_input(input.get("burn",false))
 		if alpha.camp: return
 	var pressed: bool = input.get("interact",false) and not interact_held
@@ -155,11 +157,14 @@ func update(input: Dictionary, seconds: float) -> void:
 	if reading: return
 	var steps: int = maxi(1,ceili(seconds/0.01))
 	for index in steps: step(input,seconds/steps)
-	if alpha!=null and alpha.gameplay and not paused and status!="failed" and seconds>0: alpha.auto_pickup(self)
+	if alpha!=null and alpha.gameplay and not paused and status!="failed" and seconds>0:
+		alpha.auto_pickup(self); refresh_item_stats()
 
 func step(input: Dictionary, seconds: float) -> void:
 	if paused or status=="failed": return
-	if alpha!=null: alpha.advance(seconds,self)
+	if alpha!=null:
+		alpha.advance(seconds,self)
+		if alpha.gameplay: alpha.runtime.advance(self,seconds)
 	if energy_enabled:
 		var recovering: float = maxf(0,seconds-stamina_delay)
 		stamina_delay=maxf(0,stamina_delay-seconds)
@@ -205,6 +210,7 @@ func step(input: Dictionary, seconds: float) -> void:
 	pierce_held=input.get("pierce",false); pierce_cooldown=maxf(0,pierce_cooldown-seconds)
 	skill_recovery=maxf(0,skill_recovery-seconds); dodge_cooldown=maxf(0,dodge_cooldown-seconds)
 	var movement: Vector2 = Vector2(input.get("moveX",0),input.get("moveY",0)).limit_length()
+	if has_loadout_skills(): movement*=alpha.runtime.movement_multiplier(self)
 	if input.get("dodge",false) and not dodge_held and dodge_cooldown==0 and hurt==0 and dodge_time==0 and skill_dash_remaining==0:
 		if spend_energy("dodge"):
 			dodge_direction=movement.normalized() if movement.length()>0 else Vector2.from_angle(player.angle)
@@ -329,7 +335,8 @@ func launch(kind: String, initial_step: float) -> void:
 	if has_loadout_skills() and kind=="normal" and charge_layers>0:
 		multiplier=1.5; charge_layers-=1
 		if charge_layers==0: charge_remaining=0
-	var attack: Dictionary = {"chargeMultiplier":multiplier}
+	var attack: Dictionary = alpha.runtime.attack(self,kind) if has_loadout_skills() else {}
+	attack.chargeMultiplier=multiplier
 	var muzzle: Vector2 = grip()
 	var blocked: Dictionary = contact(Vector2(player.x,player.y-layout.shoulderHeight),muzzle)
 	var hit_enemies: Array = []
@@ -338,7 +345,7 @@ func launch(kind: String, initial_step: float) -> void:
 		if kind!="pierce" or not blocked.has("enemy"): return
 		hit_enemies.append(blocked.enemy)
 	arrows.append({"id":next_arrow,"x":muzzle.x,"y":muzzle.y,"angle":player.angle,"age":0.0,"kind":kind,"initialStep":initial_step,"hitEnemies":hit_enemies})
-	if has_loadout_skills(): arrows.back().chargeMultiplier=multiplier
+	if has_loadout_skills(): arrows.back().merge(attack)
 	next_arrow+=1
 
 func rain_target_valid(position: Vector2) -> bool:
@@ -354,9 +361,11 @@ func impact(hit: Dictionary, kind: String, angle: float, attack: Dictionary = {}
 			if enemy.id!=hit.enemy or enemy.phase=="dead": continue
 			damage_position=Vector2(enemy.x,enemy.y)
 			var stats: Dictionary = ATTACKS[kind]
-			damage=mini(enemy.health,roundi(stats.damage*attack.get("chargeMultiplier",1.0))); enemy.health-=damage
+			damage=mini(enemy.health,roundi(stats.damage*damage_multiplier(kind,attack))); enemy.health-=damage
 			enemy.flash=0.12; hits+=1
-			enemy.knockX=cos(angle)*stats.distance/stats.duration; enemy.knockY=sin(angle)*stats.distance/stats.duration; enemy.knockTime=stats.duration
+			apply_item_hit(enemy,kind,attack)
+			if kind!="burn":
+				enemy.knockX=cos(angle)*stats.distance/stats.duration; enemy.knockY=sin(angle)*stats.distance/stats.duration; enemy.knockTime=stats.duration
 			enemy.route=[]; enemy.repath=0
 			if enemy.health==0:
 				enemy.phase="dead"; enemy.timer=0.6
@@ -365,6 +374,7 @@ func impact(hit: Dictionary, kind: String, angle: float, attack: Dictionary = {}
 				elif energy_enabled: restore_mana(4)
 			break
 	var effect: Dictionary = hit.duplicate()
+	if has_loadout_skills(): effect.critical=attack.get("critical",false)
 	effect.merge({"id":next_effect,"kind":kind,"remaining":0.15,"age":0.0,"damage":damage,"angle":angle,"damagePosition":damage_position})
 	effects.append(effect); next_effect+=1
 
@@ -392,14 +402,17 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 			enemy.knockTime=maxf(0,enemy.knockTime-seconds)
 		if enemy.phase=="dead":
 			enemy.timer=maxf(0,enemy.timer-seconds); continue
+		if has_loadout_skills() and enemy.get("stopped",0.0)>0:
+			enemy.stopped=maxf(0,enemy.stopped-seconds); continue
+		var target: Dictionary = alpha.runtime.target(self,enemy) if has_loadout_skills() else player
 		var rules: Dictionary = ENEMY_RULES[enemy.role] if gameplay else ENEMY_RULES.bird
 		var ranged: bool = gameplay and enemy.role=="paper"
 		var swing_until: float = -1.0
 		if enemy.phase=="swing": swing_until=minf(seconds,enemy.timer)
 		elif enemy.phase=="warn" and seconds>enemy.timer: swing_until=minf(seconds,enemy.timer+rules.swing)
 		enemy.timer-=seconds
-		var dx: float = player.x-enemy.x
-		var dy: float = player.y-enemy.y
+		var dx: float = target.x-enemy.x
+		var dy: float = target.y-enemy.y
 		var distance: float = sqrt(dx*dx+dy*dy)
 		var toward: float = atan2(dy,dx)
 		if enemy.phase=="chase":
@@ -407,11 +420,11 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 			if distance<=rules.range:
 				enemy.phase="warn"; enemy.timer=rules.warn; enemy.struck=false
 			elif not pushed:
-				var destination: Variant = player
+				var destination: Variant = target
 				enemy.repath-=seconds
-				if not clear_path(enemy,player):
+				if not clear_path(enemy,target):
 					if enemy.repath<=0:
-						enemy.route=find_route(enemy,player); enemy.repath=0.35
+						enemy.route=find_route(enemy,target); enemy.repath=0.35
 					while enemy.route.size()>1 and clear_path(enemy,enemy.route[1]): enemy.route.pop_front()
 					if not enemy.route.is_empty() and sqrt(pow(enemy.x-enemy.route[0].x,2)+pow(enemy.y-enemy.route[0].y,2))<3: enemy.route.pop_front()
 					if enemy.route.is_empty(): continue
@@ -419,7 +432,7 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 				var goal_x: float = destination.x
 				var goal_y: float = destination.y
 				enemy.angle=atan2(goal_y-enemy.y,goal_x-enemy.x)
-				var travel: float = minf(sqrt(pow(goal_x-enemy.x,2)+pow(goal_y-enemy.y,2)),rules.speed*seconds)
+				var travel: float = minf(sqrt(pow(goal_x-enemy.x,2)+pow(goal_y-enemy.y,2)),rules.speed*(alpha.runtime.enemy_speed(self,enemy) if has_loadout_skills() else 1.0)*seconds)
 				var x: float = enemy.x+cos(enemy.angle)*travel
 				var y: float = enemy.y+sin(enemy.angle)*travel
 				if can_walk(Vector2(x,enemy.y)): enemy.x=x
@@ -443,8 +456,10 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 				enemy.phase="swing"; enemy.timer+=rules.swing
 			if enemy.phase=="swing" and enemy.timer<=0: enemy.phase="recover"; enemy.timer+=rules.recover
 			if enemy.phase=="recover" and enemy.timer<=0: enemy.phase="chase"; enemy.timer=0.0
-		if not ranged and swing_until>=0 and not enemy.struck and distance<=rules.range and absf(angle_difference(enemy.angle,toward))<=PI/4 and protection_at_start<swing_until and dodge_at_start<swing_until and protection<=0:
-			enemy.struck=true; receive_hit(rules.damage)
+		if not ranged and swing_until>=0 and not enemy.struck and distance<=rules.range and absf(angle_difference(enemy.angle,toward))<=PI/4 and (target.get("tomb",false) or protection_at_start<swing_until and dodge_at_start<swing_until and protection<=0):
+			enemy.struck=true
+			if target.get("tomb",false): alpha.runtime.hit_tomb(rules.damage)
+			else: receive_hit(rules.damage)
 			if health==0: return
 	if encounter<groups.size():
 		var cleared: bool = true
@@ -705,6 +720,7 @@ func snapshot() -> Dictionary:
 
 	if gameplay: result.paperArrows=paper_arrows.duplicate(true)
 	if has_loadout_skills():
+		result.itemEffects=alpha.runtime.snapshot(self)
 		result.cooldowns.merge(special_cooldowns)
 		result.skillDash={"kind":skill_dash_kind,"remaining":skill_dash_remaining,"direction":skill_dash_direction}
 		result.windPath=wind_path.duplicate(true)
@@ -728,12 +744,16 @@ func update_paper_arrows(seconds: float) -> void:
 		var origin: Vector2 = Vector2(arrow.x,arrow.y)
 		var target: Vector2 = origin+Vector2.from_angle(arrow.angle)*360*elapsed
 		var contact_time: float = segment_rectangle(origin,target,Rect2(player.x-12,player.y-12,24,24))
+		var decoy_hit: bool = false
+		if has_loadout_skills() and alpha.runtime.active(self,alpha.runtime.tomb):
+			var t: float = segment_rectangle(origin,target,Rect2(alpha.runtime.tomb.point-Vector2(14,14),Vector2(28,28)))
+			if t>=0 and (contact_time<0 or t<contact_time): contact_time=t; decoy_hit=true
 		var destination: Vector2 = origin.lerp(target,contact_time) if contact_time>=0 else target
 		var ignored: Array = enemies.map(func(enemy: Dictionary): return enemy.id)
 		if not contact(origin-Vector2(0,40),destination-Vector2(0,40),ignored).is_empty(): continue
 		if contact_time>=0:
-			if protection<=0 and dodge_invulnerability<=0:
-				receive_hit(10)
+			if decoy_hit: alpha.runtime.hit_tomb(10)
+			elif protection<=0 and dodge_invulnerability<=0: receive_hit(10)
 			continue
 		arrow.x=target.x; arrow.y=target.y; arrow.age+=elapsed
 		if arrow.age<1.5-0.000001: active.append(arrow)
@@ -741,7 +761,7 @@ func update_paper_arrows(seconds: float) -> void:
 
 
 func receive_hit(amount: int) -> int:
-	var damage: int = mini(health,maxi(0,amount))
+	var damage: int = mini(health,maxi(0,roundi(amount*(0.9 if has_loadout_skills() and alpha.active_pact("涂炭") else 1.0))))
 	if damage==0: return 0
 	health-=damage; hurt=0.12; protection=0.6; cancel_pending(); needs_release=true
 	if gameplay:
@@ -801,3 +821,18 @@ func wind_extra_ready() -> bool:
 
 func clear_skill_effects() -> void:
 	charge_layers=0; charge_remaining=0; skill_dash_remaining=0; wind_path={}
+	if has_loadout_skills(): alpha.runtime.clear()
+
+func refresh_item_stats() -> void:
+	if not has_loadout_skills(): return
+	health_max=alpha.max_health(); health=mini(health,health_max)
+
+func damage_multiplier(kind: String, attack: Dictionary) -> float:
+	if not has_loadout_skills() or kind=="burn": return 1.0
+	return attack.get("chargeMultiplier",1.0)*attack.get("criticalMultiplier",1.0)*attack.get("pactMultiplier",alpha.attack_bonus())
+
+func apply_item_hit(enemy: Dictionary, kind: String, attack: Dictionary) -> void:
+	if not has_loadout_skills() or kind not in ["normal","pierce"] or enemy.health<=0: return
+	if attack.get("applyBurn",false) and alpha.applied_equipment.effects.has("燧火"):
+		if enemy.get("burnRemaining",0.0)<=0: enemy.burnTick=0.0
+		enemy.burnRemaining=3.0

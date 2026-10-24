@@ -79,7 +79,7 @@ func update_enemies(seconds: float,_protection: float,_dodge: float) -> void:
 		elif boss.phase=="flight": advance_hammer(part)
 		elif boss.phase=="chase":
 			var direction: Vector2 = (point(player)-point(boss)).normalized()
-			var next: Vector2 = keep_throw_space(point(boss)+direction*minf(100*part,maxf(0,point(player).distance_to(point(boss))-BODY_RADIUS-PLAYER_RADIUS)))
+			var next: Vector2 = keep_throw_space(point(boss)+direction*minf(100*(alpha.runtime.enemy_speed(self,boss) if has_loadout_skills() else 1.0)*part,maxf(0,point(player).distance_to(point(boss))-BODY_RADIUS-PLAYER_RADIUS)))
 			if super.can_walk_xy(next.x,next.y): boss.x=next.x; boss.y=next.y
 		boss.timer=maxf(0,boss.timer-part)
 		remaining-=part
@@ -162,10 +162,7 @@ func advance_hammer(seconds: float) -> void:
 
 func damage_player(amount: int) -> bool:
 	if protection>0.000001 or dodge_invulnerability>0.000001 or status!="running": return false
-	health=maxi(0,health-amount); hurt=0.12; protection=0.6
-	cancel_pending(); needs_release=true
-	if health==0:
-		status="failed"; player.moving=false; clear_skill_effects()
+	receive_hit(amount)
 	return true
 
 func can_walk_xy(x: float,y: float) -> bool:
@@ -183,14 +180,17 @@ func impact(hit: Dictionary,kind: String,angle: float,attack: Dictionary = {}) -
 		super.impact(hit,kind,angle,attack); return
 	var boss: Dictionary = enemies[0]
 	if boss.health<=0: return
-	var damage: int = mini(boss.health,roundi(ATTACKS[kind].damage*attack.get("chargeMultiplier",1.0)*(1.25 if not hammer.is_empty() else 1.0)))
+	var damage: int = mini(boss.health,roundi(ATTACKS[kind].damage*damage_multiplier(kind,attack)*(1.25 if kind!="burn" and not hammer.is_empty() else 1.0)))
 	boss.health-=damage; boss.flash=0.12; hits+=1
+	apply_item_hit(boss,kind,attack)
 	var effect: Dictionary = hit.duplicate()
+	if has_loadout_skills(): effect.critical=attack.get("critical",false)
 	effect.merge({"id":next_effect,"kind":kind,"remaining":0.15,"age":0.0,"damage":damage,
 		"angle":angle,"damagePosition":point(boss)})
 	effects.append(effect); next_effect+=1
 	if boss.health==0:
 		boss.phase="dead"; status="complete"
+		if has_loadout_skills(): alpha.kill_record(); clear_skill_effects()
 		if potion_drops:
 			reward_placeholders=[{"kind":"equipment","label":"装备 · 未入库占位","x":boss.x-32,"y":boss.y},{"kind":"item","label":"道具 · 未入库占位","x":boss.x+32,"y":boss.y}]
 		cancel_pending(); arrows.clear(); rains.clear()

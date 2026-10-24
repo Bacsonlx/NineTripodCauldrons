@@ -23,7 +23,7 @@ func run(check: Callable) -> void:
 	exposed.camps.clear()
 	check.call(run.snapshot().camps==[Vector2(400,600)],"公开营地快照不能修改真实整理点")
 	var food: Dictionary = run.snapshot().alpha.items.filter(func(item: Dictionary): return item.name=="素食")[0]
-	check.call(food.description.contains("待接通"),"未接通的素食详情明确标记本批状态")
+	check.call(food.description.contains("已接通"),"已接通的素食详情明确说明祭坛生效与停时")
 	var bow: int = id_of(run,"训练弓")
 	command(run,{"action":"embed","equipmentId":bow,"glyphId":id_of(run,"羊角")})
 	command(run,{"action":"embed","equipmentId":id_of(run,"布履"),"glyphId":id_of(run,"鼠毫")})

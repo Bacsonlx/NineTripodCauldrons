@@ -12,6 +12,7 @@ var camp_panel: CanvasLayer
 var world_items: Node2D
 var pickup_label: Label
 var skill_view: Node2D
+var item_label: Label
 
 func build_hud() -> void:
 	super.build_hud()
@@ -32,6 +33,10 @@ func build_hud() -> void:
 	pickup_label.offset_left=-450; pickup_label.offset_right=-24; pickup_label.offset_top=-185; pickup_label.offset_bottom=-90
 	pickup_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	hud.add_child(pickup_label)
+	item_label=Label.new(); item_label.name="ItemPrototypeStatus"; item_label.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	item_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	item_label.offset_left=-450; item_label.offset_right=-24; item_label.offset_top=-255; item_label.offset_bottom=-190
+	item_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; hud.add_child(item_label)
 
 func layout_boss_bar() -> void:
 	boss_bar.offset_top=hud.encounter.position.y+60
@@ -122,6 +127,11 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 	loot_view.update_state(data,seconds)
 	world_items.update(data)
 	skill_view.update(data)
+	item_label.visible=not data.alpha.camp and not data.reading
+	var quick: Dictionary = data.alpha.quickItem
+	var runtime: Dictionary = data.itemEffects
+	item_label.text="V：%s · 快马%.1f秒 · 司晨%d/3" % [(quick.name+" #"+str(quick.id)) if not quick.is_empty() else "未绑定实物",runtime.haste,runtime.morningUses]
+	if data.alpha.prototypeBurn: item_label.text+="\n原型B：只测试烧物／焚书；容器战斗效果未开放"
 	var card: Dictionary = data.alpha.pickupCard
 	pickup_label.visible=not data.alpha.camp and not data.reading
 	pickup_label.text=("%s · %.1f秒\n%s" % [card.name,card.remaining,card.reason]+("\nTab 尝试转坛" if not card.attempted else "")) if not card.is_empty() else "I 营地整理（完成房间并靠近整理点）\n"+data.alpha.message

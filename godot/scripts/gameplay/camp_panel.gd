@@ -57,6 +57,7 @@ func setup(model: TrainingRoom, adapter: PlayerControls) -> void:
 	skills_ui=load("res://scripts/alpha/skills_panel.gd").new(); column.add_child(skills_ui)
 	skills_ui.setup(room); skills_ui.command_requested.connect(send)
 	ranking=Label.new(); ranking.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; column.add_child(ranking)
+	add_button("领取十二件道具原型 · 本局一次",column,func(): send({"action":"prototype_kit"}))
 	add_button("确认构筑并出发",column,func(): send({"action":"depart"}))
 	var note: Label = Label.new(); note.text="点击物品选中，再点击目标格放置；精细整理仅限安全营地。"; column.add_child(note)
 	refresh()
@@ -92,10 +93,13 @@ func refresh() -> void:
 	var totals: PackedStringArray = []
 	for key in alpha.votes: totals.append("%s %d" % [key,alpha.votes[key]])
 	ranking.text=" · ".join(totals)+"\n票数预览：首位 %s ｜ 次位 %s · %s（容器战斗效果未开放）" % [alpha.winner,alpha.harm,alpha.reason]
-	detail.text="选择实物查看占格与票数。羊角、鼠毫可嵌符；特殊书可摆入经脉或镶装备，营地指定E/G；契与容器待后续开放。"
+	detail.text="选择实物查看占格与票数。羊角、鼠毫可嵌符；特殊书可摆入经脉或镶装备，营地指定E/G；器、契、符可试用；容器战斗效果待P8。领取原型后B只测试烧物与焚书。"
 	for item in alpha.items:
 		if item.id!=selected: continue
 		detail.text="%s #%d\n%s" % [item.name,item.id,item.description]
+		if item.name=="囤积": detail.text+="\n本实例首次取得层数：%d / 15" % item.get("stacks",0)
+		if item.name=="焚书": detail.text+="\n本实例点燃层数：%d（离坛不供给）" % item.get("burnStacks",0)
+		if item.name=="素食": detail.text+="\n本实例恢复周期：%.1f / 10秒" % item.get("period",0)
 		for record in alpha.breakdown:
 			if record.id==selected:
 				detail.text+="\n票数 %d × %.2f → %d − %d = %d\n气息 %s · 入坛序 %d" % [record.base,record.multiplier,record.weighted,record.opposition,record.total,record.aura,record.order]

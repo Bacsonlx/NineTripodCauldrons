@@ -1,0 +1,253 @@
+{
+  "date": "2026-10-24",
+  "scope": "首关12件道具玩法原型（P6/P7）；原型点燃仅烧物和焚书，P8容器战斗效果未开放",
+  "baseline_commit": "0b6dd0b4dee7fcfd23ae803e73814c74d5d0c946",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "host": "macOS-26.0-arm64-arm-64bit-Mach-O",
+  "runtime_source_sha256": "1f480188934d3a803663ad8c133ef56450f2867a757e8bd89637a66942859a1c",
+  "runtime_source_manifest": "output/verification/2026-10-24-item-prototypes/source-sha256.json",
+  "worktree_note": "运行及导出包含开工前已有首页、暂停菜单及美术等工作区内容；本批只提交自身增量。源码标识包含Godot全部文件，排除.godot缓存。",
+  "checks": [
+    {
+      "checks": 168,
+      "failures": [],
+      "rule_traces": {
+        "cases": 55,
+        "failures": [],
+        "snapshots": 4250
+      }
+    },
+    {
+      "failures": [],
+      "first_level_checks": 26
+    },
+    {
+      "environment_instances": 507,
+      "failures": [],
+      "first_level_visual_checks": 121
+    },
+    {
+      "failures": [],
+      "map_revision_checks": 16
+    },
+    {
+      "failures": [],
+      "room_journey_checks": 23
+    },
+    {
+      "failures": [],
+      "room_layout_checks": 32
+    },
+    {
+      "failures": [],
+      "portal_presentation_checks": 121
+    },
+    {
+      "failures": [],
+      "wave_checks": 13
+    },
+    {
+      "combat_feedback_checks": 13,
+      "failures": []
+    },
+    {
+      "blue_waves": 8,
+      "collected": 16,
+      "combat_runs": [
+        {
+          "enemies": 9,
+          "health": 100,
+          "mana": 68,
+          "room": "court1",
+          "seconds": 20.92,
+          "waves": 2
+        },
+        {
+          "enemies": 15,
+          "health": 100,
+          "mana": 100,
+          "room": "court2",
+          "seconds": 37.5,
+          "waves": 3
+        },
+        {
+          "enemies": 18,
+          "health": 100,
+          "mana": 68,
+          "room": "court3",
+          "seconds": 75.66,
+          "waves": 3
+        },
+        {
+          "health": 100,
+          "mana": 68,
+          "room": "boss",
+          "seconds": 25.8
+        }
+      ],
+      "failures": [],
+      "generated_drops": 19,
+      "restored_health": 20,
+      "restored_mana": 296,
+      "room_flow_checks": 25
+    },
+    {
+      "failures": [],
+      "hud_checks": 39
+    },
+    {
+      "energy_checks": 40,
+      "failures": []
+    },
+    {
+      "checks": 14489,
+      "failures": []
+    },
+    {
+      "failures": [],
+      "home_flow_checks": 33
+    },
+    {
+      "failures": [],
+      "home_ui_checks": 20,
+      "layouts": [
+        {
+          "fits": true,
+          "footer_top": 642.0,
+          "gear_bottom": 603.0,
+          "size": [
+            1280.0,
+            720.0
+          ]
+        },
+        {
+          "fits": true,
+          "footer_top": 1002.0,
+          "gear_bottom": 603.0,
+          "size": [
+            1920.0,
+            1080.0
+          ]
+        },
+        {
+          "fits": true,
+          "footer_top": 642.0,
+          "gear_bottom": 603.0,
+          "size": [
+            1680.0,
+            720.0
+          ]
+        },
+        {
+          "fits": true,
+          "footer_top": 822.0,
+          "gear_bottom": 603.0,
+          "size": [
+            1280.0,
+            900.0
+          ]
+        }
+      ]
+    },
+    {
+      "boss_integration_checks": 14,
+      "failures": []
+    },
+    {
+      "failures": [],
+      "loot_scene_checks": 21
+    },
+    {
+      "failures": [],
+      "launch_scene_checks": 3
+    },
+    {
+      "failures": [],
+      "launch_scene_checks": 5
+    },
+    {
+      "failures": [],
+      "launch_scene_checks": 3
+    },
+    {
+      "failures": [],
+      "launch_scene_checks": 3
+    },
+    {
+      "failures": [],
+      "launch_scene_checks": 1
+    },
+    {
+      "boss_art_checks": 7750,
+      "failures": []
+    },
+    {
+      "boss_motion_candidate_checks": 34886,
+      "failures": []
+    },
+    {
+      "failures": [],
+      "gameplay_journey_checks": 80
+    },
+    {
+      "failures": [],
+      "gameplay_scene_checks": 10
+    },
+    {
+      "failures": [],
+      "skill_journey_checks": 59
+    },
+    {
+      "failures": [],
+      "skill_scene_checks": 10
+    },
+    {
+      "failures": [],
+      "item_prototype_checks": 42
+    },
+    {
+      "failures": [],
+      "item_scene_checks": 7
+    },
+    {
+      "failures": [],
+      "thor_rig_pilot_checks": 119
+    }
+  ],
+  "evidence": {
+    "full_check_and_export": "output/verification/2026-10-24-item-prototypes/check.log",
+    "clean_import_and_item_scene": "output/verification/2026-10-24-item-prototypes/clean-import.log",
+    "mac_package_headless": "output/verification/2026-10-24-item-prototypes/mac-package.log"
+  },
+  "packages": {
+    "macos": {
+      "path": "build/godot/NineTripods-godot-macos.zip",
+      "sha256": "f40449dec91ca52160b7c00ed848c831c46e46ece1de1551e4b304959d49b7f2",
+      "bytes": 132189622,
+      "zip_integrity": "passed",
+      "instructions_match_worktree": true
+    },
+    "windows": {
+      "path": "build/godot/NineTripods-godot-windows.zip",
+      "sha256": "3cd65fd7145c289fbf3260663fbf61cccbc255ea75cc1118c08cd10a17b63886",
+      "bytes": 109744551,
+      "zip_integrity": "passed",
+      "instructions_match_worktree": true
+    }
+  },
+  "review": {
+    "standards_open": 0,
+    "spec_open": 0,
+    "fixed": [
+      "初始物重拾不能刷囤积层",
+      "营地囤积试摆只预览、出发才应用"
+    ]
+  },
+  "boundaries": {
+    "native_input": "not_run",
+    "native_visual": "pending_user",
+    "foreground_performance": "not_run",
+    "windows_runtime": "deferred",
+    "mac_package_headless": "passed; signature and exit status only"
+  }
+}

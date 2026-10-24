@@ -40,6 +40,6 @@ func run(check: Callable) -> void:
 	quick.update({"alpha":{"action":"depart"}},0)
 	var adapter: PlayerControls = PlayerControls.new(quick)
 	adapter.key_down(KEY_V); adapter.update(Vector2(900,548),true,0)
-	check.call(quick.snapshot().alpha.quickItemId==horse and quick.snapshot().alpha.quickItem.id==horse and quick.snapshot().alpha.message.contains("尚未接通"),"V只引用真实器实例；效果未接通时保留实物")
+	check.call(quick.snapshot().alpha.quickItemId==-1 and quick.snapshot().alpha.quickItem.is_empty() and quick.snapshot().itemEffects.haste>0,"V只消费真实器实例并启动快马，引用随消费清空")
 	quick.update({"alpha":{"action":"drop","id":horse}},0)
 	check.call(quick.snapshot().alpha.quickItemId==-1 and quick.snapshot().alpha.quickItem.is_empty(),"丢弃被引用器后快捷栏立即失效")

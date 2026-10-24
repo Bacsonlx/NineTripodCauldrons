@@ -13,3 +13,18 @@ func _draw() -> void:
 		for endpoint in [wind.from,wind.to]: draw_arc(endpoint,20,0,TAU,24,tint,2)
 	var charge: Dictionary = state.get("charge",{})
 	for index in charge.get("layers",0): draw_circle(state.grip+Vector2(-6+index*12,-10),3,Color("f3d989"))
+
+	var item_effects: Dictionary = state.get("itemEffects",{})
+	var puddle: Dictionary = item_effects.get("puddle",{})
+	if not puddle.is_empty():
+		draw_circle(puddle.point,90,Color(0.2,0.6,0.85,0.18))
+		draw_arc(puddle.point,90,0,TAU,48,Color(0.4,0.8,0.96,0.7),2)
+	var tomb: Dictionary = item_effects.get("tomb",{})
+	if not tomb.is_empty():
+		draw_style_box(tomb_style(),Rect2(tomb.point-Vector2(12,42),Vector2(24,42)))
+		draw_rect(Rect2(tomb.point+Vector2(-18,-50),Vector2(36*tomb.health/80.0,4)),Color("b8bdae"))
+
+func tomb_style() -> StyleBoxFlat:
+	var style: StyleBoxFlat = StyleBoxFlat.new()
+	style.bg_color=Color("555b54"); style.border_color=Color("b5bcae"); style.set_border_width_all(2)
+	return style
