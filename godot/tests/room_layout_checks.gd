@@ -39,6 +39,7 @@ func run() -> void:
 			check(clear,id+"圆庭中央净空")
 	var game: Node2D = load("res://scenes/tanggu_first_level.tscn").instantiate()
 	root.add_child(game); game.set_physics_process(false)
+	game.journey.update({"alpha":{"action":"depart"}},0)
 	check(game.room.snapshot().roomId=="entry","默认入口加载房间流程")
 	# 通过真实键盘输入沿新山径走到门前，不改写角色位置或房间状态。
 	var entry_path: Array = game.room.find_route(TrainingRoom.point(game.room.snapshot().player),TrainingRoom.point(game.room.layout.doors[0].point))

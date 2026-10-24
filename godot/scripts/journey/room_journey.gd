@@ -10,6 +10,7 @@ var generation: int = 0
 var active: TrainingRoom
 var initial_options: Dictionary = {}
 var drop_seed: int = 0
+var inventory: RefCounted
 
 static func read_maps() -> Dictionary:
 	var result: Dictionary = {}
@@ -44,6 +45,9 @@ func _init(definitions: Dictionary,options: Dictionary = {}) -> void:
 func restart() -> void:
 	rooms.clear(); current_id=initial_options.get("startRoom","entry"); generation+=1
 	drop_seed=int(initial_options.get("dropSeed",randi()))
+	inventory=TrainingRoom.AlphaState.new(drop_seed,true)
+	inventory.reset(TrainingRoom.point(layouts[current_id].spawn))
+	if current_id!="entry": inventory.camp=false; inventory.departed=true
 	active=create_room(layouts[current_id]); rooms[current_id]=active
 	active.run_id=generation
 	active.health=int(initial_options.get("health",100))
@@ -62,7 +66,7 @@ func consume_transition() -> bool:
 	if request.is_empty() or not active.completed or active.paused or active.reading or active.health<=0: return false
 	for door in layouts[current_id].doors:
 		if door.id!=request: continue
-		active.cancel_input(); active.arrows.clear(); active.rains.clear(); active.effects.clear()
+		active.cancel_input(); active.paper_arrows.clear(); active.arrows.clear(); active.rains.clear(); active.effects.clear()
 		var travel: Dictionary = active.travel_state()
 		current_id=door.target
 		if not rooms.has(current_id): rooms[current_id]=create_room(layouts[current_id])
@@ -91,8 +95,11 @@ func snapshot() -> Dictionary:
 	return data
 
 func create_room(data: Dictionary) -> TrainingRoom:
+	data=data.duplicate(true)
+	data.gameplay=true
 	if initial_options.get("potionDrops",false):
-		data=data.duplicate(true)
 		data.potionDrops=true
 		data.dropSeed=drop_seed+str(data.roomId).hash()
-	return Boss.new(data) if data.objective=="boss" else Stage.new(data)
+	var room: TrainingRoom = Boss.new(data) if data.objective=="boss" else Stage.new(data)
+	room.alpha=inventory
+	return room

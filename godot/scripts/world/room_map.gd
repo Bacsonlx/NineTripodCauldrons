@@ -9,6 +9,7 @@ func build_layout() -> Dictionary:
 	var data: Dictionary = super.build_layout()
 	data.roomId=room_id; data.roomTitle=room_title; data.objective=objective
 	data.walkablePolygons=[]; data.doors=[]
+	data.camps=[$CampPoint.position] if has_node("CampPoint") else []
 	for area in $Walkable.get_children(): data.walkablePolygons.append($Walkable.transform*area.transform*area.polygon)
 	for door in $Doors.get_children():
 		data.doors.append(door.definition())
@@ -46,6 +47,8 @@ func validation_errors() -> Array[String]:
 		if wave.enemies.is_empty(): errors.append("波次缺少敌人")
 		if wave.enemies.size()>=100: errors.append("单波敌人数须小于100")
 	if not model.can_walk(TrainingRoom.point(data.spawn)): errors.append("房间出生点不可行走")
+	for location in data.camps:
+		if not model.can_walk(location): errors.append("营地整理点不可行走")
 	var ids: Dictionary = {}
 	for door in data.doors:
 		if ids.has(door.id) or door.id.is_empty(): errors.append("重复或空白门标识")

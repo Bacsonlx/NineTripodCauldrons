@@ -22,6 +22,14 @@ var drops: Array[Dictionary] = []
 var blue_waves: Dictionary = {}
 var drop_random: RandomNumberGenerator = RandomNumberGenerator.new()
 var alpha: RefCounted = null
+const ENEMY_RULES: Dictionary = {
+	"bird":{"health":60,"speed":120.0,"damage":20,"range":70.0,"warn":0.45,"swing":0.10,"recover":0.65},
+	"paper":{"health":45,"speed":90.0,"damage":10,"range":300.0,"warn":0.75,"swing":0.0,"recover":1.25},
+	"wood":{"health":150,"speed":85.0,"damage":25,"range":90.0,"warn":0.70,"swing":0.12,"recover":0.90}
+}
+var paper_arrows: Array[Dictionary] = []
+var next_paper_arrow: int = 0
+var gameplay: bool = false
 var layout: Dictionary = {}
 var obstacle: Rect2 = Rect2(720,430,80,36)
 var player: Dictionary = {}
@@ -41,6 +49,7 @@ var paused: bool = false
 var reading: bool = false
 var run_id: int = -1
 var health: int = 100
+var health_max: int = 100
 var hurt: float = 0.0
 var protection: float = 0.0
 var status: String = "running"
@@ -70,6 +79,7 @@ static func point(value: Variant) -> Vector2:
 
 func _init(options: Dictionary = {}) -> void:
 	potion_drops=options.get("potionDrops",false)
+	gameplay=options.get("gameplay",false) or options.get("mode","")=="gameplay"
 	if options.has("width"):
 		layout = options.duplicate(true)
 	else:
@@ -78,7 +88,7 @@ func _init(options: Dictionary = {}) -> void:
 		var bounds: Rect2 = options.get("bounds", Rect2(100,180,1080,640))
 		var center: Vector2 = obstacle.get_center()
 		layout = {"width":1280,"height":900,"floor":[Vector2.ZERO,Vector2(1280,0),Vector2(1280,900),Vector2(0,900)], "spawn":options.get("spawn",Vector2(400,600)), "walkableAreas":[{"left":bounds.position.x,"top":bounds.position.y,"right":bounds.end.x,"bottom":bounds.end.y}], "pillars":[],"pillarBody":[],"targets":[],"shoulderHeight":52,"grips":GRIPS,"targetFace":{}, "obstacles":[{"x":center.x,"y":center.y,"halfWidth":obstacle.size.x/2,"halfHeight":obstacle.size.y/2,"height":120,"kind":"root"}], "encounters":[{"x":point(options.get("encounter",Vector2(740,600))).x,"y":point(options.get("encounter",Vector2(740,600))).y,"enemies":[options.get("enemy",Vector2(840,600))]}]}
-	if options.get("mode","")=="alpha": alpha=AlphaState.new(options.get("seed",1))
+	if options.get("mode","") in ["alpha","gameplay"]: alpha=AlphaState.new(options.get("seed",1),gameplay,options.get("initialItems",[]))
 	reset()
 
 func reset() -> void:
@@ -92,10 +102,14 @@ func reset() -> void:
 		for location in layout.encounters[group].enemies:
 			var position: Vector2 = point(location)
 			enemies.append({"id":group*100+index,"group":group,"appearance":location.get("appearance","bird") if location is Dictionary else "bird","x":float(position.x),"y":float(position.y),"health":60,"phase":"inactive","timer":0.0,"angle":0.0,"struck":false,"flash":0.0,"route":[],"repath":0.0,"knockX":0.0,"knockY":0.0,"knockTime":0.0})
+			if gameplay:
+				var role: String = location.get("role",location.get("appearance","bird")) if location is Dictionary else "bird"
+				enemies.back().merge({"role":role,"health":ENEMY_RULES[role].health,"maxHealth":ENEMY_RULES[role].health},true)
 			index += 1
 	arrows.clear(); effects.clear(); rains.clear(); flashes.clear()
+	paper_arrows.clear(); next_paper_arrow=0
 	for target in layout.targets: flashes.append(0.0)
-	health=100; hurt=0; protection=0; status="running"; encounter=0
+	health=100; health_max=100; hurt=0; protection=0; status="running"; encounter=0
 	pending_mana=0; mana=100; stamina=100; stamina_delay=0
 	drops.clear(); blue_waves.clear()
 	if layout.has("dropSeed"): drop_random.seed=int(layout.dropSeed)
@@ -114,6 +128,9 @@ func update(input: Dictionary, seconds: float) -> void:
 		if input.has("alpha"):
 			alpha.command(input.alpha,self)
 			alpha.recount()
+			if alpha.gameplay:
+				health_max=alpha.applied_equipment.healthMax
+				health=mini(health,health_max)
 		if not paused and not reading:
 			alpha.burn_input(input.get("burn",false))
 		if alpha.camp: return
@@ -127,6 +144,7 @@ func update(input: Dictionary, seconds: float) -> void:
 	if reading: return
 	var steps: int = maxi(1,ceili(seconds/0.01))
 	for index in steps: step(input,seconds/steps)
+	if alpha!=null and alpha.gameplay and not paused and status!="failed" and seconds>0: alpha.auto_pickup(self)
 
 func step(input: Dictionary, seconds: float) -> void:
 	if paused or status=="failed": return
@@ -181,6 +199,7 @@ func step(input: Dictionary, seconds: float) -> void:
 			player.facing=posmod(floori(reference/(PI/2)+0.5),4)
 		if aim.distance_to(grip())>4: player.angle=(aim-grip()).angle()
 	update_enemies(seconds,protection_at_start,dodge_invulnerability)
+	if gameplay: update_paper_arrows(seconds)
 	dodge_invulnerability=maxf(0,dodge_invulnerability-seconds)
 	if health<=0: return
 	var live_effects: Array[Dictionary] = []
@@ -283,6 +302,7 @@ func impact(hit: Dictionary, kind: String, angle: float) -> void:
 			enemy.route=[]; enemy.repath=0
 			if enemy.health==0:
 				enemy.phase="dead"; enemy.timer=0.6
+				if alpha!=null and alpha.gameplay: alpha.enemy_defeated(enemy,self)
 				if potion_drops: drop_potion(enemy)
 				elif energy_enabled: restore_mana(4)
 			break
@@ -314,9 +334,11 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 			enemy.knockTime=maxf(0,enemy.knockTime-seconds)
 		if enemy.phase=="dead":
 			enemy.timer=maxf(0,enemy.timer-seconds); continue
+		var rules: Dictionary = ENEMY_RULES[enemy.role] if gameplay else ENEMY_RULES.bird
+		var ranged: bool = gameplay and enemy.role=="paper"
 		var swing_until: float = -1.0
 		if enemy.phase=="swing": swing_until=minf(seconds,enemy.timer)
-		elif enemy.phase=="warn" and seconds>enemy.timer: swing_until=minf(seconds,enemy.timer+0.10)
+		elif enemy.phase=="warn" and seconds>enemy.timer: swing_until=minf(seconds,enemy.timer+rules.swing)
 		enemy.timer-=seconds
 		var dx: float = player.x-enemy.x
 		var dy: float = player.y-enemy.y
@@ -324,8 +346,8 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 		var toward: float = atan2(dy,dx)
 		if enemy.phase=="chase":
 			enemy.angle=toward
-			if distance<=70:
-				enemy.phase="warn"; enemy.timer=0.45; enemy.struck=false
+			if distance<=rules.range:
+				enemy.phase="warn"; enemy.timer=rules.warn; enemy.struck=false
 			elif not pushed:
 				var destination: Variant = player
 				enemy.repath-=seconds
@@ -339,7 +361,7 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 				var goal_x: float = destination.x
 				var goal_y: float = destination.y
 				enemy.angle=atan2(goal_y-enemy.y,goal_x-enemy.x)
-				var travel: float = minf(sqrt(pow(goal_x-enemy.x,2)+pow(goal_y-enemy.y,2)),120*seconds)
+				var travel: float = minf(sqrt(pow(goal_x-enemy.x,2)+pow(goal_y-enemy.y,2)),rules.speed*seconds)
 				var x: float = enemy.x+cos(enemy.angle)*travel
 				var y: float = enemy.y+sin(enemy.angle)*travel
 				if can_walk(Vector2(x,enemy.y)): enemy.x=x
@@ -356,12 +378,16 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 						var next_y: float = enemy.y+sin(angle)*push
 						if can_walk(Vector2(next_x,next_y)): enemy.x=next_x; enemy.y=next_y
 		else:
-			if enemy.phase=="warn" and enemy.timer<=0: enemy.phase="swing"; enemy.timer+=0.10
-			if enemy.phase=="swing" and enemy.timer<=0: enemy.phase="recover"; enemy.timer+=0.65
+			if enemy.phase=="warn" and enemy.timer<=0:
+				if ranged:
+					paper_arrows.append({"id":next_paper_arrow,"source":enemy.id,"x":enemy.x,"y":enemy.y,"angle":enemy.angle,"age":0.0,"initialStep":-enemy.timer})
+					next_paper_arrow+=1
+				enemy.phase="swing"; enemy.timer+=rules.swing
+			if enemy.phase=="swing" and enemy.timer<=0: enemy.phase="recover"; enemy.timer+=rules.recover
 			if enemy.phase=="recover" and enemy.timer<=0: enemy.phase="chase"; enemy.timer=0.0
-		if swing_until>=0 and not enemy.struck and distance<=70 and absf(angle_difference(enemy.angle,toward))<=PI/4 and protection_at_start<swing_until and dodge_at_start<swing_until and protection<=0:
-			enemy.struck=true; health=maxi(0,health-20); hurt=0.12; protection=0.6; cancel_pending(); needs_release=true
-			if health==0: status="failed"; player.moving=false; return
+		if not ranged and swing_until>=0 and not enemy.struck and distance<=rules.range and absf(angle_difference(enemy.angle,toward))<=PI/4 and protection_at_start<swing_until and dodge_at_start<swing_until and protection<=0:
+			enemy.struck=true; receive_hit(rules.damage)
+			if health==0: return
 	if encounter<groups.size():
 		var cleared: bool = true
 		for enemy in enemies:
@@ -425,7 +451,7 @@ func nearest_potion() -> Dictionary:
 		var location: Vector2 = point(item)
 		var gap: float = point(player).distance_to(location)
 		if gap>80 or not can_walk(location) or not clear_path(player,location): continue
-		var reason: Variant = "影散后无法拾取" if status=="failed" else "暂停中无法拾取" if paused or reading else "生命已满" if item.kind=="health" and health==100 else "蓝量已满" if item.kind=="mana" and mana==100 else null
+		var reason: Variant = "影散后无法拾取" if status=="failed" else "暂停中无法拾取" if paused or reading else "生命已满" if item.kind=="health" and health==health_max else "蓝量已满" if item.kind=="mana" and mana==100 else null
 		# 可用瓶优先；同距保留生成顺序，满值瓶仅作无其他目标时的提示。
 		if not closest.is_empty() and (closest.reason==null and reason!=null or (closest.reason==null)==(reason==null) and gap>=distance): continue
 		closest={"id":"potion:"+item.id,"dropId":item.id,"point":location,"label":"拾取血瓶" if item.kind=="health" else "拾取蓝瓶","reason":reason}
@@ -590,7 +616,7 @@ func interact() -> void:
 		for index in drops.size():
 			var item: Dictionary = drops[index]
 			if item.id!=target.dropId: continue
-			var amount: int = mini(20,100-(health if item.kind=="health" else mana))
+			var amount: int = mini(20,(health_max-health) if item.kind=="health" else (100-mana))
 			if item.kind=="health": health+=amount
 			else: mana+=amount
 			feedback={"text":("生命" if item.kind=="health" else "蓝量")+" +%d" % amount,"remaining":1.2,"healed":item.kind=="health"}
@@ -599,9 +625,9 @@ func interact() -> void:
 	if target.id=="stele":
 		reading=true; exploration.steleRead=true; player.moving=false; dodge_time=0; dodge_invulnerability=0; cancel_pending(); needs_release=true
 	elif target.id=="altar":
-		if health==100: feedback={"text":"无需恢复","remaining":1.6,"healed":false}
+		if health==health_max: feedback={"text":"无需恢复","remaining":1.6,"healed":false}
 		else:
-			var amount: int = mini(40,100-health)
+			var amount: int = mini(40,health_max-health)
 			health+=amount; exploration.altarUsed=true; feedback={"text":"生命恢复 +%d" % amount,"remaining":1.6,"healed":true}
 	else:
 		gate_opening=0.28; feedback={"text":"栅门正在开启","remaining":1.6,"healed":false}
@@ -615,8 +641,9 @@ func snapshot() -> Dictionary:
 	for index in layout.targets.size():
 		var target: Dictionary = layout.targets[index].duplicate(); target.flash=flashes[index]; targets.append(target)
 	var skill: Variant = {"kind":"rain","phase":"windup","remaining":raining.remaining} if not raining.is_empty() else {"kind":"pierce","phase":"windup","remaining":piercing} if piercing>=0 else {"kind":last_skill,"phase":"recover","remaining":skill_recovery} if skill_recovery>0 and not last_skill.is_empty() else null
-	var result: Dictionary = {"runId":run_id,"player":player.duplicate(),"grip":grip(),"hits":hits,"windup":windup if windup>=0 else null,"paused":paused or reading,"reading":reading,"gateOpening":gate_opening,"exploration":exploration.duplicate(),"interaction":nearest_interaction() if not nearest_interaction().is_empty() else null,"feedback":feedback.duplicate() if not feedback.is_empty() else null,"attack":attack_phase(),"health":health,"hurt":hurt,"protection":protection,"status":status,"dodge":dodge_time,"dodgeDirection":dodge_direction,"dodgeInvulnerability":dodge_invulnerability,"cooldowns":{"dodge":dodge_cooldown,"pierce":pierce_cooldown,"rain":rain_cooldown},"skill":skill,"rainPreview":raining.point if not raining.is_empty() else null,"rains":rains.duplicate(true),"invalid":invalid.duplicate() if not invalid.is_empty() else null,"encounter":encounter,"totalEncounters":layout.get("encounters",[]).size(),"enemies":visible_enemies,"arrows":arrows.duplicate(true),"effects":effects.duplicate(true),"targets":targets,"shots":shots}
+	var result: Dictionary = {"runId":run_id,"player":player.duplicate(),"grip":grip(),"hits":hits,"windup":windup if windup>=0 else null,"paused":paused or reading,"reading":reading,"gateOpening":gate_opening,"exploration":exploration.duplicate(),"interaction":nearest_interaction() if not nearest_interaction().is_empty() else null,"feedback":feedback.duplicate() if not feedback.is_empty() else null,"attack":attack_phase(),"health":health,"healthMax":health_max,"hurt":hurt,"protection":protection,"status":status,"dodge":dodge_time,"dodgeDirection":dodge_direction,"dodgeInvulnerability":dodge_invulnerability,"cooldowns":{"dodge":dodge_cooldown,"pierce":pierce_cooldown,"rain":rain_cooldown},"skill":skill,"rainPreview":raining.point if not raining.is_empty() else null,"rains":rains.duplicate(true),"invalid":invalid.duplicate() if not invalid.is_empty() else null,"encounter":encounter,"totalEncounters":layout.get("encounters",[]).size(),"enemies":visible_enemies,"arrows":arrows.duplicate(true),"effects":effects.duplicate(true),"targets":targets,"shots":shots}
 
+	if gameplay: result.paperArrows=paper_arrows.duplicate(true)
 	if alpha!=null:
 		result.alpha=alpha.snapshot()
 		result.paused=result.paused or alpha.camp
@@ -625,3 +652,34 @@ func snapshot() -> Dictionary:
 	if potion_drops:
 		result.drops=drops.duplicate(true)
 	return result
+
+
+func update_paper_arrows(seconds: float) -> void:
+	var active: Array[Dictionary] = []
+	for arrow in paper_arrows:
+		var elapsed: float = minf(arrow.get("initialStep",seconds),1.5-arrow.age)
+		arrow.erase("initialStep")
+		var origin: Vector2 = Vector2(arrow.x,arrow.y)
+		var target: Vector2 = origin+Vector2.from_angle(arrow.angle)*360*elapsed
+		var contact_time: float = segment_rectangle(origin,target,Rect2(player.x-12,player.y-12,24,24))
+		var destination: Vector2 = origin.lerp(target,contact_time) if contact_time>=0 else target
+		var ignored: Array = enemies.map(func(enemy: Dictionary): return enemy.id)
+		if not contact(origin-Vector2(0,40),destination-Vector2(0,40),ignored).is_empty(): continue
+		if contact_time>=0:
+			if protection<=0 and dodge_invulnerability<=0:
+				receive_hit(10)
+			continue
+		arrow.x=target.x; arrow.y=target.y; arrow.age+=elapsed
+		if arrow.age<1.5-0.000001: active.append(arrow)
+	paper_arrows=active
+
+
+func receive_hit(amount: int) -> int:
+	var damage: int = mini(health,maxi(0,amount))
+	if damage==0: return 0
+	health-=damage; hurt=0.12; protection=0.6; cancel_pending(); needs_release=true
+	if gameplay:
+		effects.append({"id":next_effect,"kind":"hurt","remaining":0.15,"age":0.0,"x":player.x,"y":player.y-40,"enemy":null,"angle":0.0,"damage":damage,"damagePosition":Vector2(player.x,player.y)})
+		next_effect+=1
+	if health==0: status="failed"; player.moving=false
+	return damage

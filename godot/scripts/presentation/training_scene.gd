@@ -202,6 +202,8 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 		var body: Sprite2D = enemy_bodies[enemy.id]
 		var key: String = {"bird":"enemy","paper":"enemyPaper","wood":"enemyWood"}[enemy.appearance]
 		var row: int = 6 if enemy.phase=="dead" else 5 if enemy.flash>0 else 3 if enemy.phase=="warn" else 4 if enemy.phase=="swing" else (0 if enemy.timer<0.18 else 5) if enemy.phase=="recover" else 1+int(clock*8)%2
+		if enemy.has("role") and enemy.phase=="recover" and enemy.flash<=0:
+			row=4 if enemy.role=="paper" and enemy.timer>1.15 else 0
 		pose(body,key,row*4+direction(enemy.angle),Vector2(enemy.x,enemy.y))
 		body.z_index=int(enemy.y); body.visible=enemy.phase!="inactive" and (enemy.phase!="dead" or enemy.timer>0)
 		body.modulate=Color("ffedc5") if enemy.flash>0 else Color.WHITE
@@ -262,9 +264,16 @@ func _draw() -> void:
 	for enemy in state.enemies:
 		if enemy.phase=="inactive" or enemy.phase=="dead": continue
 		if enemy.phase=="warn" or enemy.phase=="swing":
+			if enemy.get("role","")=="paper":
+				var origin: Vector2 = Vector2(enemy.x,enemy.y)
+				draw_line(origin,origin+Vector2.from_angle(enemy.angle)*300,Color(0.56,0.82,0.9,0.65),2)
+				continue
+			var radius: float = 90.0 if enemy.get("role","")=="wood" else 70.0
 			var sector: PackedVector2Array = [Vector2(enemy.x,enemy.y)]
-			for index in 17: sector.append(Vector2(enemy.x,enemy.y)+Vector2.from_angle(enemy.angle-PI/4+index*PI/32)*70)
-			draw_colored_polygon(sector,Color(0.74,0.2,0.12,0.48 if enemy.phase=="swing" else 0.16))
+			for index in 17: sector.append(Vector2(enemy.x,enemy.y)+Vector2.from_angle(enemy.angle-PI/4+index*PI/32)*radius)
+			var tint: Color = Color("d9a14d") if enemy.get("role","")=="wood" else Color(0.74,0.2,0.12)
+			tint.a=0.48 if enemy.phase=="swing" else 0.16
+			draw_colored_polygon(sector,tint)
 
 func make_label(text: String, size: int, color: Color = Color("eedbb5")) -> Label:
 	var label: Label = Label.new()

@@ -14,6 +14,7 @@ func _initialize() -> void:
 func run() -> void:
 	var game: Node2D = load("res://scenes/loot_test.tscn").instantiate()
 	root.add_child(game); game.set_physics_process(false)
+	game.journey.update({"alpha":{"action":"depart"}},0)
 	await process_frame
 	check(game.room.potion_drops and game.room.snapshot().drops.is_empty(),"独立灰盒入口启用掉落并从空地面状态启动")
 	var original: Dictionary = game.room.snapshot()

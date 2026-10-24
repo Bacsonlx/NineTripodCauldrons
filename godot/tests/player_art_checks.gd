@@ -2,7 +2,11 @@ extends RefCounted
 
 const Room = preload("res://scripts/combat/training_room.gd")
 
+func depart(game: Node2D) -> void:
+	if game.room.alpha!=null and game.room.alpha.gameplay: game.room.update({"alpha":{"action":"depart"}},0)
+
 func run(game: Node2D, check: Callable) -> void:
+	depart(game)
 	check.call(game.atlas.has("upperDown"), "正式场景加载已确认的 v3 向下射箭资源")
 	var point: Vector2 = Vector2(game.state.player.x, game.state.player.y)
 	var snapshot: Dictionary = game.controls.update(point+Vector2(0,200),true,0)
@@ -44,6 +48,7 @@ func run(game: Node2D, check: Callable) -> void:
 		game.present(other,0)
 		check.call(game.torso.texture==game.textures.upper and game.bow.visible and game.nocked_arrow.visible, "其他方向保留原上身和独立弓箭层")
 	game.controls.interrupt(); game.room.reset()
+	depart(game)
 	point=Vector2(game.room.player.x,game.room.player.y)
 	game.controls.update(point+Vector2(0,200),true,0)
 	for code in [KEY_Q,KEY_E,KEY_SPACE]:
@@ -54,6 +59,7 @@ func run(game: Node2D, check: Callable) -> void:
 		var expected_grip: Vector2 = Vector2(snapshot.player.x,snapshot.player.y)+Room.SKILL_GRIPS[{KEY_Q:"pierce",KEY_E:"rain",KEY_SPACE:"dodge"}[code]][1]
 		check.call(snapshot.grip.is_equal_approx(expected_grip), "技能不使用新的普通箭出箭点")
 		game.controls.interrupt(); game.room.reset()
+		depart(game)
 		game.controls.update(point+Vector2(0,200),true,0)
 	game.room.hurt=0.1
 	game.present(game.room.snapshot(),0)
@@ -67,6 +73,7 @@ func run(game: Node2D, check: Callable) -> void:
 	game.present(game.room.snapshot(),0)
 	check.call(game.failed.visible and not game.torso.visible and not game.legs.visible and not game.bow.visible and not game.nocked_arrow.visible, "失败时正常隐藏新版身体与武器")
 	game.room.reset(); game.controls.interrupt()
+	depart(game)
 	check.call(game.room.snapshot().arrows.is_empty(), "重试清理箭实例的规则状态")
 	for angle in [PI/3,PI*2/3]:
 		var aim: Vector2 = point+Vector2(0,-52)+Vector2.from_angle(angle)*300

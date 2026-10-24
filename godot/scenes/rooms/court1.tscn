@@ -264,3 +264,6 @@ position = Vector2(-100,-25)
 [node name="Arrival" parent="Doors/altar" index="5"]
 position = Vector2(-140,-25)
 [editable path="Doors/altar"]
+
+[node name="CampPoint" type="Marker2D" parent="."]
+position = Vector2(310,550)

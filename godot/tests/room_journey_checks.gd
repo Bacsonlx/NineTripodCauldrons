@@ -19,6 +19,7 @@ func _initialize() -> void:
 	var script: Script = load("res://scripts/journey/room_journey.gd")
 	if script==null: check(false,"房间流程规则入口必须可加载"); finish(); return
 	var run: RefCounted = script.new({"entry":fixture("entry","safe","fight"),"fight":fixture("fight","combat","entry")})
+	run.update({"alpha":{"action":"depart"}},0)
 	check(run.snapshot().roomId=="entry" and run.snapshot().roomComplete,"安全入口直接开放")
 	var graph: Dictionary = run.snapshot().get("roomGraph",{})
 	check(graph.get("rooms",[]).size()==2 and graph.get("connections",[]).size()==1,"流程快照提供完整房间关系且双向门去重")
@@ -38,6 +39,7 @@ func _initialize() -> void:
 	run.update({"interact":false},0); run.update({"interact":true},0)
 	check(run.snapshot().roomId=="fight" and run.snapshot().roomComplete and run.snapshot().enemies[0].phase=="dead","返回已完成战斗房不刷新敌人")
 	var cooled: RefCounted = script.new({"entry":fixture("entry","safe","fight"),"fight":fixture("fight","combat","entry")})
+	cooled.update({"alpha":{"action":"depart"}},0)
 	cooled.update({"pierce":true,"aim":Vector2(800,548)},0.35)
 	var remaining: float = cooled.snapshot().cooldowns.pierce
 	cooled.update({"interact":true},0)
@@ -45,6 +47,7 @@ func _initialize() -> void:
 	var explore: Dictionary = fixture("explore","explore","entry")
 	explore.exploration=[{"id":"stele","x":500,"y":600}]
 	var reader: RefCounted = script.new({"entry":fixture("entry","safe","explore"),"explore":explore})
+	reader.update({"alpha":{"action":"depart"}},0)
 	reader.update({"interact":true},0)
 	reader.update({"moveX":1},0.9); reader.update({"interact":true},0)
 	check(reader.snapshot().reading and not reader.snapshot().roomComplete,"探索房阅读期间继续封门")
@@ -60,6 +63,7 @@ func _initialize() -> void:
 	check(reader.snapshot().roomId=="entry" and reader.snapshot().visitedRooms==1 and reader.snapshot().health==100,"R规则入口重开整段流程")
 	check(not graph_room(reader,"explore").visited and not graph_room(reader,"explore").complete and graph_room(reader,"entry").current,"重开清除旧图访问与完成状态")
 	var held: RefCounted = script.new({"entry":fixture("entry","safe","safe"),"safe":fixture("safe","safe","entry")})
+	held.update({"alpha":{"action":"depart"}},0)
 	check(not graph_room(held,"safe").visited and not graph_room(held,"safe").complete and not graph_room(held,"safe").locked,"未访问安全房不能提前画为已完成")
 	held.update({"interact":true},0); held.update({"interact":true},0)
 	check(held.snapshot().roomId=="safe","持续按住F不能在两个安全房之间反复切换")
@@ -68,6 +72,7 @@ func _initialize() -> void:
 	var rest: Dictionary = fixture("entry","safe","fight")
 	rest.exploration=[{"id":"altar","x":500,"y":600}]
 	var survivor: RefCounted = script.new({"entry":rest,"fight":hurt_layout})
+	survivor.update({"alpha":{"action":"depart"}},0)
 	survivor.update({"interact":true},0); survivor.update({},1.0)
 	for i in 150:
 		if survivor.snapshot().roomComplete or survivor.snapshot().status=="failed": break

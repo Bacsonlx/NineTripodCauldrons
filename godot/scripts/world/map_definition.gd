@@ -23,7 +23,10 @@ func build_layout() -> Dictionary:
 			"encounter":
 				position_data.merge({"landmark":item.label,"enemies":[]})
 				for enemy in item.get_children():
-					if enemy is MapItem and enemy.category=="enemy": position_data.enemies.append({"x":item.position.x+enemy.position.x,"y":item.position.y+enemy.position.y,"appearance":enemy.appearance})
+					if enemy is MapItem and enemy.category=="enemy":
+						var spawn: Dictionary = {"x":item.position.x+enemy.position.x,"y":item.position.y+enemy.position.y,"appearance":enemy.appearance}
+						if enemy.enemy_role!="appearance": spawn.role=enemy.enemy_role
+						position_data.enemies.append(spawn)
 				layout.encounters.append(position_data)
 			"interaction": position_data.id=item.interaction_id; layout.exploration.append(position_data)
 			"pillar": layout.pillars.append(position_data)
@@ -66,6 +69,7 @@ func validation_errors() -> Array[String]:
 			for enemy in item.get_children():
 				if not enemy is MapItem or enemy.category!="enemy": errors.append(prefix+"子节点必须为敌人出生点"); continue
 				if not enemy.position.is_finite() or enemy.appearance not in ["bird","paper","wood"]: errors.append(prefix+str(enemy.name)+" 出生或外观引用无效")
+				if enemy.enemy_role not in ["appearance","bird","paper","wood"]: errors.append(prefix+str(enemy.name)+" 职责引用无效 "+enemy.enemy_role)
 				if enemy.scale!=Vector2.ONE or enemy.rotation!=0: errors.append(prefix+str(enemy.name)+" 不支持节点旋转或缩放")
 	if counts.spawn!=1: errors.append("TangguMap 必须恰有一个玩家出生点")
 	if counts.road<1 or counts.encounter<1 or counts.route<2: errors.append("TangguMap 缺少道路、主路折线或战斗遭遇")

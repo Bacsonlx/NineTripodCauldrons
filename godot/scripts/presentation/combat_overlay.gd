@@ -22,11 +22,16 @@ func update(snapshot: Dictionary,world_aim: Vector2,inside: bool) -> void:
 			add_child(bar); enemy_bars[enemy.id]=bar
 		var bar: ProgressBar = enemy_bars[enemy.id]
 		bar.position=Vector2(enemy.x-24,enemy.y-92); bar.size=Vector2(48,6)
-		bar.value=enemy.health; bar.visible=true
+		bar.max_value=enemy.get("maxHealth",60); bar.value=enemy.health; bar.visible=true
 		bar.get_theme_stylebox("fill").bg_color=Color("f4c388") if enemy.flash>0 else Color("c8533e")
 	queue_redraw()
 func _draw() -> void:
 	if state.is_empty(): return
+	for arrow in state.get("paperArrows",[]):
+		var tip: Vector2 = Vector2(arrow.x,arrow.y-40)
+		var heading: Vector2 = Vector2.from_angle(arrow.angle)
+		draw_line(tip-heading*18,tip,Color("c6eaf0"),3)
+		draw_colored_polygon(PackedVector2Array([tip+heading*5,tip-heading*3+heading.orthogonal()*4,tip-heading*3-heading.orthogonal()*4]),Color("eef7f2"))
 	if state.invalid!=null:
 		var center: Vector2 = Vector2(state.invalid.x,state.invalid.y)
 		draw_line(center-Vector2(9,9),center+Vector2(9,9),Color("e87956"),2)

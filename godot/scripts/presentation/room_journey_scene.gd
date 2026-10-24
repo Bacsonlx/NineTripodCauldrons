@@ -8,6 +8,9 @@ var minimap: Control
 var boss_view: Node2D
 var boss_bar: ProgressBar
 var loot_view: Node2D
+var camp_panel: CanvasLayer
+var world_items: Node2D
+var pickup_label: Label
 
 func build_hud() -> void:
 	super.build_hud()
@@ -22,6 +25,12 @@ func build_hud() -> void:
 	hud.add_child(boss_bar)
 	hud.resized.connect(layout_boss_bar)
 	layout_boss_bar()
+	pickup_label=Label.new(); pickup_label.name="PickupCard"
+	pickup_label.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	pickup_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	pickup_label.offset_left=-450; pickup_label.offset_right=-24; pickup_label.offset_top=-185; pickup_label.offset_bottom=-90
+	pickup_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	hud.add_child(pickup_label)
 
 func layout_boss_bar() -> void:
 	boss_bar.offset_top=hud.encounter.position.y+60
@@ -43,7 +52,10 @@ func _ready() -> void:
 	boss_view.standalone_environment=false
 	boss_view.z_index=1; add_child(boss_view)
 	loot_view=load("res://scripts/presentation/loot_view.gd").new(); add_child(loot_view)
+	world_items=load("res://scripts/gameplay/world_items.gd").new(); add_child(world_items)
 	super._ready()
+	camp_panel=load("res://scripts/gameplay/camp_panel.gd").new(); add_child(camp_panel); camp_panel.setup(room,controls)
+
 	if options.startRoom=="boss" and DisplayServer.get_name()!="headless": get_window().mode=Window.MODE_FULLSCREEN
 	overview_button.text="房间总览 · M"
 
@@ -77,6 +89,7 @@ func present_new_room() -> void:
 	room.layout.grips=room.layout.grips.duplicate()
 	room.layout.grips[1]=atlas.upperDown.grip.duplicate()
 	controls=Controls.new(room)
+	if camp_panel!=null: camp_panel.room=room; camp_panel.controls=controls; camp_panel.signature=""
 	for body in enemy_bodies.values(): body.queue_free()
 	enemy_bodies.clear()
 	for body in arrows.values(): body.queue_free()
@@ -89,6 +102,9 @@ func present_new_room() -> void:
 	update_camera(); present(room.snapshot(),0)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.physical_keycode==KEY_I and event.pressed and not event.echo:
+		controls.interrupt(); room.update({"alpha":{"action":"camp"}},0)
+		get_viewport().set_input_as_handled(); return
 	if event is InputEventKey and event.physical_keycode==KEY_R and event.pressed and not event.echo:
 		if not room.snapshot().paused:
 			journey.restart(); present_new_room()
@@ -102,6 +118,12 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 	super.present(snapshot,seconds)
 	var data: Dictionary = journey.snapshot()
 	loot_view.update_state(data,seconds)
+	world_items.update(data)
+	var card: Dictionary = data.alpha.pickupCard
+	pickup_label.visible=not data.alpha.camp and not data.reading
+	pickup_label.text=("%s · %.1f秒\n%s" % [card.name,card.remaining,card.reason]+("\nTab 尝试转坛" if not card.attempted else "")) if not card.is_empty() else "I 营地整理（完成房间并靠近整理点）\n"+data.alpha.message
+	if data.alpha.camp and not room.paused: status_label.visible=false
+
 	minimap.update_state(data.roomGraph)
 	boss_view.visible=data.has("boss")
 	boss_bar.visible=data.has("boss")
@@ -114,7 +136,7 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 		var remaining: int = data.enemies.filter(func(enemy: Dictionary): return enemy.group==data.encounter and enemy.phase!="dead").size()
 		encounter_label.text=room.layout.roomTitle+" · 第 %d / %d 波" % [data.wave,data.waveCount]+"\n"+("下一波 %.1f 秒后出现" % data.waveDelay if data.waveDelay>0 else "影偶剩余 %d · 清完全部波次后开门" % remaining)
 	if data.journeyComplete: encounter_label.text="汤谷流程完成 · 可返回探索\nR 重开整段流程"
-	if not data.get("rewardPlaceholders",[]).is_empty(): encounter_label.text+="\n装备／道具为未入库占位 · 背包后续接入"
+	if not data.get("rewardPlaceholders",[]).is_empty(): encounter_label.text+="\nBoss战利品为未入库占位 · 阶段奖励后续接通"
 	if state.feedback==null and state.interaction==null:
 		interaction_label.text="走近门按 F 前往下一房间" if data.roomComplete else "完成本房任务后，来路与出口一起开放"
 		if data.objective=="combat": interaction_label.text="血／蓝瓶落地后走近按 F 即时补充 · 满值留地"

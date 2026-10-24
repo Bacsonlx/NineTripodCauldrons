@@ -1,0 +1,96 @@
+extends RefCounted
+
+const Room = preload("res://scripts/combat/training_room.gd")
+const Controls = preload("res://scripts/input/player_controls.gd")
+
+func room_for(role: String, at: Vector2 = Vector2(650,600), gameplay: bool = true, wall: Rect2 = Rect2(1000,250,20,20)) -> TrainingRoom:
+	var model: TrainingRoom = Room.new({"mode":"gameplay" if gameplay else "reference","enemy":{"x":at.x,"y":at.y,"appearance":role},"encounter":Vector2(400,600),"obstacle":wall})
+	if gameplay: model.update({"alpha":{"action":"depart"}},0)
+	return model
+
+func run(check: Callable) -> void:
+	var paper: TrainingRoom = room_for("paper")
+	var wood: TrainingRoom = room_for("wood")
+	check.call(paper.snapshot().enemies[0].health==45 and wood.snapshot().enemies[0].health==150 and room_for("bird").snapshot().enemies[0].health==60,"玩法模式三职责分别具有45／150／60生命")
+
+	paper.update({},0.01)
+	check.call(paper.snapshot().enemies[0].phase=="warn" and is_equal_approx(paper.snapshot().enemies[0].x,650),"纸面在约300范围停步进入0.75秒锁向预警")
+
+	paper.update({"moveY":1},0.5)
+	paper.update({},0.26)
+	var arrows: Array = paper.snapshot().get("paperArrows",[])
+	check.call(arrows.size()==1 and is_equal_approx(arrows[0].angle,PI) and is_equal_approx(arrows[0].y,600),"纸面预警后只发一枚固定方向纸矢，不追踪横移玩家")
+	check.call(paper.snapshot().enemies[0].phase=="recover" and paper.snapshot().enemies[0].timer>1.20,"纸矢离手后立即进入1.25秒恢复，不额外增加近战挥击时长")
+	var hit: TrainingRoom = room_for("paper")
+	hit.update({},1.5)
+	check.call(hit.snapshot().health==90 and hit.snapshot().get("paperArrows",[]).is_empty(),"360速度纸矢首次接触造成10伤并消失，不重复伤害")
+
+	var blocked: TrainingRoom = room_for("paper",Vector2(650,600),true,Rect2(520,570,20,60))
+	blocked.update({},1.5)
+	check.call(blocked.snapshot().health==100 and blocked.snapshot().paperArrows.is_empty(),"纸矢撞实体消失，隔墙不能造成伤害")
+	var low_stone: TrainingRoom = room_for("paper",Vector2(650,600),true,Rect2(520,570,20,60))
+	low_stone.layout.obstacles[0].blocksProjectiles=false
+	low_stone.update({},1.5)
+	check.call(low_stone.snapshot().health==90,"允许箭穿过的低石不阻挡纸矢，首次接触只扣10血")
+	var expired: TrainingRoom = room_for("paper")
+	expired.update({},0.77)
+	expired.update({"moveY":1},0.7)
+	expired.update({},0.8)
+	check.call(expired.snapshot().health==100 and expired.snapshot().paperArrows.is_empty(),"横向避开纸矢后1.5秒到期清理")
+	var killed: TrainingRoom = room_for("paper",Vector2(550,600))
+	killed.update({"fire":true,"aim":Vector2(550,548)},0.1)
+	killed.update({},0.22)
+	killed.update({"pierce":true,"aim":Vector2(550,548)},0.5)
+	killed.update({},1)
+	check.call(killed.snapshot().enemies[0].phase=="dead" and killed.snapshot().paperArrows.is_empty() and killed.snapshot().health==100,"预警中被真实箭击杀的纸面不再发新攻击")
+	wood=room_for("wood",Vector2(475,600))
+	wood.update({},0.01)
+	wood.update({},0.68)
+	check.call(wood.snapshot().health==100 and wood.snapshot().enemies[0].phase=="warn","木甲在90范围预警0.70秒，预警未满不扣血")
+	wood.update({},0.03)
+	check.call(wood.snapshot().health==75 and wood.snapshot().enemies[0].phase=="swing","木甲90范围横扫造成25真实伤害")
+	wood.update({},0.12)
+	wood.update({},0.8)
+	check.call(wood.snapshot().health==75 and wood.snapshot().enemies[0].phase=="recover","木甲0.12秒挥击只结算一次，0.90秒恢复留输出窗口")
+	for role in ["bird","paper","wood"]:
+		var chase: TrainingRoom = room_for(role,Vector2(900,600))
+		chase.update({},1)
+		var expected: float = 780 if role=="bird" else 810 if role=="paper" else 815
+		check.call(is_equal_approx(chase.snapshot().enemies[0].x,expected),role+"按已确认120／90／85速度追击")
+	var reference: TrainingRoom = room_for("paper",Vector2(455,600),false)
+	reference.update({},0.6)
+	check.call(reference.snapshot().enemies[0].health==60 and reference.snapshot().health==80 and not reference.snapshot().has("paperArrows"),"未启用玩法的纸面外观仍使用旧60生命／20伤近战")
+	var long_room: TrainingRoom = room_for("paper")
+	var short_room: TrainingRoom = room_for("paper")
+	long_room.update({},3.6)
+	for i in 72: short_room.update({},0.05)
+	check.call(long_room.snapshot().health==short_room.snapshot().health and long_room.snapshot().paperArrows==short_room.snapshot().paperArrows and long_room.snapshot().enemies[0].phase==short_room.snapshot().enemies[0].phase,"纸矢长帧与短步的生命、攻击阶段、投射物一致")
+	var interrupted: TrainingRoom = room_for("paper")
+	var phase_before: String = interrupted.snapshot().enemies[0].phase
+	var controls: PlayerControls = Controls.new(interrupted)
+	controls.key_down(KEY_Q)
+	controls.interrupt(true)
+	interrupted.update({},3)
+	check.call(interrupted.snapshot().enemies[0].phase==phase_before and interrupted.snapshot().health==100,"失焦暂停冻结敌人预警和纸矢时间")
+	controls.key_down(KEY_ESCAPE)
+	controls.update(Vector2(650,548),true,0.4)
+	check.call(interrupted.snapshot().arrows.is_empty() and interrupted.snapshot().enemies[0].health==45,"恢复不补发中断前的穿透箭")
+
+	var map: Node2D = load("res://scenes/tanggu_first_level_map.tscn").instantiate()
+	var spawn: Node2D = map.get_node("Encounter1").get_child(0)
+	var position_before: Vector2 = spawn.position
+	spawn.set("enemy_role","paper")
+	var configured: Dictionary = map.build_layout()
+	check.call(configured.encounters[0].enemies[0].get("role","")=="paper" and spawn.position==position_before,"编辑器职责独立于外观，配置不覆盖出生位置")
+	var packed: PackedScene = PackedScene.new()
+	var saved_path: String = "/tmp/t06-role-%d.tscn" % OS.get_process_id()
+	var saved: bool = packed.pack(map)==OK and ResourceSaver.save(packed,saved_path)==OK
+	check.call(saved,"职责配置可保存为原生场景")
+	if saved:
+		var reopened: Node2D = load(saved_path).instantiate()
+		check.call(reopened.build_layout().encounters[0].enemies[0].get("role","")=="paper" and reopened.get_node("Encounter1").get_child(0).position==position_before,"保存重开后职责与出生位置保持一致")
+		reopened.free()
+		DirAccess.remove_absolute(saved_path)
+	spawn.position=Vector2(-100000,0)
+	check.call(not map.validation_errors().is_empty(),"非法敌人出生配置被拒绝")
+	map.free()

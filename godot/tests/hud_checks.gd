@@ -13,6 +13,7 @@ func _initialize() -> void:
 func run() -> void:
 	var game: Node2D = load("res://scenes/tanggu_first_level.tscn").instantiate()
 	root.add_child(game); game.set_physics_process(false)
+	game.journey.update({"alpha":{"action":"depart"}},0)
 	await process_frame
 	var hud: Control = game.find_child("CombatHUD",true,false)
 	check(hud!=null,"正式首关显示头像、状态与左下动作栏")
@@ -48,6 +49,7 @@ func run() -> void:
 	retry.physical_keycode=KEY_R; retry.pressed=true
 	game._unhandled_input(retry)
 	check(q.text.is_empty() and hud.health.value==100,"R重试清空冷却并恢复生命显示")
+	game.journey.update({"alpha":{"action":"depart"}},0)
 	for i in 8:
 		game.room.update({},0)
 		game.room.update({"pierce":true,"aim":Vector2(1000,550)},0.2)

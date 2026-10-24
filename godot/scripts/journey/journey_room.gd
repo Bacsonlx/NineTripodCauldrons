@@ -54,6 +54,7 @@ func interact() -> void:
 
 func snapshot() -> Dictionary:
 	var data: Dictionary = super.snapshot()
+	data.camps=layout.get("camps",[]).duplicate(true)
 	data.roomId=layout.roomId; data.roomTitle=layout.roomTitle
 	data.roomComplete=completed; data.objective=layout.objective
 	data.wave=mini(encounter+1,layout.encounters.size()); data.waveCount=layout.encounters.size()
@@ -61,16 +62,17 @@ func snapshot() -> Dictionary:
 	return data
 
 func travel_state() -> Dictionary:
-	return {"health":health,"cooldown":cooldown,"pierce":pierce_cooldown,"rain":rain_cooldown,"dodge":dodge_cooldown,"recovery":skill_recovery,"hurt":hurt,"protection":protection,"mana":mana,"stamina":stamina,"staminaDelay":stamina_delay}
+	return {"health":health,"healthMax":health_max,"cooldown":cooldown,"pierce":pierce_cooldown,"rain":rain_cooldown,"dodge":dodge_cooldown,"recovery":skill_recovery,"hurt":hurt,"protection":protection,"mana":mana,"stamina":stamina,"staminaDelay":stamina_delay}
 
 func arrive(travel: Dictionary,location: Vector2,facing: int,generation: int) -> void:
 	cancel_input()
 	mana=travel.mana; stamina=travel.stamina; stamina_delay=travel.staminaDelay
+	health_max=travel.healthMax
 	health=travel.health; cooldown=travel.cooldown; pierce_cooldown=travel.pierce
 	rain_cooldown=travel.rain; dodge_cooldown=travel.dodge; skill_recovery=travel.recovery
 	hurt=travel.hurt; protection=travel.protection
 	player.x=location.x; player.y=location.y; player.facing=facing; player.angle=facing*PI/2
 	player.moving=false; run_id=generation
-	cancel_input(); arrows.clear(); rains.clear(); effects.clear(); invalid.clear(); feedback.clear()
+	cancel_input(); paper_arrows.clear(); arrows.clear(); rains.clear(); effects.clear(); invalid.clear(); feedback.clear()
 	interact_held=true
 	dodge_time=0; dodge_invulnerability=0; requested_door=""

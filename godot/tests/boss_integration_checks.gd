@@ -25,6 +25,7 @@ func _initialize() -> void:
 	var exit: Dictionary = safe_room("end","boss")
 	exit.doors[0].targetDoor="end"
 	run=Journey.new({"entry":entry,"court3":court,"boss":boss,"end":exit})
+	run.update({"alpha":{"action":"depart"}},0)
 	check(pass_to("court3"),"通过真实F进入第三庭夹具")
 	run.update({},1)
 	for i in 200:

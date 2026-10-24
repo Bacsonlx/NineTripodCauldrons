@@ -119,6 +119,7 @@ func _initialize() -> void:
 	door_data.doors=[{"id":"back","target":"other","targetDoor":"back","title":"另一房","point":{"x":720,"y":550},"arrival":{"x":720,"y":550},"x":200,"y":550,"halfWidth":20,"halfHeight":55,"height":120,"kind":"wall"}]
 	var other: Dictionary = door_data.duplicate(true); other.roomId="other"; other.doors[0].target="entry"
 	var journey: RefCounted = Journey.new({"entry":door_data,"other":other})
+	journey.update({"alpha":{"action":"depart"}},0)
 	journey.update({"pierce":true,"aim":Vector2(800,550)},0)
 	check(journey.snapshot().resources.mana==88,"过门前技能确已扣蓝")
 	journey.update({"interact":true},0)

@@ -1,5 +1,6 @@
 extends RefCounted
 
+const Equipment = preload("res://scripts/alpha/equipment_rules.gd")
 const Votes = preload("res://scripts/alpha/altar_votes.gd")
 
 const REGIONS: Dictionary = {"equipment":Rect2i(0,0,6,5),"altar":Rect2i(6,0,4,4),"meridian":Rect2i(0,5,5,2),"warehouse":Rect2i(6,4,4,1)}
@@ -134,6 +135,13 @@ const EFFECT_CARDS: Array = [
 		"description": "显灵：白盒受控样例为半径160内敌移速−25%，正式小池不提供塔物品\n作祟：四个技能槽的冷却乘1.15，不改变普通攻击或基础闪避\n点燃20秒：白盒受控样例令普通敌不能移动但仍可进行范围内攻击；对首领改为移速−50%，不长期冻结行动；不投放相关免耗道具\n白盒只记录周期与占格；战斗效果待后续接通。"
 	}
 ]
+var pickup_card: Dictionary = {}
+var pickup_blocked: Dictionary = {}
+var quick_item_id: int = -1
+var rewarded_waves: Dictionary = {}
+var gameplay: bool = false
+var initial_items: Array = []
+var applied_equipment: Dictionary = {"healthMax":100,"pickupRadius":80.0,"effects":[],"enabledIds":[]}
 var items: Array[Dictionary] = []
 var camp: bool = true
 var elapsed: float = 0.0
@@ -149,17 +157,28 @@ var next_order: int = 0
 var next_id: int = 0
 var seed_value: int = 1
 
-func _init(seed_number: int = 1) -> void:
-	seed_value=seed_number
+func _init(seed_number: int = 1, gameplay_mode: bool = false, starting_items: Array = []) -> void:
+	seed_value=seed_number; gameplay=gameplay_mode; initial_items=starting_items.duplicate(true)
 
 func reset(spawn: Vector2) -> void:
+	pickup_card={}; pickup_blocked.clear(); quick_item_id=-1; rewarded_waves.clear()
 	items.clear(); camp=true; elapsed=0; next_id=0; next_order=0; ranking={}; burn={}; last_burn={}; burn_held=false; departed=false; shadow_id=-1; lost_shadows.clear()
-	message="白盒：仅空间规则已接通，内容卡中的战斗效果尚未实现。"
+	message="嵌入羊角提高生命上限、鼠毫扩大拾取；确认构筑后出发。祭坛当前只结算票数，契与容器战斗效果待接通。" if gameplay else "白盒：仅空间规则已接通，内容卡中的战斗效果尚未实现。"
 	add_item("训练弓","equipment",Vector2i(0,0))
 	add_item("布履","equipment",Vector2i(3,0))
 	add_item("青龙","equipment",Vector2i(4,1))
-	var drop: Dictionary = add_item("快马","ground",Vector2i.ZERO)
-	drop.world=spawn+Vector2(60,0)
+	applied_equipment={"healthMax":100,"pickupRadius":80.0,"effects":[],"enabledIds":[]}
+	if gameplay:
+		add_item("羊角","warehouse",Vector2i(6,4))
+		add_item("鼠毫","warehouse",Vector2i(7,4))
+		var pact: Dictionary = add_item("素食","warehouse",Vector2i(8,4)); pact.rotated=true
+		pact.description="【本批战斗效果待接通，当前只占格和投票】\n"+pact.description
+		for initial in initial_items:
+			var extra: Dictionary = add_item(initial.get("name",""),"ground",Vector2i.ZERO)
+			if not extra.is_empty(): extra.world=initial.get("world",spawn)
+	else:
+		var drop: Dictionary = add_item("快马","ground",Vector2i.ZERO)
+		drop.world=spawn+Vector2(60,0)
 	recount()
 
 func definition(title: String) -> Dictionary:
@@ -199,6 +218,8 @@ func place(item: Dictionary, cell: Vector2i, rotated: bool) -> bool:
 	if item.get("shadow",false) and region!="altar": message="残影须承诺祭坛空间"; return false
 	if item.kind=="神兽" and region!="equipment": message="神兽须在装备区"; return false
 	for other in items:
+		if gameplay and region=="equipment" and other.id!=item.id and other.region=="equipment" and not Equipment.slot(item).is_empty() and Equipment.slot(item)==Equipment.slot(other):
+			message="同部位只启用一件训练装备"; return false
 		if other.id!=item.id and REGIONS.has(other.region) and rectangle.intersects(Rect2i(other.cell,shape(other,other.rotated))):
 			message="放置失败：目标格已占用"; return false
 	for sealed in ranking.get("sealed",[]):
@@ -211,6 +232,27 @@ func place(item: Dictionary, cell: Vector2i, rotated: bool) -> bool:
 
 func command(action: Dictionary, room: RefCounted) -> void:
 	var kind: String = action.get("action","")
+	if gameplay and (room.paused or room.reading or room.status=="failed"):
+		message="暂停、阅读或影散后不能调整构筑"; return
+	if gameplay and kind in ["quick_altar","quick_bind","use_quick"]:
+		if room.paused or room.reading or room.status=="failed": message="暂停、阅读或结算中不能快捷操作"; return
+		if kind=="quick_altar": quick_altar(room)
+		elif kind=="quick_bind": bind_quick(action.get("id",-1))
+		else: use_quick(room)
+		return
+	if gameplay and kind in ["sample","fixture_lock","shadow"]: message="玩法模式不开放受控样本"; return
+	if gameplay and kind in ["embed","main_glyph"]:
+		if not camp or room.paused or room.reading or room.status=="failed": message="仅可在安全营地装配"; return
+		var equipment: Dictionary = {}
+		var glyph: Dictionary = {}
+		for candidate in items:
+			if candidate.id==action.get("equipmentId",-1): equipment=candidate
+			if candidate.id==action.get("glyphId",-1): glyph=candidate
+		if equipment.is_empty(): message="装备实例不存在"; return
+		if kind=="embed":
+			message="实物符不存在" if glyph.is_empty() else Equipment.embed(items,equipment,glyph)
+		else: message=Equipment.select_main(equipment,action.get("glyphId",-1))
+		return
 	if kind=="shadow":
 		choose_shadow(action,room); return
 	if kind=="burn":
@@ -220,13 +262,19 @@ func command(action: Dictionary, room: RefCounted) -> void:
 		if room.paused or room.reading: message="先恢复暂停或关闭阅读"; return
 		for candidate in items:
 			if candidate.get("shadow",false) and candidate.region!="altar": message="先实际摆好残影或选择不带"; return
+		if gameplay: applied_equipment=Equipment.preview(items)
 		departed=true; camp=false; room.cancel_input(); message="冒险中；返回起点且清除已激活敌人后可整理"; return
 	if kind=="camp":
+		if gameplay and not room.snapshot().get("roomComplete",true): message="完成本房全部任务后才可整理"; return
 		for enemy in room.snapshot().enemies:
 			if enemy.phase!="inactive" and enemy.phase!="dead": message="请先清除已激活影偶"; return
-		if Vector2(room.player.x,room.player.y).distance_to(room.point(room.layout.spawn))>100:
-			message="需返回安全出发点"; return
-		camp=true; room.cancel_input(); return
+		var safe: bool = false
+		for location in room.layout.get("camps",[room.layout.spawn]) if gameplay else [room.layout.spawn]:
+			if Vector2(room.player.x,room.player.y).distance_to(room.point(location))<=100 and room.clear_path(room.player,room.point(location)): safe=true
+		if not safe: message="需返回安全营地"; return
+		camp=true
+		if gameplay: pickup_card={}
+		room.cancel_input(); return
 	if room.paused or room.reading: message="暂停或阅读中不能改动白盒"; return
 	if kind=="sample" and camp:
 		var sample: Dictionary = definition(action.get("name",""))
@@ -247,14 +295,22 @@ func command(action: Dictionary, room: RefCounted) -> void:
 		if candidate.id==action.get("id",-1): item=candidate; break
 	if item.is_empty(): message="物品实例不存在"; return
 	if item.get("shadow",false) and kind not in ["place"]: message="残影不能使用、改装或喂兽"; return
+	if gameplay and kind=="drop":
+		if not camp and item.region=="equipment": message="装备只能在营地卸下"; return
+		if item.kind=="神兽": message="神兽不能丢弃"; return
+		if item.region not in REGIONS or item.state=="burning" or item.get("locked",false): message="此物品不能丢弃"; return
+		item.roomId=room.layout.get("roomId","")
+		item.region="ground"; item.world=Vector2(room.player.x,room.player.y); pickup_blocked[item.id]=true
+		message="已放到脚边，离开拾取范围后才重新自动拾取"; return
 	if kind=="discard" and item.state=="ash":
 		items.erase(item); message="已丢弃灰烬"; return
 	if kind=="fixture_lock" and camp and item.kind=="受控票物":
 		item.locked=not item.get("locked",false); return
 	if kind=="pickup":
+		if gameplay: pickup_item(item,room); return
 		if item.region!="ground": message="该实例已拾取"; return
 		var origin: Vector2 = Vector2(room.player.x,room.player.y)
-		if origin.distance_to(item.world)>80 or not room.clear_path(origin,item.world): message="物品过远或被实体遮挡"; return
+		if origin.distance_to(item.world)>(applied_equipment.pickupRadius if gameplay else 80) or not room.clear_path(origin,item.world): message="物品过远或被实体遮挡"; return
 		for x in range(6,10):
 			if place(item,Vector2i(x,4),false) or place(item,Vector2i(x,4),true): return
 		message="仓库无位，物品留地"; return
@@ -263,6 +319,7 @@ func command(action: Dictionary, room: RefCounted) -> void:
 	if kind=="place": place(item,action.get("cell",item.cell),action.get("rotated",item.rotated))
 
 func recount() -> void:
+	if gameplay: normalize_references()
 	ranking=Votes.calculate(items,ranking)
 
 func snapshot() -> Dictionary:
@@ -275,6 +332,12 @@ func snapshot() -> Dictionary:
 		cards.append(definition("白盒装备·"+key))
 	var result: Dictionary = {"version":"tanggu-alpha-whitebox.4","seed":seed_value,"camp":camp,"elapsed":elapsed,"items":items.duplicate(true),"regions":REGIONS.duplicate(),"message":message,"cards":cards,"combatEffectsReady":false,"departed":departed,"shadowId":shadow_id,"lostShadowIds":lost_shadows.duplicate(),"burn":burn.duplicate(true),"lastBurn":last_burn.duplicate(true)}
 
+	if gameplay:
+		result.pickupCard=pickup_card_snapshot()
+		result.quickItemId=quick_item_id
+		result.quickItem=find_item(quick_item_id).duplicate(true)
+		result.equipment=Equipment.preview(items)
+		result.appliedEquipment=applied_equipment.duplicate(true)
 	result.merge(ranking.duplicate(true))
 	return result
 
@@ -283,6 +346,7 @@ func burn_input(pressed: bool) -> void:
 	burn_held=pressed
 
 func ignite() -> void:
+	if gameplay: message="本批祭坛只结算票数，容器战斗效果接通后开放点燃"; return
 	if not burn.is_empty(): message="已有终极在进行，不能再次点燃"; return
 	var winner: String = ranking.get("winner","")
 	if winner.is_empty(): message="没有可点燃的显灵者"; return
@@ -301,6 +365,9 @@ func ignite() -> void:
 
 func advance(seconds: float, room: RefCounted) -> void:
 	elapsed+=seconds
+	if gameplay and not pickup_card.is_empty():
+		pickup_card.remaining=maxf(0,pickup_card.remaining-seconds)
+		if pickup_card.remaining<=0.000001: pickup_card={}
 	if burn.is_empty(): return
 	var before: float = burn.elapsed
 	burn.elapsed=minf(20.0,before+seconds)
@@ -340,3 +407,87 @@ func choose_shadow(action: Dictionary, room: RefCounted) -> void:
 	if item.kind=="装备": item.mainGlyph=true
 	shadow_id=item.id
 	message="已选择受控残影：请摆入祭坛；也可选择不带"
+
+func find_item(id: int) -> Dictionary:
+	for item in items:
+		if item.id==id: return item
+	return {}
+
+func normalize_references() -> void:
+	var quick: Dictionary = find_item(quick_item_id)
+	if quick.is_empty() or quick.region not in REGIONS or quick.kind!="器" or quick.state!="normal" or quick.get("shadow",false): quick_item_id=-1
+	if not pickup_card.is_empty() and find_item(pickup_card.id).is_empty(): pickup_card={}
+
+func pickup_card_snapshot() -> Dictionary:
+	if pickup_card.is_empty(): return {}
+	var item: Dictionary = find_item(pickup_card.id)
+	if item.is_empty(): return {}
+	var result: Dictionary = pickup_card.duplicate(true)
+	result.name=item.name; result.region=item.region
+	return result
+
+func pickup_item(item: Dictionary, room: RefCounted) -> void:
+	if item.region!="ground": message="该实例已拾取"; return
+	if item.get("roomId","")!=room.layout.get("roomId",""): message="实物在其他房间"; return
+	var origin: Vector2 = Vector2(room.player.x,room.player.y)
+	if origin.distance_to(item.world)>applied_equipment.pickupRadius or not room.clear_path(origin,item.world): message="物品过远或被实体遮挡"; return
+	if item.get("locked",false) or item.get("shadow",false) or item.state=="burning": message="此实例不能拾取"; return
+	var stored: bool = false
+	for x in range(6,10):
+		if place(item,Vector2i(x,4),false) or place(item,Vector2i(x,4),true): stored=true; break
+	message="已拾取 "+item.name if stored else "仓库无位，物品留地；可按Tab尝试转坛"
+	if not stored: pickup_blocked[item.id]=true
+	if pickup_card.is_empty(): pickup_card={"id":item.id,"remaining":3.0,"reason":message,"attempted":false}
+
+func auto_pickup(room: RefCounted) -> void:
+	var origin: Vector2 = Vector2(room.player.x,room.player.y)
+	var candidates: Array[Dictionary] = []
+	for item in items:
+		if item.region!="ground" or item.get("roomId","")!=room.layout.get("roomId",""): continue
+		var distance: float = origin.distance_to(item.world)
+		if distance>applied_equipment.pickupRadius: pickup_blocked.erase(item.id); continue
+		if pickup_blocked.has(item.id) or item.get("locked",false) or item.get("shadow",false) or item.state=="burning" or not room.clear_path(origin,item.world): continue
+		candidates.append({"item":item,"distance":distance})
+	candidates.sort_custom(func(a: Dictionary,b: Dictionary): return a.item.id<b.item.id if is_equal_approx(a.distance,b.distance) else a.distance<b.distance)
+	for candidate in candidates: pickup_item(candidate.item,room)
+	normalize_references()
+
+func quick_altar(room: RefCounted) -> void:
+	if camp or pickup_card.is_empty(): message="没有有效的刚拾取转坛窗口"; return
+	if pickup_card.attempted: message="此卡已尝试快捷转坛"; return
+	pickup_card.attempted=true
+	var item: Dictionary = find_item(pickup_card.id)
+	if item.is_empty(): pickup_card={}; message="卡上实物已失效"; return
+	if item.region=="ground":
+		if item.get("roomId","")!=room.layout.get("roomId",""): message="卡上实物在其他房间"; pickup_card.reason=message; return
+		var origin: Vector2 = Vector2(room.player.x,room.player.y)
+		if origin.distance_to(item.world)>applied_equipment.pickupRadius or not room.clear_path(origin,item.world):
+			message="卡上实物过远或被实体遮挡"; pickup_card.reason=message; return
+	for y in range(0,4):
+		for x in range(6,10):
+			if place(item,Vector2i(x,y),false) or place(item,Vector2i(x,y),true):
+				pickup_card.reason="已将卡上唯一实物转入祭坛"; message=pickup_card.reason; recount(); return
+	pickup_card.reason="祭坛无合法空位，实物保持原处"; message=pickup_card.reason
+
+func bind_quick(id: int) -> void:
+	if id<0: quick_item_id=-1; message="已清空器快捷引用"; return
+	var item: Dictionary = find_item(id)
+	if item.is_empty() or item.region not in REGIONS or item.kind!="器" or item.state!="normal" or item.get("locked",false) or item.get("shadow",false): message="快捷栏只能引用携带的可用实物器"; return
+	quick_item_id=id; message="V引用 "+item.name+" #"+str(id)
+
+func use_quick(_room: RefCounted) -> void:
+	normalize_references()
+	var item: Dictionary = find_item(quick_item_id)
+	if item.is_empty(): message="V没有绑定可用实物器"; return
+	if item.get("locked",false): message="快捷引用的实物被锁定"; return
+	message=item.name+"的器效果尚未接通，本次不消耗实物"
+
+
+func enemy_defeated(enemy: Dictionary, room: RefCounted) -> void:
+	# 第一批每波首个真实击杀一件符，避免把旧12怪掉落率套到42怪。
+	var wave_key: String = "%s:%d" % [room.layout.get("roomId",""),enemy.group]
+	if rewarded_waves.has(wave_key): return
+	rewarded_waves[wave_key]=true
+	var item: Dictionary = add_item("羊角" if rewarded_waves.size()%2==1 else "鼠毫","ground",Vector2i.ZERO)
+	item.world=room.potion_location(Vector2(enemy.x,enemy.y))
+	item.roomId=room.layout.get("roomId","")

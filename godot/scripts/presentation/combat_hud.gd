@@ -127,8 +127,9 @@ func add_meter(parent: VBoxContainer,title: String,color: Color,width: int) -> P
 	return meter
 
 func update_state(snapshot: Dictionary) -> void:
+	health.max_value=snapshot.get("healthMax",100)
 	health.value=snapshot.health
-	health_value.text="%d / 100" % snapshot.health
+	health_value.text="%d / %d" % [snapshot.health,snapshot.get("healthMax",100)]
 	if snapshot.has("resources"):
 		mana.value=snapshot.resources.mana; stamina.value=snapshot.resources.stamina
 		mana_value.text="%d / 100" % snapshot.resources.mana

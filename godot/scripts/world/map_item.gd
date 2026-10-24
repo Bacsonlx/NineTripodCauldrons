@@ -14,6 +14,7 @@ extends Node2D
 @export_enum("path","stone") var terrain_material: String = "path"
 @export var priority: int = 0
 @export_enum("bird","paper","wood") var appearance: String = "bird"
+@export_enum("appearance","bird","paper","wood") var enemy_role: String = "appearance"
 @export_enum("stele","altar","gate") var interaction_id: String = "stele"
 @export var marker_offset_y: float = NAN
 @export var opens_after_encounter: int = -1

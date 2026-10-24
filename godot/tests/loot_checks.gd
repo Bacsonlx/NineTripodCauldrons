@@ -75,6 +75,7 @@ func run(check: Callable) -> void:
 	destination.roomId="other"; destination.objective="safe"; destination.encounters=[]
 	destination.doors[0].target="entry"
 	var door_run: RefCounted = load("res://scripts/journey/room_journey.gd").new({"entry":door_data,"other":destination})
+	door_run.update({"alpha":{"action":"depart"}},0)
 	door_run.update({"pierce":true,"aim":Vector2(100,548)},0.2)
 	door_run.update({"fire":true,"aim":Vector2(1000,548)},1.4)
 	walk_to(door_run.active,Vector2(400,600).lerp(TrainingRoom.point(door_run.snapshot().drops[0]),0.4))
@@ -94,6 +95,7 @@ func run(check: Callable) -> void:
 	other.doors[0].target="entry"; other.doors[0].arrival=Vector2(400,600)
 	source.doors[0].arrival=Vector2(400,600)
 	var journey: RefCounted = load("res://scripts/journey/room_journey.gd").new({"entry":source,"other":other})
+	journey.update({"alpha":{"action":"depart"}},0)
 	journey.update({"fire":true,"aim":Vector2(1000,548)},1.4)
 	var stored: Array = journey.snapshot().drops
 	tap(journey.active); journey.consume_transition()
