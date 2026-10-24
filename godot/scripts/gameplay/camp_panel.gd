@@ -12,6 +12,7 @@ var grid_cells: Array[Button] = []
 var selected: int = -1
 var rotated: bool = false
 var signature: String = ""
+var skills_ui: Control
 var equipment_ui: Control
 var equipment_host: VBoxContainer
 
@@ -53,6 +54,8 @@ func setup(model: TrainingRoom, adapter: PlayerControls) -> void:
 	equipment_host.add_child(equipment_ui)
 	equipment_ui.setup(room)
 	equipment_ui.command_requested.connect(send)
+	skills_ui=load("res://scripts/alpha/skills_panel.gd").new(); column.add_child(skills_ui)
+	skills_ui.setup(room); skills_ui.command_requested.connect(send)
 	ranking=Label.new(); ranking.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; column.add_child(ranking)
 	add_button("确认构筑并出发",column,func(): send({"action":"depart"}))
 	var note: Label = Label.new(); note.text="点击物品选中，再点击目标格放置；精细整理仅限安全营地。"; column.add_child(note)
@@ -84,11 +87,12 @@ func refresh() -> void:
 	panel.visible=alpha.camp
 	if not panel.visible: return
 	equipment_ui.refresh(state)
+	skills_ui.refresh(state)
 	feedback.text=("已暂停，Esc恢复。 " if room.paused else "")+alpha.message+"\n选择实例 #%d · 拟放方向 %s" % [selected,"已旋转" if rotated else "原形"]
 	var totals: PackedStringArray = []
 	for key in alpha.votes: totals.append("%s %d" % [key,alpha.votes[key]])
 	ranking.text=" · ".join(totals)+"\n票数预览：首位 %s ｜ 次位 %s · %s（容器战斗效果未开放）" % [alpha.winner,alpha.harm,alpha.reason]
-	detail.text="选择实物查看占格与票数。当前羊角、鼠毫可嵌符生效；契、容器与器效果待后续开放。"
+	detail.text="选择实物查看占格与票数。羊角、鼠毫可嵌符；特殊书可摆入经脉或镶装备，营地指定E/G；契与容器待后续开放。"
 	for item in alpha.items:
 		if item.id!=selected: continue
 		detail.text="%s #%d\n%s" % [item.name,item.id,item.description]

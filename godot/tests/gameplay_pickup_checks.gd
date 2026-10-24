@@ -2,6 +2,7 @@ extends RefCounted
 
 func run(check: Callable) -> void:
 	var room: TrainingRoom = TrainingRoom.new({"mode":"gameplay","initialItems":[{"name":"羊角","world":Vector2(400,600)}]})
+	var initial_count: int = room.snapshot().alpha.items.size()
 	room.update({"alpha":{"action":"depart"}},0)
 	room.update({},0.02)
 	var state: Dictionary = room.snapshot().alpha
@@ -12,7 +13,7 @@ func run(check: Callable) -> void:
 	room.update({"alpha":{"action":"quick_altar"}},0)
 	check.call(room.snapshot().alpha.items.back().id==id and room.snapshot().alpha.items.back().region=="altar","Tab转移原实例入坛而不复制")
 	room.update({"alpha":{"action":"quick_altar"}},0)
-	check.call(room.snapshot().alpha.items.size()==7,"同卡只尝试一次，不能复制物品")
+	check.call(room.snapshot().alpha.items.size()==initial_count,"同卡只尝试一次，不能复制物品")
 	room.update({"alpha":{"action":"drop","id":id}},0)
 	room.update({},0.1)
 	check.call(room.snapshot().alpha.items.back().region=="ground","主动丢弃后原地不立即自动捡回")

@@ -46,9 +46,11 @@ func restart() -> void:
 	rooms.clear(); current_id=initial_options.get("startRoom","entry"); generation+=1
 	drop_seed=int(initial_options.get("dropSeed",randi()))
 	inventory=TrainingRoom.AlphaState.new(drop_seed,true)
-	inventory.reset(TrainingRoom.point(layouts[current_id].spawn))
+	inventory.reset(TrainingRoom.point(layouts[current_id].spawn),current_id)
 	if current_id!="entry": inventory.camp=false; inventory.departed=true
 	active=create_room(layouts[current_id]); rooms[current_id]=active
+	for item in inventory.items:
+		if item.get("teaching",false) and not active.can_walk(item.world): item.world=active.potion_location(item.world)
 	active.run_id=generation
 	active.health=int(initial_options.get("health",100))
 	active.mana=int(initial_options.get("mana",100))
@@ -66,7 +68,7 @@ func consume_transition() -> bool:
 	if request.is_empty() or not active.completed or active.paused or active.reading or active.health<=0: return false
 	for door in layouts[current_id].doors:
 		if door.id!=request: continue
-		active.cancel_input(); active.paper_arrows.clear(); active.arrows.clear(); active.rains.clear(); active.effects.clear()
+		active.cancel_input(); active.wind_path.clear(); active.paper_arrows.clear(); active.arrows.clear(); active.rains.clear(); active.effects.clear()
 		var travel: Dictionary = active.travel_state()
 		current_id=door.target
 		if not rooms.has(current_id): rooms[current_id]=create_room(layouts[current_id])

@@ -135,7 +135,7 @@ func run() -> void:
 	check((actor==null or not actor.is_visible_in_tree()) and not game.boss_view.visible and not game.boss_bar.visible,"离开Boss房后隐藏Boss呈现与专属血条")
 	check(pass_to("boss") and pass_to("court3") and pass_to("court2") and pass_to("stele"),"通关后可经过已击败Boss房跨房回溯")
 	check(journey.snapshot().roomComplete and journey.snapshot().exploration.steleRead,"跨房回溯保留任务进度")
-	check(journey.snapshot().alpha.items.size()==14,"八波共发八枚构筑符，往返不会额外复制实物")
+	check(journey.snapshot().alpha.items.size()==18,"八波共发八枚构筑符，往返不会额外复制实物")
 	check(blue_waves.size()==8,"默认首关八波均产生蓝瓶，包括最后一波")
 	check(collected>0 and restored_mana>0,"完整流程通过真实F拾取补充蓝量")
 	finish()

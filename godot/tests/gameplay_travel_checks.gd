@@ -60,4 +60,4 @@ func run(check: Callable) -> void:
 	check.call(run.snapshot().resources==before,"失焦后背包指令不能绕过暂停推进资源")
 	PlayerControls.new(run.active).key_down(KEY_ESCAPE)
 	run.update({"restart":true},0)
-	check.call(run.snapshot().roomId=="entry" and run.snapshot().alpha.items.size()==6 and run.snapshot().healthMax==100,"新局清空旧掉落与装备效果，重新进入入口营地")
+	check.call(run.snapshot().roomId=="entry" and run.snapshot().alpha.items.size()==10 and run.snapshot().healthMax==100,"新局清空旧掉落与装备效果，重新进入入口营地")

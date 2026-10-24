@@ -169,7 +169,7 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 	var upper_key: String = "upper"
 	var upper_frame: int = attack*4+p.facing
 	if state.hurt>0: upper_key="skills"; upper_frame=12+p.facing
-	elif state.dodge>0: upper_key="skills"; upper_frame=8+p.facing
+	elif state.dodge>0 or state.get("skillDash",{}).get("remaining",0)>0: upper_key="skills"; upper_frame=8+p.facing
 	elif state.skill!=null and state.skill.phase=="windup": upper_key="skills"; upper_frame=(4 if state.skill.kind=="rain" else 0)+p.facing
 	elif state.skill!=null: upper_frame=(2 if state.skill.remaining>0.06 else 3)*4+p.facing
 	var down_pose: bool = p.facing==1 and upper_key=="upper" and state.skill==null
@@ -186,7 +186,7 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 	torso.visible = state.status != "failed"
 	failed.visible = state.status == "failed"
 	var bow_grip: Vector2 = state.grip
-	if p.facing==1 and not down_pose and state.dodge<=0 and not (state.skill!=null and state.skill.phase=="windup"):
+	if p.facing==1 and not down_pose and state.dodge<=0 and state.get("skillDash",{}).get("remaining",0)<=0 and not (state.skill!=null and state.skill.phase=="windup"):
 		bow_grip=point+Room.GRIPS[1]
 	pose(bow,"bow",1 if state.attack=="draw" or (state.skill!=null and state.skill.phase=="windup") else 2 if state.attack=="release" else 0,bow_grip+Vector2(0,bob))
 	bow.rotation=-PI/2 if state.skill!=null and state.skill.kind=="rain" and state.skill.phase=="windup" else p.angle

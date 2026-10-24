@@ -62,10 +62,12 @@ func snapshot() -> Dictionary:
 	return data
 
 func travel_state() -> Dictionary:
-	return {"health":health,"healthMax":health_max,"cooldown":cooldown,"pierce":pierce_cooldown,"rain":rain_cooldown,"dodge":dodge_cooldown,"recovery":skill_recovery,"hurt":hurt,"protection":protection,"mana":mana,"stamina":stamina,"staminaDelay":stamina_delay}
+	return {"health":health,"healthMax":health_max,"cooldown":cooldown,"pierce":pierce_cooldown,"rain":rain_cooldown,"dodge":dodge_cooldown,"recovery":skill_recovery,"hurt":hurt,"protection":protection,"mana":mana,"stamina":stamina,"staminaDelay":stamina_delay,"specialCooldowns":special_cooldowns.duplicate(),"chargeRemaining":charge_remaining,"chargeLayers":charge_layers}
 
 func arrive(travel: Dictionary,location: Vector2,facing: int,generation: int) -> void:
 	cancel_input()
+	special_cooldowns=travel.specialCooldowns.duplicate()
+	charge_remaining=travel.chargeRemaining; charge_layers=travel.chargeLayers; wind_path={}
 	mana=travel.mana; stamina=travel.stamina; stamina_delay=travel.staminaDelay
 	health_max=travel.healthMax
 	health=travel.health; cooldown=travel.cooldown; pierce_cooldown=travel.pierce

@@ -10,7 +10,7 @@ const SKILL_GRIPS: Dictionary = {
 }
 const ATTACKS: Dictionary = {"normal":{"damage":15,"distance":14,"duration":0.10}, "pierce":{"damage":40,"distance":36,"duration":0.14}, "rain":{"damage":15,"distance":8,"duration":0.08}}
 const AlphaState = preload("res://scripts/alpha/alpha_state.gd")
-const ENERGY_COSTS: Dictionary = {"pierce":12,"rain":28,"dodge":25}
+const ENERGY_COSTS: Dictionary = {"pierce":12,"rain":28,"dodge":25,"backwind":12,"charge":16,"wind":16}
 # 只在正式独立房间启用；冻结迁移参照和旧小样保留原规则。
 var energy_enabled: bool = false
 var mana: int = 100
@@ -29,6 +29,15 @@ const ENEMY_RULES: Dictionary = {
 }
 var paper_arrows: Array[Dictionary] = []
 var next_paper_arrow: int = 0
+var special_held: Array[bool] = [false,false]
+var special_cooldowns: Dictionary = {"backwind":0.0,"charge":0.0,"wind":0.0}
+var skill_dash_remaining: float = 0.0
+var skill_dash_direction: Vector2 = Vector2.ZERO
+var skill_dash_kind: String = ""
+var charge_remaining: float = 0.0
+var charge_layers: int = 0
+var beast_held: bool = false
+var wind_path: Dictionary = {}
 var gameplay: bool = false
 var layout: Dictionary = {}
 var obstacle: Rect2 = Rect2(720,430,80,36)
@@ -108,6 +117,8 @@ func reset() -> void:
 			index += 1
 	arrows.clear(); effects.clear(); rains.clear(); flashes.clear()
 	paper_arrows.clear(); next_paper_arrow=0
+	special_held=[false,false]; special_cooldowns={"backwind":0.0,"charge":0.0,"wind":0.0}
+	skill_dash_remaining=0; charge_remaining=0; charge_layers=0; beast_held=false; wind_path={}
 	for target in layout.targets: flashes.append(0.0)
 	health=100; health_max=100; hurt=0; protection=0; status="running"; encounter=0
 	pending_mana=0; mana=100; stamina=100; stamina_delay=0
@@ -121,7 +132,7 @@ func reset() -> void:
 	exploration={"steleRead":false,"altarUsed":false,"gateOpen":false}
 	feedback={}; interact_held=run_id>0; gate_opening=0
 	cancel_pending(); needs_release=run_id>0
-	if alpha!=null: alpha.reset(spawn)
+	if alpha!=null: alpha.reset(spawn,layout.get("roomId",""))
 
 func update(input: Dictionary, seconds: float) -> void:
 	if alpha!=null:
@@ -167,6 +178,24 @@ func step(input: Dictionary, seconds: float) -> void:
 	if not input.get("fire",false): needs_release=false
 	if not input.get("pointerInside",true):
 		cancel_pending(); needs_release=input.get("fire",false)
+	var special_pressed: Array[bool] = [false,false]
+	var beast_pressed: bool = false
+	if has_loadout_skills():
+		input=input.duplicate()
+		beast_pressed=input.get("beast",false) and not beast_held
+		beast_held=input.get("beast",false)
+		if not wind_path.is_empty():
+			wind_path.remaining=maxf(0,wind_path.remaining-seconds)
+			if wind_path.remaining<=0: wind_path={}
+		for key in special_cooldowns: special_cooldowns[key]=maxf(0,special_cooldowns[key]-seconds)
+		charge_remaining=maxf(0,charge_remaining-seconds)
+		if charge_remaining<=0: charge_layers=0
+		for index in 2:
+			var held: bool = input.get("special%d" % (index+1),false)
+			special_pressed[index]=held and not special_held[index]
+			special_held[index]=held
+			if special_pressed[index] and alpha.special_skill(index)=="rain": input.rain=true
+		if alpha.special_skill(0)!="rain" and alpha.special_skill(1)!="rain": input.rain=false
 	var rain_pressed: bool = input.get("rain",false) and not rain_held
 	rain_held=input.get("rain",false); rain_cooldown=maxf(0,rain_cooldown-seconds)
 	if not invalid.is_empty():
@@ -176,21 +205,44 @@ func step(input: Dictionary, seconds: float) -> void:
 	pierce_held=input.get("pierce",false); pierce_cooldown=maxf(0,pierce_cooldown-seconds)
 	skill_recovery=maxf(0,skill_recovery-seconds); dodge_cooldown=maxf(0,dodge_cooldown-seconds)
 	var movement: Vector2 = Vector2(input.get("moveX",0),input.get("moveY",0)).limit_length()
-	if input.get("dodge",false) and not dodge_held and dodge_cooldown==0 and hurt==0 and dodge_time==0:
+	if input.get("dodge",false) and not dodge_held and dodge_cooldown==0 and hurt==0 and dodge_time==0 and skill_dash_remaining==0:
 		if spend_energy("dodge"):
 			dodge_direction=movement.normalized() if movement.length()>0 else Vector2.from_angle(player.angle)
 			dodge_time=0.20; dodge_invulnerability=0.12; dodge_cooldown=1.0; cancel_pending()
 	dodge_held=input.get("dodge",false)
 	var dashing: bool = dodge_time>0
+	if has_loadout_skills() and not dashing and hurt==0 and input.get("pointerInside",true):
+		var beast_started: bool = beast_pressed and cast_wind(input,movement)
+		if beast_started: pierce_pressed=false; rain_pressed=false
+		for index in (0 if beast_started else 2):
+			if not special_pressed[index]: continue
+			var kind: String = alpha.special_skill(index)
+			if kind=="backwind" and special_cooldowns.backwind<=0:
+				var direction: Vector2 = movement.normalized() if movement.length()>0 else -skill_aim(input)
+				if start_skill_dash("backwind",direction):
+					special_cooldowns.backwind=5.0; pierce_pressed=false; rain_pressed=false
+			elif kind=="charge" and special_cooldowns.charge<=0 and charge_layers==0 and skill_dash_remaining==0 and windup<0 and piercing<0 and raining.is_empty() and skill_recovery==0:
+				if spend_instant("charge"):
+					charge_layers=2; charge_remaining=4.0; special_cooldowns.charge=10.0; pierce_pressed=false; rain_pressed=false
+			break
+	var skill_dashing: bool = skill_dash_remaining>0
 	var start: Vector2 = Vector2(player.x,player.y)
-	var divisions: int = maxi(1,ceili(seconds*(600.0 if dashing else 220.0)/2.0))
+	var divisions: int = maxi(1,ceili(seconds*(600.0 if dashing or skill_dashing else 220.0)/2.0))
 	var interval: float = seconds/divisions
 	for index in divisions:
 		var dash: float = maxf(0,minf(interval,dodge_time-index*interval)) if dashing else 0.0
 		var dx: float = 0.0 if hurt>0 else dodge_direction.x*600*dash+movement.x*220*(interval-dash)
 		var dy: float = 0.0 if hurt>0 else dodge_direction.y*600*dash+movement.y*220*(interval-dash)
+		if skill_dashing:
+			var duration: float = maxf(0,minf(interval,skill_dash_remaining-index*interval))
+			dx=skill_dash_direction.x*600*duration+movement.x*220*(interval-duration)
+			dy=skill_dash_direction.y*600*duration+movement.y*220*(interval-duration)
 		if can_walk(Vector2(player.x+dx,player.y)): player.x+=dx
 		if can_walk(Vector2(player.x,player.y+dy)): player.y+=dy
+	if skill_dashing and skill_dash_kind=="wind" and not wind_path.is_empty():
+		wind_path.to=point(player)
+		if point(player).distance_to(wind_path.points[-1])>0.000001: wind_path.points.append(point(player))
+	skill_dash_remaining=maxf(0,skill_dash_remaining-seconds)
 	player.moving=start.distance_to(Vector2(player.x,player.y))>0.01
 	var aim: Vector2 = point(input.get("aim",Vector2(player.x+100,player.y-52)))
 	if input.get("pointerInside",true) and aim.distance_to(Vector2(player.x,player.y-layout.shoulderHeight))>4:
@@ -209,7 +261,7 @@ func step(input: Dictionary, seconds: float) -> void:
 	effects=live_effects
 	for index in flashes.size(): flashes[index]=maxf(0,flashes[index]-seconds)
 	cooldown=maxf(0,cooldown-seconds)
-	var can_start: bool = not dashing and hurt==0 and windup<0 and piercing<0 and raining.is_empty() and skill_recovery==0 and not (attack_released and cooldown>0.12)
+	var can_start: bool = not dashing and not skill_dashing and hurt==0 and windup<0 and piercing<0 and raining.is_empty() and skill_recovery==0 and not (attack_released and cooldown>0.12)
 	if can_start and pierce_pressed and pierce_cooldown==0 and input.get("pointerInside",true):
 		if spend_energy("pierce"):
 			piercing=0.18; pierce_cooldown=4; last_skill="pierce"; attack_released=false
@@ -231,7 +283,7 @@ func step(input: Dictionary, seconds: float) -> void:
 			var remainder: float = -piercing
 			piercing=0 # 离弦时仍使用穿透箭握点；随后才退出技能动作。
 			launch("pierce",remainder); piercing=-1; skill_recovery=0.12
-	if not dashing and piercing<0 and raining.is_empty() and skill_recovery==0 and hurt<=0 and input.get("fire",false) and not needs_release and cooldown<=0.000001 and input.get("pointerInside",true):
+	if not dashing and not skill_dashing and piercing<0 and raining.is_empty() and skill_recovery==0 and hurt<=0 and input.get("fire",false) and not needs_release and cooldown<=0.000001 and input.get("pointerInside",true):
 		windup=0.08; last_skill=""; attack_released=false; cooldown=0.35
 	if windup>=0:
 		windup-=seconds
@@ -250,7 +302,7 @@ func step(input: Dictionary, seconds: float) -> void:
 		var hit: Dictionary = contact(from,to,arrow.hitEnemies)
 		var stopped: bool = false
 		while not hit.is_empty():
-			impact(hit,arrow.kind,arrow.angle)
+			impact(hit,arrow.kind,arrow.angle,arrow)
 			if arrow.kind!="pierce" or not hit.has("enemy"):
 				stopped=true; break
 			arrow.hitEnemies.append(hit.enemy)
@@ -273,20 +325,26 @@ func step(input: Dictionary, seconds: float) -> void:
 	dodge_time=maxf(0,dodge_time-seconds)
 
 func launch(kind: String, initial_step: float) -> void:
+	var multiplier: float = 1.0
+	if has_loadout_skills() and kind=="normal" and charge_layers>0:
+		multiplier=1.5; charge_layers-=1
+		if charge_layers==0: charge_remaining=0
+	var attack: Dictionary = {"chargeMultiplier":multiplier}
 	var muzzle: Vector2 = grip()
 	var blocked: Dictionary = contact(Vector2(player.x,player.y-layout.shoulderHeight),muzzle)
 	var hit_enemies: Array = []
 	if not blocked.is_empty():
-		impact(blocked,kind,player.angle)
+		impact(blocked,kind,player.angle,attack)
 		if kind!="pierce" or not blocked.has("enemy"): return
 		hit_enemies.append(blocked.enemy)
 	arrows.append({"id":next_arrow,"x":muzzle.x,"y":muzzle.y,"angle":player.angle,"age":0.0,"kind":kind,"initialStep":initial_step,"hitEnemies":hit_enemies})
+	if has_loadout_skills(): arrows.back().chargeMultiplier=multiplier
 	next_arrow+=1
 
 func rain_target_valid(position: Vector2) -> bool:
 	return can_walk(position)
 
-func impact(hit: Dictionary, kind: String, angle: float) -> void:
+func impact(hit: Dictionary, kind: String, angle: float, attack: Dictionary = {}) -> void:
 	var damage: int = 0
 	var damage_position: Variant = null
 	if hit.get("target")!=null:
@@ -296,7 +354,7 @@ func impact(hit: Dictionary, kind: String, angle: float) -> void:
 			if enemy.id!=hit.enemy or enemy.phase=="dead": continue
 			damage_position=Vector2(enemy.x,enemy.y)
 			var stats: Dictionary = ATTACKS[kind]
-			damage=mini(enemy.health,stats.damage); enemy.health-=damage
+			damage=mini(enemy.health,roundi(stats.damage*attack.get("chargeMultiplier",1.0))); enemy.health-=damage
 			enemy.flash=0.12; hits+=1
 			enemy.knockX=cos(angle)*stats.distance/stats.duration; enemy.knockY=sin(angle)*stats.distance/stats.duration; enemy.knockTime=stats.duration
 			enemy.route=[]; enemy.repath=0
@@ -401,6 +459,7 @@ func encounter_ready(group: Dictionary) -> bool:
 	return point(group).distance_to(Vector2(player.x,player.y))<=170
 
 func cancel_pending() -> void:
+	skill_dash_remaining=0
 	if energy_enabled and pending_mana>0: mana=mini(100,mana+pending_mana)
 	pending_mana=0
 	windup=-1; piercing=-1; raining={}; attack_released=false; needs_release=false
@@ -459,6 +518,7 @@ func nearest_potion() -> Dictionary:
 	return closest
 
 func cancel_input() -> void:
+	special_held=[false,false]; beast_held=false
 	cancel_pending(); pierce_held=false; rain_held=false; dodge_held=false; interact_held=false
 func set_paused(value: bool) -> void:
 	paused=value; cancel_pending(); needs_release=true; dodge_time=0; dodge_invulnerability=0; player.moving=false
@@ -471,7 +531,7 @@ func attack_phase() -> String:
 	if attack_released and cooldown>0.12: return "recover"
 	return "idle"
 func grip() -> Vector2:
-	var offsets: Array = SKILL_GRIPS.dodge if dodge_time>0 else SKILL_GRIPS.rain if not raining.is_empty() else SKILL_GRIPS.pierce if piercing>=0 else layout.grips
+	var offsets: Array = SKILL_GRIPS.dodge if dodge_time>0 or skill_dash_remaining>0 else SKILL_GRIPS.rain if not raining.is_empty() else SKILL_GRIPS.pierce if piercing>=0 else layout.grips
 	return Vector2(player.x,player.y)+point(offsets[player.facing])
 
 func obstacles() -> Array:
@@ -644,6 +704,12 @@ func snapshot() -> Dictionary:
 	var result: Dictionary = {"runId":run_id,"player":player.duplicate(),"grip":grip(),"hits":hits,"windup":windup if windup>=0 else null,"paused":paused or reading,"reading":reading,"gateOpening":gate_opening,"exploration":exploration.duplicate(),"interaction":nearest_interaction() if not nearest_interaction().is_empty() else null,"feedback":feedback.duplicate() if not feedback.is_empty() else null,"attack":attack_phase(),"health":health,"healthMax":health_max,"hurt":hurt,"protection":protection,"status":status,"dodge":dodge_time,"dodgeDirection":dodge_direction,"dodgeInvulnerability":dodge_invulnerability,"cooldowns":{"dodge":dodge_cooldown,"pierce":pierce_cooldown,"rain":rain_cooldown},"skill":skill,"rainPreview":raining.point if not raining.is_empty() else null,"rains":rains.duplicate(true),"invalid":invalid.duplicate() if not invalid.is_empty() else null,"encounter":encounter,"totalEncounters":layout.get("encounters",[]).size(),"enemies":visible_enemies,"arrows":arrows.duplicate(true),"effects":effects.duplicate(true),"targets":targets,"shots":shots}
 
 	if gameplay: result.paperArrows=paper_arrows.duplicate(true)
+	if has_loadout_skills():
+		result.cooldowns.merge(special_cooldowns)
+		result.skillDash={"kind":skill_dash_kind,"remaining":skill_dash_remaining,"direction":skill_dash_direction}
+		result.windPath=wind_path.duplicate(true)
+		result.windExtraReady=wind_extra_ready()
+		result.charge={"remaining":charge_remaining,"layers":charge_layers}
 	if alpha!=null:
 		result.alpha=alpha.snapshot()
 		result.paused=result.paused or alpha.camp
@@ -681,5 +747,57 @@ func receive_hit(amount: int) -> int:
 	if gameplay:
 		effects.append({"id":next_effect,"kind":"hurt","remaining":0.15,"age":0.0,"x":player.x,"y":player.y-40,"enemy":null,"angle":0.0,"damage":damage,"damagePosition":Vector2(player.x,player.y)})
 		next_effect+=1
-	if health==0: status="failed"; player.moving=false
+	if health==0:
+		status="failed"; player.moving=false; clear_skill_effects()
 	return damage
+
+func has_loadout_skills() -> bool:
+	return alpha!=null and alpha.gameplay
+
+func skill_aim(input: Dictionary) -> Vector2:
+	var delta: Vector2 = point(input.get("aim",Vector2(player.x+100,player.y-layout.shoulderHeight)))-Vector2(player.x,player.y-layout.shoulderHeight)
+	return delta.normalized() if delta.length()>0.001 else Vector2.from_angle(player.angle)
+
+func spend_instant(kind: String) -> bool:
+	if energy_enabled and mini(100,mana+pending_mana)<ENERGY_COSTS[kind]:
+		feedback={"text":"蓝量不足","remaining":0.8,"healed":false}; return false
+	cancel_pending()
+	if energy_enabled: mana-=ENERGY_COSTS[kind]
+	return true
+
+func start_skill_dash(kind: String, direction: Vector2, pay: bool = true) -> bool:
+	if skill_dash_remaining>0: return false
+	var origin: Vector2 = point(player)
+	if not ((absf(direction.x)>0.001 and can_walk(origin+Vector2(direction.x*2,0))) or (absf(direction.y)>0.001 and can_walk(origin+Vector2(0,direction.y*2)))):
+		feedback={"text":"无合法位移，不扣蓝或冷却","remaining":0.8,"healed":false}; return false
+	if pay:
+		if not spend_instant(kind): return false
+	else: cancel_pending()
+	skill_dash_kind=kind; skill_dash_direction=direction; skill_dash_remaining=0.2
+	return true
+
+func cast_wind(input: Dictionary, movement: Vector2) -> bool:
+	var beast: bool = alpha.items.any(func(item: Dictionary): return item.name=="青龙" and item.region=="equipment" and item.state=="normal" and not item.get("shadow",false))
+	var book: bool = alpha.items.any(func(item: Dictionary): return item.name=="引风书" and item.region=="meridian" and item.state=="normal")
+	if not beast or not book: return false
+	var direction: Vector2 = movement.normalized() if movement.length()>0 else skill_aim(input)
+	if special_cooldowns.wind<=0:
+		var origin: Vector2 = point(player)
+		if not start_skill_dash("wind",direction): return false
+		special_cooldowns.wind=8.0
+		wind_path={"from":origin,"to":origin,"remaining":3.0,"extra":1,"width":40.0,"points":[origin]}
+		return true
+	if not wind_extra_ready(): return false
+	if not start_skill_dash("wind_extra",direction,false): return false
+	wind_path.extra=0
+	return true
+
+func wind_extra_ready() -> bool:
+	if status=="failed" or health<=0 or wind_path.is_empty() or wind_path.extra<=0 or skill_dash_remaining>0: return false
+	for index in range(1,wind_path.points.size()):
+		var nearest: Vector2 = Geometry2D.get_closest_point_to_segment(point(player),wind_path.points[index-1],wind_path.points[index])
+		if point(player).distance_to(nearest)<=20.000001: return true
+	return false
+
+func clear_skill_effects() -> void:
+	charge_layers=0; charge_remaining=0; skill_dash_remaining=0; wind_path={}

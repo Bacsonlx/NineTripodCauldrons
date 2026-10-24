@@ -11,6 +11,7 @@ var loot_view: Node2D
 var camp_panel: CanvasLayer
 var world_items: Node2D
 var pickup_label: Label
+var skill_view: Node2D
 
 func build_hud() -> void:
 	super.build_hud()
@@ -53,6 +54,7 @@ func _ready() -> void:
 	boss_view.z_index=1; add_child(boss_view)
 	loot_view=load("res://scripts/presentation/loot_view.gd").new(); add_child(loot_view)
 	world_items=load("res://scripts/gameplay/world_items.gd").new(); add_child(world_items)
+	skill_view=load("res://scripts/presentation/loadout_skill_view.gd").new(); skill_view.z_index=4095; add_child(skill_view)
 	super._ready()
 	camp_panel=load("res://scripts/gameplay/camp_panel.gd").new(); add_child(camp_panel); camp_panel.setup(room,controls)
 
@@ -119,6 +121,7 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 	var data: Dictionary = journey.snapshot()
 	loot_view.update_state(data,seconds)
 	world_items.update(data)
+	skill_view.update(data)
 	var card: Dictionary = data.alpha.pickupCard
 	pickup_label.visible=not data.alpha.camp and not data.reading
 	pickup_label.text=("%s · %.1f秒\n%s" % [card.name,card.remaining,card.reason]+("\nTab 尝试转坛" if not card.attempted else "")) if not card.is_empty() else "I 营地整理（完成房间并靠近整理点）\n"+data.alpha.message

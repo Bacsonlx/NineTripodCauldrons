@@ -165,7 +165,7 @@ func damage_player(amount: int) -> bool:
 	health=maxi(0,health-amount); hurt=0.12; protection=0.6
 	cancel_pending(); needs_release=true
 	if health==0:
-		status="failed"; player.moving=false
+		status="failed"; player.moving=false; clear_skill_effects()
 	return true
 
 func can_walk_xy(x: float,y: float) -> bool:
@@ -178,12 +178,12 @@ func can_walk_xy(x: float,y: float) -> bool:
 func rain_target_valid(position: Vector2) -> bool:
 	return super.can_walk_xy(position.x,position.y)
 
-func impact(hit: Dictionary,kind: String,angle: float) -> void:
+func impact(hit: Dictionary,kind: String,angle: float,attack: Dictionary = {}) -> void:
 	if hit.get("enemy",-1)!=BOSS_ID:
-		super.impact(hit,kind,angle); return
+		super.impact(hit,kind,angle,attack); return
 	var boss: Dictionary = enemies[0]
 	if boss.health<=0: return
-	var damage: int = mini(boss.health,roundi(ATTACKS[kind].damage*(1.25 if not hammer.is_empty() else 1.0)))
+	var damage: int = mini(boss.health,roundi(ATTACKS[kind].damage*attack.get("chargeMultiplier",1.0)*(1.25 if not hammer.is_empty() else 1.0)))
 	boss.health-=damage; boss.flash=0.12; hits+=1
 	var effect: Dictionary = hit.duplicate()
 	effect.merge({"id":next_effect,"kind":kind,"remaining":0.15,"age":0.0,"damage":damage,

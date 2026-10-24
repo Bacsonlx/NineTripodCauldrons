@@ -40,7 +40,7 @@ func run() -> void:
 	game.journey.restart(); game.present_new_room()
 	game.camp_panel.refresh()
 	check(game.camp_panel.room==game.room and game.camp_panel.controls==game.controls and game.camp_panel.panel.visible,"新局面板重新绑定当前模型和输入适配器")
-	check(game.room.snapshot().healthMax==100 and game.room.snapshot().alpha.items.size()==6,"界面重开不沿用旧羊角或旧实例")
+	check(game.room.snapshot().healthMax==100 and game.room.snapshot().alpha.items.size()==10,"界面重开不沿用旧羊角或旧实例")
 	game.queue_free(); await process_frame
 	print(JSON.stringify({"gameplay_scene_checks":checks,"failures":failures}))
 	quit(0 if failures.is_empty() else 1)

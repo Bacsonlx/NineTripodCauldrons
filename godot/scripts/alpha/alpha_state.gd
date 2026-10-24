@@ -1,5 +1,6 @@
 extends RefCounted
 
+const Books = preload("res://scripts/alpha/skill_books.gd")
 const Equipment = preload("res://scripts/alpha/equipment_rules.gd")
 const Votes = preload("res://scripts/alpha/altar_votes.gd")
 
@@ -139,6 +140,7 @@ var pickup_card: Dictionary = {}
 var pickup_blocked: Dictionary = {}
 var quick_item_id: int = -1
 var rewarded_waves: Dictionary = {}
+var special_slots: Array[Dictionary] = [{},{}]
 var gameplay: bool = false
 var initial_items: Array = []
 var applied_equipment: Dictionary = {"healthMax":100,"pickupRadius":80.0,"effects":[],"enabledIds":[]}
@@ -160,7 +162,7 @@ var seed_value: int = 1
 func _init(seed_number: int = 1, gameplay_mode: bool = false, starting_items: Array = []) -> void:
 	seed_value=seed_number; gameplay=gameplay_mode; initial_items=starting_items.duplicate(true)
 
-func reset(spawn: Vector2) -> void:
+func reset(spawn: Vector2, room_id: String = "") -> void:
 	pickup_card={}; pickup_blocked.clear(); quick_item_id=-1; rewarded_waves.clear()
 	items.clear(); camp=true; elapsed=0; next_id=0; next_order=0; ranking={}; burn={}; last_burn={}; burn_held=false; departed=false; shadow_id=-1; lost_shadows.clear()
 	message="嵌入羊角提高生命上限、鼠毫扩大拾取；确认构筑后出发。祭坛当前只结算票数，契与容器战斗效果待接通。" if gameplay else "白盒：仅空间规则已接通，内容卡中的战斗效果尚未实现。"
@@ -169,6 +171,16 @@ func reset(spawn: Vector2) -> void:
 	add_item("青龙","equipment",Vector2i(4,1))
 	applied_equipment={"healthMax":100,"pickupRadius":80.0,"effects":[],"enabledIds":[]}
 	if gameplay:
+		special_slots=[{},{}]
+		add_item("穿透箭","meridian",Vector2i(0,5))
+		var beast_book: Dictionary = add_item("引风书","meridian",Vector2i(1,5)); beast_book.rotated=true
+		var rain_book: Dictionary = add_item("箭雨","meridian",Vector2i.ZERO)
+		Books.embed(items,items[0],rain_book)
+		special_slots[0]={"skill":"rain","sourceId":rain_book.id}
+		for title in (["回风","蓄势"] if room_id in ["","entry"] else []):
+			var lesson: Dictionary = add_item(title,"ground",Vector2i.ZERO)
+			lesson.world=spawn+Vector2(36 if title=="回风" else -36,0)
+			lesson.roomId=room_id; lesson.teaching=true
 		add_item("羊角","warehouse",Vector2i(6,4))
 		add_item("鼠毫","warehouse",Vector2i(7,4))
 		var pact: Dictionary = add_item("素食","warehouse",Vector2i(8,4)); pact.rotated=true
@@ -188,7 +200,10 @@ func definition(title: String) -> Dictionary:
 		return {"name":title,"kind":"受控票物","quality":"常","container":title.trim_prefix("白盒·"),"size":Vector2i.ONE,"description":"白盒受控定义，只验证票权、资格、倍率与锁物，不进入实际掉落"}
 	for row in CONTENT:
 		if row[0]==title:
-			return {"name":row[0],"kind":row[1],"quality":row[2],"container":row[3],"size":Vector2i(row[4],row[5]),"description":row[6]}
+			var description: String = row[6]
+			if gameplay:
+				description=description.replace("嵌符与镶书待接通","最多三符与一本特殊书，分别占名额").replace("引风主动技能待接通","引风按C施放，首次16蓝包含一次追加；不提供无敌")
+			return {"name":row[0],"kind":row[1],"quality":row[2],"container":row[3],"size":Vector2i(row[4],row[5]),"description":description}
 	return {}
 
 func add_item(title: String, region: String, cell: Vector2i) -> Dictionary:
@@ -215,6 +230,7 @@ func place(item: Dictionary, cell: Vector2i, rotated: bool) -> bool:
 	for key in REGIONS:
 		if REGIONS[key].encloses(rectangle): region=key; break
 	if region.is_empty(): message="放置失败：越界、跨区或仓格未开放"; return false
+	if gameplay and item.name in ["穿透箭","引风书"] and region!="meridian": message="专属和神兽书必须留在经脉"; return false
 	if item.get("shadow",false) and region!="altar": message="残影须承诺祭坛空间"; return false
 	if item.kind=="神兽" and region!="equipment": message="神兽须在装备区"; return false
 	for other in items:
@@ -234,6 +250,21 @@ func command(action: Dictionary, room: RefCounted) -> void:
 	var kind: String = action.get("action","")
 	if gameplay and (room.paused or room.reading or room.status=="failed"):
 		message="暂停、阅读或影散后不能调整构筑"; return
+	if gameplay and kind in ["embed_book","assign_special"]:
+		if not camp: message="技能装配仅限安全营地"; return
+		if kind=="assign_special":
+			var index: int = action.get("slot",-1)
+			if index<0 or index>1: message="只有两个特殊槽"; return
+			var source_id: int = action.get("sourceId",-1)
+			if source_id<0: special_slots[index]={}; message="已清空特殊槽"; return
+			for source in Books.sources(items):
+				if source.id!=source_id or not source.active: continue
+				if special_slots[1-index].get("skill","")==source.skill: message="同名特殊技能不能重复启用"; return
+				special_slots[index]={"skill":source.skill,"sourceId":source.id}; message="已指定特殊槽"; return
+			message="需要经脉或装备区的有效技能来源"; return
+		var equipment: Dictionary = find_item(action.get("equipmentId",-1))
+		var book: Dictionary = find_item(action.get("bookId",-1))
+		message=Books.embed(items,equipment,book); return
 	if gameplay and kind in ["quick_altar","quick_bind","use_quick"]:
 		if room.paused or room.reading or room.status=="failed": message="暂停、阅读或结算中不能快捷操作"; return
 		if kind=="quick_altar": quick_altar(room)
@@ -297,7 +328,7 @@ func command(action: Dictionary, room: RefCounted) -> void:
 	if item.get("shadow",false) and kind not in ["place"]: message="残影不能使用、改装或喂兽"; return
 	if gameplay and kind=="drop":
 		if not camp and item.region=="equipment": message="装备只能在营地卸下"; return
-		if item.kind=="神兽": message="神兽不能丢弃"; return
+		if item.kind=="神兽" or item.name in ["穿透箭","引风书"]: message="神兽、专属及神兽书不能丢弃"; return
 		if item.region not in REGIONS or item.state=="burning" or item.get("locked",false): message="此物品不能丢弃"; return
 		item.roomId=room.layout.get("roomId","")
 		item.region="ground"; item.world=Vector2(room.player.x,room.player.y); pickup_blocked[item.id]=true
@@ -333,6 +364,8 @@ func snapshot() -> Dictionary:
 	var result: Dictionary = {"version":"tanggu-alpha-whitebox.4","seed":seed_value,"camp":camp,"elapsed":elapsed,"items":items.duplicate(true),"regions":REGIONS.duplicate(),"message":message,"cards":cards,"combatEffectsReady":false,"departed":departed,"shadowId":shadow_id,"lostShadowIds":lost_shadows.duplicate(),"burn":burn.duplicate(true),"lastBurn":last_burn.duplicate(true)}
 
 	if gameplay:
+		result.skillSources=Books.sources(items)
+		result.specialSlots=Books.slots(items,special_slots)
 		result.pickupCard=pickup_card_snapshot()
 		result.quickItemId=quick_item_id
 		result.quickItem=find_item(quick_item_id).duplicate(true)
@@ -491,3 +524,7 @@ func enemy_defeated(enemy: Dictionary, room: RefCounted) -> void:
 	var item: Dictionary = add_item("羊角" if rewarded_waves.size()%2==1 else "鼠毫","ground",Vector2i.ZERO)
 	item.world=room.potion_location(Vector2(enemy.x,enemy.y))
 	item.roomId=room.layout.get("roomId","")
+
+func special_skill(index: int) -> String:
+	var choices: Array[Dictionary] = Books.slots(items,special_slots)
+	return choices[index].get("skill","") if choices[index].active else ""

@@ -15,6 +15,9 @@ var reading: ColorRect
 var toolbar: HBoxContainer
 var actions: HBoxContainer
 var slots: Dictionary = {}
+var captions: Dictionary = {}
+var costs: Dictionary = {}
+var loadout_actions: HBoxContainer
 
 static func label(text: String,font_size: int) -> Label:
 	var node: Label = Label.new()
@@ -82,13 +85,31 @@ func _ready() -> void:
 		slot.counter.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; slot.add_child(slot.counter)
 		var caption: Label = label(definition[1],13)
 		caption.position=Vector2(0,64); caption.size.x=60
+		captions[definition[0]]=caption
 		caption.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; slot.add_child(caption)
 		if definition[0]!="attack":
 			var cost: Label = label("25 精力" if definition[0]=="dodge" else "12 蓝量" if definition[0]=="pierce" else "28 蓝量",10)
+			costs[definition[0]]=cost
 			cost.position=Vector2(0,82); cost.size.x=60; cost.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 			cost.add_theme_color_override("font_color",Color("82b65b") if definition[0]=="dodge" else Color("63c4ce"))
 			slot.add_child(cost)
 		actions.add_child(slot); slots[definition[0]]=slot
+	loadout_actions=HBoxContainer.new(); loadout_actions.name="LoadoutActions"
+	loadout_actions.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+	loadout_actions.position=Vector2(24,-212); loadout_actions.add_theme_constant_override("separation",12)
+	loadout_actions.mouse_filter=Control.MOUSE_FILTER_IGNORE; add_child(loadout_actions)
+	for definition in [["special2","G"],["wind","C"]]:
+		var slot: Control = Slot.new(); slot.name=definition[0].capitalize()
+		slot.custom_minimum_size=Vector2(60,88); slot.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		slot.icon=load("res://assets/ui/dodge.tres"); loadout_actions.add_child(slot)
+		var key: Label = label(definition[1],12); key.position=Vector2(2,-5); slot.add_child(key)
+		slot.counter=label("",21); slot.counter.position=Vector2(0,19); slot.counter.size=Vector2(60,28)
+		slot.counter.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; slot.add_child(slot.counter)
+		var caption: Label = label("",13); caption.position=Vector2(0,64); caption.size.x=60
+		caption.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; slot.add_child(caption); captions[definition[0]]=caption
+		var cost: Label = label("",10); cost.position=Vector2(0,82); cost.size.x=60
+		cost.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; cost.add_theme_color_override("font_color",Color("63c4ce"))
+		slot.add_child(cost); costs[definition[0]]=cost; slots[definition[0]]=slot
 	interaction=label("",14); interaction.name="Interaction"
 	interaction.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 	interaction.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -137,3 +158,27 @@ func update_state(snapshot: Dictionary) -> void:
 	for action in ["pierce","rain","dodge"]:
 		slots[action].insufficient=snapshot.has("resources") and (snapshot.resources.stamina+0.000001<25 if action=="dodge" else snapshot.resources.mana<snapshot.resources.costs[action])
 		slots[action].update_cooldown(snapshot.cooldowns[action])
+
+	var loadout: bool = snapshot.get("alpha",{}).has("specialSlots")
+	loadout_actions.visible=loadout
+	if not loadout:
+		captions.rain.text="箭雨"; costs.rain.text="28 蓝量"; slots.rain.duration=8.0
+		slots.rain.icon=load("res://assets/ui/rain.tres")
+	if loadout:
+		for index in 2:
+			var choice: Dictionary = snapshot.alpha.specialSlots[index]
+			var kind: String = choice.get("skill","") if choice.active else ""
+			var action: String = "rain" if index==0 else "special2"
+			captions[action].text={"rain":"箭雨","backwind":"回风","charge":"蓄势"}.get(kind,"未启用")
+			var cost: int = snapshot.get("resources",{}).get("costs",{}).get(kind,0)
+			costs[action].text="%d 蓝量" % cost if not kind.is_empty() else "空槽"
+			slots[action].duration={"rain":8.0,"backwind":5.0,"charge":10.0}.get(kind,1.0)
+			slots[action].icon=load("res://assets/ui/%s.tres" % ("rain" if kind=="rain" else "dodge" if kind=="backwind" else "attack"))
+			slots[action].insufficient=kind.is_empty() or snapshot.has("resources") and snapshot.resources.mana<cost
+			slots[action].update_cooldown(snapshot.cooldowns.get(kind,0.0))
+		var extra: bool = snapshot.get("windExtraReady",false)
+		captions.wind.text="引风追加" if extra else "引风"
+		costs.wind.text="追加0蓝" if extra else "16 蓝量"
+		slots.wind.duration=8.0
+		slots.wind.insufficient=not extra and snapshot.has("resources") and snapshot.resources.mana<16
+		slots.wind.update_cooldown(0 if extra else snapshot.cooldowns.get("wind",0.0))
