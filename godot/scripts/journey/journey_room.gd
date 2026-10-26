@@ -8,12 +8,15 @@ func _init(data: Dictionary) -> void:
 	super(data)
 	energy_enabled=true
 	completed=data.objective=="safe"
+	invalidate_obstacles()
 
 func update(input: Dictionary,seconds: float) -> void:
 	super.update(input,seconds)
 	if health<=0 or reading: return
-	if layout.objective in ["combat","boss"] and status=="complete": completed=true
-	if layout.objective=="explore" and exploration.steleRead: completed=true
+	if layout.objective in ["combat","boss"] and status=="complete" and not completed:
+		completed=true; invalidate_obstacles()
+	if layout.objective=="explore" and exploration.steleRead and not completed:
+		completed=true; invalidate_obstacles()
 
 func update_enemies(seconds: float,protection_at_start: float,dodge_at_start: float) -> void:
 	wave_delay=maxf(0,wave_delay-seconds)
@@ -24,10 +27,9 @@ func update_enemies(seconds: float,protection_at_start: float,dodge_at_start: fl
 func encounter_ready(group: Dictionary) -> bool:
 	return wave_delay<=0.000001 and (encounter>0 or super.encounter_ready(group))
 
-func obstacles() -> Array:
-	var result: Array = super.obstacles()
-	if not completed: result.append_array(layout.get("doors",[]))
-	return result
+func extra_obstacles() -> Array:
+	# 未完成任务时封门；返回只读布局数组，由基类并入缓存。
+	return [] if completed else layout.get("doors",[])
 
 func nearest_interaction() -> Dictionary:
 	var closest: Dictionary = super.nearest_interaction()

@@ -64,6 +64,11 @@ var gate_opening: float = 0.0
 var interact_held: bool = false
 var exploration: Dictionary = {}
 var feedback: Dictionary = {}
+# 性能优化：障碍集合只随门／波次／房间完成状态变化；诊断计数默认关闭。
+var _obstacle_cache: Array = []
+var _obstacle_cache_dirty: bool = true
+var profile: bool = false
+var diagnostics: Dictionary = {"obstacleRebuilds":0,"snapshotCalls":0,"interactionScans":0,"clearPathCalls":0}
 
 static func point(value: Variant) -> Vector2:
 	return value if value is Vector2 else Vector2(value.x, value.y)
@@ -106,6 +111,7 @@ func reset() -> void:
 	raining={}; rain_cooldown=0; rain_held=run_id>0; invalid={}
 	exploration={"steleRead":false,"altarUsed":false,"gateOpen":false}
 	feedback={}; interact_held=run_id>0; gate_opening=0
+	invalidate_obstacles()
 	cancel_pending(); needs_release=run_id>0
 	if alpha!=null: alpha.reset(spawn)
 
@@ -142,6 +148,7 @@ func step(input: Dictionary, seconds: float) -> void:
 		gate_opening=maxf(0,gate_opening-seconds)
 		if gate_opening==0:
 			exploration.gateOpen=true
+			invalidate_obstacles()
 			for enemy in enemies: enemy.route=[]; enemy.repath=0
 			feedback={"text":"栅门已开启 · 可返回主路","remaining":1.6,"healed":false}
 	var protection_at_start: float = protection
@@ -369,6 +376,7 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 		if cleared:
 			if energy_enabled and not potion_drops: restore_mana(12)
 			encounter+=1
+			invalidate_obstacles()
 			if encounter==groups.size(): status="complete"
 
 func encounter_ready(group: Dictionary) -> bool:
@@ -448,8 +456,26 @@ func grip() -> Vector2:
 	var offsets: Array = SKILL_GRIPS.dodge if dodge_time>0 else SKILL_GRIPS.rain if not raining.is_empty() else SKILL_GRIPS.pierce if piercing>=0 else layout.grips
 	return Vector2(player.x,player.y)+point(offsets[player.facing])
 
+# 只读的轻量状态查询：输入适配层与相机无需构造整份公开快照。
+func player_point() -> Vector2:
+	return Vector2(player.x,player.y)
+func ui_paused() -> bool:
+	return paused or reading
+func reset_diagnostics() -> void:
+	diagnostics={"obstacleRebuilds":0,"snapshotCalls":0,"interactionScans":0,"clearPathCalls":0}
+func invalidate_obstacles() -> void:
+	_obstacle_cache_dirty=true
+func extra_obstacles() -> Array:
+	return []
 func obstacles() -> Array:
-	return layout.get("obstacles",[]).filter(func(item: Dictionary): return (item.kind!="gate" or not exploration.gateOpen) and encounter<=int(item.get("opensAfterEncounter",2147483647)))
+	# can_walk_xy / contact / find_route 每帧调用上千次；原实现每次 filter 都新建数组。
+	# 仅在门状态、波次或房间完成状态变化时重建，返回只读缓存。
+	if not _obstacle_cache_dirty: return _obstacle_cache
+	_obstacle_cache=layout.get("obstacles",[]).filter(func(item: Dictionary): return (item.kind!="gate" or not exploration.gateOpen) and encounter<=int(item.get("opensAfterEncounter",2147483647)))
+	_obstacle_cache.append_array(extra_obstacles())
+	_obstacle_cache_dirty=false
+	if profile: diagnostics.obstacleRebuilds+=1
+	return _obstacle_cache
 func can_walk(position: Vector2) -> bool:
 	return can_walk_xy(position.x,position.y)
 func can_walk_xy(x: float,y: float) -> bool:
@@ -474,6 +500,7 @@ func can_walk_xy(x: float,y: float) -> bool:
 		if absf(x-item.x)<item.halfWidth+12 and absf(y-item.y)<item.halfHeight+12: return false
 	return true
 func clear_path(from: Variant,to: Variant) -> bool:
+	if profile: diagnostics.clearPathCalls+=1
 	var dx: float = to.x-from.x
 	var dy: float = to.y-from.y
 	var steps: int = ceili(sqrt(dx*dx+dy*dy)/10)
@@ -561,6 +588,7 @@ func contact(from: Vector2,to: Vector2,ignored: Array = []) -> Dictionary:
 	return hit
 
 func nearest_interaction() -> Dictionary:
+	if profile: diagnostics.interactionScans+=1
 	var potion: Dictionary = nearest_potion() if potion_drops else {}
 	if not potion.is_empty() and potion.reason==null: return potion
 	var candidates: Array[Dictionary] = []
@@ -607,6 +635,7 @@ func interact() -> void:
 		gate_opening=0.28; feedback={"text":"栅门正在开启","remaining":1.6,"healed":false}
 
 func snapshot() -> Dictionary:
+	if profile: diagnostics.snapshotCalls+=1
 	var visible_enemies: Array[Dictionary] = []
 	for enemy in enemies:
 		var visible: Dictionary = enemy.duplicate(true)
@@ -615,7 +644,9 @@ func snapshot() -> Dictionary:
 	for index in layout.targets.size():
 		var target: Dictionary = layout.targets[index].duplicate(); target.flash=flashes[index]; targets.append(target)
 	var skill: Variant = {"kind":"rain","phase":"windup","remaining":raining.remaining} if not raining.is_empty() else {"kind":"pierce","phase":"windup","remaining":piercing} if piercing>=0 else {"kind":last_skill,"phase":"recover","remaining":skill_recovery} if skill_recovery>0 and not last_skill.is_empty() else null
-	var result: Dictionary = {"runId":run_id,"player":player.duplicate(),"grip":grip(),"hits":hits,"windup":windup if windup>=0 else null,"paused":paused or reading,"reading":reading,"gateOpening":gate_opening,"exploration":exploration.duplicate(),"interaction":nearest_interaction() if not nearest_interaction().is_empty() else null,"feedback":feedback.duplicate() if not feedback.is_empty() else null,"attack":attack_phase(),"health":health,"hurt":hurt,"protection":protection,"status":status,"dodge":dodge_time,"dodgeDirection":dodge_direction,"dodgeInvulnerability":dodge_invulnerability,"cooldowns":{"dodge":dodge_cooldown,"pierce":pierce_cooldown,"rain":rain_cooldown},"skill":skill,"rainPreview":raining.point if not raining.is_empty() else null,"rains":rains.duplicate(true),"invalid":invalid.duplicate() if not invalid.is_empty() else null,"encounter":encounter,"totalEncounters":layout.get("encounters",[]).size(),"enemies":visible_enemies,"arrows":arrows.duplicate(true),"effects":effects.duplicate(true),"targets":targets,"shots":shots}
+	# 只扫描一次：交互查询会遍历障碍、探索点与药瓶并调用 clear_path。
+	var interaction: Dictionary = nearest_interaction()
+	var result: Dictionary = {"runId":run_id,"player":player.duplicate(),"grip":grip(),"hits":hits,"windup":windup if windup>=0 else null,"paused":paused or reading,"reading":reading,"gateOpening":gate_opening,"exploration":exploration.duplicate(),"interaction":null if interaction.is_empty() else interaction,"feedback":feedback.duplicate() if not feedback.is_empty() else null,"attack":attack_phase(),"health":health,"hurt":hurt,"protection":protection,"status":status,"dodge":dodge_time,"dodgeDirection":dodge_direction,"dodgeInvulnerability":dodge_invulnerability,"cooldowns":{"dodge":dodge_cooldown,"pierce":pierce_cooldown,"rain":rain_cooldown},"skill":skill,"rainPreview":raining.point if not raining.is_empty() else null,"rains":rains.duplicate(true),"invalid":invalid.duplicate() if not invalid.is_empty() else null,"encounter":encounter,"totalEncounters":layout.get("encounters",[]).size(),"enemies":visible_enemies,"arrows":arrows.duplicate(true),"effects":effects.duplicate(true),"targets":targets,"shots":shots}
 
 	if alpha!=null:
 		result.alpha=alpha.snapshot()

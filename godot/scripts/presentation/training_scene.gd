@@ -7,6 +7,7 @@ const NativeProbe = preload("res://scripts/qa/native_probe.gd")
 const Overlay = preload("res://scripts/presentation/combat_overlay.gd")
 const Effects = preload("res://scripts/presentation/combat_effects.gd")
 const Controls = preload("res://scripts/input/player_controls.gd")
+const QualityPolicy = preload("res://scripts/presentation/quality_policy.gd")
 var room: TrainingRoom = Room.new()
 var controls: PlayerControls = Controls.new(room)
 var state: Dictionary = {}
@@ -38,6 +39,10 @@ var last_run: int = 0
 var view_origin: Vector2 = Vector2.ZERO
 var view_zoom: float = 1.0
 var aim: Vector2 = Vector2.ZERO
+var pose_cache: Dictionary = {}
+var quality
+var flash_tint: Color = Color("ffedc5")
+var pierce_tint: Color = Color("ffd06c")
 
 func sprite(key: String) -> Sprite2D:
 	var node: Sprite2D = Sprite2D.new()
@@ -46,6 +51,8 @@ func sprite(key: String) -> Sprite2D:
 	return node
 
 func _ready() -> void:
+	quality=QualityPolicy.new()
+	quality.configure(OS.get_cmdline_user_args())
 	if has_node("TangguMap"):
 		var layout: Dictionary = $TangguMap.get_layout()
 		if layout.is_empty(): get_tree().quit(1); return
@@ -68,7 +75,8 @@ func _ready() -> void:
 	failed = sprite("failed")
 	bow = sprite("bow")
 	nocked_arrow = arrow_sprite()
-	for enemy in room.snapshot().enemies:
+	var initial: Dictionary = room.snapshot()
+	for enemy in initial.enemies:
 		enemy_bodies[enemy.id]=sprite({"bird":"enemy","paper":"enemyPaper","wood":"enemyWood"}[enemy.appearance])
 	combat_effects=Effects.new(); add_child(combat_effects)
 	var vfx_frames: Dictionary = {}
@@ -78,7 +86,7 @@ func _ready() -> void:
 	camera = Camera2D.new()
 	add_child(camera)
 	build_hud()
-	state = room.snapshot()
+	state = initial
 	get_window().focus_exited.connect(func(): controls.interrupt(true))
 	get_window().mouse_exited.connect(func(): pointer_inside = false; controls.pointer_leave())
 	get_window().mouse_entered.connect(func(): pointer_inside = true)
@@ -104,6 +112,14 @@ func create_room(layout: Dictionary) -> TrainingRoom:
 	return Room.new(layout)
 
 func pose(node: Sprite2D, key: String, index: int, point: Vector2) -> void:
+	# 帧未变时只有位置变化：纹理／区域／锚点／缩放保持原值，
+	# 避免每个精灵每帧向 RenderingServer 重复提交 6 次属性写入。
+	var id: int = node.get_instance_id()
+	var cached: Variant = pose_cache.get(id)
+	if cached is Array and cached[0]==key and cached[1]==index:
+		node.position=point
+		return
+	pose_cache[id]=[key,index]
 	var frame: Dictionary = atlas[key].frames[index]
 	node.texture = textures[key]
 	node.region_enabled = true
@@ -117,7 +133,7 @@ func update_camera() -> void:
 	var size: Vector2 = get_viewport_rect().size
 	view_zoom = maxf(size.y / 720.0, maxf(size.x / room.layout.width, size.y / room.layout.height))
 	var visible: Vector2 = size / view_zoom
-	var player_point: Vector2 = Vector2(room.snapshot().player.x, room.snapshot().player.y)
+	var player_point: Vector2 = room.player_point()
 	view_origin = Vector2(clampf(player_point.x - visible.x / 2.0, 0, maxf(0, room.layout.width - visible.x)), clampf(player_point.y - visible.y / 2.0, 0, maxf(0, room.layout.height - visible.y)))
 	camera.zoom = Vector2.ONE * view_zoom
 	camera.position = view_origin + visible / 2.0
@@ -142,6 +158,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func _physics_process(seconds: float) -> void:
 	if state.is_empty():
 		return
+	if quality!=null:
+		quality.begin_frame(get_process_delta_time())
+		combat_effects.vfx_budget=quality.vfx_budget()
 	update_camera()
 	aim = get_viewport().get_mouse_position() / view_zoom + view_origin
 	state = controls.update(aim, pointer_inside, seconds)
@@ -180,11 +199,11 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 	torso.z_index = int(p.y) + 1
 	failed.z_index = int(p.y) + 1
 	var alpha: float = 0.55 if state.protection > 0 and int(clock * 16) % 2 == 1 else 1.0
-	legs.modulate.a = alpha
-	torso.modulate.a = alpha
-	legs.visible = state.status != "failed"
-	torso.visible = state.status != "failed"
-	failed.visible = state.status == "failed"
+	if not is_equal_approx(legs.modulate.a,alpha):
+		legs.modulate.a=alpha; torso.modulate.a=alpha
+	var alive: bool = state.status!="failed"
+	if legs.visible!=alive: legs.visible=alive; torso.visible=alive
+	if failed.visible==alive: failed.visible=not alive
 	var bow_grip: Vector2 = state.grip
 	if p.facing==1 and not down_pose and state.dodge<=0 and not (state.skill!=null and state.skill.phase=="windup"):
 		bow_grip=point+Room.GRIPS[1]
@@ -203,17 +222,24 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 		var key: String = {"bird":"enemy","paper":"enemyPaper","wood":"enemyWood"}[enemy.appearance]
 		var row: int = 6 if enemy.phase=="dead" else 5 if enemy.flash>0 else 3 if enemy.phase=="warn" else 4 if enemy.phase=="swing" else (0 if enemy.timer<0.18 else 5) if enemy.phase=="recover" else 1+int(clock*8)%2
 		pose(body,key,row*4+direction(enemy.angle),Vector2(enemy.x,enemy.y))
-		body.z_index=int(enemy.y); body.visible=enemy.phase!="inactive" and (enemy.phase!="dead" or enemy.timer>0)
-		body.modulate=Color("ffedc5") if enemy.flash>0 else Color.WHITE
-		body.modulate.a=enemy.timer/0.6 if enemy.phase=="dead" else 1.0
+		var depth: int = int(enemy.y)
+		if body.z_index!=depth: body.z_index=depth
+		var shown: bool = enemy.phase!="inactive" and (enemy.phase!="dead" or enemy.timer>0)
+		if body.visible!=shown: body.visible=shown
+		var tint: Color = flash_tint if enemy.flash>0 else Color.WHITE
+		tint.a=enemy.timer/0.6 if enemy.phase=="dead" else 1.0
+		if body.modulate!=tint: body.modulate=tint
 	var live_arrows: Dictionary = {}
 	for arrow in state.arrows:
 		live_arrows[arrow.id] = true
 		if not arrows.has(arrow.id):
 			arrows[arrow.id] = arrow_sprite()
-		arrows[arrow.id].scale=Vector2.ONE*(0.037 if arrow.kind=="pierce" else atlas.upperDown.arrowScale if direction(arrow.angle)==1 else 0.029)
-		arrows[arrow.id].modulate=Color("ffd06c") if arrow.kind=="pierce" else Color.WHITE
-		arrows[arrow.id].position = Vector2(arrow.x, arrow.y)
+		var arrow_body: Sprite2D = arrows[arrow.id]
+		var arrow_scale: float = 0.037 if arrow.kind=="pierce" else atlas.upperDown.arrowScale if direction(arrow.angle)==1 else 0.029
+		if not is_equal_approx(arrow_body.scale.x,arrow_scale): arrow_body.scale=Vector2.ONE*arrow_scale
+		var arrow_tint: Color = pierce_tint if arrow.kind=="pierce" else Color.WHITE
+		if arrow_body.modulate!=arrow_tint: arrow_body.modulate=arrow_tint
+		arrow_body.position = Vector2(arrow.x, arrow.y)
 		arrows[arrow.id].rotation = arrow.angle
 		arrows[arrow.id].z_index = int(arrow.y + 52)
 	for id in arrows.keys():
@@ -223,16 +249,30 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 	combat_effects.update(state,_seconds,clock)
 	overlay.update(state,aim,pointer_inside)
 	update_hud(state)
-	var guidance: Dictionary = guidance_at(point)
+	apply_hud_lines()
+
+func set_text(node: Variant,value: String) -> void:
+	# Label.text 变更会触发字形整形；值未变时跳过写入。
+	if node.text!=value: node.text=value
+
+func hud_lines() -> Dictionary:
+	# 子类只覆写需要的字段；每帧最终只对每个标签赋值一次。
+	var guidance: Dictionary = guidance_at(Vector2(state.player.x,state.player.y))
 	var remaining: int = 0
 	for enemy in state.enemies:
 		if enemy.group==state.encounter and enemy.phase!="dead": remaining+=1
-	encounter_label.text=guidance.region+" · "+guidance.landmark+("\n三庭肃清" if state.status=="complete" else "\n遭遇 %d / %d · 影偶 %d" % [mini(state.encounter+1,state.totalEncounters),state.totalEncounters,remaining])
-	interaction_label.text=state.feedback.text if state.feedback!=null else ("F · "+state.interaction.label+(" · "+state.interaction.reason if state.interaction.reason!=null else "")) if state.interaction!=null else "残碑藏于北侧林径 · 祭火位于南侧支路"
-	status_label.visible=(state.paused and not state.reading) or state.status=="failed"
-	status_label.text="已暂停\nEsc 继续" if state.paused else "影散于汤谷\nR 从起点重试"
+	var encounter: String = guidance.region+" · "+guidance.landmark+("\n三庭肃清" if state.status=="complete" else "\n遭遇 %d / %d · 影偶 %d" % [mini(state.encounter+1,state.totalEncounters),state.totalEncounters,remaining])
+	var interaction: String = state.feedback.text if state.feedback!=null else ("F · "+state.interaction.label+(" · "+state.interaction.reason if state.interaction.reason!=null else "")) if state.interaction!=null else "残碑藏于北侧林径 · 祭火位于南侧支路"
+	return {"encounter":encounter,"interaction":interaction,"status":"已暂停\nEsc 继续" if state.paused else "影散于汤谷\nR 从起点重试","statusVisible":(state.paused and not state.reading) or state.status=="failed"}
+
+func apply_hud_lines() -> void:
+	var lines: Dictionary = hud_lines()
+	set_text(encounter_label,lines.encounter)
+	set_text(interaction_label,lines.interaction)
+	set_text(status_label,lines.status)
+	status_label.visible=bool(lines.statusVisible)
 	reading_panel.visible=state.reading
-	fullscreen.text = "退出全屏" if get_window().mode == Window.MODE_FULLSCREEN else "全屏"
+	set_text(fullscreen,"退出全屏" if get_window().mode==Window.MODE_FULLSCREEN else "全屏")
 
 func update_hud(snapshot: Dictionary) -> void:
 	health_label.text="生命  %d / 100" % snapshot.health

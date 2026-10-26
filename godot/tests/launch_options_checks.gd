@@ -13,6 +13,9 @@ func run(check: Callable) -> void:
 	check.call(parser.parse(["--test=alpha"]).mode=="alpha","背包白盒只作为专项内容选择")
 	check.call(not parser.parse(["--layout-audit","/tmp/layout.json"]).has("error"),"保留现有布局读取诊断参数")
 	check.call(not parser.parse(["--native-suite","/tmp/suite.json"]).has("error"),"保留现有原生诊断参数")
+	check.call(parser.parse(["--quality=auto"]).quality=="auto","画质档位作为独立启动参数传入")
+	check.call(parser.parse(["--test=alpha","--quality=low"]).mode=="alpha","画质档位不扩大背包白盒的玩法参数范围")
+	check.call(parser.parse(["--quality=ultra"]).has("error"),"未知画质档位明确拒绝")
 	for arguments in [["--man=0"],["--mana"],["unexpected"],["--layout-audit"],["--native-probe","--test=boss"]]:
 		check.call(parser.parse(arguments).has("error"),"未知或缺值原生参数明确拒绝："+str(arguments))
 	for arguments in [["--test=missing"],["--room=missing"],["--health=0"],["--health=101"],["--mana=-1"],["--seed=oops"],["--seed=-1"],["--test=boss","--room=court2"],["--test=alpha","--mana=0"]]:

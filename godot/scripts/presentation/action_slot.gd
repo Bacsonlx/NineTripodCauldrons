@@ -5,10 +5,15 @@ var remaining: float = 0.0
 var duration: float = 1.0
 var counter: Label
 var insufficient: bool = false
+var last_insufficient: bool = false
 
 func update_cooldown(seconds: float) -> void:
-	remaining=seconds if seconds>0.000001 else 0.0
-	counter.text="%.1f" % maxf(0.1,ceilf((remaining-0.000001)*10)/10) if remaining>0 else ""
+	var next: float = seconds if seconds>0.000001 else 0.0
+	if is_equal_approx(remaining,next) and insufficient==last_insufficient: return
+	remaining=next
+	last_insufficient=insufficient
+	var value: String = "%.1f" % maxf(0.1,ceilf((remaining-0.000001)*10)/10) if remaining>0 else ""
+	if counter.text!=value: counter.text=value
 	queue_redraw()
 
 func _draw() -> void:

@@ -16,6 +16,18 @@ extends "res://scripts/world/map_item.gd"
 @export var ground_axis: Vector2 = Vector2.RIGHT:
 	set(value): ground_axis=value; refresh()
 
+# 原实现每帧对每个物件调用 Sprite2D.to_local()，内部每次都求
+# get_global_transform_with_canvas().affine_inverse()；一个房间上百个物件。
+# 现在每帧只求一次画布逆变换，物件自己的全局逆变换与 bounds 在 refresh 时缓存。
+static var _canvas_frame: int = -1
+static var _canvas_inverse: Transform2D = Transform2D.IDENTITY
+var _geometry_dirty: bool = true
+var _sprite: Sprite2D
+var _rect: Rect2 = Rect2()
+var _global_inverse: Transform2D = Transform2D.IDENTITY
+var _tint: Color = Color.WHITE
+var _last_flicker: int = -1
+
 func _ready() -> void:
 	set_notify_transform(true)
 	refresh()
@@ -23,6 +35,7 @@ func _ready() -> void:
 func _notification(what: int) -> void:
 	if what==NOTIFICATION_TRANSFORM_CHANGED:
 		z_index=-20 if flat else clampi(int(position.y)+depth_offset,0,4080)
+		_geometry_dirty=true
 
 func layout_changed() -> void:
 	refresh()
@@ -47,6 +60,9 @@ func refresh() -> void:
 		add_child(contact)
 	contact.configure(self)
 	z_index=-20 if flat else clampi(int(position.y)+depth_offset,0,4080)
+	_tint=material_tint()
+	_geometry_dirty=true
+	_last_flicker=-1
 
 func material_tint() -> Color:
 	var asset: String = texture_asset.resource_path.get_file().get_basename()
@@ -55,14 +71,41 @@ func material_tint() -> Color:
 	if asset=="camp": return Color(0.9,0.88,0.8)
 	return Color.WHITE
 
+static func canvas_inverse(viewport: Viewport) -> Transform2D:
+	var frame: int = Engine.get_process_frames()
+	if frame!=_canvas_frame:
+		_canvas_frame=frame
+		_canvas_inverse=viewport.get_canvas_transform().affine_inverse() if viewport!=null else Transform2D.IDENTITY
+	return _canvas_inverse
+
+func refresh_geometry() -> void:
+	_sprite=get_node_or_null("Sprite") as Sprite2D
+	if _sprite==null: return
+	_rect=_sprite.get_rect()
+	_global_inverse=_sprite.get_global_transform().affine_inverse()
+	_geometry_dirty=false
+
+func occludes(state: Dictionary) -> bool:
+	# 等价替换 to_local(point)：(C*G)^-1*p == G^-1*(C^-1*p)，保持原有坐标语义。
+	if _geometry_dirty: refresh_geometry()
+	if _sprite==null: return false
+	var canvas: Transform2D = canvas_inverse(get_viewport())
+	return _rect.has_point(_global_inverse*(canvas*(Vector2(state.player.x,state.player.y)+Vector2(0,-45))))
+
 func update_state(state: Dictionary,clock: float) -> void:
-	visible=(opens_after_encounter<0 or state.encounter<=opens_after_encounter) and (obstacle_kind!="gate" or category!="obstacle" or not state.exploration.gateOpen)
-	var body: Sprite2D = $Sprite
-	var point: Vector2 = Vector2(state.player.x,state.player.y)
-	var bounds: Rect2 = body.get_rect()
-	var local_point: Vector2 = body.to_local(point+Vector2(0,-45))
-	body.modulate.a=0.38 if not flat and point.y<position.y and bounds.has_point(local_point) else 1.0
-	if obstacle_kind=="brazier": body.self_modulate=material_tint()*Color(1.0,0.96+0.04*sin(clock*5),0.9+0.1*sin(clock*5))
+	var shown: bool = (opens_after_encounter<0 or state.encounter<=opens_after_encounter) and (obstacle_kind!="gate" or category!="obstacle" or not state.exploration.gateOpen)
+	if visible!=shown: visible=shown
+	var body: Sprite2D = get_node_or_null("Sprite")
+	if body==null: return
+	var next_alpha: float = 0.38 if not flat and state.player.y<position.y and occludes(state) else 1.0
+	if not is_equal_approx(body.modulate.a,next_alpha): body.modulate.a=next_alpha
+	if obstacle_kind=="brazier":
+		# 火焰闪烁约 0.8Hz，20Hz 量化后视觉一致，避免每帧解析资源路径并写属性。
+		var bucket: int = int(clock*20.0)
+		if bucket!=_last_flicker:
+			_last_flicker=bucket
+			var t: float = float(bucket)/20.0
+			body.self_modulate=_tint*Color(1.0,0.96+0.04*sin(t*5),0.9+0.1*sin(t*5))
 
 func _draw() -> void:
 	# 美术与脚点都由本场景承担；编辑器选中节点后可用 Inspector 调整碰撞尺寸。

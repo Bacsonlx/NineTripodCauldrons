@@ -23,11 +23,12 @@ func build_hud() -> void:
 func update_hud(snapshot: Dictionary) -> void:
 	hud.update_state(snapshot)
 
-func present(snapshot: Dictionary,seconds: float) -> void:
-	super.present(snapshot,seconds)
-	if state.status=="complete": encounter_label.text="三庭已肃清 · 可继续探索汤谷"
+func hud_lines() -> Dictionary:
+	var lines: Dictionary = super.hud_lines()
+	if state.status=="complete": lines.encounter="三庭已肃清 · 可继续探索汤谷"
 	if state.feedback==null and state.interaction==null:
-		interaction_label.text="碑林在西侧 · 祭火在东侧"
+		lines.interaction="碑林在西侧 · 祭火在东侧"
+	return lines
 
 func toggle_overview() -> void:
 	controls.interrupt()

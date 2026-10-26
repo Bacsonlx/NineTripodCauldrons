@@ -51,7 +51,7 @@ func restart() -> void:
 	active.stamina=float(initial_options.get("stamina",100))
 
 func update(input: Dictionary,seconds: float) -> void:
-	if input.get("restart",false) and not active.snapshot().paused:
+	if input.get("restart",false) and not active.ui_paused():
 		restart(); return
 	active.update(input,seconds)
 	consume_transition()
@@ -74,8 +74,10 @@ func consume_transition() -> bool:
 			return true
 	return false
 
-func snapshot() -> Dictionary:
-	var data: Dictionary = active.snapshot()
+func snapshot(base: Dictionary = {}) -> Dictionary:
+	# 呈现层已持有本帧公开快照时直接复用，避免第二次深拷贝全部敌人／弹道。
+	# roomGraph 每次新建，保证外部修改图快照不影响真实房间状态。
+	var data: Dictionary = active.snapshot() if base.is_empty() else base.duplicate()
 	data.visitedRooms=rooms.size()
 	data.journeyComplete=rooms.has("court3") and rooms.court3.completed and rooms.has("boss") and rooms.boss.completed and rooms.has("end")
 	var nodes: Array = []

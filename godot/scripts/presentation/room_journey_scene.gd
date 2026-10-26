@@ -8,6 +8,7 @@ var minimap: Control
 var boss_view: Node2D
 var boss_bar: ProgressBar
 var loot_view: Node2D
+var journey_data: Dictionary = {}
 
 func build_hud() -> void:
 	super.build_hud()
@@ -97,22 +98,32 @@ func guidance_at(_position: Vector2) -> Dictionary:
 	return {"region":room.layout.roomTitle,"landmark":{"safe":"安全房 · 可探索与通行","combat":"清除所有影偶后开门","explore":"阅读并合上残碑后开门","boss":"击败索尔后开门 · 锤离手时反击"}[room.layout.objective]}
 
 func present(snapshot: Dictionary,seconds: float) -> void:
+	# 复用本帧公开快照，避免第二次深拷贝；HUD 文本统一在 hud_lines() 写入一次。
+	journey_data=journey.snapshot(snapshot)
 	super.present(snapshot,seconds)
-	var data: Dictionary = journey.snapshot()
-	loot_view.update_state(data,seconds)
-	minimap.update_state(data.roomGraph)
-	boss_view.visible=data.has("boss")
-	boss_bar.visible=data.has("boss")
+	loot_view.update_state(journey_data,seconds)
+	minimap.update_state(journey_data.roomGraph)
+	boss_view.visible=journey_data.has("boss")
+	boss_bar.visible=journey_data.has("boss")
+	if journey_data.has("boss"):
+		boss_view.update(journey_data,clock); boss_bar.value=journey_data.boss.health
+
+func hud_lines() -> Dictionary:
+	var lines: Dictionary = super.hud_lines()
+	var data: Dictionary = journey_data
+	if data.is_empty(): return lines
+	var encounter: String = room.layout.roomTitle+" · 已探索 %d / %d 房间" % [data.visitedRooms,Journey.ROOM_IDS.size()]+"\n"+("房间已完成 · 所有门已开放" if data.roomComplete else guidance_at(Vector2.ZERO).landmark)
 	if data.has("boss"):
-		boss_view.update(data,clock); boss_bar.value=data.boss.health
-	encounter_label.text=room.layout.roomTitle+" · 已探索 %d / %d 房间" % [data.visitedRooms,Journey.ROOM_IDS.size()]+"\n"+("房间已完成 · 所有门已开放" if data.roomComplete else guidance_at(Vector2.ZERO).landmark)
-	if data.has("boss"):
-		encounter_label.text="索尔  %d / 1200\n%s" % [data.boss.health,"索尔已败退 · 前往出口完成首关" if data.roomComplete else "锤已离手 · 承伤提高25%" if data.vulnerable else "观察招式 · 击败后开门"]
+		encounter="索尔  %d / 1200\n%s" % [data.boss.health,"索尔已败退 · 前往出口完成首关" if data.roomComplete else "锤已离手 · 承伤提高25%" if data.vulnerable else "观察招式 · 击败后开门"]
 	if data.objective=="combat" and not data.roomComplete:
-		var remaining: int = data.enemies.filter(func(enemy: Dictionary): return enemy.group==data.encounter and enemy.phase!="dead").size()
-		encounter_label.text=room.layout.roomTitle+" · 第 %d / %d 波" % [data.wave,data.waveCount]+"\n"+("下一波 %.1f 秒后出现" % data.waveDelay if data.waveDelay>0 else "影偶剩余 %d · 清完全部波次后开门" % remaining)
-	if data.journeyComplete: encounter_label.text="汤谷流程完成 · 可返回探索\nR 重开整段流程"
-	if not data.get("rewardPlaceholders",[]).is_empty(): encounter_label.text+="\n装备／道具为未入库占位 · 背包后续接入"
+		var remaining: int = 0
+		for enemy in data.enemies:
+			if enemy.group==data.encounter and enemy.phase!="dead": remaining+=1
+		encounter=room.layout.roomTitle+" · 第 %d / %d 波" % [data.wave,data.waveCount]+"\n"+("下一波 %.1f 秒后出现" % data.waveDelay if data.waveDelay>0 else "影偶剩余 %d · 清完全部波次后开门" % remaining)
+	if data.journeyComplete: encounter="汤谷流程完成 · 可返回探索\nR 重开整段流程"
+	if not data.get("rewardPlaceholders",[]).is_empty(): encounter+="\n装备／道具为未入库占位 · 背包后续接入"
+	lines.encounter=encounter
 	if state.feedback==null and state.interaction==null:
-		interaction_label.text="走近门按 F 前往下一房间" if data.roomComplete else "完成本房任务后，来路与出口一起开放"
-		if data.objective=="combat": interaction_label.text="血／蓝瓶落地后走近按 F 即时补充 · 满值留地"
+		lines.interaction="走近门按 F 前往下一房间" if data.roomComplete else "完成本房任务后，来路与出口一起开放"
+		if data.objective=="combat": lines.interaction="血／蓝瓶落地后走近按 F 即时补充 · 满值留地"
+	return lines
