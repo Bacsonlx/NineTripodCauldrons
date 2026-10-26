@@ -4,10 +4,15 @@ extends "res://scripts/world/map_definition.gd"
 @export var room_id: String = "entry"
 @export var room_title: String = "汤谷入口"
 @export_enum("safe","combat","explore","boss") var objective: String = "safe"
+@export var construction_reward_waves: PackedInt32Array = []
+@export var stele_title: String = ""
+@export_multiline var stele_text: String = ""
 
 func build_layout() -> Dictionary:
 	var data: Dictionary = super.build_layout()
 	data.roomId=room_id; data.roomTitle=room_title; data.objective=objective
+	data.constructionRewardWaves=Array(construction_reward_waves)
+	data.steleTitle=stele_title; data.steleText=stele_text
 	data.walkablePolygons=[]; data.doors=[]
 	data.camps=[$CampPoint.position] if has_node("CampPoint") else []
 	for area in $Walkable.get_children(): data.walkablePolygons.append($Walkable.transform*area.transform*area.polygon)

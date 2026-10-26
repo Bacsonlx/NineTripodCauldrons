@@ -152,6 +152,7 @@ var applied_equipment: Dictionary = {"healthMax":100,"pickupRadius":80.0,"effect
 var items: Array[Dictionary] = []
 var camp: bool = true
 var elapsed: float = 0.0
+var adventure_complete: bool = false
 var message: String = "先选物品，再点击目标格；营地整理暂停冒险。"
 var departed: bool = false
 var shadow_id: int = -1
@@ -168,6 +169,7 @@ func _init(seed_number: int = 1, gameplay_mode: bool = false, starting_items: Ar
 	seed_value=seed_number; gameplay=gameplay_mode; initial_items=starting_items.duplicate(true)
 
 func reset(spawn: Vector2, room_id: String = "") -> void:
+	adventure_complete=false
 	runtime=ItemEffects.new(seed_value); prototype_claimed=false; prototype_burn=false; acquired.clear()
 	pickup_card={}; pickup_blocked.clear(); quick_item_id=-1; rewarded_waves.clear()
 	items.clear(); camp=true; elapsed=0; next_id=0; next_order=0; ranking={}; burn={}; last_burn={}; burn_held=false; departed=false; shadow_id=-1; lost_shadows.clear()
@@ -421,7 +423,8 @@ func ignite() -> void:
 	recount()
 
 func advance(seconds: float, room: RefCounted) -> void:
-	elapsed+=seconds
+	if room.layout.get("objective","")=="boss" and room.status=="complete": adventure_complete=true
+	if not adventure_complete: elapsed+=seconds
 	if gameplay and not pickup_card.is_empty():
 		pickup_card.remaining=maxf(0,pickup_card.remaining-seconds)
 		if pickup_card.remaining<=0.000001: pickup_card={}
@@ -547,7 +550,9 @@ func use_quick(room: RefCounted) -> void:
 func enemy_defeated(enemy: Dictionary, room: RefCounted) -> void:
 	kill_record()
 	if room.layout.get("objective","")=="boss": return
-	# 第一批每波首个真实击杀一件符，避免把旧12怪掉落率套到42怪。
+	# 没有资格字段的冻结夹具保留旧版每波首杀语义。
+	if room.layout.has("constructionRewardWaves") and enemy.group not in room.layout.constructionRewardWaves: return
+	if room.layout.has("constructionRewardWaves") and rewarded_waves.size()>=8: return
 	var wave_key: String = "%s:%d" % [room.layout.get("roomId",""),enemy.group]
 	if rewarded_waves.has(wave_key): return
 	rewarded_waves[wave_key]=true
