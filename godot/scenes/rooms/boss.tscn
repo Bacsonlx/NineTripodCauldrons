@@ -32,17 +32,17 @@ script = ExtResource("item")
 category = "spawn"
 
 [node name="Doors" type="Node2D" parent="."]
-[node name="court3" parent="Doors" instance=ExtResource("portal")]
+[node name="thunder_approach" parent="Doors" instance=ExtResource("portal")]
 position = Vector2(0,545)
-portal_id = "court3"
-target_room = "court3"
-target_portal = "end"
-target_title = "赤日祭庭"
-[node name="Approach" parent="Doors/court3" index="4"]
+portal_id = "thunder_approach"
+target_room = "thunder_approach"
+target_portal = "boss"
+target_title = "雷庭前径"
+[node name="Approach" parent="Doors/thunder_approach" index="4"]
 position = Vector2(200,-25)
-[node name="Arrival" parent="Doors/court3" index="5"]
+[node name="Arrival" parent="Doors/thunder_approach" index="5"]
 position = Vector2(240,-25)
-[editable path="Doors/court3"]
+[editable path="Doors/thunder_approach"]
 
 [node name="end" parent="Doors" instance=ExtResource("portal")]
 position = Vector2(1440,545)
