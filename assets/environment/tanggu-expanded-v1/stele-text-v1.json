@@ -1,0 +1,8 @@
+{
+  "status": "content-review-pending",
+  "scope": "B支路的环境短碑文候选；不新增关键真相或剧情结论",
+  "title": "残碑幽径 · 根下余字",
+  "body": "旧碑半埋在扶桑根下，落叶积在字缝里。溪水退去后，石面仍留着浅浅的水痕。\n\n再往谷内，草色渐暗，残门后的灰尘覆住了旧路。沿着尚能辨认的日纹，仍可回到前庭。",
+  "runtime_scene": "godot/scenes/rooms/stele_side.tscn",
+  "selection": "按已确认Q12撰写并作为候选接入；正式文本审核待用户"
+}
