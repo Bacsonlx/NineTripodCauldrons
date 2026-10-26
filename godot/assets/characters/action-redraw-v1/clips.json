@@ -1,28 +1,4 @@
 {
-  "hero-run": {
-    "size": [
-      444,
-      448
-    ],
-    "columns": 3,
-    "root": [
-      220,
-      429
-    ],
-    "scale": 0.22
-  },
-  "hero-archery": {
-    "size": [
-      521,
-      452
-    ],
-    "columns": 3,
-    "root": [
-      297,
-      425
-    ],
-    "scale": 0.22
-  },
   "hero-dodge": {
     "size": [
       452,
@@ -34,18 +10,6 @@
       425
     ],
     "scale": 0.22
-  },
-  "hero-skills": {
-    "size": [
-      534,
-      470
-    ],
-    "columns": 3,
-    "root": [
-      228,
-      436
-    ],
-    "scale": 0.235
   },
   "thor-walk": {
     "size": [
@@ -94,5 +58,134 @@
       440
     ],
     "scale": 0.5
+  },
+  "hero-run-lower": {
+    "size": [
+      442,
+      445
+    ],
+    "columns": 3,
+    "roots": [
+      [
+        249,
+        153
+      ],
+      [
+        242,
+        149
+      ],
+      [
+        243,
+        150
+      ],
+      [
+        241,
+        148
+      ],
+      [
+        256,
+        144
+      ],
+      [
+        246,
+        140
+      ],
+      [
+        253,
+        144
+      ],
+      [
+        262,
+        136
+      ]
+    ],
+    "scale": 0.112,
+    "anchor_kind": "manually-reviewed waist belt center"
+  },
+  "hero-archery-upper": {
+    "size": [
+      447,
+      444
+    ],
+    "columns": 3,
+    "roots": [
+      [
+        238,
+        338
+      ],
+      [
+        219,
+        357
+      ],
+      [
+        191,
+        359
+      ],
+      [
+        187,
+        360
+      ],
+      [
+        247,
+        305
+      ],
+      [
+        235,
+        306
+      ],
+      [
+        210,
+        309
+      ],
+      [
+        226,
+        306
+      ]
+    ],
+    "scale": 0.25,
+    "anchor_kind": "manually-reviewed waist belt center"
+  },
+  "hero-skills-upper": {
+    "size": [
+      457,
+      462
+    ],
+    "columns": 3,
+    "roots": [
+      [
+        238,
+        375
+      ],
+      [
+        224,
+        374
+      ],
+      [
+        208,
+        374
+      ],
+      [
+        219,
+        374
+      ],
+      [
+        236,
+        352
+      ],
+      [
+        234,
+        350
+      ],
+      [
+        224,
+        348
+      ],
+      [
+        249,
+        351
+      ]
+    ],
+    "scale": 0.22,
+    "anchor_kind": "manually-reviewed waist belt center"
   }
 }
