@@ -9,7 +9,7 @@
 | 产品范围、玩法与术语 | [玩法与运行规则](product/十日_玩法与运行规则.md)、[根目录术语表](../GLOSSARY.md) | [六器玩法主干](product/九鼎_六器系统_玩法主干确认稿_v0.3.md)、相关 [ADR](adr/) |
 | 当前技术方向 | [架构选型结论](architecture/九鼎_架构选型结论.md) | [ADR-0010](adr/0010-godot-migration-direction.md)、[Godot 迁移方案](architecture/九鼎_Godot架构评估与迁移落地方案_2026-10-19.md) |
 | 当前 Godot 工程与地图 | [Godot README](../godot/README.md)、[房间地图说明](guides/汤谷房间地图使用说明.md) | [迁移实施记录](migration/Godot迁移_实施记录.md) |
-| 掉帧、卡顿与低配调优 | [首轮性能调优](architecture/九鼎_性能优化_2026-10-26.md) | [后台工作量回归](../godot/tests/performance_checks.gd)、[测量脚本](../tools/migration/perf_godot.py)、[候选验收记录](migration/Godot候选_验收记录.md) |
+| 掉帧、卡顿与低配调优 | [首轮性能调优](architecture/九鼎_性能优化_2026-10-26.md)（第 8 节为目标机器实测清单） | [后台工作量回归](../godot/tests/performance_checks.gd)、[测量脚本](../tools/migration/perf_godot.py)、[候选验收记录](migration/Godot候选_验收记录.md) |
 | 故事与美术来源 | [世界观与故事框架 v1.2](story/十日_世界观与故事框架_v1.2.pdf)、[故事基线及影响](story/九鼎_故事基线_v1.2与架构影响.md) | [美术资产库](art/美术资产库_v0.1/README.md)、`assets/` 中的源文件与制作记录 |
 | 实施规格与验收 | [Godot 迁移 Spec](mvp/九鼎_Godot迁移_Spec.md) 或相应 MVP Spec | [候选验收记录](migration/Godot候选_验收记录.md)、`mvp/` 中相应实施记录 |
 
