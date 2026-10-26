@@ -32,9 +32,12 @@ func fight_until_wave(run: RefCounted,wave: int) -> void:
 		var state: Dictionary = run.snapshot()
 		if state.roomComplete or state.encounter>=wave or state.status=="failed": return
 		var aim: Vector2 = Vector2(700,468)
+		var movement: Vector2 = Vector2.ZERO
+		if state.encounter==0 and state.enemies.all(func(enemy: Dictionary): return enemy.phase=="inactive"):
+			movement=(Vector2(300,520)-TrainingRoom.point(state.player)).normalized()
 		for enemy in state.enemies:
 			if enemy.health>0 and enemy.phase!="inactive": aim=Vector2(enemy.x,enemy.y-52); break
-		run.update({"fire":true,"aim":aim},0.01)
+		run.update({"fire":true,"aim":aim,"moveX":movement.x,"moveY":movement.y},0.01)
 	check(false,"战斗必须在有限时间内推进")
 
 func rewards(run: RefCounted) -> Array:
@@ -109,19 +112,77 @@ func time_checks() -> void:
 	run.update({"restart":true},0)
 	check(is_equal_approx(run.snapshot().get("activeSeconds",-1),0),"合法重试新局清空有效时间")
 
+func defeat_boss(run: RefCounted) -> void:
+	for frame in 12000:
+		var state: Dictionary = run.snapshot()
+		if state.roomComplete or state.status=="failed": return
+		var offset: Vector2 = TrainingRoom.point(state.player)-TrainingRoom.point(state.boss)
+		var movement: Vector2 = (Vector2(-offset.y,offset.x).normalized()+offset.normalized()*(420-offset.length())/100).limit_length()
+		run.update({"moveX":movement.x,"moveY":movement.y,"fire":true,"aim":Vector2(state.boss.x,state.boss.y-52)},0.01)
+	check(false,"真实Boss战必须在有限时间内结束")
+
+func completion_checks() -> void:
+	var ids: Array[String] = ["entry","court1","dry_creek","root_fork","stele","court2","altar","ash_cloister","gate_forecourt","court3","thunder_approach","boss","end"]
+	var maps: Dictionary = {}
+	for id in ids:
+		maps[id]=combat_fixture(id,1,[0]) if id in ["court1","dry_creek","root_fork","court2","ash_cloister","gate_forecourt","court3"] else fixture(id,"boss" if id=="boss" else "explore" if id=="stele" else "safe")
+		if id=="stele": maps[id].exploration=[{"id":"stele","x":400,"y":700}]
+	for index in range(ids.size()-1): connect_rooms(maps,ids[index],ids[index+1])
+	# 合法自定义门加入旁通，用真实输入证明仅第三庭/Boss/出口不足以正式完成。
+	connect_rooms(maps,"court1","root_fork")
+	var run: RefCounted = Journey.new(maps,{"isTest":false,"dropSeed":13,"potionDrops":true})
+	run.update({"alpha":{"action":"depart"}},0)
+	for id in ["court1","root_fork","stele","court2","altar","ash_cloister","gate_forecourt","court3","thunder_approach","boss"]:
+		var entered: bool = pass_to(run,id)
+		check(entered,"完整规则链真实过门："+id)
+		if not entered: return
+		if run.snapshot().objective=="combat": fight_until_wave(run,1)
+		if id=="stele":
+			check(walk(run,Vector2(400,700)),"真实走近残碑互动点")
+			run.update({"interact":false},0); run.update({"interact":true},0)
+			var before: float = run.snapshot().activeSeconds
+			run.update({},5)
+			check(run.snapshot().reading and not run.snapshot().roomComplete and is_equal_approx(run.snapshot().activeSeconds,before),"主线读碑期间停时且不提前开门")
+			run.update({"restart":true},0)
+			check(run.snapshot().reading and run.snapshot().visitedRooms>1,"阅读中R无效")
+			run.update({"interact":false},0); run.update({"interact":true},0)
+			check(run.snapshot().roomComplete,"真实合上残碑才完成探索目标")
+	var issued: int = rewards(run).size()
+	defeat_boss(run)
+	check(run.snapshot().roomComplete and run.snapshot().boss.health==0,"真实射箭击败Boss完成必要目标")
+	check(rewards(run).size()==issued,"Boss和真实援军击杀不增发普通构筑符")
+	var stopped: float = run.snapshot().activeSeconds
+	run.update({"dodge":true},0.1)
+	var cooldown: float = run.snapshot().cooldowns.dodge
+	run.update({},0.5)
+	check(is_equal_approx(run.snapshot().activeSeconds,stopped) and run.snapshot().cooldowns.dodge<cooldown,"Boss倒下只停冒险累计，闪避冷却仍推进")
+	check(pass_to(run,"end") and not run.snapshot().journeyComplete,"第三庭Boss出口都完成仍因遗漏前序主线而不正式通关")
+	check(not run.snapshot().segmentComplete,"正式征程不显示测试段完成")
+	for id in ["boss","thunder_approach","court3","gate_forecourt","ash_cloister","altar","court2","stele","root_fork","dry_creek"]:
+		check(pass_to(run,id),"主线回溯不刷新："+id)
+	fight_until_wave(run,1)
+	check(run.snapshot().journeyComplete and rewards(run).size()==7,"所有13个主线目标完成且已到出口才正式完成，主线累计7枚")
+	check(is_equal_approx(run.snapshot().activeSeconds,stopped),"Boss后跨房和补走路线不重新启动冒险累计")
+	var trial: RefCounted = Journey.new(maps,{"isTest":true,"startRoom":"end"})
+	check(trial.snapshot().segmentComplete and not trial.snapshot().journeyComplete and trial.snapshot().visitedRooms==1,"出口测试不伪造前序或正式通关")
+
 func pass_to(run: RefCounted,target: String) -> bool:
 	for door in run.active.layout.doors:
 		if door.target!=target: continue
-		var path: Array = run.active.find_route(TrainingRoom.point(run.snapshot().player),TrainingRoom.point(door.point))
-		for waypoint in path:
-			for frame in 1000:
-				var delta: Vector2 = waypoint-TrainingRoom.point(run.snapshot().player)
-				if delta.length()<4: break
-				var movement: Vector2 = delta.normalized()
-				run.update({"moveX":movement.x,"moveY":movement.y},0.01)
+		if not walk(run,TrainingRoom.point(door.point)): return false
 		run.update({"interact":false},0); run.update({"interact":true},0)
 		return run.snapshot().roomId==target
 	return false
+
+func walk(run: RefCounted,destination: Vector2) -> bool:
+	var path: Array = run.active.find_route(TrainingRoom.point(run.snapshot().player),destination)
+	for waypoint in path:
+		for frame in 1000:
+			var delta: Vector2 = waypoint-TrainingRoom.point(run.snapshot().player)
+			if delta.length()<4: break
+			var movement: Vector2 = delta.normalized()
+			run.update({"moveX":movement.x,"moveY":movement.y},0.01)
+	return destination.distance_to(TrainingRoom.point(run.snapshot().player))<8
 
 func _initialize() -> void:
 	check(Options.parse([]).get("isTest")==false,"默认完整征程具有明确正式身份")
@@ -139,6 +200,7 @@ func _initialize() -> void:
 	budget_checks()
 	route_checks()
 	time_checks()
+	completion_checks()
 	finish()
 
 func finish() -> void:
