@@ -23,7 +23,7 @@ static func parse(arguments: Array) -> Dictionary:
 	var room_id: String = values.get("room","boss" if mode=="boss" else "court1" if mode=="drops" else "entry")
 	if room_id not in Journey.ROOM_IDS: return {"error":"未知房间："+room_id}
 	if mode=="boss" and room_id!="boss": return {"error":"Boss 专项只能指定 boss 房间"}
-	var result: Dictionary = {"mode":mode,"startRoom":room_id,"potionDrops":true,"health":100,"mana":100,"stamina":100}
+	var result: Dictionary = {"mode":mode,"startRoom":room_id,"isTest":values.has("room") or mode in ["boss","drops"],"potionDrops":true,"health":100,"mana":100,"stamina":100}
 	for key in ["health","mana","stamina","seed"]:
 		if not values.has(key): continue
 		if not str(values[key]).is_valid_int(): return {"error":key+" 必须是整数"}

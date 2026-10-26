@@ -2,7 +2,8 @@ extends RefCounted
 
 const Stage = preload("res://scripts/journey/journey_room.gd")
 const Boss = preload("res://scripts/combat/boss_room.gd")
-const ROOM_IDS: Array[String] = ["entry","court1","stele","altar","court2","court3","boss","end"]
+const MAIN_ROOM_IDS: Array[String] = ["entry","court1","dry_creek","root_fork","stele","court2","altar","ash_cloister","gate_forecourt","court3","thunder_approach","boss","end"]
+const ROOM_IDS: Array[String] = ["entry","court1","dry_creek","root_fork","stele","court2","altar","ash_cloister","gate_forecourt","court3","thunder_approach","boss","end","moss_side","stele_side","ember_side"]
 var layouts: Dictionary
 var rooms: Dictionary = {}
 var current_id: String = "entry"
@@ -11,6 +12,13 @@ var active: TrainingRoom
 var initial_options: Dictionary = {}
 var drop_seed: int = 0
 var inventory: RefCounted
+var started_msec: int = 0
+
+static func direction_label(target: String,source: String) -> String:
+	if target in ["moss_side","stele_side","ember_side"]: return "可选支路"
+	if source in ["moss_side","stele_side","ember_side"] and target in MAIN_ROOM_IDS: return "汇入主路"
+	if source in MAIN_ROOM_IDS and target in MAIN_ROOM_IDS: return "前行" if MAIN_ROOM_IDS.find(target)>MAIN_ROOM_IDS.find(source) else "返回"
+	return "前往"
 
 static func read_maps() -> Dictionary:
 	var result: Dictionary = {}
@@ -40,9 +48,11 @@ static func read_maps() -> Dictionary:
 func _init(definitions: Dictionary,options: Dictionary = {}) -> void:
 	layouts=definitions
 	initial_options=options.duplicate()
+	initial_options.isTest=options.get("isTest",options.get("startRoom","entry")!="entry" or options.get("mode","") in ["boss","drops"])
 	restart()
 
 func restart() -> void:
+	started_msec=Time.get_ticks_msec()
 	rooms.clear(); current_id=initial_options.get("startRoom","entry"); generation+=1
 	drop_seed=int(initial_options.get("dropSeed",randi()))
 	inventory=TrainingRoom.AlphaState.new(drop_seed,true)
@@ -63,6 +73,7 @@ func update(input: Dictionary,seconds: float) -> void:
 	consume_transition()
 
 func consume_transition() -> bool:
+	if rooms.has("boss") and rooms.boss.completed: inventory.adventure_complete=true
 	var request: String = active.requested_door
 	active.requested_door=""
 	if request.is_empty() or not active.completed or active.paused or active.reading or active.health<=0: return false
@@ -81,9 +92,14 @@ func consume_transition() -> bool:
 	return false
 
 func snapshot() -> Dictionary:
+	if rooms.has("boss") and rooms.boss.completed: inventory.adventure_complete=true
 	var data: Dictionary = active.snapshot()
+	data.activeSeconds=inventory.elapsed
+	data.actualSeconds=(Time.get_ticks_msec()-started_msec)/1000.0
 	data.visitedRooms=rooms.size()
-	data.journeyComplete=rooms.has("court3") and rooms.court3.completed and rooms.has("boss") and rooms.boss.completed and rooms.has("end")
+	data.isTest=initial_options.isTest
+	data.segmentComplete=data.isTest and rooms.has("end")
+	data.journeyComplete=not data.isTest and initial_options.get("startRoom","entry")=="entry" and MAIN_ROOM_IDS.all(func(id: String): return rooms.has(id) and rooms[id].completed)
 	var nodes: Array = []
 	var connections: Array = []
 	for id in layouts:
@@ -99,6 +115,7 @@ func snapshot() -> Dictionary:
 func create_room(data: Dictionary) -> TrainingRoom:
 	data=data.duplicate(true)
 	data.gameplay=true
+	for door in data.doors: door.routeLabel=direction_label(door.target,data.roomId)
 	if initial_options.get("potionDrops",false):
 		data.potionDrops=true
 		data.dropSeed=drop_seed+str(data.roomId).hash()
