@@ -50,6 +50,29 @@ func check_scene(id: String) -> Dictionary:
 	var layout: Dictionary = scene.build_layout()
 	var model: TrainingRoom = load("res://scripts/journey/journey_room.gd").new(layout)
 	var spawn: Vector2 = TrainingRoom.point(layout.spawn)
+	if id == "dry_creek":
+		check(scene.get_node("Ground/RoomFloor").texture.resource_path.ends_with("/dry-creek.png"), "溪床使用正式干溪地表")
+		var river: Polygon2D = scene.get_node_or_null("Ground/River")
+		check(river != null and river.texture != null, "溪床有独立边界水")
+		var previous: Vector2 = spawn
+		for point in [Vector2(350,650),Vector2(430,450),Vector2(580,380),Vector2(730,450),Vector2(840,620),Vector2(1000,750),Vector2(1110,750)]:
+			check(model.clear_path(previous,point), "溪床S形路线连续，无须跳石：" + str(point))
+			previous = point
+			for direction in [Vector2.ZERO,Vector2.LEFT,Vector2.RIGHT,Vector2.UP,Vector2.DOWN]:
+				check(model.can_walk(point + direction * 100), "溪床连续转弯与战斗口袋保留至少200单位净宽：" + str(point))
+		for shore in [Vector2(300,380),Vector2(750,700),Vector2(1160,460)]:
+			check(not model.can_walk(shore), "S形两岸不能直穿：" + str(shore))
+			if river != null: check(Geometry2D.is_point_in_polygon(shore,river.polygon), "非通行岸线具有水视觉：" + str(shore))
+		check(not model.clear_path(spawn,Vector2(1170,650)), "溪床不可从入口横穿岸线直达出口")
+	if id == "court3":
+		check(scene.get_node("Ground/RoomFloor").texture.resource_path.ends_with("/ash-earth.png"), "赤日祭庭使用深层灰烬地表")
+		var court: Node2D = scene.get_node("RitualCourt")
+		check(court.visible and court.flat and court.texture_asset.resource_path.ends_with("/sun-fan.png"), "赤日祭庭使用正式半弧地标")
+		for item in scene.get_children():
+			var texture: Texture2D = item.texture if item is Polygon2D else item.texture_asset if item.get("texture_asset") is Texture2D else null
+			if texture != null: check(not texture.resource_path.ends_with("/court.tres"), "赤日祭庭不再铺设完整圆庭：" + str(item.name))
+		for y in [540,650,740]:
+			check(model.clear_path(Vector2(400,y),Vector2(1100,y)), "祭庭中央横移净空：" + str(y))
 	for door in layout.doors:
 		check(not model.find_route(spawn, TrainingRoom.point(door.arrival)).is_empty(), id + "出生可到达门内：" + door.id)
 	for point in layout.exploration:
@@ -62,15 +85,24 @@ func check_scene(id: String) -> Dictionary:
 			check(not model.find_route(spawn, TrainingRoom.point(enemy)).is_empty(), id + "敌人出生可接近")
 	if not layout.encounters.is_empty():
 		var route: Array = model.find_route(spawn, TrainingRoom.point(layout.encounters[0]))
+		var before_activation: float = INF
+		var after_activation: float = INF
 		for waypoint in route:
 			for step in 100:
 				if first_wave_active(model): break
 				var delta: Vector2 = TrainingRoom.point(waypoint) - TrainingRoom.point(model.snapshot().player)
 				if delta.length() < 5: break
 				var direction: Vector2 = delta.normalized()
+				var distance_before: float = TrainingRoom.point(model.snapshot().player).distance_to(TrainingRoom.point(layout.encounters[0]))
 				model.update({"moveX":direction.x,"moveY":direction.y}, 0.02)
+				if first_wave_active(model):
+					before_activation = distance_before
+					after_activation = TrainingRoom.point(model.snapshot().player).distance_to(TrainingRoom.point(layout.encounters[0]))
 			if first_wave_active(model): break
 		check(first_wave_active(model), id + "从默认出生通过移动输入进入170半径触发首波")
+		if id in ["dry_creek","court3"]:
+			check(before_activation > 170 and after_activation <= 170, id + "实际移动跨越170边界才触发")
+			check(model.snapshot().enemies.all(func(enemy: Dictionary): return enemy.group == 0 or enemy.phase == "inactive"), id + "首波激活时后续波仍待命")
 	scene.free()
 	return layout
 
@@ -111,7 +143,10 @@ func check_contract(maps: Dictionary) -> void:
 		var rewards: Array = [1] if id == "moss_side" else [0] if id in COMPOSITIONS and id in MAIN else []
 		check(layout.get("constructionRewardWaves",[]) == rewards, id + "公开构筑奖励资格符合7主线加A末波合同")
 		if id == "stele_side":
-			check(not layout.get("steleTitle","").is_empty() and "占位" in layout.get("steleText",""), "B独立短碑文明确标注待审核占位")
+			var text: String = layout.get("steleText","")
+			var paragraphs: PackedStringArray = text.split("\n\n",false)
+			check("候选·待内容审核" in layout.get("steleTitle","") and paragraphs.size() == 2 and paragraphs[0] != paragraphs[1], "B独立两段环境碑文保留候选待审核标识")
+			check(text != maps.stele.get("steleText","") and "施工占位" not in text, "B候选正文独立于主线碑文且已替换施工占位")
 		if COMPOSITIONS.has(id):
 			var actual: Array = []
 			for wave in layout.encounters:
