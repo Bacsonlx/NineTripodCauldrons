@@ -49,7 +49,7 @@ func export_home() -> void:
 		await process_frame
 	collect(home)
 	var file: FileAccess = FileAccess.open(arguments[0],FileAccess.WRITE)
-	file.store_string(JSON.stringify({"size":[viewport_size.x,viewport_size.y],"source":"Godot headless Control geometry; offline composition, not GPU screenshot","parts":parts},"  ")+"\n")
+	file.store_string(JSON.stringify({"size":[viewport_size.x,viewport_size.y],"contentSize":[home.size.x,home.size.y],"source":"Godot headless Control geometry; offline composition, not GPU screenshot","parts":parts},"  ")+"\n")
 	home.free(); current_scene=null
 	print("Exported home Control geometry")
 	quit()

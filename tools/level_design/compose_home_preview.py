@@ -11,6 +11,8 @@ source = Path(sys.argv[1])
 data = json.loads(source.read_text())
 width, height = data["size"]
 svg = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}">', '<rect width="100%" height="100%" fill="#0c110e"/>']
+content_width, content_height = data.get("contentSize", data["size"])
+svg.append(f'<g transform="scale({width/content_width} {height/content_height})">')
 for part in data["parts"]:
     x, y, w, h = part["rect"]
     if w <= 0 or h <= 0:
@@ -35,7 +37,7 @@ for part in data["parts"]:
     for index, line in enumerate(lines):
         text = html.escape(line)
         svg.append(f'<text x="{tx}" y="{ty + index * size * 1.35}" fill="#{part["color"]}" font-family="Noto Serif CJK SC,Songti SC,serif" font-size="{size}" text-anchor="{anchor}">{text}</text>')
-svg.append("</svg>")
+svg.append("</g></svg>")
 target = source.with_suffix(".svg")
 target.write_text("\n".join(svg))
 subprocess.run(["rsvg-convert", "--unlimited", str(target), "-o", str(source.with_suffix(".png"))], check=True)
