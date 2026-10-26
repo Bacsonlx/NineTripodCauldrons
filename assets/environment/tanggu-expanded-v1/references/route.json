@@ -1,0 +1,320 @@
+{
+  "status": "proposed_not_implemented",
+  "date": "2026-10-26",
+  "room_id_status": "Proposed identifiers; existing identifiers retained where applicable.",
+  "user_decisions": "README.md#设计确认前沿",
+  "duration_basis": "Normal first clear including Boss, active gameplay only; pause, focus loss, loading, forced reading and camp organization excluded; pending user confirmation.",
+  "rooms": [
+    {
+      "marker": "01",
+      "id": "entry",
+      "title": "汤谷入口",
+      "objective": "safe",
+      "waves": [],
+      "fixed_enemies": 0,
+      "target_active_seconds": 30,
+      "optional": false
+    },
+    {
+      "marker": "02",
+      "id": "court1",
+      "title": "日鸟石庭",
+      "objective": "combat",
+      "waves": [
+        4,
+        5
+      ],
+      "fixed_enemies": 9,
+      "target_active_seconds": 75,
+      "optional": false
+    },
+    {
+      "marker": "03",
+      "id": "dry_creek",
+      "title": "落叶溪床",
+      "objective": "combat",
+      "waves": [
+        5,
+        7
+      ],
+      "fixed_enemies": 12,
+      "target_active_seconds": 90,
+      "optional": false
+    },
+    {
+      "marker": "04",
+      "id": "root_fork",
+      "title": "幽根岔径",
+      "objective": "combat",
+      "waves": [
+        4,
+        5,
+        6
+      ],
+      "fixed_enemies": 15,
+      "target_active_seconds": 90,
+      "optional": false
+    },
+    {
+      "marker": "05",
+      "id": "stele",
+      "title": "碑林遗径",
+      "objective": "explore",
+      "waves": [],
+      "fixed_enemies": 0,
+      "target_active_seconds": 45,
+      "optional": false
+    },
+    {
+      "marker": "06",
+      "id": "court2",
+      "title": "扶桑残庭",
+      "objective": "combat",
+      "waves": [
+        5,
+        6,
+        7
+      ],
+      "fixed_enemies": 18,
+      "target_active_seconds": 105,
+      "optional": false
+    },
+    {
+      "marker": "07",
+      "id": "altar",
+      "title": "祭火营地",
+      "objective": "safe",
+      "waves": [],
+      "fixed_enemies": 0,
+      "target_active_seconds": 15,
+      "optional": false
+    },
+    {
+      "marker": "08",
+      "id": "ash_cloister",
+      "title": "灰烬回廊",
+      "objective": "combat",
+      "waves": [
+        6,
+        7,
+        7
+      ],
+      "fixed_enemies": 20,
+      "target_active_seconds": 120,
+      "optional": false
+    },
+    {
+      "marker": "09",
+      "id": "gate_forecourt",
+      "title": "残门前庭",
+      "objective": "combat",
+      "waves": [
+        4,
+        5,
+        6,
+        6
+      ],
+      "fixed_enemies": 21,
+      "target_active_seconds": 105,
+      "optional": false
+    },
+    {
+      "marker": "10",
+      "id": "court3",
+      "title": "赤日祭庭",
+      "objective": "combat",
+      "waves": [
+        5,
+        6,
+        6,
+        7
+      ],
+      "fixed_enemies": 24,
+      "target_active_seconds": 120,
+      "optional": false
+    },
+    {
+      "marker": "11",
+      "id": "thunder_approach",
+      "title": "雷庭前径",
+      "objective": "safe",
+      "waves": [],
+      "fixed_enemies": 0,
+      "target_active_seconds": 30,
+      "optional": false
+    },
+    {
+      "marker": "12",
+      "id": "boss",
+      "title": "索尔雷庭",
+      "objective": "boss",
+      "waves": [],
+      "fixed_enemies": 0,
+      "target_active_seconds": 180,
+      "optional": false
+    },
+    {
+      "marker": "13",
+      "id": "end",
+      "title": "汤谷出口",
+      "objective": "safe",
+      "waves": [],
+      "fixed_enemies": 0,
+      "target_active_seconds": 15,
+      "optional": false
+    },
+    {
+      "marker": "A",
+      "id": "moss_side",
+      "title": "苔石侧谷",
+      "objective": "combat",
+      "waves": [
+        4,
+        5
+      ],
+      "fixed_enemies": 9,
+      "target_active_seconds": 45,
+      "optional": true
+    },
+    {
+      "marker": "B",
+      "id": "stele_side",
+      "title": "残碑幽径",
+      "objective": "explore",
+      "waves": [],
+      "fixed_enemies": 0,
+      "target_active_seconds": 30,
+      "optional": true
+    },
+    {
+      "marker": "C",
+      "id": "ember_side",
+      "title": "余火侧林",
+      "objective": "combat",
+      "waves": [
+        6
+      ],
+      "fixed_enemies": 6,
+      "target_active_seconds": 60,
+      "optional": true
+    }
+  ],
+  "main_route": [
+    "entry",
+    "court1",
+    "dry_creek",
+    "root_fork",
+    "stele",
+    "court2",
+    "altar",
+    "ash_cloister",
+    "gate_forecourt",
+    "court3",
+    "thunder_approach",
+    "boss",
+    "end"
+  ],
+  "edges_bidirectional": [
+    [
+      "entry",
+      "court1"
+    ],
+    [
+      "court1",
+      "dry_creek"
+    ],
+    [
+      "dry_creek",
+      "root_fork"
+    ],
+    [
+      "root_fork",
+      "stele"
+    ],
+    [
+      "stele",
+      "court2"
+    ],
+    [
+      "court2",
+      "altar"
+    ],
+    [
+      "altar",
+      "ash_cloister"
+    ],
+    [
+      "ash_cloister",
+      "gate_forecourt"
+    ],
+    [
+      "gate_forecourt",
+      "court3"
+    ],
+    [
+      "court3",
+      "thunder_approach"
+    ],
+    [
+      "thunder_approach",
+      "boss"
+    ],
+    [
+      "boss",
+      "end"
+    ],
+    [
+      "dry_creek",
+      "moss_side"
+    ],
+    [
+      "moss_side",
+      "root_fork"
+    ],
+    [
+      "stele",
+      "stele_side"
+    ],
+    [
+      "stele_side",
+      "court2"
+    ],
+    [
+      "ash_cloister",
+      "ember_side"
+    ],
+    [
+      "ember_side",
+      "gate_forecourt"
+    ]
+  ],
+  "completion_proposal": "All main-route objectives and exit required for a formal clear. A quick-test run is explicitly separate.",
+  "totals": {
+    "rooms": 16,
+    "main_rooms": 13,
+    "optional_rooms": 3,
+    "main_fixed_enemies": 119,
+    "main_waves": 21,
+    "all_fixed_enemies": 134,
+    "all_waves": 24,
+    "main_target_active_seconds": 1020,
+    "all_target_active_seconds": 1155
+  },
+  "boss_reinforcements": {
+    "included_in_fixed_enemy_totals": false,
+    "behavior": "Keep current continuous reinforcement rules; no fixed total count.",
+    "alive_cap": 8
+  },
+  "ordinary_wave_cap": 7,
+  "quick_test_proposal": {
+    "level": "tanggu_first_level",
+    "room_selection": "Only implemented rooms from the current level",
+    "health": 100,
+    "mana": 100,
+    "stamina": 100,
+    "build": "Existing default build, not simulated prior progression",
+    "continue_forward": true,
+    "retry_same_start": true,
+    "formal_clear": false
+  }
+}

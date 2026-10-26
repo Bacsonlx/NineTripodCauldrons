@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 import html
+import struct
 
 root=Path(__file__).resolve().parents[2]
 out=Path(sys.argv[1]) if len(sys.argv)>1 else root/'output/level-design/tanggu-world-20261021'
@@ -18,11 +19,12 @@ svg=[f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/19
 for path,identifier in ids.items():
     source=root/'godot'/path.removeprefix('res://')
     encoded=base64.b64encode(source.read_bytes()).decode()
-    w,h=sizes.get(path,[627,627])
+    w,h=sizes.get(path,struct.unpack('>II',source.read_bytes()[16:24]))
     svg.append(f'<image id="{identifier}" width="{w}" height="{h}" xlink:href="data:image/png;base64,{encoded}"/>')
 for index,part in enumerate(data['ground']):
-    # Terrain extraction produces four 627-pixel tiles, rendered 1:1 in world units.
-    svg.append(f'<pattern id="ground{index}" patternUnits="userSpaceOnUse" width="627" height="627"><use xlink:href="#{ids[part["image"]]}"/></pattern>')
+    source=root/'godot'/part['image'].removeprefix('res://')
+    width,height=struct.unpack('>II',source.read_bytes()[16:24])
+    svg.append(f'<pattern id="ground{index}" patternUnits="userSpaceOnUse" width="{width}" height="{height}"><use xlink:href="#{ids[part["image"]]}"/></pattern>')
 if 'terrainBlend' in data:
     for index,(a,b,normal) in enumerate(data['terrainBlend']['edges']):
         width=data['terrainBlend']['width']*0.85

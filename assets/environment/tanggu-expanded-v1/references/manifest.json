@@ -1,0 +1,138 @@
+{
+  "date": "2026-10-26",
+  "tool": "built-in image_gen.imagegen",
+  "model": "unknown_not_returned",
+  "cost": "unknown_not_returned",
+  "user_visual_approval": "pending",
+  "runtime_references": [],
+  "calls": [
+    {
+      "tool": "image_gen.imagegen",
+      "prompt": "prompts/01-overview.txt",
+      "output": "overview-v0-annotation-rejected.png",
+      "input_images": [
+        "output/level-design/tanggu-court2-implementation-20261021/prototype-reference.png"
+      ],
+      "mode": "generation_with_style_reference",
+      "transparent_background": false
+    },
+    {
+      "tool": "image_gen.imagegen",
+      "prompt": "prompts/02-remove-annotations.txt",
+      "output": "overview-v1.png",
+      "input_images": [
+        "output/level-design/tanggu-expanded-20261026-v1/overview-v0-annotation-rejected.png"
+      ],
+      "mode": "edit_remove_annotations",
+      "transparent_background": false
+    },
+    {
+      "tool": "image_gen.imagegen",
+      "prompt": "prompts/03-room-studies.txt",
+      "output": "room-studies-v1.png",
+      "input_images": [
+        "output/level-design/tanggu-court2-implementation-20261021/prototype-reference.png"
+      ],
+      "mode": "generation_with_style_reference",
+      "transparent_background": false
+    },
+    {
+      "tool": "image_gen.imagegen",
+      "prompt": "prompts/04-home-selection.txt",
+      "output": "home-selection-v1.png",
+      "input_images": [
+        "output/ui-home-imagegen-20261023/evidence/home-1920x1080.png"
+      ],
+      "mode": "edit_ui_mockup",
+      "transparent_background": false
+    }
+  ],
+  "inputs": [
+    {
+      "path": "output/level-design/tanggu-court2-implementation-20261021/prototype-reference.png",
+      "bytes": 3230030,
+      "sha256": "ab1ec302772db2c30c83513a861d89574251687838f78d413f1cd09b8a39a912",
+      "dimensions": [
+        1440,
+        1040
+      ]
+    },
+    {
+      "path": "output/ui-home-imagegen-20261023/evidence/home-1920x1080.png",
+      "bytes": 2037119,
+      "sha256": "40bc034be4705615ee297477e36b48e12d0959e27eea6ed6189532da657c6dec",
+      "dimensions": [
+        1920,
+        1080
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "output/level-design/tanggu-expanded-20261026-v1/README.md",
+      "bytes": 14217,
+      "sha256": "1fabce11aa547cdba5709e1166fcaf4757d0f37c28cd938b91ff34a955658180"
+    },
+    {
+      "path": "output/level-design/tanggu-expanded-20261026-v1/home-selection-v1.png",
+      "bytes": 1937098,
+      "sha256": "90313b0bf959fba6ccead5f1c1789d002549a44e31b1daacebe86b834cf26706",
+      "dimensions": [
+        1672,
+        941
+      ]
+    },
+    {
+      "path": "output/level-design/tanggu-expanded-20261026-v1/overview-v0-annotation-rejected.png",
+      "bytes": 4183707,
+      "sha256": "94e9531950232ab643b79833eb214b09f0cd60eaebcfe7e1ec0459db5799cd3e",
+      "dimensions": [
+        1476,
+        1066
+      ]
+    },
+    {
+      "path": "output/level-design/tanggu-expanded-20261026-v1/overview-v1.png",
+      "bytes": 3686904,
+      "sha256": "4fdb27fbdab0bc22eba0ab7aa7ee05444f39077e457fd0b625b2e7dc7dd02555",
+      "dimensions": [
+        1476,
+        1066
+      ]
+    },
+    {
+      "path": "output/level-design/tanggu-expanded-20261026-v1/prompts/01-overview.txt",
+      "bytes": 5129,
+      "sha256": "4cc273e565c04baeba6edf42dd9e30e03d9d43598fd5a68611ccdf9bb5f5434f"
+    },
+    {
+      "path": "output/level-design/tanggu-expanded-20261026-v1/prompts/02-remove-annotations.txt",
+      "bytes": 752,
+      "sha256": "011e1ba7ada42358d30cd1e5a89670e563998a2d1c572b50499ac561359b1486"
+    },
+    {
+      "path": "output/level-design/tanggu-expanded-20261026-v1/prompts/03-room-studies.txt",
+      "bytes": 3380,
+      "sha256": "2d80c9f98c4c0c9c1ad5884ded24d80d355b4b183237929c026db115beab3748"
+    },
+    {
+      "path": "output/level-design/tanggu-expanded-20261026-v1/prompts/04-home-selection.txt",
+      "bytes": 2614,
+      "sha256": "aaf87a89ffba732e6f3d3454f6cdb4ee7d1baab19e3864fd6aa7de099d9fcb86"
+    },
+    {
+      "path": "output/level-design/tanggu-expanded-20261026-v1/room-studies-v1.png",
+      "bytes": 4385381,
+      "sha256": "dbd82efed04be49bb5181913dde2c7be6df7ac79adee3cfe96cd5cc2c8a4e660",
+      "dimensions": [
+        1476,
+        1066
+      ]
+    },
+    {
+      "path": "output/level-design/tanggu-expanded-20261026-v1/route.json",
+      "bytes": 6391,
+      "sha256": "056d162e0c24c3e5884a71c35b3b353b818b4d6ff237e433d11ac8acfdeb9ee9"
+    }
+  ]
+}
