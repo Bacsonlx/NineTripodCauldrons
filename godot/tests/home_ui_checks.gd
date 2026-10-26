@@ -35,7 +35,7 @@ func run() -> void:
 	root.add_child(home); current_scene=home
 	await process_frame
 	await process_frame
-	check(find_button(home,"完整地图")!=null and find_button(home,"Boss 测试")!=null and find_button(home,"野怪测试")!=null,"三个测试入口均在首页可见")
+	check(find_button(home,"完整征程")!=null and find_button(home,"快速测试")!=null,"完整征程与快速测试模式均在首页可见")
 	check(visible_text(home).contains("未接入") and visible_text(home).contains("不带入战斗"),"界面明确标记未接入数据与试装范围")
 	var missing: String = ""
 	var font: Font = home.get_theme_font("font")

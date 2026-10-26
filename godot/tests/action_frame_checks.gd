@@ -21,25 +21,25 @@ func player_checks() -> void:
 		game.free(); return
 	game.controls.key_down(KEY_D)
 	game.present(game.controls.update(target,true,0.05),0.05)
-	check(game.frame_actor.visible and game.frame_actor.clip=="hero-run" and not game.legs.visible and not game.torso.visible,"真实向右移动显示新跑步帧并隐藏旧身体")
-	var frozen_frame: int = game.frame_actor.frame_index
+	check(game.frame_actor.lower.visible and game.frame_actor.lower.clip=="hero-run-lower" and game.frame_actor.upper.visible and game.frame_actor.upper.clip=="hero-archery-upper" and not game.legs.visible and not game.torso.visible,"真实向右移动显示新下肢与独立瞄准上身，并隐藏旧身体")
+	var frozen_frame: int = game.frame_actor.lower.frame_index
 	var frozen_distance: float = game.frame_actor.distance
 	game.present(room.snapshot(),0.5)
-	check(game.frame_actor.frame_index==frozen_frame and game.frame_actor.distance==frozen_distance,"重复快照不因呈现秒数推进步态")
+	check(game.frame_actor.lower.frame_index==frozen_frame and game.frame_actor.distance==frozen_distance,"重复快照不因呈现秒数推进步态")
 	game.controls.interrupt(true); game.present(room.snapshot(),1)
-	check(game.frame_actor.frame_index==frozen_frame and game.frame_actor.clip=="hero-run","失焦暂停冻结新跑步姿态")
+	check(game.frame_actor.lower.frame_index==frozen_frame and game.frame_actor.lower.clip=="hero-run-lower","失焦暂停冻结新跑步姿态")
 	room.set_paused(false)
 	game.controls.key_down(KEY_A); game.controls.pointer_down(true)
 	game.present(game.controls.update(target,true,0.02),0.02)
-	check(not game.frame_actor.visible and game.legs.visible and game.torso.visible and game.state.player.facing==0,"向左移动且向右射击仍由独立上下身呈现")
+	check(not game.frame_actor.lower.visible and game.legs.visible and game.frame_actor.upper.visible and not game.torso.visible and game.state.player.facing==0,"向左移动且向右射击仍由独立上下身呈现")
 	game.controls.interrupt(); room.reset()
 	game.controls.update(target,true,0.001)
 	var seen: Dictionary = {}
 	game.controls.pointer_down(true); game.controls.pointer_up()
 	for i in 35:
 		game.present(game.controls.update(target,true,0.01),0.01)
-		check(game.frame_actor.visible and not game.bow.visible and not game.nocked_arrow.visible,"原地射箭全过程只显示一套新身体及联绘武器")
-		seen[game.frame_actor.frame_index]=true
+		check(game.frame_actor.upper.visible and not game.frame_actor.body.visible and not game.bow.visible and not game.nocked_arrow.visible,"原地射箭全过程只显示一套独立上身及联绘武器")
+		seen[game.frame_actor.upper.frame_index]=true
 	check(seen.size()==8 and room.shots==1,"一次真实点射按原时钟采样8姿态且只生成一箭")
 	for key in [KEY_Q,KEY_E,KEY_SPACE]:
 		game.controls.interrupt(); room.reset()
@@ -47,14 +47,14 @@ func player_checks() -> void:
 		game.controls.key_down(KEY_D) if key==KEY_SPACE else game.controls.key_up(KEY_D)
 		game.controls.key_down(key)
 		game.present(game.controls.update(target,true,0.02),0.02)
-		check(game.frame_actor.visible and game.frame_actor.clip==("hero-dodge" if key==KEY_SPACE else "hero-skills"),"真实Q/E/向右闪避使用对应新动作：键%d，技能%s，闪避%s，方向%d，新帧%s" % [key,str(game.state.skill),str(game.state.dodge),game.state.player.facing,game.frame_actor.clip])
+		check((game.frame_actor.body.visible and game.frame_actor.body.clip=="hero-dodge" if key==KEY_SPACE else game.frame_actor.upper.visible and game.frame_actor.upper.clip=="hero-skills-upper"),"真实Q/E/向右闪避使用对应新动作：键%d，技能%s，闪避%s，方向%d，新帧%s" % [key,str(game.state.skill),str(game.state.dodge),game.state.player.facing,game.frame_actor.body.clip if key==KEY_SPACE else game.frame_actor.upper.clip])
 		if key==KEY_SPACE:
 			game.present(game.controls.update(target,true,0.02),0.02)
-			check(game.combat_effects.ghosts.any(func(ghost: Dictionary): return ghost.lower.visible and ghost.lower.texture==game.frame_actor.texture and not ghost.upper.visible),"新闪避残影使用新全身帧，不残留旧上身")
+			check(game.combat_effects.ghosts.any(func(ghost: Dictionary): return ghost.lower.visible and ghost.lower.texture==game.frame_actor.body.texture and not ghost.upper.visible),"新闪避残影使用新全身帧，不残留旧上身")
 	room.status="failed"; game.present(room.snapshot(),0)
-	check(not game.frame_actor.visible and game.failed.visible,"失败隐藏新身体并沿用既有失败素材")
+	check(not game.frame_actor.lower.visible and not game.frame_actor.upper.visible and not game.frame_actor.body.visible and game.failed.visible,"失败隐藏新身体并沿用既有失败素材")
 	room.reset(); game.controls.interrupt(); game.present(game.controls.update(target,true,0),0)
-	check(game.frame_actor.visible and game.frame_actor.distance==0 and game.frame_actor.frame_index==0,"重试归零步态并回到新待机姿态")
+	check(game.frame_actor.upper.visible and game.frame_actor.distance==0 and game.frame_actor.upper.frame_index==0,"重试归零步态并回到新待机姿态")
 	game.free()
 
 func boss_checks() -> void:

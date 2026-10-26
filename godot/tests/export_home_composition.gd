@@ -35,8 +35,11 @@ func collect(node: Node) -> void:
 func export_home() -> void:
 	var arguments: PackedStringArray = OS.get_cmdline_user_args()
 	var home: Control = load("res://scenes/home.tscn").instantiate()
+	var viewport_size: Vector2i = Vector2i(1920,1080)
+	if arguments.size()>3:
+		viewport_size=Vector2i(int(arguments[2]),int(arguments[3]))
+	root.size=viewport_size
 	root.add_child(home); current_scene=home
-	root.size=Vector2i(1920,1080); home.size=Vector2(1920,1080)
 	await process_frame
 	await process_frame
 	if arguments.size()>1 and arguments[1]=="quick":
@@ -46,7 +49,7 @@ func export_home() -> void:
 		await process_frame
 	collect(home)
 	var file: FileAccess = FileAccess.open(arguments[0],FileAccess.WRITE)
-	file.store_string(JSON.stringify({"size":[1920,1080],"source":"Godot headless Control geometry; offline composition, not GPU screenshot","parts":parts},"  ")+"\n")
+	file.store_string(JSON.stringify({"size":[viewport_size.x,viewport_size.y],"source":"Godot headless Control geometry; offline composition, not GPU screenshot","parts":parts},"  ")+"\n")
 	home.free(); current_scene=null
 	print("Exported home Control geometry")
 	quit()

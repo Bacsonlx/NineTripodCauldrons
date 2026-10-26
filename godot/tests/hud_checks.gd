@@ -23,7 +23,7 @@ func run() -> void:
 	var font: Font = hud.health_value.get_theme_font("font")
 	var minimap: Control = hud.get_node("RoomMinimap")
 	check(minimap.mouse_filter==Control.MOUSE_FILTER_IGNORE and minimap.get_index()<hud.reading.get_index(),"小地图不截获射击，且阅读遮罩绘在其上方")
-	check(minimap.graph.rooms.size()==8 and minimap.graph.connections.size()==8,"小地图显示包含Boss的八房和八条互通连接")
+	check(minimap.graph.rooms.size()==16 and minimap.graph.connections.size()==18,"小地图显示十六房与十八条双向连接")
 	check(font.resource_path=="res://assets/fonts/NineTripodsHudSong.ttf" and not font.allow_system_fallback,"HUD使用随包宋体，不依赖系统字体")
 	var covered: bool = true
 	for character in "无名之子生命蓝量精力未启用穿透箭箭雨闪避第波剩余0123456789 /":
@@ -48,7 +48,12 @@ func run() -> void:
 	var retry: InputEventKey = InputEventKey.new()
 	retry.physical_keycode=KEY_R; retry.pressed=true
 	game._unhandled_input(retry)
-	check(q.text.is_empty() and hud.health.value==100,"R重试清空冷却并恢复生命显示")
+	check(q.text=="3.0" and game.room.snapshot().paused,"完整征程R确认期间保留真实冷却并停时")
+	var confirm: Button = find_button(game,"确认重开")
+	check(confirm!=null,"完整征程R显示真实重开确认按钮")
+	if confirm!=null: confirm.pressed.emit()
+	await process_frame
+	check(q.text.is_empty() and hud.health.value==100,"确认重开后清空冷却并恢复生命显示")
 	game.journey.update({"alpha":{"action":"depart"}},0)
 	for i in 8:
 		game.room.update({},0)
@@ -101,3 +106,10 @@ func finish(game: Node) -> void:
 	game.free()
 	print(JSON.stringify({"hud_checks":checks,"failures":failures}))
 	quit(0 if failures.is_empty() else 1)
+
+func find_button(node: Node,text: String) -> Button:
+	if node is Button and node.text==text: return node
+	for child in node.get_children():
+		var found: Button = find_button(child,text)
+		if found!=null: return found
+	return null
