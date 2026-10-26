@@ -50,7 +50,7 @@ func run(game: Node2D, check: Callable) -> void:
 			other.player.moving=false
 			other.windup=0.04
 			game.present(other,0)
-			check.call(game.frame_actor.visible and game.frame_actor.clip=="hero-archery" and not game.bow.visible and not game.nocked_arrow.visible,"向右原地射箭使用新全身帧，不重复叠弓")
+			check.call(game.frame_actor.upper.visible and game.frame_actor.upper.clip=="hero-archery-upper" and not game.frame_actor.body.visible and not game.bow.visible and not game.nocked_arrow.visible,"向右原地射箭使用独立新上身帧，不重复叠弓")
 		else:
 			check.call(game.torso.texture==game.textures.upper and game.bow.visible and game.nocked_arrow.visible, "未覆盖方向保留原上身和独立弓箭层")
 	game.controls.interrupt(); game.room.reset()

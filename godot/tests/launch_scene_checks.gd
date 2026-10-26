@@ -48,12 +48,13 @@ func run() -> void:
 		game.controls.key_down(KEY_ESCAPE)
 		game.present(game.journey.snapshot(),0)
 		button_with_text(game,"返回首页").pressed.emit()
+		button_with_text(game,"确认返回首页").pressed.emit()
 		await scene_changed
-		button_with_text(current_scene,"完整地图\n汤谷 · 八房").pressed.emit()
+		button_with_text(current_scene,"踏入汤谷").pressed.emit()
 		button_with_text(current_scene,"确认入局").pressed.emit()
 		await scene_changed
 		var fresh: Dictionary = current_scene.journey.snapshot()
-		check(fresh.roomId=="entry" and fresh.health==100 and fresh.resources.mana==100 and fresh.resources.stamina==100,"命令行低资源Boss返回首页后，完整地图不继承旧参数")
+		check(fresh.roomId=="entry" and fresh.health==100 and fresh.resources.mana==100 and fresh.resources.stamina==100,"命令行低资源Boss返回首页后，完整征程不继承旧参数")
 	current_scene.queue_free(); current_scene=null
 	await process_frame
 	print(JSON.stringify({"launch_scene_checks":checks,"failures":failures}))

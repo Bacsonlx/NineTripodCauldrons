@@ -8,7 +8,9 @@ func check(ok: bool,message: String) -> void:
 	if not ok: failures.append(message); push_error(message)
 
 func _initialize() -> void:
-	create_timer(30).timeout.connect(func(): push_error("首页流程检查超时"); quit(1))
+	scene_changed.connect(func():
+		if current_scene!=null: current_scene.set_physics_process(false))
+	create_timer(60).timeout.connect(func(): push_error("首页流程检查超时"); quit(1))
 	run.call_deferred()
 
 func button_with_text(node: Node,text: String) -> Button:
@@ -38,48 +40,66 @@ func run() -> void:
 	if confirm!=null: confirm.pressed.emit()
 	await process_frame
 	await process_frame
-	check(current_scene.scene_file_path=="res://scenes/tanggu_first_level.tscn","确认后切换到现有真实八房首关")
+	check(current_scene.scene_file_path=="res://scenes/tanggu_first_level.tscn","确认后切换到真实十六房首关")
 	if current_scene.has_method("create_room"):
 		current_scene.set_physics_process(false)
 		var snapshot: Dictionary = current_scene.journey.snapshot()
-		check(snapshot.roomId=="entry" and snapshot.health==100 and snapshot.resources.mana==100,"征程从正常入口和默认资源开始")
+		check(snapshot.roomId=="entry" and snapshot.health==100 and snapshot.resources.mana==100 and snapshot.resources.stamina==100 and not snapshot.isTest,"征程从正常入口和默认资源开始")
 		check(snapshot.has("drops"),"首关仍启用正式药瓶规则")
 	change_scene_to_file("res://scenes/home.tscn")
 	await scene_changed
-	for target in [["Boss 测试\n索尔雷庭","boss"],["野怪测试\n第一庭 · 战斗与掉落","court1"],["完整地图\n汤谷 · 八房","entry"]]:
-		var portal: Button = button_with_text(current_scene,target[0])
-		check(portal!=null,"首页提供可用测试入口："+target[0])
-		if portal==null: break
-		portal.pressed.emit()
+	var targets: Array[String] = ["entry","court1","dry_creek","root_fork","stele","court2","altar","ash_cloister","gate_forecourt","court3","thunder_approach","boss","end","moss_side","stele_side","ember_side"]
+	for target in targets:
+		var quick: Button = button_with_text(current_scene,"快速测试\n选择关卡与房间起点")
+		check(quick!=null,"首页提供独立快速测试模式")
+		if quick==null: break
+		quick.pressed.emit()
+		var rooms: OptionButton = current_scene.find_child("RoomChoice",true,false)
+		check(rooms!=null and rooms.item_count==16,"快速测试提供16个已实现房间")
+		if rooms==null: break
+		var selected: int = -1
+		for i in rooms.item_count:
+			if rooms.get_item_metadata(i)==target: selected=i
+		check(selected>=0,"可选择测试起点："+target)
+		if selected<0: break
+		rooms.select(selected); rooms.item_selected.emit(selected)
+		button_with_text(current_scene,"进入测试").pressed.emit()
 		button_with_text(current_scene,"返回准备").pressed.emit()
 		check(current_scene.scene_file_path=="res://scenes/home.tscn","取消确认保持首页")
-		portal.pressed.emit()
+		button_with_text(current_scene,"进入测试").pressed.emit()
 		button_with_text(current_scene,"确认入局").pressed.emit()
 		await scene_changed
 		current_scene.set_physics_process(false)
 		var game: Node = current_scene
 		var state: Dictionary = game.journey.snapshot()
-		check(state.roomId==target[1] and state.health==100 and state.resources.mana==100,"所选测试从对应房间满资源开始："+target[1])
+		check(state.roomId==target and state.health==100 and state.resources.mana==100 and state.resources.stamina==100,"所选测试从对应房间默认资源开始："+target)
+		check(state.isTest and not state.journeyComplete and state.visitedRooms==1,"测试保持身份且不伪造前序完成："+target)
 		check(state.paused==state.alpha.camp,"新测试仅因入口营地暂停，不继承旧局暂停")
 		if state.alpha.camp:
 			button_with_text(game,"确认构筑并出发").pressed.emit()
 		var run_id: int = game.journey.snapshot().runId
 		key(KEY_R)
-		check(game.journey.snapshot().roomId==target[1] and game.journey.snapshot().runId>run_id,"R 重开仍使用当前测试起点")
+		check(game.journey.snapshot().roomId==target and game.journey.snapshot().runId>run_id and game.journey.snapshot().isTest,"R直接重开当前测试起点并保留测试身份")
+		if game.journey.snapshot().alpha.camp:
+			button_with_text(game,"确认构筑并出发").pressed.emit()
 		var back: Button = button_with_text(game,"返回首页")
 		check(back!=null and not back.is_visible_in_tree(),"战斗时隐藏返回首页按钮")
 		if back==null: break
 		key(KEY_ESCAPE)
 		game.present(game.journey.snapshot(),0)
-		check(game.journey.snapshot().paused and back.is_visible_in_tree(),"Esc 暂停后显示返回首页")
+		check(game.journey.snapshot().paused and back.is_visible_in_tree(),"Esc暂停后显示返回首页")
 		key(KEY_ESCAPE)
 		game.present(game.journey.snapshot(),0)
-		check(game.journey.snapshot().paused==game.journey.snapshot().alpha.camp and not back.is_visible_in_tree(),"Esc 恢复游戏并隐藏返回首页")
+		check(not game.journey.snapshot().paused and not back.is_visible_in_tree(),"Esc恢复并隐藏返回首页")
 		key(KEY_ESCAPE)
 		game.present(game.journey.snapshot(),0)
 		back.pressed.emit()
+		var confirm_home: Button = button_with_text(game,"确认返回首页")
+		check(confirm_home!=null and current_scene==game,"返回首页先确认，不能立即丢弃本局")
+		if confirm_home==null: break
+		confirm_home.pressed.emit()
 		await scene_changed
-		check(current_scene.scene_file_path=="res://scenes/home.tscn","暂停菜单能返回首页继续选测试")
+		check(current_scene.scene_file_path=="res://scenes/home.tscn","确认后返回首页继续选测试")
 	current_scene.queue_free(); current_scene=null
 	await process_frame
 	print(JSON.stringify({"home_flow_checks":checks,"failures":failures}))
