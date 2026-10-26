@@ -26,8 +26,8 @@ script = ExtResource("map")
 room_id = "stele_side"
 room_title = "残碑幽径"
 objective = "explore"
-stele_title = "残碑幽径 · 短碑文占位（待内容审核）"
-stele_text = "【施工占位，非正式剧情】\n此处将放置一至两段汤谷环境短碑文；正式文字由主线程后续审核替换。"
+stele_title = "残碑幽径 · 根下余字（候选·待内容审核）"
+stele_text = "旧碑半埋在扶桑根下，落叶积在字缝里。溪水退去后，石面仍留着浅浅的水痕。\n\n再往谷内，草色渐暗，残门后的灰尘覆住了旧路。沿着尚能辨认的日纹，仍可回到前庭。"
 world_size = Vector2(1440,1040)
 floor_polygon = PackedVector2Array(0,0,1440,0,1440,1040,0,1040)
 [node name="Ground" type="Node2D" parent="."]
