@@ -17,7 +17,7 @@ func definition() -> Dictionary:
 func _ready() -> void:
 	set_notify_transform(true)
 	z_index=int(global_position.y)
-	$Destination.text=definition().routeLabel+" · "+target_title
+	$Destination.text=target_title
 	$Passage.position=$Approach.position
 
 func _notification(what: int) -> void:
