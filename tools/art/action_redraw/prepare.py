@@ -10,10 +10,7 @@ DEST = ROOT / "godot/assets/characters/action-redraw-v1"
 # Semantic ground roots in the original 444px cells, not each alpha bbox bottom.
 # Scale is fixed within each clip; neutral poses normalize differing drawing sizes.
 CLIPS = {
-    "hero-run": ([220, 425], 0.22),
-    "hero-archery": ([220, 425], 0.22),
     "hero-dodge": ([220, 425], 0.22),
-    "hero-skills": ([220, 410], 0.235),
     "thor-walk": ([270, 425], 0.45),
     "thor-swing-v2": ([255, 385], 0.59),
     "thor-throw": ([255, 440], 0.52),
@@ -39,6 +36,18 @@ def main():
             "source": str(atlas.relative_to(ROOT)), "runtime": str(target.relative_to(ROOT)),
             "sha256": hashlib.sha256(atlas.read_bytes()).hexdigest(),
         })
+    layered = ROOT / "assets/characters/action-redraw-v1/layered-v2"
+    for name, data in json.loads((layered / "clips.json").read_text()).items():
+        atlas = layered / f"{name}.png"
+        target = DEST / f"{name}.png"
+        shutil.copyfile(atlas, target)
+        clips[name] = data
+        sources.append({"source": str(atlas.relative_to(ROOT)), "runtime": str(target.relative_to(ROOT)),
+                        "sha256": hashlib.sha256(atlas.read_bytes()).hexdigest()})
+    # 本工具上一版生成的整身图已由独立上下身替代；原型源图仍保留。
+    for name in ["hero-run", "hero-archery", "hero-skills"]:
+        for suffix in [".png", ".png.import"]:
+            (DEST / f"{name}{suffix}").unlink(missing_ok=True)
     (DEST / "clips.json").write_text(json.dumps(clips, indent=2) + "\n")
     record = ROOT / "assets/characters/action-redraw-v1/provenance.json"
     record.write_text(json.dumps({"art_source": "existing", "sources": sources}, indent=2) + "\n")
