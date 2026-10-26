@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class PlayCommandChecks(unittest.TestCase):
-    def test_default_uses_current_first_level(self):
+    def test_default_uses_current_project_entry(self):
         result = subprocess.run(
             [sys.executable, str(ROOT / "play"), "--dry-run"],
             cwd=tempfile.gettempdir(), capture_output=True, text=True,
@@ -44,6 +44,14 @@ class PlayCommandChecks(unittest.TestCase):
         self.assertIn("--room=court2", command)
         self.assertIn("--seed=13", command)
         self.assertLess(command.index("--headless"), command.index("--"))
+
+    def test_expanded_rooms_preserve_explicit_start_and_resources(self):
+        for room in ["dry_creek", "root_fork", "ash_cloister", "gate_forecourt", "thunder_approach", "moss_side", "stele_side", "ember_side"]:
+            with self.subTest(room=room):
+                result = self.invoke("--test", "level", "--room", room, "--health", "60", "--seed", "13")
+                self.assertEqual(result.returncode, 0, result.stderr)
+                command = shlex.split(result.stdout)
+                self.assertEqual(command[command.index("--") + 1:], ["--test=level", f"--room={room}", "--health=60", "--seed=13"])
 
     def test_invalid_or_unsupported_conditions_fail_before_start(self):
         for arguments in [

@@ -17,10 +17,9 @@ func use(item: Dictionary, room: RefCounted) -> bool:
 		"司晨":
 			if morning_uses>=3: room.alpha.message="司晨本局最多三次"; return false
 			var affected: bool = false
-			if room.layout.get("objective","")!="boss":
-				for enemy in room.enemies:
-					if enemy.phase in ["inactive","dead"]: continue
-					enemy.phase="chase"; enemy.timer=0; enemy.struck=false; enemy.route=[]; enemy.repath=0; enemy.stopped=1.0; affected=true
+			for enemy in room.enemies:
+				if enemy.get("boss",false) or enemy.phase in ["inactive","dead"]: continue
+				enemy.phase="chase"; enemy.timer=0; enemy.struck=false; enemy.route=[]; enemy.repath=0; enemy.stopped=1.0; affected=true
 			if not affected: room.alpha.message="没有可受司晨影响的普通敌，首领免疫"; return false
 			morning_uses+=1
 		"豕涉":

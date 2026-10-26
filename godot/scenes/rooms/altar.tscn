@@ -180,17 +180,17 @@ render_width = 130.0
 obstacle_kind = "wall"
 flat = true
 [node name="Doors" type="Node2D" parent="."]
-[node name="court1" parent="Doors" instance=ExtResource("portal")]
+[node name="ash_cloister" parent="Doors" instance=ExtResource("portal")]
 position = Vector2(160,595)
-portal_id = "court1"
-target_room = "court1"
+portal_id = "ash_cloister"
+target_room = "ash_cloister"
 target_portal = "altar"
-target_title = "日鸟石庭"
-[node name="Approach" parent="Doors/court1" index="4"]
+target_title = "灰烬回廊"
+[node name="Approach" parent="Doors/ash_cloister" index="4"]
 position = Vector2(100,-25)
-[node name="Arrival" parent="Doors/court1" index="5"]
+[node name="Arrival" parent="Doors/ash_cloister" index="5"]
 position = Vector2(140,-25)
-[editable path="Doors/court1"]
+[editable path="Doors/ash_cloister"]
 [node name="court2" parent="Doors" instance=ExtResource("portal")]
 position = Vector2(1260,595)
 portal_id = "court2"

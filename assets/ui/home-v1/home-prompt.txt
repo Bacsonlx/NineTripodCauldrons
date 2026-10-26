@@ -1,0 +1,21 @@
+Use case: ui-mockup
+Asset type: high fidelity PC game home / pre-run preparation screen, landscape 16:9.
+Primary request: Redesign the supplied screenshot of 九鼎 (Nine Tripods), subtitle 十日 · 汤谷. Preserve the same purpose, information and balanced 3-column layout. Produce ONE premium game UI concept, no device mockup, screen fills the entire image. Improve artistry, materiality, depth and readable type dramatically.
+Input images: Image 1 is the EXISTING HOME reference for information hierarchy, child identity and palette. Do not reproduce its simplistic vector-like artwork.
+Scene/backdrop: An ancient Chinese shadow-puppet shrine, cinematic handcrafted paper and translucent leather, incense haze. Black olive and aged bronze side regions. Central softly glowing warm parchment shrine screen in a carved, subtly distressed bronze arched frame. A full-body young boy shadow puppet (same topknot, closed calm eyes, red scarf, simple ivory tunic, black boots, wooden bow, warm face; 5-head child proportions) stands centered. Artisan cut leather, ink contours, visible punched decorative details and brass joints, understated, not cute modern cartoon, not adult warrior. Dark wooden offering altar in foreground below the child; small brass censer in center, two candles flanking. Distant faded ink mountains and a muted golden sun behind the boy. No dragons or extra characters. Quiet, sacred, melancholic, restrained high craft.
+Composition/framing: Reserve left 22% for mode rail on dark olive, middle 54% for character shrine, right 24% for loadout rail. Header 9%, footer 12%. Central boy occupies about 45% of screen height, has clear calm silhouette, feet just above the altar. Arch crest around 18% from top, altar around 80%. Small serif calligraphy, elegant thin rules, cinnabar square seal motifs. No card dashboard aesthetic or rounded UI boxes.
+Text (verbatim), editable-looking crisp Chinese UI:
+Top left: red seal 九, large 九鼎, small 十日 · 汤谷.
+Top center small: 祠庙 · 供台
+Top right metadata: 香火 1,240 ; 九鼎碎片 三枚 ; 未入局.
+Left title: 请神, small 择一局.
+Four vertical selectable rows: 征程 [推荐] with 汤谷 · 三庭 (selected, cinnabar dark fill and red seal 征), 无限 [高难] with 无尽影偶, 试炼 [未启] with 封印中, 残局 [未启] with 旧局回声. Last 2 dimmer but still legible.
+Next to central arch left: vertical 后羿, smaller 附体 and red seal 羿. Arch right small vertical 无名之子.
+Right title: 行装 and small 本次神降 3 / 6.
+Six restrained thin-bordered rows: 主武 训练弓; 衣 素麻衣; 履 布履; 符 未备; 器 未备; 神兽 未备.
+Below: a handsome outlined gold button with red seal 仓, label 仓库, smaller 行前换装, right arrow.
+Bottom left: 征程 · 汤谷 · 三庭, small 八房 · 首关.
+Bottom center: 以行装入局 · 六器随行
+Bottom right: bold cinnabar rectangular CTA 踏入汤谷 with small 征程 · 3 件行装 and right arrow.
+Style: refined premium independent videogame UI, Chinese folk shadow-puppet aesthetics, physically rich yet flat enough for game assets, fine antique gold hairlines, warm ivory readable typography. Rust red only for selected mode, scarf, seals and CTA. Midtone central paper screen, dark side panels with sufficient contrast. Keep header and menu labels readable, no tiny illegible extra copy.
+Avoid: glossy 3D, photoreal humans, web SaaS cards, gradients as primary decoration, neon, purple, fantasy armor, excessive gold ornaments, UI crowding, Latin marketing copy, watermarks, extra logos, devices.

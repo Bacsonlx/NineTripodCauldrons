@@ -1,0 +1,45 @@
+{
+  "art_source": "existing",
+  "sources": [
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/hero-dodge/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-dodge.png",
+      "sha256": "6734ae47c83cd0574625e549d75a49c7a571568eb616592a11c32e6dcdf90f51"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/thor-walk/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/thor-walk.png",
+      "sha256": "533ab76a6389c1e7d5c26fe73cc4e2e2ad6eb6eebffee5659fdec8cb103e7acb"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/thor-swing-v2/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/thor-swing-v2.png",
+      "sha256": "5923f0b2e64c8fdd5fd3c8c3c20674b24ec95a0cf028e5b9ded6348b2b390856"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/thor-throw/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/thor-throw.png",
+      "sha256": "eaf89befa7e817f4666da051aeeb10e6fae6ee32d9495c06c0dfb573e0106030"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/thor-lightning/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/thor-lightning.png",
+      "sha256": "a2e2554d15917066f8eb20d03ca180ee8c9a34b5ab03be4c73f05f5212090142"
+    },
+    {
+      "source": "assets/characters/action-redraw-v1/layered-v2/hero-run-lower.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-run-lower.png",
+      "sha256": "26cdf21c87add55bf698ab04d5f7fc5fa9e3a1e9f30428f69c2d77f2449b2aa6"
+    },
+    {
+      "source": "assets/characters/action-redraw-v1/layered-v2/hero-archery-upper.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-archery-upper.png",
+      "sha256": "ca420da152fef98dffcb0af35021c274a84cdf27926be2ad76dbbee69ae7456e"
+    },
+    {
+      "source": "assets/characters/action-redraw-v1/layered-v2/hero-skills-upper.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-skills-upper.png",
+      "sha256": "ce793623ba2fee3e8b0aeffc893c6cbbedd4961374a87c27c8cf24d677ce890e"
+    }
+  ]
+}

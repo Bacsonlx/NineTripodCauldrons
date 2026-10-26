@@ -1,0 +1,433 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/presentation/thor_rig_pilot.gd" id="script"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/cape.tres" id="cape"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/far_arm.tres" id="far_arm"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/far_forearm.tres" id="far_forearm"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/far_shin.tres" id="far_shin"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/far_thigh.tres" id="far_thigh"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/far_boot.tres" id="far_boot"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/near_shin.tres" id="near_shin"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/near_thigh.tres" id="near_thigh"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/near_boot.tres" id="near_boot"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/pelvis.tres" id="pelvis"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/chest.tres" id="chest"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/head.tres" id="head"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/tail.tres" id="tail"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/near_arm.tres" id="near_arm"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/near_forearm.tres" id="near_forearm"]
+[ext_resource type="Texture2D" path="res://assets/boss/thor-puppet-v1/hammer.tres" id="hammer"]
+
+[sub_resource type="Animation" id="idle"]
+resource_name = "idle"
+length = 2.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/path = NodePath("pelvis/chest/cape:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6, 1.2, 1.8, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, 0.0279253, 0, -0.0191986, 0]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("pelvis/chest:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6, 1.2, 1.8, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -28), Vector2(0, -28.7), Vector2(0, -28), Vector2(0, -27.7), Vector2(0, -28)]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("pelvis/chest:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = false
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("pelvis/chest/far_arm:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = false
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("pelvis/chest/far_arm/far_forearm:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = false
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("pelvis/chest/near_arm/near_forearm/hammer:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = false
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.6, 1.2, 1.8, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, 0.0122173, 0, -0.0069813, 0]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("pelvis/chest/head:rotation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = false
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.6, 1.2, 1.8, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, -0.010472, 0, 0.005236, 0]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("pelvis/chest/near_arm:rotation")
+tracks/7/interp = 1
+tracks/7/loop_wrap = false
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.6, 1.2, 1.8, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, 0.0139626, 0, -0.0087266, 0]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("pelvis/chest/near_arm/near_forearm:rotation")
+tracks/8/interp = 1
+tracks/8/loop_wrap = false
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 0.6, 1.2, 1.8, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, -0.0174533, 0, 0.0087266, 0]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("pelvis/tail:rotation")
+tracks/9/interp = 1
+tracks/9/loop_wrap = false
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="swing"]
+resource_name = "swing"
+length = 1.92
+tracks/0/type = "value"
+tracks/0/path = NodePath("pelvis/chest/cape:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.62, 0.8, 0.92, 1.08, 1.4, 1.7, 1.92),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, 0.0872665, 0.0872665, -0.1396263, -0.1919862, 0.1047198, -0.0349066, 0]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("pelvis/chest:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.62, 0.8, 0.9, 1.08, 1.4, 1.92),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -28), Vector2(-2, -27), Vector2(-2, -27), Vector2(3, -26), Vector2(3, -26), Vector2(1, -27), Vector2(0, -28)]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("pelvis/chest:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = false
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.22, 0.62, 0.8, 0.88, 0.96, 1.08, 1.4, 1.92),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, -0.0523599, -0.1745329, -0.1745329, 0.2094395, 0.2443461, 0.2268928, 0.0698132, 0]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("pelvis/chest/far_arm:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = false
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.62, 0.8, 0.92, 1.08, 1.4, 1.92),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, -0.2617994, -0.2617994, 0.3839724, 0.3839724, 0.1745329, 0]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("pelvis/chest/far_arm/far_forearm:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = false
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.62, 0.8, 0.92, 1.08, 1.4, 1.92),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, -0.2094395, -0.2094395, -0.4363323, -0.4363323, -0.1396263, 0]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("pelvis/chest/near_arm/near_forearm/hammer:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = false
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.22, 0.62, 0.8, 0.88, 0.96, 1.08, 1.4, 1.92),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, -0.1396263, -0.1570796, -0.1570796, -0.4886922, -0.3839724, -0.3839724, -0.1396263, 0]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("pelvis/chest/head:rotation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = false
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.62, 0.8, 0.9, 1.08, 1.4, 1.92),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, 0.122173, 0.122173, -0.1570796, -0.1570796, -0.0523599, 0]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("pelvis/chest/near_arm:rotation")
+tracks/7/interp = 1
+tracks/7/loop_wrap = false
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.22, 0.62, 0.8, 0.88, 0.96, 1.08, 1.4, 1.92),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, 0.6108652, 2.0943951, 2.0943951, 4.7996554, 4.9741884, 4.9741884, 5.846853, 6.2831853]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("pelvis/chest/near_arm/near_forearm:rotation")
+tracks/8/interp = 1
+tracks/8/loop_wrap = false
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 0.22, 0.62, 0.8, 0.88, 0.96, 1.08, 1.4, 1.92),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, 0.4363323, 1.727876, 1.727876, 0.4537856, 0.4014257, 0.4014257, 0.2094395, 0]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("pelvis/tail:rotation")
+tracks/9/interp = 1
+tracks/9/loop_wrap = false
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 0.62, 0.8, 1.04, 1.4, 1.92),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, -0.0523599, -0.0523599, 0.1396263, -0.0698132, 0]
+}
+
+[sub_resource type="AnimationLibrary" id="library"]
+_data = {
+&"idle": SubResource("idle"),
+&"swing": SubResource("swing")
+}
+
+[node name="ThorRigPilot" type="Node2D"]
+script = ExtResource("script")
+
+[node name="pelvis" type="Node2D" parent="."]
+position = Vector2(0, -88)
+
+[node name="Art" type="Sprite2D" parent="pelvis"]
+texture = ExtResource("pelvis")
+centered = false
+offset = Vector2(-165, -40.3500023)
+rotation = 0
+scale = Vector2(0.1412639, 0.1412639)
+z_index = 9
+texture_filter = 4
+
+[node name="chest" type="Node2D" parent="pelvis"]
+position = Vector2(0, -28)
+
+[node name="Art" type="Sprite2D" parent="pelvis/chest"]
+texture = ExtResource("chest")
+centered = false
+offset = Vector2(-145.5, -156.5)
+rotation = 0
+scale = Vector2(0.1789137, 0.1789137)
+z_index = 10
+texture_filter = 4
+
+[node name="head" type="Node2D" parent="pelvis/chest"]
+position = Vector2(7, -25)
+
+[node name="Art" type="Sprite2D" parent="pelvis/chest/head"]
+texture = ExtResource("head")
+centered = false
+offset = Vector2(-128.5, -223.8599854)
+rotation = 0
+scale = Vector2(0.1393728, 0.1393728)
+z_index = 11
+texture_filter = 4
+
+[node name="tail" type="Node2D" parent="pelvis"]
+position = Vector2(15, -5)
+
+[node name="Art" type="Sprite2D" parent="pelvis/tail"]
+texture = ExtResource("tail")
+centered = false
+offset = Vector2(-67, -16.1499996)
+rotation = -0.0502149
+scale = Vector2(0.1486068, 0.1486068)
+z_index = 12
+texture_filter = 4
+
+[node name="near_arm" type="Node2D" parent="pelvis/chest"]
+position = Vector2(-23, -19)
+
+[node name="Art" type="Sprite2D" parent="pelvis/chest/near_arm"]
+texture = ExtResource("near_arm")
+centered = false
+offset = Vector2(-137.6399994, -50.5800018)
+rotation = -0.1139171
+scale = Vector2(0.1565295, 0.1565295)
+z_index = 13
+texture_filter = 4
+
+[node name="near_forearm" type="Node2D" parent="pelvis/chest/near_arm"]
+position = Vector2(-11.17377, 27.84146)
+
+[node name="Art" type="Sprite2D" parent="pelvis/chest/near_arm/near_forearm"]
+texture = ExtResource("near_forearm")
+centered = false
+offset = Vector2(-67.5, -41.0200005)
+rotation = 0.0339071
+scale = Vector2(0.1437197, 0.1437197)
+z_index = 14
+texture_filter = 4
+
+[node name="hammer" type="Node2D" parent="pelvis/chest/near_arm/near_forearm"]
+position = Vector2(7.17377, 30.15854)
+
+[node name="Art" type="Sprite2D" parent="pelvis/chest/near_arm/near_forearm/hammer"]
+texture = ExtResource("hammer")
+centered = false
+offset = Vector2(-100, -257.3999939)
+rotation = 2.7915926
+scale = Vector2(0.1636364, 0.1636364)
+z_index = 15
+texture_filter = 4
+
+[node name="cape" type="Node2D" parent="pelvis/chest"]
+position = Vector2(-10, -5)
+
+[node name="Art" type="Sprite2D" parent="pelvis/chest/cape"]
+texture = ExtResource("cape")
+centered = false
+offset = Vector2(-114.5, -32)
+rotation = 0.1032201
+scale = Vector2(0.271875, 0.271875)
+z_index = 0
+texture_filter = 4
+
+[node name="far_arm" type="Node2D" parent="pelvis/chest"]
+position = Vector2(23, -19)
+
+[node name="Art" type="Sprite2D" parent="pelvis/chest/far_arm"]
+texture = ExtResource("far_arm")
+centered = false
+offset = Vector2(-33.4399986, -52.25)
+rotation = 0.013043
+scale = Vector2(0.1607101, 0.1607101)
+z_index = 1
+texture_filter = 4
+
+[node name="far_forearm" type="Node2D" parent="pelvis/chest/far_arm"]
+position = Vector2(11.85553, 27.55804)
+
+[node name="Art" type="Sprite2D" parent="pelvis/chest/far_arm/far_forearm"]
+texture = ExtResource("far_forearm")
+centered = false
+offset = Vector2(-52.6399994, -33.329998)
+rotation = 0.4908466
+scale = Vector2(0.1357166, 0.1357166)
+z_index = 2
+texture_filter = 4
+
+[node name="far_thigh" type="Node2D" parent="pelvis"]
+position = Vector2(-12, 0)
+
+[node name="Art" type="Sprite2D" parent="pelvis/far_thigh"]
+texture = ExtResource("far_thigh")
+centered = false
+offset = Vector2(-67.2000046, -42.6000023)
+rotation = -0.1880336
+scale = Vector2(0.2053471, 0.2053471)
+z_index = 4
+texture_filter = 4
+
+[node name="near_thigh" type="Node2D" parent="pelvis"]
+position = Vector2(12, 7)
+
+[node name="Art" type="Sprite2D" parent="pelvis/near_thigh"]
+texture = ExtResource("near_thigh")
+centered = false
+offset = Vector2(-89.5, -39.6199989)
+rotation = -0.3829153
+scale = Vector2(0.205175, 0.205175)
+z_index = 7
+texture_filter = 4
+
+[node name="far_shin" type="Node2D" parent="pelvis/far_thigh"]
+position = Vector2(12.07227, 33.9155)
+
+[node name="Art" type="Sprite2D" parent="pelvis/far_thigh/far_shin"]
+texture = ExtResource("far_shin")
+centered = false
+offset = Vector2(-63.5, -32.2399979)
+rotation = 0.3147144
+scale = Vector2(0.2214902, 0.2214902)
+z_index = 3
+texture_filter = 4
+
+[node name="far_boot" type="Node2D" parent="pelvis/far_thigh/far_shin"]
+position = Vector2(-12.07227, 37.0845)
+
+[node name="Art" type="Sprite2D" parent="pelvis/far_thigh/far_shin/far_boot"]
+texture = ExtResource("far_boot")
+centered = false
+offset = Vector2(-72.9599991, -40.8600006)
+rotation = 0
+scale = Vector2(0.1013216, 0.1013216)
+z_index = 5
+texture_filter = 4
+
+[node name="near_shin" type="Node2D" parent="pelvis/near_thigh"]
+position = Vector2(13.45056, 33.39285)
+
+[node name="Art" type="Sprite2D" parent="pelvis/near_thigh/near_shin"]
+texture = ExtResource("near_shin")
+centered = false
+offset = Vector2(-72.7999954, -33.9300003)
+rotation = 0.3367926
+scale = Vector2(0.2134396, 0.2134396)
+z_index = 6
+texture_filter = 4
+
+[node name="near_boot" type="Node2D" parent="pelvis/near_thigh/near_shin"]
+position = Vector2(-13.45056, 36.60715)
+
+[node name="Art" type="Sprite2D" parent="pelvis/near_thigh/near_shin/near_boot"]
+texture = ExtResource("near_boot")
+centered = false
+offset = Vector2(-95.7600021, -48.6000023)
+rotation = 0
+scale = Vector2(0.0851852, 0.0851852)
+z_index = 8
+texture_filter = 4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+callback_mode_process = 2
+libraries = {&"": SubResource("library")}

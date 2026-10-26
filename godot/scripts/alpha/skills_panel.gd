@@ -1,5 +1,7 @@
 extends VBoxContainer
 
+const Art = preload("res://scripts/presentation/item_art.gd")
+
 signal command_requested(intent: Dictionary)
 
 var sources: OptionButton
@@ -25,6 +27,9 @@ func setup(room: TrainingRoom) -> void:
 	embed_button=Button.new(); embed_button.text="镶入装备（每件一本，不可取出）"; add_child(embed_button)
 	embed_button.pressed.connect(func(): command_requested.emit({"action":"embed_book","equipmentId":selected_id(equipment),"bookId":selected_id(sources)}))
 	sources.item_selected.connect(func(_index: int): update_buttons())
+	for menu in [sources,equipment]:
+		menu.add_theme_constant_override("icon_max_width",24)
+		menu.get_popup().add_theme_constant_override("icon_max_width",24)
 	refresh(room.snapshot())
 
 func selected_id(menu: OptionButton) -> int:
@@ -41,12 +46,12 @@ func refresh(snapshot: Dictionary) -> void:
 	var equipment_id: int = selected_id(equipment)
 	sources.clear(); equipment.clear(); current=alpha.skillSources
 	for source in current:
-		sources.add_item("%s #%d · %s" % [source.name,source.id,"有效" if source.active else "休眠／地面"])
+		sources.add_icon_item(Art.texture(source.name),"%s #%d · %s" % [source.name,source.id,"有效" if source.active else "休眠／地面"])
 		sources.set_item_metadata(sources.item_count-1,source.id)
 		if source.id==source_id: sources.select(sources.item_count-1)
 	for item in alpha.items:
 		if item.name not in ["训练弓","布履"] or item.state!="normal" or item.get("shadow",false): continue
-		equipment.add_item("%s #%d%s" % [item.name,item.id," · 已有书" if item.has("specialBook") else ""])
+		equipment.add_icon_item(Art.texture(item.name),"%s #%d%s" % [item.name,item.id," · 已有书" if item.has("specialBook") else ""])
 		equipment.set_item_metadata(equipment.item_count-1,item.id)
 		if item.id==equipment_id: equipment.select(equipment.item_count-1)
 	var lines: PackedStringArray = ["专属穿透1×2、神兽1×3必须留经脉；两轻书共9格，箭雨加轻书共11格须镶嵌。"]

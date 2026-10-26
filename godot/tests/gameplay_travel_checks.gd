@@ -4,6 +4,7 @@ const Journey = preload("res://scripts/journey/room_journey.gd")
 func fixture(id: String,target: String,combat: bool=false) -> Dictionary:
 	var data: Dictionary = TrainingRoom.new().layout.duplicate(true)
 	data.roomId=id; data.roomTitle=id; data.objective="combat" if combat else "safe"
+	data.constructionRewardWaves=[0] if combat else []
 	data.spawn=Vector2(400,600); data.camps=[Vector2(400,600)]; data.obstacles=[]; data.encounters=[]
 	data.doors=[{"id":"door","target":target,"targetDoor":"door","title":target,"point":Vector2(400,600),"arrival":Vector2(400,600),"x":200,"y":600,"halfWidth":20,"halfHeight":50,"height":120,"kind":"wall"}]
 	if combat: data.encounters=[{"x":400,"y":600,"enemies":[{"x":650,"y":600,"appearance":"bird"}]}]
@@ -18,6 +19,9 @@ func cross(run: RefCounted) -> void:
 	run.update({"interact":false},0); run.update({"interact":true},0)
 
 func run(check: Callable) -> void:
+	var maps: Dictionary = Journey.read_maps()
+	for id in maps:
+		check.call(not maps[id].get("camps",[]).is_empty() if id in ["entry","altar","thunder_approach"] else maps[id].get("camps",[]).is_empty(),"真实地图仅入口／祭火／雷庭前径可整理："+id)
 	var run = Journey.new({"entry":fixture("entry","fight"),"fight":fixture("fight","entry",true)},{"potionDrops":true,"dropSeed":13})
 	var exposed: Dictionary = run.snapshot()
 	exposed.camps.clear()
@@ -44,7 +48,7 @@ func run(check: Callable) -> void:
 		if run.snapshot().roomComplete: break
 	check.call(run.snapshot().roomComplete,"构筑流程真实击杀完成房间")
 	var ground: Array = run.snapshot().alpha.items.filter(func(item: Dictionary): return item.region=="ground" and item.get("roomId","")=="fight")
-	check.call(ground.size()==1 and ground[0].name=="羊角","每波首杀生成一件已接通的构筑符")
+	check.call(ground.size()==1 and ground[0].name=="羊角","有资格的首波首杀生成一件已接通的构筑符")
 	check.call(not run.snapshot().drops.is_empty(),"构筑符与原药瓶独立共存")
 	var count: int = run.snapshot().alpha.items.size()
 	command(run,{"action":"camp"})

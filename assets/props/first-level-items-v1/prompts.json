@@ -1,0 +1,129 @@
+{
+  "route": "built-in image_gen",
+  "art_source": "host_image",
+  "model": "未披露",
+  "cost": "未披露",
+  "references": "文字上下文：Q23皮影画风、现有药囊合同与alpha_state内容；生成未附参考图片",
+  "assets": [
+    {
+      "id": "swift-horse",
+      "name": "快马",
+      "kind": "器",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single slender horse-shaped amber leather ritual figurine, rearing profile, short vermilion harness, two bold lightning cutouts, small integral pedestal. Dynamic horse silhouette, no rider."
+    },
+    {
+      "id": "dawn-rooster",
+      "name": "司晨",
+      "kind": "器",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single rooster-shaped cinnabar ritual hand bell, large rising tail and upright golden comb, small bronze bell opening in body. Clear rooster profile."
+    },
+    {
+      "id": "water-boar",
+      "name": "豕涉",
+      "kind": "器",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single squat indigo boar-shaped water vessel, blunt pig snout, two small tusks, curved wave cutout in its round body, flat stable feet."
+    },
+    {
+      "id": "grave-guard",
+      "name": "守冢",
+      "kind": "器",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single ochre ritual grave-guardian dog figurine integrated with a small upright stone tablet, pointed dog ears, compact seated silhouette, one simple earth spiral."
+    },
+    {
+      "id": "hoard-pact",
+      "name": "囤积",
+      "kind": "契",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single tall narrow golden-brown wooden pact tablet with two notched corners and a small tied cord, central relief of a round granary with three grain kernels. One object."
+    },
+    {
+      "id": "herb-pact",
+      "name": "素食",
+      "kind": "契",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single tall narrow sage-green wooden pact tablet with two notched corners and a small tied cord, central relief of three broad edible leaves and a seed. One object."
+    },
+    {
+      "id": "charcoal-pact",
+      "name": "涂炭",
+      "kind": "契",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single tall narrow slate-indigo wooden pact tablet with two notched corners and a small tied cord, central relief of a black coal lump encircled by a broad protective ring. One object."
+    },
+    {
+      "id": "burning-pact",
+      "name": "焚书",
+      "kind": "契",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single tall narrow vermilion wooden pact tablet with two notched corners and a small tied cord, central relief of an open book with one bold flame rising above it. One object."
+    },
+    {
+      "id": "rat-whisker",
+      "name": "鼠毫",
+      "kind": "符",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single small golden leather amulet, mouse head silhouette with round ears and exactly two strong whisker strokes, dark umber edge, a short integral hanging loop. Compact square silhouette."
+    },
+    {
+      "id": "tiger-fang",
+      "name": "虎牙",
+      "kind": "符",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single ivory tiger canine fang amulet in a dark plum leather collar, two bold tiger stripe inlays, short copper suspension loop. Compact hooked silhouette."
+    },
+    {
+      "id": "ram-horn",
+      "name": "羊角",
+      "kind": "符",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single jade-green ram horn amulet with a broad spiral curl, ivory inner edge and short ochre suspension loop. Compact square spiral silhouette."
+    },
+    {
+      "id": "flint-fire",
+      "name": "燧火",
+      "kind": "符",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single small cinnabar leather amulet holding two dark flint stones and one bold amber flame relief, short copper suspension loop. Compact diamond silhouette."
+    },
+    {
+      "id": "training-bow",
+      "name": "训练弓",
+      "kind": "装备",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single plain full-length ashwood recurve training bow, vertical with slight diagonal, taut clearly connected bowstring, dark cloth grip, two modest ochre binding bands. No arrows, no person. Simple humble weapon."
+    },
+    {
+      "id": "cloth-shoes",
+      "name": "布履",
+      "kind": "装备",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: One matched pair of humble charcoal-blue cloth shoes, overlapping as one inventory object, rounded toes, tan stitched soles, simple cross straps, slight three-quarter overhead view."
+    },
+    {
+      "id": "azure-dragon",
+      "name": "青龙",
+      "kind": "神兽",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single curled jade-green Azure Dragon ritual leather medallion, S-curved dragon body, readable horned head in profile, three broad mane tufts, small ochre rim details. This is an inventory emblem not a living full-size creature."
+    },
+    {
+      "id": "piercing-book",
+      "name": "穿透箭",
+      "kind": "技能书",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single closed tall narrow ochre-bound stitched skill manual with thick ivory page block, central cover emblem of one straight arrow piercing two separated circular rings. No letters."
+    },
+    {
+      "id": "rain-book",
+      "name": "箭雨",
+      "kind": "技能书",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single closed broad square indigo-bound stitched skill manual with thick ivory page block, central cover emblem of three downward arrows over a wide circular target. No letters."
+    },
+    {
+      "id": "backwind-book",
+      "name": "回风",
+      "kind": "技能书",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single closed tall narrow muted teal-bound stitched skill manual with thick ivory page block, central cover emblem of one broad curling wind arrow making a U-turn. No letters."
+    },
+    {
+      "id": "charge-book",
+      "name": "蓄势",
+      "kind": "技能书",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single closed tall narrow russet-bound stitched skill manual with thick ivory page block, central cover emblem of a drawn bow and two small amber sparks. No letters."
+    },
+    {
+      "id": "dragon-wind-book",
+      "name": "引风书",
+      "kind": "技能书",
+      "prompt": "Use case: stylized-concept\nAsset type: single transparent 2D inventory item sprite for Chinese shadow-puppet action game 九鼎, Tanggu first level.\nStyle/medium: flat hand-painted Chinese cut-leather shadow puppet, decisive dark umber outline, matte worn pigment, restrained cutout ornament, tiny stippled texture, handcrafted folk-art silhouette, no photorealism or 3D glossy rendering. Warm bone highlights and subdued mineral pigments. Simplify for readability at 32–48 pixels.\nComposition/framing: EXACTLY ONE isolated inventory object centered on a square canvas, front-facing unless specified, whole silhouette with generous 14% transparent margin on every side. Balanced visual weight. No card frame, scene, ground, cast shadow, aura, loose particles or floating ornaments. Genuine transparent RGBA background, no painted checkerboard. No writing, letters, numbers, labels, UI, logos or watermark.\nSubject: A single closed elongated jade-green stitched skill manual with thick ivory page block, central cover emblem of a simple dragon head above two long parallel wind strokes. No letters."
+    }
+  ]
+}

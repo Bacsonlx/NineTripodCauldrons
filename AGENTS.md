@@ -34,7 +34,7 @@
 
 - 当前开发与运行工程为 `godot/`，采用原生 2D＋带类型 GDScript；启动用 `godot --path godot`，版本与模板以 `godot/engine-lock.json` 为准，编辑／测试／导出见 [Godot README](godot/README.md)。
 - 完整汤谷已接入 Godot，动态小样已获用户确认；当前功能与待验项以 [实施记录](docs/migration/Godot迁移_实施记录.md)和[候选验收记录](docs/migration/Godot候选_验收记录.md)为准。
-- 内容布局由 Godot 编辑器承载，用户调整与验收，AI 负责脚本和批量配置。当前默认采用 `godot/scenes/rooms/` 八个独立房间，第三庭后为索尔灰盒 Boss 房，再到原出口；运行入口 `tanggu_first_level.tscn`。门连接、任务与编辑方式见 [房间地图说明](docs/guides/汤谷房间地图使用说明.md)。原连续地图 `tanggu_first_level_map.tscn` 和旧 `tanggu_map.tscn` 保留用户编辑结果，冻结规则夹具仅用于回归参照。
+- 内容布局由 Godot 编辑器承载，用户调整与验收，AI 负责脚本和批量配置。本集成分支采用 `godot/scenes/rooms/` 十六个独立房间（十三主线＋三支路），雷庭前径后为索尔 Boss 房与原出口；运行入口 `tanggu_first_level.tscn`。扩展候选、原生试玩与正式采用状态见[首关扩展实施记录](docs/mvp/汤谷首关扩展_实施记录_2026-10-26.md)。门连接、任务与编辑方式见 [房间地图说明](docs/guides/汤谷房间地图使用说明.md)。原连续地图 `tanggu_first_level_map.tscn` 和旧 `tanggu_map.tscn` 保留用户编辑结果，冻结规则夹具仅用于回归参照。
 - `src/`、根 `tests/`、npm／Electron／Phaser 工具链保留为旧版参照与迁移制作工具；新增玩法在 Godot 实现，Node.js 不作为游戏运行依赖。
 - 手柄、正式肉鸽闭环、存档和 Steam 完整功能属于后续范围；构建、规则测试或单平台通过分别记录，不能替代双平台实机完成证据。
 
@@ -46,7 +46,11 @@
 
 制作人物、道具、图标、短特效，或对已有图片切帧、对齐、打包时，先读取 [Agent Sprite Forge 使用指南](docs/art/Agent_Sprite_Forge使用指南.md)，按任务使用用户级 `generate2dsprite`／`video2dsprite`。安装锁与依赖位于 `tools/asset_forge/`；生图路线、角色分层合同及加工验收以该指南为准。
 
+制作、修订或接入资产前，读取[资产追溯](docs/guides/验证证据与资产追溯.md#资产追溯)，在现有素材 README 维护“参考 → 候选／修订 → 选择依据 → 正式源文件 → 运行引用 → 验证证据”；用户决定和 AI 评审理由分别记录。
+
 ### Verification
+
+修改或验收游戏前，读取[验证证据](docs/guides/验证证据与资产追溯.md#验证证据)，选择相关检查并在任务记录及交付结论中分类报告构建、逻辑、运行、交互、视觉、性能的结果与证据；未验证／不适用说明原因。构建通过不等于试玩通过，视觉确认注明对象、版本和范围。
 
 修改 Godot 代码后运行 `python3 tools/migration/check_godot.py`（导入、规则测试、完整场景）；规则／输入可单独运行 `godot --headless --path godot --script res://tests/run_tests.gd`。资源与呈现改动同时检查干净导入及对应原生包；导出用 `python3 tools/migration/export_godot.py`。纯文档改动检查链接、命令与状态一致性。
 

@@ -1,0 +1,55 @@
+{
+  "task": "FIRST-LEVEL-ITEMS",
+  "generated_on": "2026-10-25",
+  "verified_on": "2026-10-26",
+  "asset_count": 20,
+  "source_runtime_pngs_identical": true,
+  "mode": "macOS headless; no native window or system input",
+  "source_manifest": "../../output/art/FIRST-LEVEL-ITEMS/2026-10-25-v1/source-manifest.json",
+  "source_manifest_sha256": "08480b8b287c8d5c787532946996300edb43c4e785e6319e2a77d14810869e27",
+  "checks": "../../output/art/FIRST-LEVEL-ITEMS/2026-10-25-v1/sandbox-checks.json",
+  "clean_import": "../../output/art/FIRST-LEVEL-ITEMS/2026-10-25-v1/clean-checks.json",
+  "targeted_passes": {
+    "item_prototype_checks": 42,
+    "item_scene_checks": 14,
+    "gameplay_journey_checks": 80,
+    "gameplay_scene_checks": 10,
+    "skill_scene_checks": 10
+  },
+  "full_gate": {
+    "status": "failed",
+    "exit": 1,
+    "log": "../../output/art/FIRST-LEVEL-ITEMS/2026-10-25-v1/sandbox-gate.log",
+    "reason": "sandbox user cache/editor settings/system certificate errors; other regression failures captured separately"
+  },
+  "baseline_comparison": [
+    {
+      "script": "boss_scene_checks",
+      "same_failures_without_this_change": true
+    },
+    {
+      "script": "boss_art_checks",
+      "same_failures_without_this_change": true
+    },
+    {
+      "script": "skill_journey_checks",
+      "same_failures_without_this_change": true
+    }
+  ],
+  "exports": {
+    "status": "not_run",
+    "reason": "automatic approval review timed out; required full gate not passed"
+  },
+  "visual": {
+    "source": "generated subjects inspected; alpha verified",
+    "browser_preview": "file created; browser start approval and file URL policy blocked opening",
+    "native": "not_tested"
+  },
+  "performance": "not_tested",
+  "review": {
+    "standards_open_code_findings": 0,
+    "spec_open_findings": 0,
+    "asset_readme_followup": "completed"
+  },
+  "commit": "not_committed"
+}

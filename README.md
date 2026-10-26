@@ -9,14 +9,15 @@ Windows／macOS 单机动作肉鸽游戏，当前开发与运行工程为 **Godo
 安装 [engine-lock.json](godot/engine-lock.json) 锁定的 Godot 和 Python 3。导出需安装匹配的官方模板；Node.js 不作为 Godot 游戏运行依赖。在仓库根目录执行：
 
 ```sh
-./play                            # 直接运行已集成的第一关
+./play                            # 首页确认出发后进入已集成首关
+./play --test level               # 开发时直达首关
 ./play --test boss --mana 0        # 第一关索尔房，零蓝测试
 godot --editor --path godot        # 打开编辑器
 python3 tools/migration/check_godot.py   # 后台导入、规则检查和完整场景启动
 python3 tools/migration/export_godot.py  # 后台预检并导出双平台ZIP
 ```
 
-首次准备或更新源素材后运行 `python3 tools/migration/prepare_sample_assets.py`，再执行检查。快捷参数见[试玩启动命令](docs/guides/试玩启动命令.md)，环境与导出见 [Godot 开发说明](godot/README.md)。当前入口为 `godot/scenes/tanggu_first_level.tscn`，八个独立房间位于 `godot/scenes/rooms/`；门连接、任务与编辑规则见 [房间地图说明](docs/guides/汤谷房间地图使用说明.md)。原连续地图保留为历史布局。
+首次准备或更新源素材后运行 `python3 tools/migration/prepare_sample_assets.py`，再执行检查。快捷参数见[试玩启动命令](docs/guides/试玩启动命令.md)，环境与导出见 [Godot 开发说明](godot/README.md)。默认启动先到原生首页，确认后进入 `godot/scenes/tanggu_first_level.tscn`，八个独立房间位于 `godot/scenes/rooms/`；门连接、任务与编辑规则见 [房间地图说明](docs/guides/汤谷房间地图使用说明.md)。原连续地图保留为历史布局。
 
 Codex 已接入项目级 `jiuding_godot` MCP，工程查询、场景／节点／精灵编辑与安装方法见 [Godot MCP 使用指南](docs/guides/Godot_MCP使用指南.md)。
 
@@ -38,7 +39,7 @@ Codex 已接入项目级 `jiuding_godot` MCP，工程查询、场景／节点／
 
 ## 目录与维护
 
-- `godot/scenes/`：运行场景与编辑器地图；默认主场景为 `tanggu_first_level.tscn`，八个独立房间在 `rooms/`。
+- `godot/scenes/`：运行场景与编辑器地图；默认 `boot.tscn` 路由至 `home.tscn` 首页，确认出发进入 `tanggu_first_level.tscn`，八个独立房间在 `rooms/`。
 - `godot/scripts/combat/`、`input/`：战斗规则与输入适配；`presentation/`：相机、动作、反馈及HUD；`world/`：编辑布局。
 - `godot/tests/`：公开边界检查与冻结规则对照；`godot/assets/generated/`：转换后的离线图集与锚点。
 - `tools/migration/`：素材转换、Godot检查和双平台导出；`build/godot/`：本地产物。

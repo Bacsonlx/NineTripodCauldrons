@@ -8,7 +8,7 @@ func check(ok: bool, message: String) -> void:
 func _initialize() -> void:
 	var run = Journey.new(Journey.read_maps(),{"potionDrops":true,"dropSeed":13})
 	var state: Dictionary = run.snapshot()
-	check(state.has("alpha"),"默认八房首关直接持有局内背包")
+	check(state.has("alpha"),"默认十六房首关直接持有局内背包")
 	if state.has("alpha"):
 		check(state.alpha.camp,"正常出发从入口营地构筑开始")
 	var bow: int = item_id(run,"训练弓")

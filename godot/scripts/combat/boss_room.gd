@@ -12,12 +12,21 @@ const LIGHTNING_RADIUS: float = 80
 const ARENA_BOUNDS: Rect2 = Rect2(96,96,1248,848)
 # 340/500+340/650≈1.203秒，给任意朝向保留最小反击窗口。
 const MIN_THROW_DISTANCE: float = 340
+const REINFORCEMENT_LIMIT: int = 8
+const REINFORCEMENT_BATCH: int = 4
+const REINFORCEMENT_INTERVAL: float = 8.0
+const SUMMON_WARNING: float = 1.0
+const SUMMON_SAFE_DISTANCE: float = 240.0
 var initial: Dictionary = {}
 var elapsed: float = 0.0
 var hammer: Dictionary = {}
 var lightning: Array[Dictionary] = []
 var lightning_index: int = 0
 var reward_placeholders: Array[Dictionary] = []
+var summons: Array[Dictionary] = []
+var reinforcement_timer: float = 2.0
+var reinforcement_batch: int = 0
+var next_minion: int = 1
 
 static func arena_layout() -> Dictionary:
 	return {"width":1440,"height":1040,"spawn":Vector2(300,520),
@@ -31,6 +40,7 @@ func _init(fixture: Dictionary = {}) -> void:
 	initial=fixture.duplicate(true)
 	var data: Dictionary = fixture.duplicate(true) if fixture.has("width") else arena_layout()
 	data.spawn=initial.get("spawn",data.spawn)
+	if data.get("gameplay",false) or data.get("mode","")=="gameplay": data.potionDrops=true
 	super(data)
 	energy_enabled=true
 
@@ -44,23 +54,30 @@ func reset() -> void:
 	hammer={}
 	lightning.clear(); lightning_index=0
 	reward_placeholders.clear()
-	var position: Vector2 = keep_throw_space(point(initial.get("boss",Vector2(720,520))))
-	enemies=[{"id":BOSS_ID,"group":0,"appearance":"bird","x":position.x,"y":position.y,
+	summons.clear(); reinforcement_timer=2.0; reinforcement_batch=0; next_minion=1
+	var bounds: Rect2 = ARENA_BOUNDS.grow(-BODY_RADIUS)
+	var position: Vector2 = point(initial.get("boss",Vector2(720,520))).clamp(bounds.position,bounds.end)
+	enemies=[{"id":BOSS_ID,"group":-1,"boss":true,"appearance":"bird","x":position.x,"y":position.y,
 		"health":MAX_HEALTH,"phase":"prepare","timer":1.2,"angle":PI,"flash":0.0,"struck":false}]
 
 func update(input: Dictionary,seconds: float) -> void:
-	if status=="failed" or (status=="complete" and layout.doors.is_empty()): return
+	if status=="failed" or (status=="complete" and layout.doors.is_empty() and not gameplay): return
 	super.update(input,seconds)
 
 func step(input: Dictionary,seconds: float) -> void:
-	if status=="failed" or (status=="complete" and layout.doors.is_empty()): return
+	if status=="failed" or (status=="complete" and layout.doors.is_empty() and not gameplay): return
 	super.step(input,seconds)
 	if status!="running":
-		hammer={}; lightning.clear(); arrows.clear(); rains.clear()
+		hammer={}; lightning.clear(); arrows.clear(); rains.clear(); paper_arrows.clear(); summons.clear()
+		if status=="complete": enemies.resize(1)
 
-func update_enemies(seconds: float,_protection: float,_dodge: float) -> void:
+func update_enemies(seconds: float,protection_at_start: float,dodge_at_start: float) -> void:
 	if status!="running": return
 	elapsed+=seconds
+	if gameplay:
+		update_reinforcements(seconds)
+		super.update_enemies(seconds,protection_at_start,dodge_at_start)
+		if status!="running": return
 	var boss: Dictionary = enemies[0]
 	boss.flash=maxf(0,boss.flash-seconds)
 	var remaining: float = seconds
@@ -77,10 +94,15 @@ func update_enemies(seconds: float,_protection: float,_dodge: float) -> void:
 			if delta.length()<=SWING_RADIUS and absf(angle_difference(boss.angle,delta.angle()))<=SWING_HALF_ANGLE:
 				boss.struck=damage_player(20)
 		elif boss.phase=="flight": advance_hammer(part)
-		elif boss.phase=="chase":
-			var direction: Vector2 = (point(player)-point(boss)).normalized()
-			var next: Vector2 = keep_throw_space(point(boss)+direction*minf(100*(alpha.runtime.enemy_speed(self,boss) if has_loadout_skills() else 1.0)*part,maxf(0,point(player).distance_to(point(boss))-BODY_RADIUS-PLAYER_RADIUS)))
+		elif boss.phase in ["chase","reposition"]:
+			var destination: Vector2 = point(player) if boss.phase=="chase" else keep_throw_space(point(boss))
+			var gap: float = point(boss).distance_to(destination)
+			var direction: Vector2 = (destination-point(boss)).normalized()
+			var travel: float = minf(100*(alpha.runtime.enemy_speed(self,boss) if has_loadout_skills() else 1.0)*part,maxf(0,gap-(160 if boss.phase=="chase" else 0)))
+			var bounds: Rect2 = ARENA_BOUNDS.grow(-BODY_RADIUS)
+			var next: Vector2 = (point(boss)+direction*travel).clamp(bounds.position,bounds.end)
 			if super.can_walk_xy(next.x,next.y): boss.x=next.x; boss.y=next.y
+			if boss.phase=="chase" and point(boss).distance_to(point(player))<=160.000001: boss.timer=0
 		boss.timer=maxf(0,boss.timer-part)
 		remaining-=part
 		if boss.phase=="lightning" and lightning_index<3 and boss.timer<=3.4-lightning_index*0.7+0.0000001:
@@ -88,18 +110,58 @@ func update_enemies(seconds: float,_protection: float,_dodge: float) -> void:
 			lightning_index+=1
 		if boss.timer<=0.0000001: finish_phase()
 
+func update_reinforcements(seconds: float) -> void:
+	enemies=enemies.filter(func(enemy: Dictionary): return enemy.id==BOSS_ID or enemy.phase!="dead" or enemy.timer>0)
+	# 死亡已在命中入口结算；清掉旧批次计数，不保留无限增长的尸体／保底表。
+	for group in blue_waves.keys():
+		if not enemies.any(func(enemy: Dictionary): return enemy.group==group) and not summons.any(func(mark: Dictionary): return mark.group==group): blue_waves.erase(group)
+	for index in range(summons.size()-1,-1,-1):
+		var mark: Dictionary = summons[index]
+		mark.remaining=maxf(0,mark.remaining-seconds)
+		if mark.remaining>0.000001: continue
+		# 玩家主动走进预警点时取消此只，不能在脚下直接实体化。
+		if summon_safe(point(mark)):
+			enemies.append({"id":mark.id,"group":mark.group,"appearance":"bird","role":"bird",
+				"x":mark.x,"y":mark.y,"health":60,"maxHealth":60,"phase":"chase","timer":0.0,
+				"angle":0.0,"struck":false,"flash":0.0,"route":[],"repath":0.0,"knockX":0.0,"knockY":0.0,"knockTime":0.0})
+		summons.remove_at(index)
+	reinforcement_timer-=seconds
+	if reinforcement_timer>0.000001: return
+	reinforcement_timer+=REINFORCEMENT_INTERVAL
+	var alive: int = enemies.filter(func(enemy: Dictionary): return enemy.id!=BOSS_ID and enemy.health>0).size()
+	var count: int = mini(REINFORCEMENT_BATCH,REINFORCEMENT_LIMIT-alive-summons.size())
+	if count<=0: return
+	reinforcement_batch+=1
+	for index in 16:
+		if count<=0: break
+		var angle: float = (index+reinforcement_batch*3)*TAU/16
+		var location: Vector2 = ARENA_BOUNDS.get_center()+Vector2(cos(angle)*520,sin(angle)*320)
+		if not summon_safe(location): continue
+		summons.append({"id":next_minion,"group":reinforcement_batch,"x":location.x,"y":location.y,"remaining":SUMMON_WARNING})
+		next_minion+=1; count-=1
+
+func summon_safe(location: Vector2) -> bool:
+	if not super.can_walk_xy(location.x,location.y) or location.distance_to(point(player))<SUMMON_SAFE_DISTANCE: return false
+	if location.distance_to(point(enemies[0]))<BODY_RADIUS+32: return false
+	for enemy in enemies:
+		if enemy.id!=BOSS_ID and enemy.health>0 and location.distance_to(point(enemy))<36: return false
+	for mark in summons:
+		if location.distance_to(point(mark))>0.001 and location.distance_to(point(mark))<36: return false
+	return true
+
 func finish_phase() -> void:
 	var boss: Dictionary = enemies[0]
 	match boss.phase:
 		"prepare","rest":
 			if point(player).distance_to(point(boss))<=160:
-				boss.angle=(point(player)-point(boss)).angle()
-				boss.phase="swing_warn"; boss.timer=0.8; boss.struck=false
-			else: begin_throw()
+				begin_swing()
+			else: boss.phase="chase"; boss.timer=3.0
 		"swing_warn": boss.phase="swing"; boss.timer=0.12
 		"swing": boss.phase="swing_recover"; boss.timer=1.0
-		"swing_recover": boss.phase="chase"; boss.timer=1.5
-		"chase": begin_throw()
+		"swing_recover","reposition": begin_throw()
+		"chase":
+			if point(player).distance_to(point(boss))<=160.000001: begin_swing()
+			else: begin_throw()
 		"throw_warn":
 			var origin: Vector2 = point(boss)
 			var target: Vector2 = throw_target()
@@ -123,8 +185,18 @@ func advance_lightning(seconds: float) -> void:
 		if mark.remaining>0.0000001 or mark.active>0.0000001: live.append(mark)
 	lightning=live
 
+func begin_swing() -> void:
+	var boss: Dictionary = enemies[0]
+	boss.angle=(point(player)-point(boss)).angle()
+	boss.phase="swing_warn"; boss.timer=0.8; boss.struck=false
+
 func begin_throw() -> void:
 	var boss: Dictionary = enemies[0]
+	# 投锤前走回能容纳任意锁定方向的区域，追近时不再被此区域夹住。
+	var distance: float = point(boss).distance_to(keep_throw_space(point(boss)))
+	if distance>0.000001:
+		boss.phase="reposition"; boss.timer=distance/100
+		return
 	boss.phase="throw_warn"; boss.timer=1.0
 	boss.angle=(point(player)-point(boss)).angle()
 
@@ -190,6 +262,10 @@ func impact(hit: Dictionary,kind: String,angle: float,attack: Dictionary = {}) -
 	effects.append(effect); next_effect+=1
 	if boss.health==0:
 		boss.phase="dead"; status="complete"
+		summons.clear(); hammer={}; lightning.clear(); paper_arrows.clear()
+		for enemy in enemies:
+			if enemy.id==BOSS_ID: continue
+			enemy.health=0; enemy.phase="dead"; enemy.timer=0
 		if has_loadout_skills(): alpha.kill_record(); clear_skill_effects()
 		if potion_drops:
 			reward_placeholders=[{"kind":"equipment","label":"装备 · 未入库占位","x":boss.x-32,"y":boss.y},{"kind":"item","label":"道具 · 未入库占位","x":boss.x+32,"y":boss.y}]
@@ -220,7 +296,8 @@ static func segment_circle(from: Vector2,to: Vector2,center: Vector2,radius: flo
 
 func snapshot() -> Dictionary:
 	var data: Dictionary = super.snapshot()
-	data.enemies=[]
+	data.enemies=data.enemies.filter(func(enemy: Dictionary): return enemy.id!=BOSS_ID)
+	data.summons=summons.duplicate(true)
 	if not enemies.is_empty(): data.boss=enemies[0].duplicate(true)
 	data.elapsed=elapsed
 	data.hammer=hammer.duplicate(true)
