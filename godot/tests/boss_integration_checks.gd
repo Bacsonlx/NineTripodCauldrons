@@ -19,7 +19,7 @@ func _initialize() -> void:
 	var court: Dictionary = safe_room("court3","entry")
 	court.objective="combat"
 	court.encounters=[{"x":300,"y":520,"enemies":[Vector2(360,520)]}]
-	court.doors.append(door("boss","boss","court3",Vector2(500,520)))
+	court.doors.append(door("boss","boss","thunder_approach",Vector2(500,520)))
 	var boss: Dictionary = maps.boss.duplicate(true)
 	for back in boss.doors:
 		if back.target=="thunder_approach": back.target="court3"; back.targetDoor="boss"

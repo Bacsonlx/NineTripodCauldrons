@@ -14,19 +14,33 @@ var samples: Array = []
 var baseline_items: int = 0
 var visit_start: Dictionary = {}
 var visit_revisit: bool = false
-var recording: bool = true
+var visit_milestones: Dictionary = {}
+var returning: bool = false
 var route_name: String = "main"
 const MAIN_ROUTE: Array[String] = ["court1","dry_creek","root_fork","stele","court2","altar","ash_cloister","gate_forecourt","court3","thunder_approach","boss","end"]
-const BRANCH_ROUTE: Array[String] = ["court1","dry_creek","moss_side","dry_creek","moss_side","root_fork","stele","stele_side","stele","stele_side","court2","altar","ash_cloister","ember_side","ash_cloister","ember_side","gate_forecourt","court3","thunder_approach","boss","end"]
+const BRANCH_ROUTE: Array[String] = ["court1","dry_creek","moss_side","dry_creek","moss_side","root_fork","moss_side","dry_creek","root_fork","stele","stele_side","stele","stele_side","court2","stele_side","stele","court2","altar","ash_cloister","ember_side","ash_cloister","ember_side","gate_forecourt","ember_side","ash_cloister","gate_forecourt","court3","thunder_approach","boss","end"]
 
 func include_branches() -> bool: return false
 
+func timing(state: Dictionary) -> Dictionary:
+	return {"effective_seconds":state.alpha.elapsed,"actual_seconds":state.actualSeconds,"health":state.health,"mana":state.resources.mana,"stamina":state.resources.stamina}
+
+func observe_progress(state: Dictionary) -> void:
+	var live: Array = state.enemies.filter(func(enemy: Dictionary): return enemy.phase not in ["dead","inactive"])
+	if not live.is_empty():
+		if not visit_milestones.has("first_combat"): visit_milestones.first_combat=timing(state)
+		var wave: String = "wave_"+str(state.encounter)
+		if not visit_milestones.has(wave): visit_milestones[wave]=timing(state)
+	if state.roomComplete and not visit_milestones.has("complete"): visit_milestones.complete=timing(state)
+
 func sample_visit(before: Dictionary,revisit: bool) -> void:
 	var after: Dictionary = journey.snapshot()
+	observe_progress(after)
+	visit_milestones.left=timing(after)
 	var room_drops: Array = observed_drops.values().filter(func(item: Dictionary): return item.room==after.roomId)
 	var wave_sizes: Array = []
 	for encounter in journey.active.layout.encounters: wave_sizes.append(encounter.enemies.size())
-	var sample: Dictionary = {"route":route_name,"room":after.roomId,"revisit":revisit,"seed":13,
+	var sample: Dictionary = {"route":route_name,"phase":"return" if returning else "outbound","room":after.roomId,"revisit":revisit,"seed":13,"milestones":visit_milestones.duplicate(true),
 		"effective_seconds":after.alpha.elapsed-before.alpha.elapsed,"total_effective_seconds":after.alpha.elapsed,
 		"actual_seconds":after.actualSeconds-before.actualSeconds,"total_actual_seconds":after.actualSeconds,
 		"health_before":before.health,"health_after":after.health,"mana_before":before.resources.mana,"mana_after":after.resources.mana,
@@ -40,7 +54,9 @@ func sample_visit(before: Dictionary,revisit: bool) -> void:
 
 func observe_loot(state: Dictionary) -> void:
 	for item in state.get("drops",[]):
-		observed_drops[state.roomId+":"+str(item.id)]={"room":state.roomId,"id":item.id,"kind":item.kind,"wave":item.wave,"guaranteed":item.guaranteed}
+		var key: String = state.roomId+":"+str(item.id)
+		if not observed_drops.has(key):
+			observed_drops[key]={"room":state.roomId,"id":item.id,"kind":item.kind,"wave":item.wave,"guaranteed":item.guaranteed,"generated_at":timing(state),"collected":false}
 		if item.kind=="mana" and state.objective=="combat": blue_waves[state.roomId+":"+str(item.wave)]=true
 
 func collect_nearby() -> void:
@@ -50,6 +66,10 @@ func collect_nearby() -> void:
 	var after: Dictionary = journey.snapshot()
 	if after.drops.size()==before.drops.size()-1:
 		collected+=1; restored_mana+=after.resources.mana-before.resources.mana; restored_health+=after.health-before.health
+		var key: String = before.roomId+":"+str(before.interaction.dropId)
+		if observed_drops.has(key):
+			observed_drops[key].collected=true
+			observed_drops[key].collected_at=timing(after)
 func check(ok: bool,message: String) -> void:
 	checks+=1
 	if not ok: failures.append(message); push_error(message)
@@ -58,8 +78,10 @@ func walk(destination: Vector2) -> bool:
 	if path.is_empty(): return false
 	for waypoint in path:
 		for i in 800:
-			if journey.snapshot().status=="failed": return false
-			var delta: Vector2 = waypoint-TrainingRoom.point(journey.snapshot().player)
+			var state: Dictionary = journey.snapshot()
+			observe_progress(state)
+			if state.status=="failed": return false
+			var delta: Vector2 = waypoint-TrainingRoom.point(state.player)
 			if delta.length()<5: break
 			var move: Vector2 = delta.normalized()
 			journey.update({"moveX":move.x,"moveY":move.y},0.02)
@@ -68,10 +90,15 @@ func pass_to(target: String) -> bool:
 	for door in journey.active.layout.doors:
 		if door.target!=target: continue
 		if not walk(TrainingRoom.point(door.point)): return false
-		if recording and not visit_start.is_empty(): sample_visit(visit_start,visit_revisit)
+		if not visit_start.is_empty(): sample_visit(visit_start,visit_revisit)
 		for attempt in 64:
-			journey.update({"interact":false},0); journey.update({"interact":true},0)
-			if journey.snapshot().roomId==target: break
+			journey.update({"interact":false},0)
+			var before: Dictionary = journey.snapshot()
+			journey.update({"interact":true},0)
+			var after: Dictionary = journey.snapshot()
+			if after.roomId==target:
+				check(after.health==before.health and after.healthMax==before.healthMax and after.resources==before.resources and after.cooldowns==before.cooldowns and after.alpha.items==before.alpha.items,"真实过门保持生命、资源、冷却及共享背包："+before.roomId+" → "+target)
+				break
 		if journey.snapshot().roomId==target:
 			game.present_new_room(); return true
 		return false
@@ -82,6 +109,7 @@ func fight() -> bool:
 	var center: Vector2 = TrainingRoom.point(encounters[0])
 	for i in 18000:
 		var state: Dictionary = journey.snapshot()
+		observe_progress(state)
 		observe_loot(state)
 		if state.roomComplete:
 			for item in state.drops:
@@ -106,7 +134,7 @@ func fight() -> bool:
 			for enemy in live: gap=minf(gap,future.distance_to(TrainingRoom.point(enemy)))
 			var score: float = minf(gap,290)-maxf(0,future.distance_to(center)-300)*0.8
 			if score>best: best=score; move=candidate
-		journey.update({"moveX":move.x,"moveY":move.y,"aim":target-Vector2(0,52),"fire":true,"pierce":i%25==0,"rain":i%30==0,"dodge":player.distance_to(target)<100 and i%15==0},0.02)
+		journey.update({"moveX":move.x,"moveY":move.y,"aim":target-Vector2(0,52),"fire":state.hurt<=0,"pierce":i%25==0,"rain":i%30==0,"dodge":player.distance_to(target)<100 and i%15==0},0.02)
 	return false
 func _initialize() -> void:
 	create_timer(150).timeout.connect(func(): push_error("完整路线检查超时"); quit(1))
@@ -115,6 +143,7 @@ func _initialize() -> void:
 func boss_fight() -> bool:
 	for i in 9000:
 		var state: Dictionary = journey.snapshot()
+		observe_progress(state)
 		observe_loot(state)
 		if state.roomComplete:
 			game.present(state,0)
@@ -123,15 +152,17 @@ func boss_fight() -> bool:
 		if state.status=="failed": return false
 		var offset: Vector2 = TrainingRoom.point(state.player)-TrainingRoom.point(state.boss)
 		var move: Vector2 = (Vector2(-offset.y,offset.x).normalized()+offset.normalized()*(420-offset.length())/100).limit_length()
-		journey.update({"moveX":move.x,"moveY":move.y,"fire":true,"aim":Vector2(state.boss.x,state.boss.y-52)},0.01)
+		journey.update({"moveX":move.x,"moveY":move.y,"fire":state.hurt<=0,"aim":Vector2(state.boss.x,state.boss.y-52)},0.01)
 		if i%30==0: game.present(journey.snapshot(),0)
 	return false
 
 func read_stele() -> bool:
 	if not walk(TrainingRoom.point(journey.active.layout.exploration[0])): return false
 	journey.update({"interact":false},0); journey.update({"interact":true},0)
+	visit_milestones.reading_open=timing(journey.snapshot())
 	check(journey.snapshot().reading and not journey.snapshot().roomComplete,"F打开真实残碑，合上前保持封门")
 	PlayerControls.new(journey.active).key_down(KEY_ESCAPE); journey.update({},0)
+	visit_milestones.reading_close=timing(journey.snapshot())
 	return journey.snapshot().roomComplete and journey.snapshot().exploration.steleRead
 
 func boss_presentation() -> void:
@@ -159,6 +190,7 @@ func run() -> void:
 	check(journey.snapshot().health==100 and journey.snapshot().resources.mana==100 and journey.snapshot().resources.stamina==100,"完整征程保持默认生命蓝量精力100，不模拟构筑")
 	journey.update({"alpha":{"action":"depart"}},0)
 	visit_start=journey.snapshot()
+	visit_milestones={"entered":timing(visit_start)}
 	var seen: Dictionary = {"entry":true}
 	var route: Array[String] = BRANCH_ROUTE if include_branches() else MAIN_ROUTE
 	for target in route:
@@ -169,6 +201,7 @@ func run() -> void:
 		var before: Dictionary = journey.snapshot()
 		var revisit: bool = seen.has(target)
 		visit_start=before; visit_revisit=revisit
+		visit_milestones={"entered":timing(before)}
 		seen[target]=true
 		var complete: bool = before.roomComplete
 		if revisit:
@@ -202,7 +235,6 @@ func run() -> void:
 		if not complete: sample_visit(before,revisit); finish(); return
 		if revisit: check(journey.snapshot().alpha.items.size()==before.alpha.items.size(),"支路往返不复制构筑符："+target)
 	sample_visit(visit_start,visit_revisit)
-	recording=false
 	var expected_rooms: int = 16 if include_branches() else 13
 	var expected_waves: int = 24 if include_branches() else 21
 	var expected_glyphs: int = 8 if include_branches() else 7
@@ -214,7 +246,16 @@ func run() -> void:
 	var exit_test: RefCounted = Journey.new(maps,{"startRoom":"end","isTest":true,"potionDrops":true,"dropSeed":13})
 	check(exit_test.snapshot().isTest and exit_test.snapshot().segmentComplete and not exit_test.snapshot().journeyComplete and exit_test.snapshot().visitedRooms==1,"直接测试出口只标记测试段结束，不伪造前序或正式完整通关")
 	var before_return: int = journey.snapshot().alpha.items.size()
-	check(pass_to("boss") and pass_to("thunder_approach") and pass_to("court3"),"出口经已击败Boss房真实F回溯主线")
+	returning=true
+	visit_start=journey.snapshot(); visit_revisit=true
+	visit_milestones={"entered":timing(visit_start)}
+	for target in ["boss","thunder_approach","court3"]:
+		var crossed: bool = pass_to(target)
+		check(crossed,"出口经已击败Boss房真实F回溯主线："+target)
+		if not crossed: finish(); return
+		visit_start=journey.snapshot(); visit_revisit=true
+		visit_milestones={"entered":timing(visit_start)}
+	sample_visit(visit_start,visit_revisit)
 	check(journey.snapshot().roomComplete and journey.snapshot().alpha.items.size()==before_return,"通关回溯保留完成状态且不增发实物")
 	finish()
 func finish() -> void:

@@ -35,11 +35,20 @@ commands.insert(-2, ["--script", "res://tests/item_scene_checks.gd"])
 for name in ["expanded_map_checks", "expanded_journey_checks", "expanded_home_checks", "expanded_reading_checks", "route_sample_checks"]:
     commands.append(["--script", f"res://tests/{name}.gd"])
 for args in commands:
-    result = subprocess.run(["godot", "--headless", "--path", str(root / "godot"), *args], capture_output=True, text=True, timeout=180)
+    command = ["godot", "--headless", "--path", str(root / "godot"), *args]
+    print("Running (timeout 180s): " + " ".join(command), flush=True)
+    try:
+        result = subprocess.run(command, capture_output=True, text=True, timeout=180)
+    except subprocess.TimeoutExpired as error:
+        for captured in [error.stdout, error.stderr]:
+            if captured:
+                sys.stderr.write(captured.decode(errors="replace") if isinstance(captured, bytes) else captured)
+        sys.stderr.write("Godot check timed out after 180s: " + " ".join(args) + "\n")
+        raise SystemExit(124)
     output = result.stdout + result.stderr
     if result.returncode or "SCRIPT ERROR:" in output or "ERROR:" in output:
         sys.stderr.write(output)
         raise SystemExit(result.returncode or 1)
     if "--script" in args:
-        print(output.strip())
+        print(output.strip(), flush=True)
 print("Godot engine/import/public tests/full scene: passed")

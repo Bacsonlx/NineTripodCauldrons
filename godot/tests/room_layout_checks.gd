@@ -32,11 +32,10 @@ func run() -> void:
 			check(not path.is_empty(),id+"可到达门前："+door.id)
 		if id=="court2":
 			check(not room.can_walk(Vector2(750,630)) and not room.clear_path(Vector2(610,630),Vector2(890,630)) and not room.find_route(Vector2(610,630),Vector2(890,630)).is_empty(),"扶桑残庭残石阻挡直穿且能绕行")
-		elif id in ["court1","court3"]:
-			var clear: bool = true
-			for x in [-200,0,200]:
-				for y in [-100,0,100]: clear=clear and room.can_walk(Vector2(720+x,550+y))
-			check(clear,id+"圆庭中央净空")
+		elif maps[id].objective=="combat":
+			for encounter in maps[id].encounters:
+				var center: Vector2 = TrainingRoom.point(encounter)
+				check(room.can_walk(center) and not room.find_route(TrainingRoom.point(maps[id].spawn),center).is_empty(),id+"实际遭遇中心可站立且可从出生点抵达")
 	var game: Node2D = load("res://scenes/tanggu_first_level.tscn").instantiate()
 	root.add_child(game); game.set_physics_process(false)
 	game.journey.update({"alpha":{"action":"depart"}},0)
@@ -61,8 +60,8 @@ func run() -> void:
 	var retry: InputEventKey = InputEventKey.new()
 	retry.physical_keycode=KEY_R; retry.pressed=true
 	game._unhandled_input(retry)
-	check(game.room.snapshot().roomId=="court1" and game.get_node_or_null("JourneyConfirmationLayer/JourneyConfirmation")!=null,"完整征程实际R输入先确认，不直接清空进度")
 	var confirm: Button = find_button(game,"确认重开")
+	check(game.room.snapshot().roomId=="court1" and game.room.snapshot().paused and confirm!=null and confirm.is_visible_in_tree(),"完整征程实际R输入先确认，不直接清空进度")
 	if confirm!=null: confirm.pressed.emit()
 	await process_frame
 	check(game.room.snapshot().roomId=="entry" and game.journey.snapshot().visitedRooms==1,"确认后重开全部房间进度")
