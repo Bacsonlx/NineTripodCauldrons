@@ -7,7 +7,7 @@ func check(ok: bool,message: String) -> void:
 func _initialize() -> void:
 	run.call_deferred()
 func run() -> void:
-	for id in ["entry","court1","stele","altar","court2","court3","end"]:
+	for id in preload("res://scripts/journey/room_journey.gd").ROOM_IDS:
 		var map: Node2D = load("res://scenes/rooms/%s.tscn" % id).instantiate()
 		root.add_child(map)
 		var data: Dictionary = map.build_layout()

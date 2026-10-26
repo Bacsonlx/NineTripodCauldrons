@@ -12,7 +12,7 @@ func check(ok: bool,message: String) -> void:
 
 func _initialize() -> void:
 	var maps: Dictionary = Journey.read_maps()
-	check(maps.has("boss") and maps.court3.doors.any(func(door: Dictionary): return door.target=="boss"),"默认首关第三庭连接新增Boss房")
+	check(maps.has("boss") and maps.has("thunder_approach") and maps.thunder_approach.doors.any(func(door: Dictionary): return door.target=="boss"),"默认首关经雷庭前径连接Boss房")
 	if not maps.has("boss"): finish(); return
 	check(maps.boss.objective=="boss" and maps.boss.doors.any(func(door: Dictionary): return door.target=="end"),"Boss房连接原出口，地图配置合法")
 	var entry: Dictionary = safe_room("entry","court3")
@@ -21,10 +21,11 @@ func _initialize() -> void:
 	court.encounters=[{"x":300,"y":520,"enemies":[Vector2(360,520)]}]
 	court.doors.append(door("boss","boss","court3",Vector2(500,520)))
 	var boss: Dictionary = maps.boss.duplicate(true)
-	boss.doors[0].targetDoor="boss"
+	for back in boss.doors:
+		if back.target=="thunder_approach": back.target="court3"; back.targetDoor="boss"
 	var exit: Dictionary = safe_room("end","boss")
 	exit.doors[0].targetDoor="end"
-	run=Journey.new({"entry":entry,"court3":court,"boss":boss,"end":exit})
+	run=Journey.new({"entry":entry,"court3":court,"boss":boss,"end":exit},{"isTest":true})
 	run.update({"alpha":{"action":"depart"}},0)
 	check(pass_to("court3"),"通过真实F进入第三庭夹具")
 	run.update({},1)
@@ -51,7 +52,7 @@ func _initialize() -> void:
 		var movement: Vector2 = (Vector2(-offset.y,offset.x).normalized()+offset.normalized()*(420-offset.length())/100).limit_length()
 		run.update({"moveX":movement.x,"moveY":movement.y,"fire":true,"aim":Vector2(state.boss.x,state.boss.y-52)},0.01)
 	check(run.snapshot().roomComplete and run.snapshot().boss.health==0 and not run.snapshot().journeyComplete,"实际击败Boss开放通路，尚未到出口仍未通关")
-	check(pass_to("end") and run.snapshot().journeyComplete,"击败后可走到出口并完成首关")
+	check(pass_to("end") and run.snapshot().segmentComplete and not run.snapshot().journeyComplete,"测试夹具击败后到出口仅完成测试段，不冒充正式完整通关")
 	check(pass_to("boss") and run.snapshot().boss.health==0 and run.snapshot().roomComplete,"从出口回Boss房不刷新或重打")
 	check(pass_to("court3"),"已击败Boss房保留移动和F交互，可回溯第三庭")
 	run.update({"restart":true},0)

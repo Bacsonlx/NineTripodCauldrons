@@ -9,9 +9,9 @@ func _initialize() -> void:
 	run.call_deferred()
 func run() -> void:
 	var maps: Dictionary = Journey.read_maps()
-	check(maps.size()==8,"八个独立房间及双向门配置合法")
-	if maps.is_empty(): finish(); return
-	check(maps.court1.doors.size()==3 and maps.court2.doors.size()==3,"分支与汇合房均有三个独立门")
+	check(maps.size()==16,"十六个独立房间及双向门配置合法")
+	if maps.size()!=16: finish(); return
+	check(maps.dry_creek.doors.size()==3 and maps.court2.doors.size()==3,"分支与汇合房均有三个独立门")
 	var editable: Node2D = load("res://scenes/rooms/stele.tscn").instantiate()
 	var original: Dictionary = editable.build_layout()
 	editable.get_node("Stele").position.x+=40
@@ -32,7 +32,7 @@ func run() -> void:
 			check(not path.is_empty(),id+"可到达门前："+door.id)
 		if id=="court2":
 			check(not room.can_walk(Vector2(750,630)) and not room.clear_path(Vector2(610,630),Vector2(890,630)) and not room.find_route(Vector2(610,630),Vector2(890,630)).is_empty(),"扶桑残庭残石阻挡直穿且能绕行")
-		elif maps[id].objective=="combat":
+		elif id in ["court1","court3"]:
 			var clear: bool = true
 			for x in [-200,0,200]:
 				for y in [-100,0,100]: clear=clear and room.can_walk(Vector2(720+x,550+y))
@@ -61,9 +61,20 @@ func run() -> void:
 	var retry: InputEventKey = InputEventKey.new()
 	retry.physical_keycode=KEY_R; retry.pressed=true
 	game._unhandled_input(retry)
-	check(game.room.snapshot().roomId=="entry" and game.journey.snapshot().visitedRooms==1,"实际R输入重开全部房间进度")
+	check(game.room.snapshot().roomId=="court1" and game.get_node_or_null("JourneyConfirmationLayer/JourneyConfirmation")!=null,"完整征程实际R输入先确认，不直接清空进度")
+	var confirm: Button = find_button(game,"确认重开")
+	if confirm!=null: confirm.pressed.emit()
+	await process_frame
+	check(game.room.snapshot().roomId=="entry" and game.journey.snapshot().visitedRooms==1,"确认后重开全部房间进度")
 	game.free()
 	finish()
 func finish() -> void:
 	print(JSON.stringify({"room_layout_checks":checks,"failures":failures}))
 	quit(0 if failures.is_empty() else 1)
+
+func find_button(node: Node,text: String) -> Button:
+	if node is Button and node.text==text: return node
+	for child in node.get_children():
+		var found: Button = find_button(child,text)
+		if found!=null: return found
+	return null

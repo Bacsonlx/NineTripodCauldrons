@@ -10,11 +10,31 @@ var blue_waves: Dictionary = {}
 var collected: int = 0
 var restored_mana: int = 0
 var restored_health: int = 0
+var samples: Array = []
+var baseline_items: int = 0
+var route_name: String = "main"
+const MAIN_ROUTE: Array[String] = ["court1","dry_creek","root_fork","stele","court2","altar","ash_cloister","gate_forecourt","court3","thunder_approach","boss","end"]
+const BRANCH_ROUTE: Array[String] = ["court1","dry_creek","moss_side","dry_creek","moss_side","root_fork","stele","stele_side","stele","stele_side","court2","altar","ash_cloister","ember_side","ash_cloister","ember_side","gate_forecourt","court3","thunder_approach","boss","end"]
+
+func include_branches() -> bool: return false
+
+func sample_visit(before: Dictionary,revisit: bool) -> void:
+	var after: Dictionary = journey.snapshot()
+	var sample: Dictionary = {"route":route_name,"room":after.roomId,"revisit":revisit,
+		"effective_seconds":after.alpha.elapsed-before.alpha.elapsed,"total_effective_seconds":after.alpha.elapsed,
+		"health_before":before.health,"health_after":after.health,"mana_before":before.resources.mana,"mana_after":after.resources.mana,
+		"stamina_before":before.resources.stamina,"stamina_after":after.resources.stamina,
+		"waves":after.waveCount,"fixed_enemies":after.enemies.size() if after.objective=="combat" else 0,
+		"room_complete":after.roomComplete,"status":after.status,"generated_drops":observed_drops.size(),
+		"blue_waves":blue_waves.size(),"collected":collected,"restored_mana":restored_mana,
+		"restored_health":restored_health,"glyphs_issued":after.alpha.items.size()-baseline_items}
+	samples.append(sample)
+	print(JSON.stringify({"tanggu_room_sample":sample}))
 
 func observe_loot(state: Dictionary) -> void:
 	for item in state.get("drops",[]):
-		observed_drops[item.id]=item.kind
-		if item.kind=="mana": blue_waves[state.roomId+":"+str(item.wave)]=true
+		observed_drops[state.roomId+":"+str(item.id)]=item.kind
+		if item.kind=="mana" and state.objective=="combat": blue_waves[state.roomId+":"+str(item.wave)]=true
 
 func collect_nearby() -> void:
 	var before: Dictionary = journey.snapshot()
@@ -48,8 +68,10 @@ func pass_to(target: String) -> bool:
 		return false
 	return false
 func fight() -> bool:
-	if not walk(Vector2(510,550)): return false
-	for i in 9000:
+	var encounters: Array = journey.active.layout.encounters
+	if encounters.is_empty() or not walk(TrainingRoom.point(encounters[0])): return false
+	var center: Vector2 = TrainingRoom.point(encounters[0])
+	for i in 18000:
 		var state: Dictionary = journey.snapshot()
 		observe_loot(state)
 		if state.roomComplete:
@@ -73,16 +95,18 @@ func fight() -> bool:
 			if not journey.active.can_walk(future) or not journey.active.clear_path(player,future): continue
 			var gap: float = INF
 			for enemy in live: gap=minf(gap,future.distance_to(TrainingRoom.point(enemy)))
-			var score: float = minf(gap,290)-maxf(0,future.distance_to(Vector2(700,550))-300)*0.8
+			var score: float = minf(gap,290)-maxf(0,future.distance_to(center)-300)*0.8
 			if score>best: best=score; move=candidate
 		journey.update({"moveX":move.x,"moveY":move.y,"aim":target-Vector2(0,52),"fire":true,"pierce":i%25==0,"rain":i%30==0,"dodge":player.distance_to(target)<100 and i%15==0},0.02)
 	return false
 func _initialize() -> void:
+	create_timer(150).timeout.connect(func(): push_error("完整路线检查超时"); quit(1))
 	run.call_deferred()
 
 func boss_fight() -> bool:
 	for i in 9000:
 		var state: Dictionary = journey.snapshot()
+		observe_loot(state)
 		if state.roomComplete:
 			game.present(state,0)
 			combat_runs.append({"room":"boss","health":state.health,"mana":state.resources.mana,"seconds":i*0.01})
@@ -94,52 +118,89 @@ func boss_fight() -> bool:
 		if i%30==0: game.present(journey.snapshot(),0)
 	return false
 
+func read_stele() -> bool:
+	if not walk(TrainingRoom.point(journey.active.layout.exploration[0])): return false
+	journey.update({"interact":false},0); journey.update({"interact":true},0)
+	check(journey.snapshot().reading and not journey.snapshot().roomComplete,"F打开真实残碑，合上前保持封门")
+	PlayerControls.new(journey.active).key_down(KEY_ESCAPE); journey.update({},0)
+	return journey.snapshot().roomComplete and journey.snapshot().exploration.steleRead
+
+func boss_presentation() -> void:
+	check(game.boss_view.visible and game.boss_bar.visible and game.boss_bar.value==1200,"真实进Boss房显示索尔及完整1200生命")
+	var actor: Node2D = game.boss_view.character
+	check(actor!=null and actor.body.texture!=null and actor.body.clip=="thor-swing-v2","实际Boss房加载当前逐帧角色及中立姿态")
+	var visible: Rect2 = Rect2(game.view_origin,game.get_viewport_rect().size/game.view_zoom)
+	check(visible.encloses(Rect2(16,16,1408,1008)) and is_equal_approx(game.camera.position.x,720),"Boss房相机居中并覆盖战斗边界")
+	game.toggle_overview()
+	visible=Rect2(game.view_origin,game.get_viewport_rect().size/game.view_zoom)
+	check(visible.encloses(Rect2(16,16,1408,1008)),"M仍可查看Boss全房")
+	game.toggle_overview()
+
 func run() -> void:
+	route_name="all_branches" if include_branches() else "main"
+	var maps: Dictionary = Journey.read_maps()
+	check(maps.size()==16,"扩展路线需要16个真实房间")
+	if maps.size()!=16: finish(); return
 	game=load("res://scenes/tanggu_first_level.tscn").instantiate()
 	game.potion_drop_seed=13
 	root.add_child(game); game.set_physics_process(false)
 	await process_frame
 	journey=game.journey
+	baseline_items=journey.snapshot().alpha.items.size()
+	check(journey.snapshot().health==100 and journey.snapshot().resources.mana==100 and journey.snapshot().resources.stamina==100,"完整征程保持默认生命蓝量精力100，不模拟构筑")
 	journey.update({"alpha":{"action":"depart"}},0)
-	check(pass_to("court1"),"入口进入第一庭")
-	check(fight(),"真实跑射和技能完成第一庭两波9影偶")
-	if not journey.snapshot().roomComplete: finish(); return
-	check(pass_to("stele"),"第一庭选择碑林分支")
-	check(walk(TrainingRoom.point(journey.active.layout.exploration[0])),"可走到外缘残碑")
-	journey.update({"interact":true},0)
-	check(journey.snapshot().reading,"F打开真实残碑")
-	PlayerControls.new(journey.active).key_down(KEY_ESCAPE); journey.update({},0)
-	check(pass_to("court1") and pass_to("altar"),"读碑完成后回到第一庭补走祭火分支")
-	check(journey.snapshot().roomComplete,"祭火安全房无需回血即可通行")
-	check(pass_to("court2") and fight(),"两支汇合后完成第二庭三波15影偶")
-	check(pass_to("court3") and fight(),"进入第三庭并完成三波18影偶")
-	check(not journey.snapshot().journeyComplete and pass_to("boss"),"第三庭清场后必须先进入Boss房")
-	check(game.boss_view.visible and game.boss_bar.visible and game.boss_bar.value==1200,"默认首关真实切房后显示索尔角色与1200生命条")
-	var actor: Node2D = game.boss_view.character
-	check(actor!=null and actor.body.texture!=null and actor.body.clip=="thor-swing-v2","默认首关实际进Boss房后加载新逐帧Boss及中立姿态")
-	var visible: Rect2 = Rect2(game.view_origin,game.get_viewport_rect().size/game.view_zoom)
-	check(visible.encloses(Rect2(16,16,1408,1008)) and is_equal_approx(game.camera.position.x,720),"首关进Boss房固定居中，并完整覆盖战斗与预警边界")
-	game.toggle_overview()
-	visible=Rect2(game.view_origin,game.get_viewport_rect().size/game.view_zoom)
-	check(visible.encloses(Rect2(16,16,1408,1008)),"M仍可临时查看完整Boss房及预警边界")
-	game.toggle_overview()
-	check(boss_fight(),"42影偶后保留现有生命与资源，真实走射击败索尔")
-	check(actor!=null and not actor.body.visible and actor.fallen.visible and is_equal_approx(actor.fallen.get_node("chest").rotation,0.3),"Boss击败后规则时间停止，原有静态败退姿势仍应完整落定")
-	check(game.boss_bar.value==0 and not journey.snapshot().journeyComplete,"Boss生命条归零后开放通路，未到出口不提前完成")
-	var floor: Node2D = game.boss_view.get_node_or_null("Floor")
-	var passages_visible: bool = floor!=null and not floor.z_as_relative
-	for portal in game.get_node("TangguMap/Doors").get_children():
-		passages_visible=passages_visible and portal.get_node("Passage").visible and floor.z_index<portal.get_node("Passage").z_index
-	check(passages_visible,"击败Boss后的门漩涡高于独立地面层，不被灰盒底板遮住")
-	check(pass_to("end") and journey.snapshot().journeyComplete and journey.snapshot().visitedRooms==8,"到达原出口后完成首关，八房间均可探索")
-	check((actor==null or not actor.is_visible_in_tree()) and not game.boss_view.visible and not game.boss_bar.visible,"离开Boss房后隐藏Boss呈现与专属血条")
-	check(pass_to("boss") and pass_to("court3") and pass_to("court2") and pass_to("stele"),"通关后可经过已击败Boss房跨房回溯")
-	check(journey.snapshot().roomComplete and journey.snapshot().exploration.steleRead,"跨房回溯保留任务进度")
-	check(journey.snapshot().alpha.items.size()==18,"八波共发八枚构筑符，往返不会额外复制实物")
-	check(blue_waves.size()==8,"默认首关八波均产生蓝瓶，包括最后一波")
-	check(collected>0 and restored_mana>0,"完整流程通过真实F拾取补充蓝量")
+	var seen: Dictionary = {"entry":true}
+	var route: Array[String] = BRANCH_ROUTE if include_branches() else MAIN_ROUTE
+	for target in route:
+		check(journey.snapshot().roomComplete,"完成当前房真实任务后才尝试F过门："+journey.snapshot().roomId)
+		var crossed: bool = pass_to(target)
+		check(crossed,"真实移动并F进入："+target)
+		if not crossed: finish(); return
+		var before: Dictionary = journey.snapshot()
+		var revisit: bool = seen.has(target)
+		seen[target]=true
+		var complete: bool = before.roomComplete
+		if revisit:
+			check(complete,"往返后房间保持已完成："+target)
+		elif before.objective=="combat":
+			complete=fight()
+			check(complete,"真实跑射清场："+target)
+		elif before.objective=="explore":
+			complete=read_stele()
+			check(complete,"真实阅读并合上残碑："+target)
+		elif before.objective=="boss":
+			check(not before.journeyComplete,"Boss开战前不标记正式完成")
+			boss_presentation()
+			var glyphs: int = before.alpha.items.size()
+			complete=boss_fight()
+			check(complete,"保留沿途真实资源，完整战斗击败1200生命索尔")
+			check(journey.snapshot().alpha.items.size()==glyphs,"Boss及持续援军不增发普通构筑符")
+			check(not journey.snapshot().journeyComplete,"Boss倒下但未到出口仍未完成征程")
+			if complete:
+				var actor: Node2D = game.boss_view.character
+				check(not actor.body.visible and actor.fallen.visible and is_equal_approx(actor.fallen.get_node("chest").rotation,0.3),"Boss真实败退落定并停止新动作")
+				check(game.boss_bar.value==0,"Boss真实败退后生命条归零")
+				var floor: Node2D = game.boss_view.get_node_or_null("Floor")
+				var passages_visible: bool = floor!=null and not floor.z_as_relative
+				for portal in game.get_node("TangguMap/Doors").get_children():
+					passages_visible=passages_visible and portal.get_node("Passage").visible and floor.z_index<portal.get_node("Passage").z_index
+				check(passages_visible,"Boss清场门漩涡高于独立地面层")
+		sample_visit(before,revisit)
+		if not complete: finish(); return
+		if revisit: check(journey.snapshot().alpha.items.size()==before.alpha.items.size(),"支路往返不复制构筑符："+target)
+	var expected_rooms: int = 16 if include_branches() else 13
+	var expected_waves: int = 24 if include_branches() else 21
+	var expected_glyphs: int = 8 if include_branches() else 7
+	check(journey.snapshot().journeyComplete and journey.snapshot().visitedRooms==expected_rooms,"完整清场主线及Boss，实际抵达出口才标记正式完成")
+	check(not game.boss_view.visible and not game.boss_bar.visible,"离开Boss房隐藏Boss角色及专属血条")
+	check(journey.snapshot().alpha.items.size()==baseline_items+expected_glyphs,"实际击杀只发主线7枚／含A支路8枚构筑符")
+	check(blue_waves.size()==expected_waves,"每一普通波真实产生可拾取蓝囊，包含末波")
+	check(collected>0 and restored_mana>0,"全流程真实F拾取蓝囊并恢复蓝量")
+	var before_return: int = journey.snapshot().alpha.items.size()
+	check(pass_to("boss") and pass_to("thunder_approach") and pass_to("court3"),"出口经已击败Boss房真实F回溯主线")
+	check(journey.snapshot().roomComplete and journey.snapshot().alpha.items.size()==before_return,"通关回溯保留完成状态且不增发实物")
 	finish()
 func finish() -> void:
-	print(JSON.stringify({"room_flow_checks":checks,"failures":failures,"combat_runs":combat_runs,"generated_drops":observed_drops.size(),"blue_waves":blue_waves.size(),"collected":collected,"restored_mana":restored_mana,"restored_health":restored_health}))
+	print(JSON.stringify({"room_flow_checks":checks,"route":route_name,"samples":samples,"sampling_limit":"bot不证明正常玩家首通15–20分钟","failures":failures,"combat_runs":combat_runs,"generated_drops":observed_drops.size(),"blue_waves":blue_waves.size(),"collected":collected,"restored_mana":restored_mana,"restored_health":restored_health}))
 	if game!=null: game.free()
 	quit(0 if failures.is_empty() else 1)
