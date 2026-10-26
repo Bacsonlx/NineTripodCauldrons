@@ -45,7 +45,9 @@ func run() -> void:
 	check(full!=null and quick!=null,"首页有完整征程和快速测试两个原生入口")
 	if full!=null and quick!=null:
 		check(full.button_pressed and not quick.button_pressed,"默认持久选中完整征程")
+		check(full.get_node("SelectionMark").visible and not quick.get_node("SelectionMark").visible,"默认模式以控件色块标记选中，无字体依赖")
 		quick.pressed.emit()
+		check(quick.get_node("SelectionMark").visible and not full.get_node("SelectionMark").visible,"切换模式同步原生色块标记")
 		check(quick.button_pressed and not full.button_pressed and button_named(home,"进入测试")!=null,"选择测试同步选中态和底部按钮")
 		for window_size in [Vector2i(1920,1080),Vector2i(1280,720),Vector2i(800,450)]:
 			root.size=window_size

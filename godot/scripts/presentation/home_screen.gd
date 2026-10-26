@@ -164,9 +164,10 @@ func build_modes() -> void:
 		caption.offset_left=66; caption.offset_right=-28; caption.offset_top=12; caption.offset_bottom=-12
 		var lines: PackedStringArray = str(entry[1]).split("\n")
 		caption.add_child(text(lines[0],22)); caption.add_child(text(lines[1],12,DIM))
-		var mark: Label = text("",12,GOLD); mark.name="SelectionMark"; portal.add_child(mark)
+		var mark: ColorRect = ColorRect.new(); mark.color=GOLD; mark.name="SelectionMark"
+		mark.mouse_filter=Control.MOUSE_FILTER_IGNORE; portal.add_child(mark)
 		mark.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT)
-		mark.offset_left=-22; mark.offset_right=-8; mark.offset_top=-8; mark.offset_bottom=8
+		mark.offset_left=-18; mark.offset_right=-10; mark.offset_top=-4; mark.offset_bottom=4
 		mode_buttons[entry[0]]=portal
 	rail.add_child(HSeparator.new())
 	test_fields=column(rail)
@@ -198,7 +199,7 @@ func select_mode(mode: String) -> void:
 	if mode=="full": selected_room="entry"
 	for id in mode_buttons:
 		mode_buttons[id].set_pressed_no_signal(id==mode)
-		mode_buttons[id].get_node("SelectionMark").text="●" if id==mode else "○"
+		mode_buttons[id].get_node("SelectionMark").visible=id==mode
 	test_fields.visible=mode=="quick"
 	room_choice.select(maxi(0,room_choices.find(selected_room)))
 	refresh_departure()

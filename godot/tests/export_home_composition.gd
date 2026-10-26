@@ -19,8 +19,9 @@ func collect(node: Node) -> void:
 		var rect: Rect2 = node.get_global_rect()
 		var item: Dictionary = {"kind":node.get_class(),"rect":[rect.position.x,rect.position.y,rect.size.x,rect.size.y]}
 		if node is PanelContainer or node is Button:
-			var style: StyleBox = node.get_theme_stylebox("panel" if node is PanelContainer else "normal")
+			var style: StyleBox = node.get_theme_stylebox("panel" if node is PanelContainer else "pressed" if node.button_pressed else "normal")
 			if style is StyleBoxFlat: item.background=style.bg_color.to_html(); item.border=style.border_color.to_html()
+		if node is ColorRect: item.background=node.color.to_html(); item.border=node.color.to_html()
 		if node is TextureRect and node.texture!=null:
 			item.image=node.texture.resource_path; item.stretch=node.stretch_mode
 		if node is Label or node is Button:
