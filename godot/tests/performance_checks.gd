@@ -34,9 +34,13 @@ func journey_fixture(id: String,task: String,target: String) -> Dictionary:
 	return data
 
 func _initialize() -> void:
+	run.call_deferred()
+
+func run() -> void:
 	var measured: Dictionary = rule_workload()
 	quality_policy_workload()
 	journey_workload()
+	await present_throttle_workload()
 	print(JSON.stringify({"performance_checks":checks,"failures":failures,"measurement":measured}))
 	quit(0 if failures.is_empty() else 1)
 
@@ -76,6 +80,32 @@ func journey_workload() -> void:
 	var graph: Dictionary = run.snapshot().roomGraph
 	graph.rooms[0].id="外部修改"
 	check(run.snapshot().roomGraph.rooms[0].id=="entry","外部修改图快照不污染真实房间状态")
+
+func present_throttle_workload() -> void:
+	# 纯函数：同一渲染帧内的后续物理 tick 不呈现，但最多跳过 4 个 tick 兜底。
+	check(QualityPolicy.should_present(10,9,1),"新渲染帧的第一个物理 tick 正常呈现")
+	check(not QualityPolicy.should_present(9,9,1),"同一渲染帧的后续物理 tick 跳过呈现")
+	check(not QualityPolicy.should_present(9,9,3),"连续跳过 3 个 tick 仍不呈现")
+	check(QualityPolicy.should_present(9,9,4),"引擎帧计数停滞时第 4 个 tick 兜底呈现")
+	check(is_equal_approx(QualityPolicy.accumulated_seconds(0.016,0.016),0.032),"跳过的物理 tick 累积呈现时间")
+	check(is_equal_approx(QualityPolicy.accumulated_seconds(0.20,0.10),QualityPolicy.MAX_PRESENT_SECONDS),"累积呈现时间有上限，长暂停后不产生巨帧")
+	check(is_equal_approx(QualityPolicy.accumulated_seconds(0.016,-1.0),0.016),"负数步长不倒退累积时间")
+	var game: Node2D = load("res://scenes/sample.tscn").instantiate()
+	root.add_child(game); game.set_physics_process(false)
+	await process_frame
+	game._physics_process(0.016)
+	check(game.present_seconds==0.0 and game.ticks_since_present==0,"首个物理 tick 呈现并清空累积时间")
+	game._physics_process(0.016)
+	check(is_equal_approx(game.present_seconds,0.016) and game.ticks_since_present==1,"低帧率下第二个 tick 只推进规则并累积时间")
+	game._physics_process(0.016)
+	game._physics_process(0.016)
+	check(is_equal_approx(game.present_seconds,0.048),"跳过的 tick 持续累积到下一次呈现")
+	game._physics_process(0.016)
+	check(game.present_seconds==0.0 and game.ticks_since_present==0,"第 4 个跳过 tick 兜底呈现并重置节流计时")
+	game.mark_presented()
+	check(game.present_seconds==0.0 and game.ticks_since_present==0,"主动呈现后重置节流计时，不重复补偿时间")
+	game.queue_free()
+	await process_frame
 
 func quality_policy_workload() -> void:
 	var auto = QualityPolicy.new()

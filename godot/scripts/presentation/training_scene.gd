@@ -43,6 +43,10 @@ var pose_cache: Dictionary = {}
 var quality
 var flash_tint: Color = Color("ffedc5")
 var pierce_tint: Color = Color("ffd06c")
+# 呈现节流：规则仍按物理 tick 推进，呈现只跟渲染帧；跳过的 tick 累积时间。
+var present_seconds: float = 0.0
+var ticks_since_present: int = 0
+var last_present_frame: int = -1
 
 func sprite(key: String) -> Sprite2D:
 	var node: Sprite2D = Sprite2D.new()
@@ -158,10 +162,21 @@ func _unhandled_input(event: InputEvent) -> void:
 func _physics_process(seconds: float) -> void:
 	if state.is_empty():
 		return
-	if quality!=null:
-		quality.begin_frame(get_process_delta_time())
-		combat_effects.vfx_budget=quality.vfx_budget()
-	update_camera()
+	# 低配机器显示 30FPS 时物理仍按 60Hz 跑；原实现每个 tick 都做整场景呈现。
+	# 现在只在每个渲染帧的第一个物理 tick 呈现，其余 tick 只推进规则并累积时间。
+	present_seconds=QualityPolicy.accumulated_seconds(present_seconds,seconds)
+	ticks_since_present+=1
+	var process_frame: int = Engine.get_process_frames()
+	var should_present: bool = QualityPolicy.should_present(process_frame,last_present_frame,ticks_since_present)
+	if should_present:
+		last_present_frame=process_frame
+		ticks_since_present=0
+		if quality!=null:
+			quality.begin_frame(get_process_delta_time())
+			combat_effects.vfx_budget=quality.vfx_budget()
+		# 相机与瞄准共用同一步变换；跳过的 tick 沿用上次呈现的 view_zoom/origin，
+		# 与屏幕实际显示的画布变换一致，不会让角色相对镜头抖动。
+		update_camera()
 	aim = get_viewport().get_mouse_position() / view_zoom + view_origin
 	state = controls.update(aim, pointer_inside, seconds)
 	if state.runId != last_run:
@@ -172,8 +187,10 @@ func _physics_process(seconds: float) -> void:
 		clock += seconds
 		if state.player.moving:
 			walk_time += seconds
-	present(state,seconds)
-	queue_redraw()
+	if should_present:
+		present(state,present_seconds)
+		present_seconds=0.0
+		queue_redraw()
 
 func present(snapshot: Dictionary,_seconds: float) -> void:
 	state=snapshot
@@ -250,6 +267,12 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 	overlay.update(state,aim,pointer_inside)
 	update_hud(state)
 	apply_hud_lines()
+
+func mark_presented() -> void:
+	# 场景切换/试炼切换等主动呈现后，重置节流计时，避免下一帧重复补偿时间。
+	last_present_frame=Engine.get_process_frames()
+	ticks_since_present=0
+	present_seconds=0.0
 
 func set_text(node: Variant,value: String) -> void:
 	# Label.text 变更会触发字形整形；值未变时跳过写入。

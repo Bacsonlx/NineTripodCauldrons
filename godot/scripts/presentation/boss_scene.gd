@@ -50,7 +50,7 @@ func select_trial(index: int) -> void:
 	room.layout.grips=room.layout.grips.duplicate()
 	room.layout.grips[1]=TrainingRoom.point(atlas.upperDown.grip)
 	controls=Controls.new(room)
-	present(room.snapshot(),0)
+	present(room.snapshot(),0); mark_presented()
 
 func update_camera() -> void:
 	fit_room(200)

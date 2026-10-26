@@ -85,7 +85,7 @@ func present_new_room() -> void:
 	backdrop.setup(room.layout,atlas,textures)
 	overview=false; overview_button.text="房间总览 · M"
 	walk_time=0; clock=0
-	update_camera(); present(room.snapshot(),0)
+	update_camera(); present(room.snapshot(),0); mark_presented()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.physical_keycode==KEY_R and event.pressed and not event.echo:

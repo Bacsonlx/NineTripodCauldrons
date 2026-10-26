@@ -7,7 +7,8 @@
 - 缓存房间障碍集合并消除快照中的重复交互扫描；输入适配、相机与房间流程改为每帧复用一份公开快照，减少深拷贝与临时数组。
 - HUD 文本收敛为每帧一次写入；环境物件复用几何与每帧共享的画布逆变换；特效精灵池跳过未变属性写入并支持档位预算。
 - 新增可选 `--quality=high|medium|low|auto` 画质策略，默认 `high` 保持已批准画面；`auto` 仅按帧时间调整非玩法关键的特效叠加数量。
-- 新增 `godot/tests/performance_checks.gd` 工作量断言（纳入 `check_godot.py`）与 `tools/migration/perf_godot.py` 同机前后测量脚本。
+- 呈现改为跟随渲染帧：同一渲染帧内的后续物理 tick 只推进规则并累积时间，最多跳过 4 个 tick 兜底，累积上限 0.25 秒；低帧率下呈现与 draw-call 提交约减半，60FPS 以上行为不变。
+- 新增 `godot/tests/performance_checks.gd` 工作量与节流断言（纳入 `check_godot.py`）与 `tools/migration/perf_godot.py` 同机前后测量脚本。
 - 本轮未取得原生 FPS 数据：工作环境无法安装锁定引擎，headless 规则耗时不等于前台画面／手感／性能验收。双平台实机、1080p 跑射与稳定性状态不变，见 [首轮性能调优记录](docs/architecture/九鼎_性能优化_2026-10-26.md)。
 
 ## 未发布 — 2026-10-20 · Godot完整汤谷
