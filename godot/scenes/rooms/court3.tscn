@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" path="res://scenes/world/room_portal.tscn" id="portal"]
 [ext_resource type="Script" path="res://scripts/world/terrain_surface.gd" id="surface"]
 [ext_resource type="Texture2D" path="res://assets/world/forest.png" id="forest"]
-[ext_resource type="Texture2D" path="res://assets/world/path.png" id="path"]
+[ext_resource type="Texture2D" path="res://assets/world/tanggu-expanded-v1/ash-earth.png" id="path"]
 [ext_resource type="Texture2D" path="res://assets/world/tree_green.tres" id="tree_green"]
 [ext_resource type="Texture2D" path="res://assets/world/tree_red.tres" id="tree_red"]
 [ext_resource type="Texture2D" path="res://assets/world/rocks.tres" id="rocks"]
@@ -14,7 +14,7 @@
 [ext_resource type="Texture2D" path="res://assets/world/wall_east.tres" id="wall_east"]
 [ext_resource type="Texture2D" path="res://assets/world/wall_west.tres" id="wall_west"]
 [ext_resource type="Texture2D" path="res://assets/world/pillar.tres" id="pillar"]
-[ext_resource type="Texture2D" path="res://assets/world/court.tres" id="court"]
+[ext_resource type="Texture2D" path="res://assets/world/tanggu-expanded-v1/sun-fan.png" id="court"]
 [ext_resource type="Texture2D" path="res://assets/world/stele.tres" id="stele"]
 [ext_resource type="Texture2D" path="res://assets/world/altar.tres" id="altar"]
 [ext_resource type="Texture2D" path="res://assets/world/camp.tres" id="camp"]
@@ -39,13 +39,13 @@ texture = ExtResource("forest")
 texture_repeat = 2
 [node name="RoomFloor" type="Polygon2D" parent="Ground"]
 z_index = -50
-polygon = PackedVector2Array(180, 725, 350, 360, 600, 180, 1000, 170, 1230, 300, 1320, 500, 1290, 750, 1080, 880, 780, 950, 400, 870)
+polygon = PackedVector2Array(180,725, 260,550, 380,370, 560,240, 780,190, 1000,240, 1180,370, 1300,550, 1320,760, 1160,850, 380,850)
 texture = ExtResource("path")
 texture_repeat = 2
 [node name="Walkable" type="Node2D" parent="."]
 visible = false
 [node name="Floor" type="Polygon2D" parent="Walkable"]
-polygon = PackedVector2Array(180, 725, 350, 360, 600, 180, 1000, 170, 1230, 300, 1320, 500, 1290, 750, 1080, 880, 780, 950, 400, 870)
+polygon = PackedVector2Array(180,725, 260,550, 380,370, 560,240, 780,190, 1000,240, 1180,370, 1300,550, 1320,760, 1160,850, 380,850)
 [node name="Metrics" type="Node2D" parent="."]
 position = Vector2(720,535)
 script = ExtResource("item")
@@ -226,12 +226,11 @@ category = "enemy"
 size = Vector2(40,30)
 appearance = "wood"
 [node name="RitualCourt" parent="." instance=ExtResource("prop")]
-visible = false
-position = Vector2(840,820)
+position = Vector2(770,835)
 category = "ground"
 size = Vector2(40,30)
 texture_asset = ExtResource("court")
-render_width = 900.0
+render_width = 1100.0
 obstacle_kind = "wall"
 flat = true
 [node name="FirePillarLeft" parent="." instance=ExtResource("prop")]
@@ -351,9 +350,3 @@ position = Vector2(-100,-25)
 [node name="Arrival" parent="Doors/thunder_approach" index="5"]
 position = Vector2(-140,-25)
 [editable path="Doors/thunder_approach"]
-
-[node name="SunFanInlay" type="Polygon2D" parent="."]
-z_index = -20
-polygon = PackedVector2Array(420,720, 470,540, 610,360, 840,290, 1060,360, 1210,540, 1250,720, 1090,800, 830,820, 620,780)
-texture = ExtResource("court")
-uv = PackedVector2Array(0,788, 86,479, 326,170, 721,50, 1099,170, 1356,479, 1425,788, 1150,925, 703,960, 343,891)
