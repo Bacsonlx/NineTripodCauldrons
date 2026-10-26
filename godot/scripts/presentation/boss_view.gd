@@ -32,6 +32,15 @@ func _draw() -> void:
 	var boss: Dictionary = state.boss
 	var center: Vector2 = Vector2(boss.x,boss.y)
 	var direction: Vector2 = Vector2.from_angle(boss.angle)
+	for mark in state.get("summons",[]):
+		var location: Vector2 = Vector2(mark.x,mark.y)
+		var progress: float = 1-mark.remaining/Rules.SUMMON_WARNING
+		draw_circle(location,28,Color(0.72,0.6,0.38,0.18))
+		draw_arc(location,28,0,TAU,32,Color("c7ad76"),2,true)
+		draw_arc(location,23,-PI/2,-PI/2+TAU*progress,32,Color("f3d79a"),3,true)
+		for index in 4:
+			var ray: Vector2 = Vector2.from_angle(index*PI/2)
+			draw_line(location+ray*10,location+ray*18,Color("f3d79a"),2,true)
 	if boss.phase in ["swing_warn","swing"]:
 		var sector: PackedVector2Array = [center]
 		for i in 25: sector.append(center+Vector2.from_angle(boss.angle-Rules.SWING_HALF_ANGLE+2*Rules.SWING_HALF_ANGLE*i/24)*Rules.SWING_RADIUS)

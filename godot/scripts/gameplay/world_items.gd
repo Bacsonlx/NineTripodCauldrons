@@ -1,5 +1,6 @@
 extends Node2D
 
+const Art = preload("res://scripts/presentation/item_art.gd")
 var items: Array = []
 var camps: Array = []
 var camp_ready: bool = false
@@ -20,4 +21,8 @@ func _draw() -> void:
 		var location: Vector2 = TrainingRoom.point(item.world)
 		draw_circle(location,10,Color("302d22"))
 		draw_arc(location,10,0,TAU,24,Color("f2cd75"),2)
-		draw_string(ThemeDB.fallback_font,location+Vector2(14,-3),item.name,HORIZONTAL_ALIGNMENT_LEFT,-1,18,Color("f2dfb9"))
+		var image: Texture2D = Art.texture(item.name)
+		if image!=null:
+			texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR
+			draw_texture_rect(image,Art.fit(image,Rect2(location+Vector2(-22,-46),Vector2(44,44))),false,Art.tint(item))
+		draw_string(ThemeDB.fallback_font,location+Vector2(25,-3),item.name,HORIZONTAL_ALIGNMENT_LEFT,-1,18,Color("f2dfb9"))

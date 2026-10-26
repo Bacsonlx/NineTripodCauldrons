@@ -13,11 +13,20 @@ func _initialize() -> void:
 
 func run() -> void:
 	var arguments: PackedStringArray = OS.get_cmdline_user_args()
-	var game: Node2D = load("res://scenes/tanggu_first_level.tscn").instantiate()
+	scene_changed.connect(func():
+		if current_scene!=null: current_scene.set_physics_process(false))
+	var path: String = "res://scenes/tanggu_first_level.tscn" if arguments.is_empty() else ProjectSettings.get_setting("application/run/main_scene")
+	var game: Node = load(path).instantiate()
 	root.add_child(game); game.set_physics_process(false); current_scene=game
-	await process_frame
-	if "--test=alpha" in arguments:
+	if arguments.is_empty():
 		await process_frame
+	else:
+		var expected: String = "res://scenes/tanggu_alpha.tscn" if "--test=alpha" in arguments else "res://scenes/tanggu_first_level.tscn"
+		while current_scene==null or current_scene.scene_file_path!=expected:
+			await scene_changed
+	game=current_scene
+	game.set_physics_process(false)
+	if "--test=alpha" in arguments:
 		check(current_scene!=null and current_scene.scene_file_path=="res://scenes/tanggu_alpha.tscn","alpha参数从统一游戏入口选择已有背包白盒")
 	else:
 		var state: Dictionary = game.journey.snapshot()
@@ -35,7 +44,24 @@ func run() -> void:
 		game.journey.update({"restart":true},0); game.present_new_room()
 		state=game.journey.snapshot()
 		check(state.roomId==initial.room and state.health==initial.health and state.resources.mana==initial.mana,"R保留本次启动房间和资源条件")
+	if "--test=boss" in arguments:
+		game.controls.key_down(KEY_ESCAPE)
+		game.present(game.journey.snapshot(),0)
+		button_with_text(game,"返回首页").pressed.emit()
+		await scene_changed
+		button_with_text(current_scene,"完整地图\n汤谷 · 八房").pressed.emit()
+		button_with_text(current_scene,"确认入局").pressed.emit()
+		await scene_changed
+		var fresh: Dictionary = current_scene.journey.snapshot()
+		check(fresh.roomId=="entry" and fresh.health==100 and fresh.resources.mana==100 and fresh.resources.stamina==100,"命令行低资源Boss返回首页后，完整地图不继承旧参数")
 	current_scene.queue_free(); current_scene=null
 	await process_frame
 	print(JSON.stringify({"launch_scene_checks":checks,"failures":failures}))
 	quit(0 if failures.is_empty() else 1)
+
+func button_with_text(node: Node,text: String) -> Button:
+	if node is Button and node.text==text: return node
+	for child in node.get_children():
+		var found: Button = button_with_text(child,text)
+		if found!=null: return found
+	return null

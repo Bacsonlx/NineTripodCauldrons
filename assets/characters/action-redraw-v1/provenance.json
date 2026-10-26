@@ -1,0 +1,45 @@
+{
+  "art_source": "existing",
+  "sources": [
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/hero-run/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-run.png",
+      "sha256": "57f8fad8edddbc64ae3ea7fcdd1b9c7ace684628a36a6538226f921ef76f2694"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/hero-archery/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-archery.png",
+      "sha256": "9be1b18dc1462559f35253d770ddd92cb4eb07992d89752040a7423af5ae3037"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/hero-dodge/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-dodge.png",
+      "sha256": "6734ae47c83cd0574625e549d75a49c7a571568eb616592a11c32e6dcdf90f51"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/hero-skills/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-skills.png",
+      "sha256": "0d5b45c9a30613b9b1b55370e08e2d91dbae2447eae1e3fa4422c3da806f6c3f"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/thor-walk/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/thor-walk.png",
+      "sha256": "533ab76a6389c1e7d5c26fe73cc4e2e2ad6eb6eebffee5659fdec8cb103e7acb"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/thor-swing-v2/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/thor-swing-v2.png",
+      "sha256": "5923f0b2e64c8fdd5fd3c8c3c20674b24ec95a0cf028e5b9ded6348b2b390856"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/thor-throw/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/thor-throw.png",
+      "sha256": "eaf89befa7e817f4666da051aeeb10e6fae6ee32d9495c06c0dfb573e0106030"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/thor-lightning/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/thor-lightning.png",
+      "sha256": "a2e2554d15917066f8eb20d03ca180ee8c9a34b5ab03be4c73f05f5212090142"
+    }
+  ]
+}

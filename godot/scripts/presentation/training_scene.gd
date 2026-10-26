@@ -17,6 +17,7 @@ var torso: Sprite2D
 var bow: Sprite2D
 var nocked_arrow: Sprite2D
 var failed: Sprite2D
+var frame_actor: Node2D
 var enemy_bodies: Dictionary = {}
 var backdrop: Node2D
 var combat_effects: Node2D
@@ -68,6 +69,8 @@ func _ready() -> void:
 	failed = sprite("failed")
 	bow = sprite("bow")
 	nocked_arrow = arrow_sprite()
+	frame_actor=preload("res://scripts/presentation/player_frame_actor.gd").new()
+	add_child(frame_actor)
 	for enemy in room.snapshot().enemies:
 		enemy_bodies[enemy.id]=sprite({"bird":"enemy","paper":"enemyPaper","wood":"enemyWood"}[enemy.appearance])
 	combat_effects=Effects.new(); add_child(combat_effects)
@@ -83,7 +86,8 @@ func _ready() -> void:
 	get_window().mouse_exited.connect(func(): pointer_inside = false; controls.pointer_leave())
 	get_window().mouse_entered.connect(func(): pointer_inside = true)
 	get_viewport().size_changed.connect(func(): controls.interrupt(); update_camera())
-	get_window().mode = Window.MODE_MAXIMIZED
+	if get_window().mode not in [Window.MODE_FULLSCREEN,Window.MODE_EXCLUSIVE_FULLSCREEN]:
+		get_window().mode = Window.MODE_MAXIMIZED
 	update_camera()
 	present(state,0.0)
 	var arguments: PackedStringArray = OS.get_cmdline_user_args()
@@ -196,11 +200,23 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 	nocked_arrow.rotation = p.angle
 	nocked_arrow.z_index = int(p.y) + 3
 	nocked_arrow.visible=(state.attack=="draw" or (state.skill!=null and state.skill.kind=="pierce" and state.skill.phase=="windup")) and state.status!="failed" and not down_pose
+	frame_actor.update_state(state,movement,room.cooldown,bob)
+	frame_actor.modulate.a=alpha
+	if frame_actor.body.visible:
+		legs.hide(); torso.hide(); bow.hide(); nocked_arrow.hide()
+	else:
+		if frame_actor.lower.visible: legs.hide()
+		if frame_actor.upper.visible: torso.hide(); bow.hide(); nocked_arrow.hide()
+	combat_effects.lower=frame_actor.body if frame_actor.body.visible else frame_actor.lower if frame_actor.lower.visible else legs
+	combat_effects.upper=frame_actor.upper if frame_actor.upper.visible else torso
 	if is_instance_valid(obstacle_body): obstacle_body.modulate.a=0.3 if p.y<room.obstacle.get_center().y and p.y>room.obstacle.get_center().y-126 and absf(p.x-room.obstacle.get_center().x)<100 else 1.0
 	if is_instance_valid(backdrop): backdrop.update(state,clock)
+	var live_enemies: Dictionary = {}
 	for enemy in state.enemies:
-		var body: Sprite2D = enemy_bodies[enemy.id]
 		var key: String = {"bird":"enemy","paper":"enemyPaper","wood":"enemyWood"}[enemy.appearance]
+		live_enemies[enemy.id]=true
+		if not enemy_bodies.has(enemy.id): enemy_bodies[enemy.id]=sprite(key)
+		var body: Sprite2D = enemy_bodies[enemy.id]
 		var row: int = 6 if enemy.phase=="dead" else 5 if enemy.flash>0 else 3 if enemy.phase=="warn" else 4 if enemy.phase=="swing" else (0 if enemy.timer<0.18 else 5) if enemy.phase=="recover" else 1+int(clock*8)%2
 		if enemy.has("role") and enemy.phase=="recover" and enemy.flash<=0:
 			row=4 if enemy.role=="paper" and enemy.timer>1.15 else 0
@@ -208,6 +224,9 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 		body.z_index=int(enemy.y); body.visible=enemy.phase!="inactive" and (enemy.phase!="dead" or enemy.timer>0)
 		body.modulate=Color("ffedc5") if enemy.flash>0 else Color.WHITE
 		body.modulate.a=enemy.timer/0.6 if enemy.phase=="dead" else 1.0
+	for id in enemy_bodies.keys():
+		if not live_enemies.has(id):
+			enemy_bodies[id].queue_free(); enemy_bodies.erase(id)
 	var live_arrows: Dictionary = {}
 	for arrow in state.arrows:
 		live_arrows[arrow.id] = true

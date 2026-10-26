@@ -20,7 +20,7 @@ func key_down(code: int,repeated: bool = false) -> void:
 	var state: Dictionary = room.snapshot()
 	if code==KEY_ESCAPE:
 		if state.reading: room.close_reading()
-		else: room.set_paused(not state.paused)
+		else: room.set_paused(not room.paused)
 		interrupt()
 	elif code==KEY_R:
 		if not state.paused: room.reset(); interrupt()

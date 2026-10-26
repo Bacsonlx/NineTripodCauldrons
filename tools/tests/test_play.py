@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class PlayCommandChecks(unittest.TestCase):
-    def test_default_uses_current_first_level(self):
+    def test_default_uses_current_project_entry(self):
         result = subprocess.run(
             [sys.executable, str(ROOT / "play"), "--dry-run"],
             cwd=tempfile.gettempdir(), capture_output=True, text=True,

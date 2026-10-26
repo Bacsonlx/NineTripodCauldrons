@@ -1,0 +1,98 @@
+{
+  "hero-run": {
+    "size": [
+      444,
+      448
+    ],
+    "columns": 3,
+    "root": [
+      220,
+      429
+    ],
+    "scale": 0.22
+  },
+  "hero-archery": {
+    "size": [
+      521,
+      452
+    ],
+    "columns": 3,
+    "root": [
+      297,
+      425
+    ],
+    "scale": 0.22
+  },
+  "hero-dodge": {
+    "size": [
+      452,
+      448
+    ],
+    "columns": 3,
+    "root": [
+      228,
+      425
+    ],
+    "scale": 0.22
+  },
+  "hero-skills": {
+    "size": [
+      534,
+      470
+    ],
+    "columns": 3,
+    "root": [
+      228,
+      436
+    ],
+    "scale": 0.235
+  },
+  "thor-walk": {
+    "size": [
+      444,
+      446
+    ],
+    "columns": 3,
+    "root": [
+      270,
+      425
+    ],
+    "scale": 0.45
+  },
+  "thor-swing-v2": {
+    "size": [
+      496,
+      444
+    ],
+    "columns": 3,
+    "root": [
+      255,
+      385
+    ],
+    "scale": 0.59
+  },
+  "thor-throw": {
+    "size": [
+      518,
+      470
+    ],
+    "columns": 3,
+    "root": [
+      303,
+      440
+    ],
+    "scale": 0.52
+  },
+  "thor-lightning": {
+    "size": [
+      444,
+      480
+    ],
+    "columns": 3,
+    "root": [
+      255,
+      440
+    ],
+    "scale": 0.5
+  }
+}

@@ -1,0 +1,230 @@
+{
+  "source": "v4 appearance / v5 neutral pose, existing PNG, no new image generation",
+  "units": "world pixels; pivot relative to common foot origin; sprite_offset in cropped texture pixels",
+  "parts": {
+    "cape": {
+      "parent": "chest",
+      "pivot": [
+        -10.0,
+        -121.0
+      ],
+      "sprite_rotation": 0.1032201,
+      "sprite_scale": 0.271875,
+      "sprite_offset": [
+        -114.5,
+        -32.0
+      ],
+      "z": 0
+    },
+    "far_arm": {
+      "parent": "chest",
+      "pivot": [
+        23.0,
+        -135.0
+      ],
+      "sprite_rotation": 0.013043,
+      "sprite_scale": 0.1607101,
+      "sprite_offset": [
+        -33.439998626709,
+        -52.25
+      ],
+      "z": 1
+    },
+    "far_forearm": {
+      "parent": "far_arm",
+      "pivot": [
+        34.85553,
+        -107.44196
+      ],
+      "sprite_rotation": 0.4908466,
+      "sprite_scale": 0.13571664871794872,
+      "sprite_offset": [
+        -52.6399993896484,
+        -33.3299980163574
+      ],
+      "z": 2
+    },
+    "far_shin": {
+      "parent": "far_thigh",
+      "pivot": [
+        0.07227,
+        -54.0845
+      ],
+      "sprite_rotation": 0.3147144,
+      "sprite_scale": 0.2214902,
+      "sprite_offset": [
+        -63.5,
+        -32.2399978637695
+      ],
+      "z": 3
+    },
+    "far_thigh": {
+      "parent": "pelvis",
+      "pivot": [
+        -12.0,
+        -88.0
+      ],
+      "sprite_rotation": -0.1880336,
+      "sprite_scale": 0.2053471,
+      "sprite_offset": [
+        -67.2000045776367,
+        -42.6000022888184
+      ],
+      "z": 4
+    },
+    "far_boot": {
+      "parent": "far_shin",
+      "pivot": [
+        -12.0,
+        -17.0
+      ],
+      "sprite_rotation": 0.0,
+      "sprite_scale": 0.1013216,
+      "sprite_offset": [
+        -72.9599990844727,
+        -40.8600006103516
+      ],
+      "z": 5
+    },
+    "near_shin": {
+      "parent": "near_thigh",
+      "pivot": [
+        25.45056,
+        -47.60715
+      ],
+      "sprite_rotation": 0.3367926,
+      "sprite_scale": 0.2134396,
+      "sprite_offset": [
+        -72.7999954223633,
+        -33.9300003051758
+      ],
+      "z": 6
+    },
+    "near_thigh": {
+      "parent": "pelvis",
+      "pivot": [
+        12.0,
+        -81.0
+      ],
+      "sprite_rotation": -0.3829153,
+      "sprite_scale": 0.205175,
+      "sprite_offset": [
+        -89.5,
+        -39.6199989318848
+      ],
+      "z": 7
+    },
+    "near_boot": {
+      "parent": "near_shin",
+      "pivot": [
+        12.0,
+        -11.0
+      ],
+      "sprite_rotation": 0.0,
+      "sprite_scale": 0.0851852,
+      "sprite_offset": [
+        -95.7600021362305,
+        -48.6000022888184
+      ],
+      "z": 8
+    },
+    "pelvis": {
+      "parent": null,
+      "pivot": [
+        0.0,
+        -88.0
+      ],
+      "sprite_rotation": 0.0,
+      "sprite_scale": 0.1412639,
+      "sprite_offset": [
+        -165.0,
+        -40.3500022888184
+      ],
+      "z": 9
+    },
+    "chest": {
+      "parent": "pelvis",
+      "pivot": [
+        0.0,
+        -116.0
+      ],
+      "sprite_rotation": 0.0,
+      "sprite_scale": 0.1789137,
+      "sprite_offset": [
+        -145.5,
+        -156.5
+      ],
+      "z": 10
+    },
+    "head": {
+      "parent": "chest",
+      "pivot": [
+        7.0,
+        -141.0
+      ],
+      "sprite_rotation": 0.0,
+      "sprite_scale": 0.1393728,
+      "sprite_offset": [
+        -128.5,
+        -223.859985351562
+      ],
+      "z": 11
+    },
+    "tail": {
+      "parent": "pelvis",
+      "pivot": [
+        15.0,
+        -93.0
+      ],
+      "sprite_rotation": -0.0502149,
+      "sprite_scale": 0.1486068,
+      "sprite_offset": [
+        -67.0,
+        -16.1499996185303
+      ],
+      "z": 12
+    },
+    "near_arm": {
+      "parent": "chest",
+      "pivot": [
+        -23.0,
+        -135.0
+      ],
+      "sprite_rotation": -0.1139171,
+      "sprite_scale": 0.1565295,
+      "sprite_offset": [
+        -137.639999389648,
+        -50.5800018310547
+      ],
+      "z": 13
+    },
+    "near_forearm": {
+      "parent": "near_arm",
+      "pivot": [
+        -34.17377,
+        -107.15854
+      ],
+      "sprite_rotation": 0.0339071,
+      "sprite_scale": 0.1437197,
+      "sprite_offset": [
+        -67.5,
+        -41.0200004577637
+      ],
+      "z": 14
+    },
+    "hammer": {
+      "parent": "near_forearm",
+      "pivot": [
+        -27.0,
+        -77.0
+      ],
+      "sprite_rotation": 2.7915926,
+      "sprite_scale": 0.1636364,
+      "sprite_offset": [
+        -100.0,
+        -257.399993896484
+      ],
+      "z": 15
+    }
+  }
+}

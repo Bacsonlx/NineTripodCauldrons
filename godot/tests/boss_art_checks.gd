@@ -45,7 +45,7 @@ func run() -> void:
 	var sole: float = foot.position.y+(foot.texture.get_height()+foot.offset.y)*foot.scale.y
 	var lower_ratio: float = (sole-waist.position.y)/height
 	check(lower_ratio>=0.52 and lower_ratio<=0.56,"腰线至脚底占总高0.52至0.56，避免上长下短，实际%.3f" % lower_ratio)
-	var walk: TrainingRoom = load("res://scripts/combat/boss_room.gd").new({"spawn":Vector2(600,520)})
+	var walk: TrainingRoom = load("res://scripts/combat/boss_room.gd").new({"spawn":Vector2(720,200)})
 	actor.update_state(walk.snapshot())
 	var stable_frames: int = 0
 	var paused_during_walk: bool = false
@@ -119,13 +119,14 @@ func run() -> void:
 	var previous_hammer: Vector2 = hammer.global_position
 	var transitions: int = 0
 	var previous_phase: String = room.snapshot().boss.phase
-	for frame in 650:
+	for frame in 1500:
 		room.update({},0.01); actor.update_state(room.snapshot())
 		var phase: String = room.snapshot().boss.phase
 		if (phase=="flight" and previous_phase=="throw_warn") or (phase=="throw_recover" and previous_phase=="flight"):
 			check(hammer.global_position.distance_to(previous_hammer)<15,"飞锤离手和接回连续，不从手部瞬移到脚点")
 			transitions+=1
 		previous_phase=phase; previous_hammer=hammer.global_position
+		if transitions==2: break
 	check(transitions==2,"真实规则覆盖离手与接回两个衔接")
 	var close: TrainingRoom = load("res://scripts/combat/boss_room.gd").new({"spawn":Vector2(840,520)})
 	var charge_torso: float = 0

@@ -25,6 +25,7 @@ func _initialize() -> void:
 		return
 	if "--boss-only" in OS.get_cmdline_user_args():
 		load("res://tests/boss_checks.gd").new().run(Callable(self,"check"))
+		load("res://tests/boss_encounter_checks.gd").new().run(Callable(self,"check"))
 		print(JSON.stringify({"checks":count,"failures":failures}))
 		quit(0 if failures.is_empty() else 1)
 		return
@@ -183,6 +184,7 @@ func _initialize() -> void:
 	reader_controls.update(Vector2(1000,300),true,0.1)
 	check(not reader.snapshot().paused and reader.snapshot().arrows.is_empty(),"二次Esc恢复后不续射，阅读切换已清理操作意图")
 	load("res://tests/boss_checks.gd").new().run(Callable(self,"check"))
+	load("res://tests/boss_encounter_checks.gd").new().run(Callable(self,"check"))
 	load("res://tests/projectile_obstacle_checks.gd").new().run(Callable(self,"check"))
 	load("res://tests/loot_checks.gd").new().run(Callable(self,"check"))
 	load("res://tests/launch_options_checks.gd").new().run(Callable(self,"check"))

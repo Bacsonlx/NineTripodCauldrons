@@ -115,8 +115,8 @@ func run() -> void:
 	check(pass_to("court3") and fight(),"进入第三庭并完成三波18影偶")
 	check(not journey.snapshot().journeyComplete and pass_to("boss"),"第三庭清场后必须先进入Boss房")
 	check(game.boss_view.visible and game.boss_bar.visible and game.boss_bar.value==1200,"默认首关真实切房后显示索尔角色与1200生命条")
-	var actor: Node2D = game.boss_view.get_node_or_null("ThorPuppet")
-	check(actor!=null and actor.get_child_count()==16,"默认首关实际进Boss房后使用16拆件美术角色")
+	var actor: Node2D = game.boss_view.character
+	check(actor!=null and actor.body.texture!=null and actor.body.clip=="thor-swing-v2","默认首关实际进Boss房后加载新逐帧Boss及中立姿态")
 	var visible: Rect2 = Rect2(game.view_origin,game.get_viewport_rect().size/game.view_zoom)
 	check(visible.encloses(Rect2(16,16,1408,1008)) and is_equal_approx(game.camera.position.x,720),"首关进Boss房固定居中，并完整覆盖战斗与预警边界")
 	game.toggle_overview()
@@ -124,7 +124,7 @@ func run() -> void:
 	check(visible.encloses(Rect2(16,16,1408,1008)),"M仍可临时查看完整Boss房及预警边界")
 	game.toggle_overview()
 	check(boss_fight(),"42影偶后保留现有生命与资源，真实走射击败索尔")
-	check(actor!=null and is_equal_approx(actor.get_node("chest").rotation,0.3),"Boss击败后规则时间停止，静态败退姿势仍应完整落定")
+	check(actor!=null and not actor.body.visible and actor.fallen.visible and is_equal_approx(actor.fallen.get_node("chest").rotation,0.3),"Boss击败后规则时间停止，原有静态败退姿势仍应完整落定")
 	check(game.boss_bar.value==0 and not journey.snapshot().journeyComplete,"Boss生命条归零后开放通路，未到出口不提前完成")
 	var floor: Node2D = game.boss_view.get_node_or_null("Floor")
 	var passages_visible: bool = floor!=null and not floor.z_as_relative

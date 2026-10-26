@@ -177,10 +177,12 @@ func update(state: Dictionary,seconds: float,clock: float) -> void:
 				var copy: Sprite2D = pair[0]
 				var body: Sprite2D = pair[1]
 				copy.texture=body.texture; copy.region_enabled=true; copy.region_rect=body.region_rect; copy.centered=body.centered; copy.offset=body.offset; copy.position=body.position; copy.scale=body.scale; copy.z_index=int(state.player.y)-1
+				copy.set_meta("source_visible",body.visible)
+				copy.global_position=body.global_position
 		was_dodging=dodging
 	for ghost in ghosts:
 		for key in ["lower","upper"]:
-			ghost[key].visible=ghost.age<0.22
+			ghost[key].visible=ghost.age<0.22 and ghost[key].get_meta("source_visible",true)
 			ghost[key].modulate=Color(0.8,0.65,0.32,pow(maxf(0,1-ghost.age/0.22),2)*0.5)
 	# 下一波的地面预告不代表已激活敌人，也不参与碰撞。
 	if state.get("waveDelay",0)>0:
