@@ -26,6 +26,7 @@ script = ExtResource("map")
 room_id = "court2"
 room_title = "扶桑残庭"
 objective = "combat"
+construction_reward_waves = PackedInt32Array(0)
 world_size = Vector2(1440,1040)
 floor_polygon = PackedVector2Array(0,0,1440,0,1440,1040,0,1040)
 [node name="Ground" type="Node2D" parent="."]
@@ -86,6 +87,12 @@ script = ExtResource("item")
 category = "enemy"
 size = Vector2(40,30)
 appearance = "bird"
+[node name="Enemy4" type="Node2D" parent="Encounter"]
+position = Vector2(140,40)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "paper"
 [node name="Encounter2" type="Node2D" parent="."]
 position = Vector2(650,550)
 script = ExtResource("item")
@@ -122,6 +129,12 @@ script = ExtResource("item")
 category = "enemy"
 size = Vector2(40,30)
 appearance = "wood"
+[node name="Enemy5" type="Node2D" parent="Encounter2"]
+position = Vector2(80,35)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "bird"
 [node name="Encounter3" type="Node2D" parent="."]
 position = Vector2(650,550)
 script = ExtResource("item")
@@ -160,6 +173,12 @@ size = Vector2(40,30)
 appearance = "bird"
 [node name="Enemy5" type="Node2D" parent="Encounter3"]
 position = Vector2(-160,150)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "paper"
+[node name="Enemy6" type="Node2D" parent="Encounter3"]
+position = Vector2(140,-110)
 script = ExtResource("item")
 category = "enemy"
 size = Vector2(40,30)
@@ -421,34 +440,32 @@ position = Vector2(100,-25)
 [node name="Arrival" parent="Doors/stele" index="5"]
 position = Vector2(140,-25)
 [editable path="Doors/stele"]
-[node name="altar" parent="Doors" instance=ExtResource("portal")]
+[node name="stele_side" parent="Doors" instance=ExtResource("portal")]
 position = Vector2(150,745)
+portal_id = "stele_side"
+target_room = "stele_side"
+target_portal = "court2"
+target_title = "残碑幽径"
+[node name="Approach" parent="Doors/stele_side" index="4"]
+position = Vector2(100,-25)
+[node name="Arrival" parent="Doors/stele_side" index="5"]
+position = Vector2(140,-25)
+[editable path="Doors/stele_side"]
+[node name="altar" parent="Doors" instance=ExtResource("portal")]
+position = Vector2(1280,595)
 portal_id = "altar"
 target_room = "altar"
 target_portal = "court2"
 target_title = "祭火营地"
-[node name="Approach" parent="Doors/altar" index="4"]
-position = Vector2(100,-25)
-[node name="Arrival" parent="Doors/altar" index="5"]
-position = Vector2(140,-25)
-[editable path="Doors/altar"]
-[node name="court3" parent="Doors" instance=ExtResource("portal")]
-position = Vector2(1280,595)
-portal_id = "court3"
-target_room = "court3"
-target_portal = "court2"
-target_title = "赤日祭庭"
-[node name="Frame" parent="Doors/court3" index="0"]
+[node name="Frame" parent="Doors/altar" index="0"]
 mirror_art = true
-[node name="LeftPost" parent="Doors/court3" index="2"]
+[node name="LeftPost" parent="Doors/altar" index="2"]
 position = Vector2(65,-5)
-[node name="RightPost" parent="Doors/court3" index="3"]
+[node name="RightPost" parent="Doors/altar" index="3"]
 position = Vector2(-65,-50)
-[node name="Approach" parent="Doors/court3" index="4"]
+[node name="Approach" parent="Doors/altar" index="4"]
 position = Vector2(-100,-25)
-[node name="Arrival" parent="Doors/court3" index="5"]
+[node name="Arrival" parent="Doors/altar" index="5"]
 position = Vector2(-140,-25)
-[editable path="Doors/court3"]
+[editable path="Doors/altar"]
 
-[node name="CampPoint" type="Marker2D" parent="."]
-position = Vector2(310,720)
