@@ -23,11 +23,15 @@ func include_branches() -> bool: return false
 
 func sample_visit(before: Dictionary,revisit: bool) -> void:
 	var after: Dictionary = journey.snapshot()
+	var room_drops: Array = observed_drops.values().filter(func(item: Dictionary): return item.room==after.roomId)
+	var wave_sizes: Array = []
+	for encounter in journey.active.layout.encounters: wave_sizes.append(encounter.enemies.size())
 	var sample: Dictionary = {"route":route_name,"room":after.roomId,"revisit":revisit,"seed":13,
 		"effective_seconds":after.alpha.elapsed-before.alpha.elapsed,"total_effective_seconds":after.alpha.elapsed,
+		"actual_seconds":after.actualSeconds-before.actualSeconds,"total_actual_seconds":after.actualSeconds,
 		"health_before":before.health,"health_after":after.health,"mana_before":before.resources.mana,"mana_after":after.resources.mana,
 		"stamina_before":before.resources.stamina,"stamina_after":after.resources.stamina,
-		"waves":after.waveCount,"fixed_enemies":after.enemies.size() if after.objective=="combat" else 0,
+		"waves":after.waveCount,"wave_sizes":wave_sizes,"room_drops":room_drops,"fixed_enemies":after.enemies.size() if after.objective=="combat" else 0,
 		"room_complete":after.roomComplete,"status":after.status,"generated_drops":observed_drops.size(),
 		"blue_waves":blue_waves.size(),"collected":collected,"restored_mana":restored_mana,
 		"restored_health":restored_health,"glyphs_issued":after.alpha.items.size()-baseline_items}
@@ -36,7 +40,7 @@ func sample_visit(before: Dictionary,revisit: bool) -> void:
 
 func observe_loot(state: Dictionary) -> void:
 	for item in state.get("drops",[]):
-		observed_drops[state.roomId+":"+str(item.id)]=item.kind
+		observed_drops[state.roomId+":"+str(item.id)]={"room":state.roomId,"id":item.id,"kind":item.kind,"wave":item.wave,"guaranteed":item.guaranteed}
 		if item.kind=="mana" and state.objective=="combat": blue_waves[state.roomId+":"+str(item.wave)]=true
 
 func collect_nearby() -> void:
@@ -54,6 +58,7 @@ func walk(destination: Vector2) -> bool:
 	if path.is_empty(): return false
 	for waypoint in path:
 		for i in 800:
+			if journey.snapshot().status=="failed": return false
 			var delta: Vector2 = waypoint-TrainingRoom.point(journey.snapshot().player)
 			if delta.length()<5: break
 			var move: Vector2 = delta.normalized()
