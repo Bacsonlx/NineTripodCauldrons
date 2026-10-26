@@ -1,5 +1,6 @@
 extends Control
 
+const Journey = preload("res://scripts/journey/room_journey.gd")
 const HERO = preload("res://assets/ui/home-v1/hero-refined-v2.png")
 const PAPER = Color("f4e5be")
 const GOLD = Color("c5a363")
@@ -12,7 +13,17 @@ var category: String = "all"
 var selected: String = ""
 var preview: String = ""
 var launching: bool = false
-var departure_mode: String = "level"
+var departure_mode: String = "full"
+var room_choices: Array[String] = []
+var room_maps: Dictionary = {}
+var selected_room: String = "entry"
+var mode_buttons: Dictionary = {}
+var test_fields: VBoxContainer
+var room_choice: OptionButton
+var mode_summary: Label
+var footer_title: Label
+var footer_summary: Label
+var warehouse_start: Button
 var modal: Control
 var modal_focus: Control
 var start_button: Button
@@ -57,9 +68,17 @@ func build_theme() -> void:
 	theme.set_stylebox("normal","Button",box(Color("10150ee6")))
 	theme.set_stylebox("hover","Button",box(Color("332e1be6"),GOLD))
 	theme.set_stylebox("pressed","Button",box(Color("69291bd9"),GOLD))
+	theme.set_stylebox("hover_pressed","Button",box(Color("823321ed"),GOLD))
+	theme.set_color("font_pressed_color","Button",PAPER)
+	theme.set_color("font_hover_pressed_color","Button",PAPER)
 	theme.set_stylebox("disabled","Button",box(Color("141710b8")))
 	theme.set_stylebox("focus","Button",box(Color(0,0,0,0),Color("ffe0a1")))
 	theme.set_stylebox("panel","PanelContainer",box(Color("0c110ee8")))
+	for style in ["normal","hover","pressed","disabled","focus"]:
+		theme.set_stylebox(style,"OptionButton",theme.get_stylebox(style,"Button"))
+	theme.set_color("font_color","OptionButton",PAPER)
+	theme.set_stylebox("panel","PopupMenu",box(Color("0c110e"),GOLD))
+	theme.set_color("font_color","PopupMenu",PAPER)
 	texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 
 func text(value: String,font_size: int=15,color: Color=PAPER) -> Label:
@@ -112,13 +131,98 @@ func build_header() -> void:
 	button("？",header,show_help)
 
 func build_modes() -> void:
+	for id in Journey.ROOM_IDS:
+		var path: String = "res://scenes/rooms/%s.tscn" % id
+		if not ResourceLoader.exists(path): continue
+		var scene: PackedScene = load(path)
+		if scene==null: continue
+		var map: Node = scene.instantiate()
+		room_maps[id]=map.build_layout(); map.free()
 	var rail: VBoxContainer = column($Layout/Sections/Main/Modes)
-	rail.add_child(text("游戏模式",11,DIM)); rail.add_child(text("测试入口",28))
-	for entry in [["level","完整地图\n汤谷 · 八房"],["boss","Boss 测试\n索尔雷庭"],["drops","野怪测试\n第一庭 · 战斗与掉落"]]:
-		var portal: Button = button(entry[1],rail,show_departure.bind(entry[0]),entry[0]=="level")
-		portal.alignment=HORIZONTAL_ALIGNMENT_LEFT; portal.custom_minimum_size.y=68
-		portal.add_theme_font_size_override("font_size",18)
-	rail.add_child(text("满资源出发 · 可继续探索",11,DIM))
+	rail.add_child(text("选择行程",11,DIM)); rail.add_child(text("行 程",28))
+	var group: ButtonGroup = ButtonGroup.new()
+	for entry in [["full","完整征程\n汤谷首关 · 目标15–20分钟"],["quick","快速测试\n选择关卡与房间起点"]]:
+		var portal: Button = button(entry[1],rail,select_mode.bind(entry[0]))
+		portal.toggle_mode=true; portal.button_group=group
+		portal.alignment=HORIZONTAL_ALIGNMENT_LEFT; portal.custom_minimum_size.y=80
+		# 原生按钮保留完整可访问名称，子控件分别排版标题与说明。
+		portal.add_theme_font_size_override("font_size",12)
+		for color_name in ["font_color","font_hover_color","font_pressed_color","font_hover_pressed_color"]:
+			portal.add_theme_color_override(color_name,Color.TRANSPARENT)
+		for state_name in ["normal","hover","pressed","hover_pressed"]:
+			var style: StyleBox = portal.get_theme_stylebox(state_name).duplicate()
+			style.content_margin_left=66; style.content_margin_right=28
+			portal.add_theme_stylebox_override(state_name,style)
+		var seal: PanelContainer = PanelContainer.new(); seal.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		seal.position=Vector2(10,14); seal.custom_minimum_size=Vector2(42,42)
+		var seal_style: StyleBoxFlat = box(Color("a42b1ced"),GOLD); seal_style.set_content_margin_all(4)
+		seal.add_theme_stylebox_override("panel",seal_style); portal.add_child(seal)
+		var glyph: Label = text("山" if entry[0]=="full" else "电",26)
+		glyph.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; seal.add_child(glyph)
+		var caption: VBoxContainer = VBoxContainer.new(); caption.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		portal.add_child(caption); caption.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		caption.offset_left=66; caption.offset_right=-28; caption.offset_top=12; caption.offset_bottom=-12
+		var lines: PackedStringArray = str(entry[1]).split("\n")
+		caption.add_child(text(lines[0],22)); caption.add_child(text(lines[1],12,DIM))
+		var mark: Label = text("",12,GOLD); mark.name="SelectionMark"; portal.add_child(mark)
+		mark.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT)
+		mark.offset_left=-22; mark.offset_right=-8; mark.offset_top=-8; mark.offset_bottom=8
+		mode_buttons[entry[0]]=portal
+	rail.add_child(HSeparator.new())
+	test_fields=column(rail)
+	test_fields.add_child(text("关卡",14,GOLD))
+	var level: OptionButton = OptionButton.new(); level.name="LevelChoice"
+	level.add_item("第一关 · 汤谷"); level.custom_minimum_size.y=38; test_fields.add_child(level)
+	test_fields.add_child(text("房间起点",14,GOLD))
+	room_choice=OptionButton.new(); room_choice.name="RoomChoice"
+	room_choice.custom_minimum_size.y=38; room_choice.fit_to_longest_item=false
+	test_fields.add_child(room_choice)
+	var main_index: int = 0
+	for id in Journey.ROOM_IDS:
+		if not room_maps.has(id) or not ResourceLoader.exists("res://scenes/rooms/%s.tscn" % id): continue
+		var branch: String = {"moss_side":"A","stele_side":"B","ember_side":"C"}.get(id,"")
+		if branch.is_empty(): main_index+=1
+		var number: String = "%02d" % main_index if branch.is_empty() else branch+" 支路"
+		room_choices.append(id)
+		room_choice.add_item(number+" · "+str(room_maps[id].roomTitle))
+		room_choice.set_item_metadata(room_choice.item_count-1,id)
+	room_choice.item_selected.connect(select_room)
+	rail.add_child(HSeparator.new())
+	mode_summary=text("",12,DIM); mode_summary.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	rail.add_child(mode_summary)
+	select_mode("full")
+
+func select_mode(mode: String) -> void:
+	if modal!=null or launching: return
+	departure_mode=mode
+	if mode=="full": selected_room="entry"
+	for id in mode_buttons:
+		mode_buttons[id].set_pressed_no_signal(id==mode)
+		mode_buttons[id].get_node("SelectionMark").text="●" if id==mode else "○"
+	test_fields.visible=mode=="quick"
+	room_choice.select(maxi(0,room_choices.find(selected_room)))
+	refresh_departure()
+
+func select_room(index: int) -> void:
+	if modal!=null or launching: return
+	selected_room=room_choices[index]
+	refresh_departure()
+
+func departure_arguments() -> Array:
+	var arguments: Array = ["--test=level"]
+	if departure_mode=="quick": arguments.append("--room="+selected_room)
+	return arguments
+
+func refresh_departure() -> void:
+	var testing: bool = departure_mode=="quick"
+	var title: String = "快速测试 · 汤谷" if testing else "完整征程 · 汤谷"
+	var origin: String = str(room_maps.get(selected_room,{}).get("roomTitle","汤谷入口"))
+	var summary: String = "起点："+origin+" · 生命／蓝量／精力100" if testing else "从汤谷入口开始 · 目标15–20分钟"
+	mode_summary.text="新建测试局，可继续推进\n独立初始状态，不计正式通关" if testing else "从入口开启完整征程\n完成全部主线后前往出口"
+	if start_button==null: return
+	footer_title.text=title; footer_summary.text=summary
+	start_button.text="进入测试" if testing else "踏入汤谷"
+	if warehouse_start!=null: warehouse_start.text=start_button.text
 
 func build_stage(stage: Control) -> void:
 	var title: Label = text("后\n羿\n\n附体",28)
@@ -171,14 +275,15 @@ func open_slot(slot: String) -> void:
 
 func build_footer() -> void:
 	var description: VBoxContainer = column(footer)
-	description.add_child(text("完整地图 · 汤谷八房",23))
-	description.add_child(text("八房 · 首关　／　既有默认配置",12,DIM))
+	footer_title=text("",23); description.add_child(footer_title)
+	footer_summary=text("",12,DIM); description.add_child(footer_summary)
 	spacer(footer)
-	notice=text("征程已启 · 以既有配置出发",12,GOLD)
+	notice=text("现有默认构筑 · 试装不带入战斗",12,GOLD)
 	footer.add_child(notice); spacer(footer)
 	start_button=button("踏入汤谷",footer,show_departure,true)
 	start_button.add_theme_font_size_override("font_size",26)
 	start_button.custom_minimum_size=Vector2(224,60)
+	refresh_departure()
 
 func build_warehouse() -> void:
 	var left: PanelContainer = PanelContainer.new()
@@ -196,7 +301,7 @@ func build_warehouse() -> void:
 	tags.offset_left=-140; tags.offset_top=12
 	preview_box.add_child(text("后羿 · 行前试装预览",19))
 	preview_box.add_child(text("所选物品暂不影响首关战斗。",13,DIM))
-	button("踏入汤谷",preview_box,show_departure,true)
+	warehouse_start=button(start_button.text,preview_box,show_departure,true)
 	var panel: PanelContainer = PanelContainer.new()
 	panel.size_flags_horizontal=Control.SIZE_EXPAND_FILL; warehouse.add_child(panel)
 	var right: VBoxContainer = column(panel)
@@ -282,7 +387,7 @@ func preview_item(id: String) -> void:
 func layout_inventory() -> void:
 	if inventory==null: return
 	inventory.columns=5 if size.x>=1200 else 4 if size.x>=1000 else 3
-	$Layout/Sections/Main/Modes.custom_minimum_size.x=224 if size.x>=1100 else 188
+	$Layout/Sections/Main/Modes.custom_minimum_size.x=maxf(224,size.x*0.19)
 	$Layout/Sections/Main/Gear.custom_minimum_size.x=244 if size.x>=1100 else 208
 	warehouse.get_child(0).custom_minimum_size.x=350 if size.x>=1100 else 260
 	notice.visible=size.x>=1100
@@ -330,13 +435,12 @@ func close_modal() -> void:
 	remove_child(modal); modal.queue_free(); modal=null
 	if is_instance_valid(modal_focus): modal_focus.grab_focus()
 
-func show_departure(mode: String="level") -> void:
-	if modal!=null: return
-	departure_mode=mode
-	var titles: Dictionary = {"level":"完整地图 · 汤谷八房","boss":"Boss 测试 · 索尔雷庭","drops":"野怪测试 · 第一庭"}
-	var descriptions: Dictionary = {"level":"从入口开始 · 八房探索 · 三庭八波 · 索尔雷庭", "boss":"直接进入索尔房间 · 击败后可继续探索。", "drops":"从第一庭开始 · 测试野怪战斗与药瓶掉落 · 可继续探索。"}
-	var content: VBoxContainer = open_modal(titles[mode])
-	for line in [descriptions[mode], "生命、蓝量与精力满值 · Esc 暂停后可返回首页。", "本次将以现有首关默认角色、技能与数值出发。", "仓库试装预览不带入战斗；不写入存档。"]:
+func show_departure() -> void:
+	if modal!=null or launching: return
+	var testing: bool = departure_mode=="quick"
+	var content: VBoxContainer = open_modal("快速测试 · 汤谷" if testing else "完整征程 · 汤谷")
+	var origin: String = str(room_maps[selected_room].roomTitle)
+	for line in ["起点："+origin+(" · 不计正式完整通关，可继续推进。" if testing else " · 完成全部主线后前往出口。"), "生命、蓝量与精力100 · Esc 暂停后可返回首页。", "本次将以现有首关默认角色、技能与数值出发。", "仓库试装预览不带入战斗；不写入存档。"]:
 		var label: Label = text(line,15,DIM)
 		label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; content.add_child(label)
 	button("返回准备",content,close_modal)
@@ -344,13 +448,13 @@ func show_departure(mode: String="level") -> void:
 	trap_modal_focus(content)
 
 func confirm_departure() -> void:
-	if launching: return
+	if launching or modal==null: return
 	launching=true
 	get_viewport().set_input_as_handled()
 	enter_journey.call_deferred()
 
 func enter_journey() -> void:
-	get_tree().set_meta("home_test_arguments",["--test="+departure_mode])
+	get_tree().set_meta("home_test_arguments",departure_arguments())
 	var error: Error = get_tree().change_scene_to_file("res://scenes/tanggu_first_level.tscn")
 	if error!=OK:
 		get_tree().remove_meta("home_test_arguments")
@@ -367,7 +471,7 @@ func show_portrait() -> void:
 func show_help() -> void:
 	if modal!=null: return
 	var content: VBoxContainer = open_modal("祠庙 · 供台")
-	for line in ["测试入口：完整地图、Boss 或第一庭野怪。", "仓库：仅行前试装预览，不改变战斗配置。", "香火、碎片与存档尚未接入。", "Esc 关闭当前面板；F11 切换全屏。"]:
+	for line in ["行程：完整征程，或选择房间进行快速测试。", "仓库：仅行前试装预览，不改变战斗配置。", "香火、碎片与存档尚未接入。", "Esc 关闭当前面板；F11 切换全屏。"]:
 		content.add_child(text(line,15,DIM))
 	button("继续查看",content,close_modal)
 	trap_modal_focus(content)
