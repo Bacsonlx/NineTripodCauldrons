@@ -46,8 +46,9 @@ func run() -> void:
 	game.present(game.controls.update(Vector2(1000,550),true,1),0)
 	check(q.text=="3.0","恢复后按规则时间继续冷却")
 	var retry: InputEventKey = InputEventKey.new()
-	retry.physical_keycode=KEY_R; retry.pressed=true
-	game._unhandled_input(retry)
+	retry.keycode=KEY_R; retry.physical_keycode=KEY_R; retry.pressed=true
+	root.push_input(retry)
+	retry.pressed=false; root.push_input(retry)
 	check(q.text=="3.0" and game.room.snapshot().paused,"完整征程R确认期间保留真实冷却并停时")
 	var confirm: Button = find_button(game,"确认重开")
 	check(confirm!=null,"完整征程R显示真实重开确认按钮")

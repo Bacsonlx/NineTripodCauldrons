@@ -58,8 +58,9 @@ func run() -> void:
 	check(game.room.snapshot().roomId=="court1" and game.get_node("TangguMap").room_id=="court1","F同时切换规则房间和实际场景")
 	check(game.controls.movement()==Vector2.ZERO and not game.controls.fire,"切房清除移动与射击意图")
 	var retry: InputEventKey = InputEventKey.new()
-	retry.physical_keycode=KEY_R; retry.pressed=true
-	game._unhandled_input(retry)
+	retry.keycode=KEY_R; retry.physical_keycode=KEY_R; retry.pressed=true
+	root.push_input(retry)
+	retry.pressed=false; root.push_input(retry)
 	var confirm: Button = find_button(game,"确认重开")
 	check(game.room.snapshot().roomId=="court1" and game.room.snapshot().paused and confirm!=null and confirm.is_visible_in_tree(),"完整征程实际R输入先确认，不直接清空进度")
 	if confirm!=null: confirm.pressed.emit()
