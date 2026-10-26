@@ -12,6 +12,9 @@ var restored_mana: int = 0
 var restored_health: int = 0
 var samples: Array = []
 var baseline_items: int = 0
+var visit_start: Dictionary = {}
+var visit_revisit: bool = false
+var recording: bool = true
 var route_name: String = "main"
 const MAIN_ROUTE: Array[String] = ["court1","dry_creek","root_fork","stele","court2","altar","ash_cloister","gate_forecourt","court3","thunder_approach","boss","end"]
 const BRANCH_ROUTE: Array[String] = ["court1","dry_creek","moss_side","dry_creek","moss_side","root_fork","stele","stele_side","stele","stele_side","court2","altar","ash_cloister","ember_side","ash_cloister","ember_side","gate_forecourt","court3","thunder_approach","boss","end"]
@@ -20,7 +23,7 @@ func include_branches() -> bool: return false
 
 func sample_visit(before: Dictionary,revisit: bool) -> void:
 	var after: Dictionary = journey.snapshot()
-	var sample: Dictionary = {"route":route_name,"room":after.roomId,"revisit":revisit,
+	var sample: Dictionary = {"route":route_name,"room":after.roomId,"revisit":revisit,"seed":13,
 		"effective_seconds":after.alpha.elapsed-before.alpha.elapsed,"total_effective_seconds":after.alpha.elapsed,
 		"health_before":before.health,"health_after":after.health,"mana_before":before.resources.mana,"mana_after":after.resources.mana,
 		"stamina_before":before.resources.stamina,"stamina_after":after.resources.stamina,
@@ -60,6 +63,7 @@ func pass_to(target: String) -> bool:
 	for door in journey.active.layout.doors:
 		if door.target!=target: continue
 		if not walk(TrainingRoom.point(door.point)): return false
+		if recording and not visit_start.is_empty(): sample_visit(visit_start,visit_revisit)
 		for attempt in 64:
 			journey.update({"interact":false},0); journey.update({"interact":true},0)
 			if journey.snapshot().roomId==target: break
@@ -149,6 +153,7 @@ func run() -> void:
 	baseline_items=journey.snapshot().alpha.items.size()
 	check(journey.snapshot().health==100 and journey.snapshot().resources.mana==100 and journey.snapshot().resources.stamina==100,"完整征程保持默认生命蓝量精力100，不模拟构筑")
 	journey.update({"alpha":{"action":"depart"}},0)
+	visit_start=journey.snapshot()
 	var seen: Dictionary = {"entry":true}
 	var route: Array[String] = BRANCH_ROUTE if include_branches() else MAIN_ROUTE
 	for target in route:
@@ -158,11 +163,15 @@ func run() -> void:
 		if not crossed: finish(); return
 		var before: Dictionary = journey.snapshot()
 		var revisit: bool = seen.has(target)
+		visit_start=before; visit_revisit=revisit
 		seen[target]=true
 		var complete: bool = before.roomComplete
 		if revisit:
 			check(complete,"往返后房间保持已完成："+target)
 		elif before.objective=="combat":
+			for role in ["bird","paper","wood"]:
+				check(before.enemies.any(func(enemy: Dictionary): return enemy.get("role","")==role),target+"保留敌人职责："+role)
+			check(before.enemies.all(func(enemy: Dictionary): return enemy.health=={"bird":60,"paper":45,"wood":150}.get(enemy.get("role",""),-1)),target+"沿用三职责默认生命，不为bot降低数值")
 			complete=fight()
 			check(complete,"真实跑射清场："+target)
 		elif before.objective=="explore":
@@ -185,9 +194,10 @@ func run() -> void:
 				for portal in game.get_node("TangguMap/Doors").get_children():
 					passages_visible=passages_visible and portal.get_node("Passage").visible and floor.z_index<portal.get_node("Passage").z_index
 				check(passages_visible,"Boss清场门漩涡高于独立地面层")
-		sample_visit(before,revisit)
-		if not complete: finish(); return
+		if not complete: sample_visit(before,revisit); finish(); return
 		if revisit: check(journey.snapshot().alpha.items.size()==before.alpha.items.size(),"支路往返不复制构筑符："+target)
+	sample_visit(visit_start,visit_revisit)
+	recording=false
 	var expected_rooms: int = 16 if include_branches() else 13
 	var expected_waves: int = 24 if include_branches() else 21
 	var expected_glyphs: int = 8 if include_branches() else 7
@@ -196,6 +206,8 @@ func run() -> void:
 	check(journey.snapshot().alpha.items.size()==baseline_items+expected_glyphs,"实际击杀只发主线7枚／含A支路8枚构筑符")
 	check(blue_waves.size()==expected_waves,"每一普通波真实产生可拾取蓝囊，包含末波")
 	check(collected>0 and restored_mana>0,"全流程真实F拾取蓝囊并恢复蓝量")
+	var exit_test: RefCounted = Journey.new(maps,{"startRoom":"end","isTest":true,"potionDrops":true,"dropSeed":13})
+	check(exit_test.snapshot().isTest and exit_test.snapshot().segmentComplete and not exit_test.snapshot().journeyComplete and exit_test.snapshot().visitedRooms==1,"直接测试出口只标记测试段结束，不伪造前序或正式完整通关")
 	var before_return: int = journey.snapshot().alpha.items.size()
 	check(pass_to("boss") and pass_to("thunder_approach") and pass_to("court3"),"出口经已击败Boss房真实F回溯主线")
 	check(journey.snapshot().roomComplete and journey.snapshot().alpha.items.size()==before_return,"通关回溯保留完成状态且不增发实物")
