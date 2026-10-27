@@ -26,6 +26,7 @@ script = ExtResource("map")
 room_id = "court1"
 room_title = "日鸟石庭"
 objective = "combat"
+construction_reward_waves = PackedInt32Array(0)
 world_size = Vector2(1440,1040)
 floor_polygon = PackedVector2Array(0,0,1440,0,1440,1040,0,1040)
 [node name="Ground" type="Node2D" parent="."]
@@ -230,40 +231,20 @@ position = Vector2(100,-25)
 [node name="Arrival" parent="Doors/entry" index="5"]
 position = Vector2(140,-25)
 [editable path="Doors/entry"]
-[node name="stele" parent="Doors" instance=ExtResource("portal")]
+[node name="dry_creek" parent="Doors" instance=ExtResource("portal")]
 position = Vector2(1270,375)
-portal_id = "stele"
-target_room = "stele"
+portal_id = "dry_creek"
+target_room = "dry_creek"
 target_portal = "court1"
-target_title = "碑林遗径"
-[node name="Frame" parent="Doors/stele" index="0"]
+target_title = "落叶溪床"
+[node name="Frame" parent="Doors/dry_creek" index="0"]
 mirror_art = true
-[node name="LeftPost" parent="Doors/stele" index="2"]
+[node name="LeftPost" parent="Doors/dry_creek" index="2"]
 position = Vector2(65,-5)
-[node name="RightPost" parent="Doors/stele" index="3"]
+[node name="RightPost" parent="Doors/dry_creek" index="3"]
 position = Vector2(-65,-50)
-[node name="Approach" parent="Doors/stele" index="4"]
+[node name="Approach" parent="Doors/dry_creek" index="4"]
 position = Vector2(-100,-25)
-[node name="Arrival" parent="Doors/stele" index="5"]
+[node name="Arrival" parent="Doors/dry_creek" index="5"]
 position = Vector2(-140,-25)
-[editable path="Doors/stele"]
-[node name="altar" parent="Doors" instance=ExtResource("portal")]
-position = Vector2(1270,755)
-portal_id = "altar"
-target_room = "altar"
-target_portal = "court1"
-target_title = "祭火营地"
-[node name="Frame" parent="Doors/altar" index="0"]
-mirror_art = true
-[node name="LeftPost" parent="Doors/altar" index="2"]
-position = Vector2(65,-5)
-[node name="RightPost" parent="Doors/altar" index="3"]
-position = Vector2(-65,-50)
-[node name="Approach" parent="Doors/altar" index="4"]
-position = Vector2(-100,-25)
-[node name="Arrival" parent="Doors/altar" index="5"]
-position = Vector2(-140,-25)
-[editable path="Doors/altar"]
-
-[node name="CampPoint" type="Marker2D" parent="."]
-position = Vector2(310,550)
+[editable path="Doors/dry_creek"]

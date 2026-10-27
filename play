@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parent
-ROOMS = ["entry", "court1", "stele", "altar", "court2", "court3", "boss", "end"]
+ROOMS = ["entry", "court1", "dry_creek", "root_fork", "stele", "court2", "altar", "ash_cloister", "gate_forecourt", "court3", "thunder_approach", "boss", "end", "moss_side", "stele_side", "ember_side"]
 
 
 def resource(text):

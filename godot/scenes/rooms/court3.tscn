@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" path="res://scenes/world/room_portal.tscn" id="portal"]
 [ext_resource type="Script" path="res://scripts/world/terrain_surface.gd" id="surface"]
 [ext_resource type="Texture2D" path="res://assets/world/forest.png" id="forest"]
-[ext_resource type="Texture2D" path="res://assets/world/path.png" id="path"]
+[ext_resource type="Texture2D" path="res://assets/world/tanggu-expanded-v1/ash-earth.png" id="path"]
 [ext_resource type="Texture2D" path="res://assets/world/tree_green.tres" id="tree_green"]
 [ext_resource type="Texture2D" path="res://assets/world/tree_red.tres" id="tree_red"]
 [ext_resource type="Texture2D" path="res://assets/world/rocks.tres" id="rocks"]
@@ -14,7 +14,7 @@
 [ext_resource type="Texture2D" path="res://assets/world/wall_east.tres" id="wall_east"]
 [ext_resource type="Texture2D" path="res://assets/world/wall_west.tres" id="wall_west"]
 [ext_resource type="Texture2D" path="res://assets/world/pillar.tres" id="pillar"]
-[ext_resource type="Texture2D" path="res://assets/world/court.tres" id="court"]
+[ext_resource type="Texture2D" path="res://assets/world/tanggu-expanded-v1/sun-fan.png" id="court"]
 [ext_resource type="Texture2D" path="res://assets/world/stele.tres" id="stele"]
 [ext_resource type="Texture2D" path="res://assets/world/altar.tres" id="altar"]
 [ext_resource type="Texture2D" path="res://assets/world/camp.tres" id="camp"]
@@ -26,6 +26,7 @@ script = ExtResource("map")
 room_id = "court3"
 room_title = "赤日祭庭"
 objective = "combat"
+construction_reward_waves = PackedInt32Array(0)
 world_size = Vector2(1440,1040)
 floor_polygon = PackedVector2Array(0,0,1440,0,1440,1040,0,1040)
 [node name="Ground" type="Node2D" parent="."]
@@ -38,13 +39,13 @@ texture = ExtResource("forest")
 texture_repeat = 2
 [node name="RoomFloor" type="Polygon2D" parent="Ground"]
 z_index = -50
-polygon = PackedVector2Array(180, 680, 350, 360, 600, 180, 1110, 180, 1310, 430, 1250, 820, 820, 920, 400, 870)
+polygon = PackedVector2Array(180,725, 260,550, 380,370, 560,240, 780,190, 1000,240, 1180,370, 1300,550, 1320,760, 1160,850, 380,850)
 texture = ExtResource("path")
 texture_repeat = 2
 [node name="Walkable" type="Node2D" parent="."]
 visible = false
 [node name="Floor" type="Polygon2D" parent="Walkable"]
-polygon = PackedVector2Array(180, 680, 350, 360, 600, 180, 1110, 180, 1310, 430, 1250, 820, 820, 920, 400, 870)
+polygon = PackedVector2Array(180,725, 260,550, 380,370, 560,240, 780,190, 1000,240, 1180,370, 1300,550, 1320,760, 1160,850, 380,850)
 [node name="Metrics" type="Node2D" parent="."]
 position = Vector2(720,535)
 script = ExtResource("item")
@@ -176,18 +177,60 @@ script = ExtResource("item")
 category = "enemy"
 size = Vector2(40,30)
 appearance = "paper"
-[node name="Enemy6" type="Node2D" parent="Encounter3"]
+[node name="Encounter4" type="Node2D" parent="."]
+position = Vector2(650,550)
+script = ExtResource("item")
+category = "encounter"
+size = Vector2(40,30)
+label = "第4波"
+[node name="Enemy0" type="Node2D" parent="Encounter4"]
+position = Vector2(-210,-120)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "wood"
+[node name="Enemy1" type="Node2D" parent="Encounter4"]
+position = Vector2(0,-200)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "bird"
+[node name="Enemy2" type="Node2D" parent="Encounter4"]
+position = Vector2(220,-100)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "paper"
+[node name="Enemy3" type="Node2D" parent="Encounter4"]
+position = Vector2(280,110)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "wood"
+[node name="Enemy4" type="Node2D" parent="Encounter4"]
+position = Vector2(80,200)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "bird"
+[node name="Enemy5" type="Node2D" parent="Encounter4"]
+position = Vector2(-150,170)
+script = ExtResource("item")
+category = "enemy"
+size = Vector2(40,30)
+appearance = "paper"
+[node name="Enemy6" type="Node2D" parent="Encounter4"]
 position = Vector2(-240,40)
 script = ExtResource("item")
 category = "enemy"
 size = Vector2(40,30)
 appearance = "wood"
 [node name="RitualCourt" parent="." instance=ExtResource("prop")]
-position = Vector2(840,820)
+position = Vector2(770,835)
 category = "ground"
 size = Vector2(40,30)
 texture_asset = ExtResource("court")
-render_width = 900.0
+render_width = 1100.0
 obstacle_kind = "wall"
 flat = true
 [node name="FirePillarLeft" parent="." instance=ExtResource("prop")]
@@ -279,34 +322,31 @@ render_width = 130.0
 obstacle_kind = "wall"
 flat = true
 [node name="Doors" type="Node2D" parent="."]
-[node name="court2" parent="Doors" instance=ExtResource("portal")]
+[node name="gate_forecourt" parent="Doors" instance=ExtResource("portal")]
 position = Vector2(180,725)
-portal_id = "court2"
-target_room = "court2"
+portal_id = "gate_forecourt"
+target_room = "gate_forecourt"
 target_portal = "court3"
-target_title = "扶桑残庭"
-[node name="Approach" parent="Doors/court2" index="4"]
+target_title = "残门前庭"
+[node name="Approach" parent="Doors/gate_forecourt" index="4"]
 position = Vector2(100,-25)
-[node name="Arrival" parent="Doors/court2" index="5"]
+[node name="Arrival" parent="Doors/gate_forecourt" index="5"]
 position = Vector2(140,-25)
-[editable path="Doors/court2"]
-[node name="end" parent="Doors" instance=ExtResource("portal")]
+[editable path="Doors/gate_forecourt"]
+[node name="thunder_approach" parent="Doors" instance=ExtResource("portal")]
 position = Vector2(1290,735)
-portal_id = "end"
-target_room = "boss"
+portal_id = "thunder_approach"
+target_room = "thunder_approach"
 target_portal = "court3"
-target_title = "索尔雷庭"
-[node name="Frame" parent="Doors/end" index="0"]
+target_title = "雷庭前径"
+[node name="Frame" parent="Doors/thunder_approach" index="0"]
 mirror_art = true
-[node name="LeftPost" parent="Doors/end" index="2"]
+[node name="LeftPost" parent="Doors/thunder_approach" index="2"]
 position = Vector2(65,-5)
-[node name="RightPost" parent="Doors/end" index="3"]
+[node name="RightPost" parent="Doors/thunder_approach" index="3"]
 position = Vector2(-65,-50)
-[node name="Approach" parent="Doors/end" index="4"]
+[node name="Approach" parent="Doors/thunder_approach" index="4"]
 position = Vector2(-100,-25)
-[node name="Arrival" parent="Doors/end" index="5"]
+[node name="Arrival" parent="Doors/thunder_approach" index="5"]
 position = Vector2(-140,-25)
-[editable path="Doors/end"]
-
-[node name="CampPoint" type="Marker2D" parent="."]
-position = Vector2(320,700)
+[editable path="Doors/thunder_approach"]

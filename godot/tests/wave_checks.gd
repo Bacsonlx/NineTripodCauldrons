@@ -48,10 +48,24 @@ func _initialize() -> void:
 	long_step.update({"fire":true,"aim":Vector2(1000,548)},4)
 	check(short_steps.snapshot().encounter==long_step.snapshot().encounter and is_equal_approx(short_steps.snapshot().get("waveDelay",0),long_step.snapshot().get("waveDelay",0)) and short_steps.snapshot().shots==long_step.snapshot().shots,"长帧与短步波间推进及攻击结果一致")
 	var maps: Dictionary = load("res://scripts/journey/room_journey.gd").read_maps()
-	for pair in [["court1",[4,5]],["court2",[4,5,6]],["court3",[5,6,7]]]:
+	for pair in [["court1",[4,5]],["dry_creek",[5,7]],["root_fork",[4,5,6]],["court2",[5,6,7]],["ash_cloister",[6,7,7]],["gate_forecourt",[4,5,6,6]],["court3",[5,6,6,7]],["moss_side",[4,5]],["ember_side",[6]]]:
+		if not maps.has(pair[0]):
+			check(false,"缺少扩展战斗房："+pair[0]); continue
 		var counts: Array = []
 		for encounter in maps[pair[0]].encounters: counts.append(encounter.enemies.size())
 		check(counts==pair[1],pair[0]+"按确认的人数逐波递增")
+	var main_enemies: int = 0
+	var main_waves: int = 0
+	var all_enemies: int = 0
+	var all_waves: int = 0
+	for id in maps:
+		for encounter in maps[id].encounters:
+			all_enemies+=encounter.enemies.size(); all_waves+=1
+			check(encounter.enemies.size()<=7,id+"单波不超过7只")
+			if id not in ["moss_side","ember_side"]:
+				main_enemies+=encounter.enemies.size(); main_waves+=1
+	check(main_enemies==119 and main_waves==21,"主线固定119只／21波，不含Boss及援军")
+	check(all_enemies==134 and all_waves==24,"全支路固定134只／24波，不含Boss及援军")
 	var invalid: Node2D = load("res://scenes/rooms/court1.tscn").instantiate()
 	for enemy in invalid.get_node("Encounter").get_children(): enemy.free()
 	check(not invalid.validation_errors().is_empty(),"编辑器拒绝没有敌人的空波次")

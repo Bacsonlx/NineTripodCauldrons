@@ -17,6 +17,8 @@ var actions: HBoxContainer
 var slots: Dictionary = {}
 var captions: Dictionary = {}
 var costs: Dictionary = {}
+const DEFAULT_INSCRIPTION: String = "汤谷 · 碑林遗字\n\n风过残碑\n\n山风过谷，石火未冷。\n旧路覆叶，仍有人循光而行。\n碑上余字，已随岁月漫漶。"
+var inscription: Label
 var loadout_actions: HBoxContainer
 var last_health: int = -1
 var last_health_max: int = -1
@@ -126,11 +128,15 @@ func _ready() -> void:
 	reading=ColorRect.new(); reading.name="Reading"
 	reading.color=Color(0.03,0.05,0.04,0.94); reading.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	reading.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT); add_child(reading)
-	var inscription: Label = label("汤谷 · 碑林遗字\n\n风过残碑\n\n山风过谷，石火未冷。\n旧路覆叶，仍有人循光而行。\n碑上余字，已随岁月漫漶。\n\nF / Esc 合上残碑 · 阅读时已暂停",22)
+	inscription=label("",22)
 	inscription.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; inscription.vertical_alignment=VERTICAL_ALIGNMENT_CENTER
 	inscription.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT); reading.add_child(inscription)
+	set_inscription("","")
 	resized.connect(layout_edges)
 	layout_edges()
+
+func set_inscription(title: String,body: String) -> void:
+	inscription.text=(DEFAULT_INSCRIPTION if body.is_empty() else title+"\n\n"+body)+"\n\nF / Esc 合上残碑 · 阅读时已暂停"
 
 func layout_edges() -> void:
 	encounter.position=Vector2((size.x-330)/2,24 if size.x>=1280 else 148)

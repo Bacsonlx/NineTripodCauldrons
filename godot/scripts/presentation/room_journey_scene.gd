@@ -7,16 +7,22 @@ var journey: RefCounted
 var minimap: Control
 var boss_view: Node2D
 var boss_bar: ProgressBar
+var journey_data: Dictionary = {}
 var loot_view: Node2D
 var camp_panel: CanvasLayer
 var world_items: Node2D
 var pickup_label: Label
 var skill_view: Node2D
 var item_label: Label
-var journey_data: Dictionary = {}
 var pause_menu: ColorRect
 var resume_button: Button
 var returning_home: bool = false
+var confirmation: ColorRect
+var confirmation_action: String = ""
+var confirmation_paused: bool = false
+var confirmation_focus: Control
+var confirming_action: bool = false
+var run_label: Label
 
 func build_hud() -> void:
 	super.build_hud()
@@ -41,6 +47,13 @@ func build_hud() -> void:
 	item_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
 	item_label.offset_left=-450; item_label.offset_right=-24; item_label.offset_top=-255; item_label.offset_bottom=-190
 	item_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; hud.add_child(item_label)
+	run_label=make_label("",14,Color("c5a363")); run_label.name="JourneyIdentity"
+	run_label.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	run_label.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	run_label.position=Vector2(24,132); run_label.size=Vector2(300,48)
+	run_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; hud.add_child(run_label)
+	var confirmation_layer: CanvasLayer = CanvasLayer.new(); confirmation_layer.name="JourneyConfirmationLayer"
+	confirmation_layer.layer=31; add_child(confirmation_layer)
 	var pause_layer: CanvasLayer = CanvasLayer.new(); pause_layer.layer=30; add_child(pause_layer)
 	pause_menu=ColorRect.new(); pause_menu.name="PauseMenu"; pause_menu.color=Color("080d09ed")
 	pause_menu.theme=hud.theme; pause_layer.add_child(pause_menu)
@@ -49,8 +62,8 @@ func build_hud() -> void:
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var menu: VBoxContainer = VBoxContainer.new(); menu.add_theme_constant_override("separation",16); center.add_child(menu)
 	menu.add_child(make_label("已暂停",26))
-	menu.add_child(make_label("返回首页将结束本次测试，不保留进度。",16))
-	resume_button=Button.new(); resume_button.text="继续测试 · Esc"; menu.add_child(resume_button)
+	menu.add_child(make_label("返回首页将清空本次未保存进度。",16))
+	resume_button=Button.new(); resume_button.text="继续行程 · Esc"; menu.add_child(resume_button)
 	resume_button.custom_minimum_size.y=48; resume_button.pressed.connect(resume_test)
 	var back: Button = Button.new(); back.text="返回首页"; menu.add_child(back)
 	back.custom_minimum_size.y=48; back.pressed.connect(return_home)
@@ -58,19 +71,71 @@ func build_hud() -> void:
 	back.focus_next=back.get_path_to(resume_button); back.focus_previous=back.get_path_to(resume_button)
 
 func resume_test() -> void:
+	if confirmation!=null or returning_home: return
 	controls.interrupt(); room.set_paused(false)
 	present(room.snapshot(),0)
 
 func return_home() -> void:
-	if returning_home or not room.paused: return
-	returning_home=true; controls.interrupt()
-	get_viewport().set_input_as_handled()
-	enter_home.call_deferred()
+	if returning_home or not room.paused or confirmation!=null: return
+	open_confirmation("home")
+
+func open_confirmation(action: String) -> void:
+	if confirmation!=null or confirming_action or returning_home: return
+	confirmation_action=action; confirmation_paused=room.paused
+	confirmation_focus=get_viewport().gui_get_focus_owner()
+	controls.interrupt(); room.set_paused(true)
+	var layer: CanvasLayer = get_node("JourneyConfirmationLayer")
+	confirmation=ColorRect.new(); confirmation.name="JourneyConfirmation"
+	confirmation.color=Color("030703ed"); confirmation.theme=pause_menu.theme
+	layer.add_child(confirmation); confirmation.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var margin: MarginContainer = MarginContainer.new(); confirmation.add_child(margin)
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	for edge in ["left","right","top","bottom"]: margin.add_theme_constant_override("margin_"+edge,24)
+	var center: CenterContainer = CenterContainer.new(); margin.add_child(center)
+	var panel: PanelContainer = PanelContainer.new(); center.add_child(panel)
+	panel.custom_minimum_size.x=minf(500,get_viewport_rect().size.x-48)
+	var menu: VBoxContainer = VBoxContainer.new(); panel.add_child(menu)
+	menu.add_theme_constant_override("separation",16)
+	menu.add_child(make_label("返回首页？" if action=="home" else "重新开启完整征程？",24))
+	var description: Label = make_label("本次未保存的进度、资源变化与临时构筑将清空。"+("返回首页后可重新选择行程。" if action=="home" else "将从汤谷入口开始新局。"),16)
+	description.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; menu.add_child(description)
+	var cancel: Button = Button.new(); cancel.text="取消 · Esc"; menu.add_child(cancel)
+	cancel.custom_minimum_size.y=44; cancel.pressed.connect(cancel_confirmation)
+	var confirm: Button = Button.new(); confirm.text="确认返回首页" if action=="home" else "确认重开"
+	menu.add_child(confirm); confirm.custom_minimum_size.y=44; confirm.pressed.connect(confirm_action)
+	for pair in [[cancel,confirm],[confirm,cancel]]:
+		var other: NodePath = pair[0].get_path_to(pair[1])
+		pair[0].focus_next=other; pair[0].focus_previous=other
+		for side in ["top","bottom","left","right"]: pair[0].set("focus_neighbor_"+side,other)
+	cancel.grab_focus()
+	present(room.snapshot(),0)
+
+func cancel_confirmation() -> void:
+	if confirmation==null or confirming_action: return
+	controls.interrupt(); room.set_paused(confirmation_paused)
+	var old: Control = confirmation
+	confirmation=null; confirmation_action=""
+	old.get_parent().remove_child(old); old.queue_free()
+	present(room.snapshot(),0)
+	if is_instance_valid(confirmation_focus) and confirmation_focus.is_visible_in_tree(): confirmation_focus.grab_focus()
+
+func confirm_action() -> void:
+	if confirmation==null or confirming_action: return
+	confirming_action=true; controls.interrupt(); get_viewport().set_input_as_handled()
+	finish_confirmation.call_deferred()
+
+func finish_confirmation() -> void:
+	if confirmation_action=="home":
+		returning_home=true; enter_home(); return
+	var old: Control = confirmation
+	confirmation=null; confirmation_action=""; confirming_action=false
+	old.get_parent().remove_child(old); old.queue_free()
+	journey.restart(); present_new_room()
 
 func enter_home() -> void:
 	var error: Error = get_tree().change_scene_to_file("res://scenes/home.tscn")
 	if error!=OK:
-		returning_home=false; push_error("首页加载失败："+str(error))
+		returning_home=false; confirming_action=false; cancel_confirmation(); push_error("首页加载失败："+str(error))
 
 func layout_boss_bar() -> void:
 	boss_bar.offset_top=hud.encounter.position.y+60
@@ -148,13 +213,29 @@ func present_new_room() -> void:
 	frame_actor.reset_pose()
 	update_camera(); present(room.snapshot(),0); mark_presented()
 
+func _input(event: InputEvent) -> void:
+	if room==null or returning_home: return
+	if confirmation!=null:
+		if event is InputEventKey:
+			if event.physical_keycode==KEY_ESCAPE and event.pressed and not event.echo: cancel_confirmation()
+			elif event.physical_keycode in [KEY_TAB,KEY_UP,KEY_DOWN,KEY_LEFT,KEY_RIGHT,KEY_ENTER,KEY_KP_ENTER,KEY_SPACE]: return
+			get_viewport().set_input_as_handled()
+		return
+	if event is InputEventKey and event.physical_keycode==KEY_R:
+		if event.pressed and not event.echo:
+			var data: Dictionary = journey.snapshot()
+			if not data.paused:
+				controls.interrupt()
+				if data.get("isTest",false) or data.status=="failed":
+					journey.restart(); present_new_room()
+				else: open_confirmation("restart")
+		get_viewport().set_input_as_handled()
+
 func _unhandled_input(event: InputEvent) -> void:
+	if confirmation!=null or returning_home:
+		get_viewport().set_input_as_handled(); return
 	if event is InputEventKey and event.physical_keycode==KEY_I and event.pressed and not event.echo:
 		controls.interrupt(); room.update({"alpha":{"action":"camp"}},0)
-		get_viewport().set_input_as_handled(); return
-	if event is InputEventKey and event.physical_keycode==KEY_R and event.pressed and not event.echo:
-		if not room.snapshot().paused:
-			journey.restart(); present_new_room()
 		get_viewport().set_input_as_handled(); return
 	super._unhandled_input(event)
 
@@ -162,11 +243,11 @@ func guidance_at(_position: Vector2) -> Dictionary:
 	return {"region":room.layout.roomTitle,"landmark":{"safe":"安全房 · 可探索与通行","combat":"清除所有影偶后开门","explore":"阅读并合上残碑后开门","boss":"击败索尔后开门 · 锤离手时反击"}[room.layout.objective]}
 
 func present(snapshot: Dictionary,seconds: float) -> void:
-	# 复用本帧公开快照，避免第二次深拷贝；HUD 文本统一在 hud_lines() 写入一次。
 	journey_data=journey.snapshot(snapshot)
 	super.present(snapshot,seconds)
 	var data: Dictionary = journey_data
-	var show_pause: bool = room.paused and not data.reading
+	hud.set_inscription(str(room.layout.get("steleTitle","")),str(room.layout.get("steleText","")))
+	var show_pause: bool = room.paused and not data.reading and confirmation==null and not data.alpha.camp
 	if pause_menu.visible!=show_pause:
 		pause_menu.visible=show_pause
 		if show_pause: resume_button.grab_focus()
@@ -192,24 +273,24 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 	boss_bar.visible=data.has("boss")
 	if data.has("boss"):
 		boss_view.update(data,clock); boss_bar.value=data.boss.health
+	var origin: String = str(journey.layouts[journey.initial_options.get("startRoom","entry")].roomTitle)
+	run_label.text=("快速测试 · 起点："+origin+"\n不计正式完整通关") if data.get("isTest",false) else "完整征程 · 起点：汤谷入口"
 
 func hud_lines() -> Dictionary:
 	var lines: Dictionary = super.hud_lines()
 	var data: Dictionary = journey_data
 	if data.is_empty(): return lines
-	var encounter: String = room.layout.roomTitle+" · 已探索 %d / %d 房间" % [data.visitedRooms,Journey.ROOM_IDS.size()]+"\n"+("房间已完成 · 所有门已开放" if data.roomComplete else guidance_at(Vector2.ZERO).landmark)
+	lines.encounter=room.layout.roomTitle+" · 已探索 %d / %d 房间" % [data.visitedRooms,Journey.ROOM_IDS.size()]+"\n"+("房间已完成 · 所有门已开放" if data.roomComplete else guidance_at(Vector2.ZERO).landmark)
 	if data.has("boss"):
-		encounter="索尔  %d / 1200\n%s" % [data.boss.health,"索尔已败退 · 前往出口完成首关" if data.roomComplete else "锤已离手 · 承伤提高25%" if data.vulnerable else "观察招式 · 击败后开门"]
+		lines.encounter="索尔  %d / 1200\n%s" % [data.boss.health,"索尔已败退 · 前往出口完成首关" if data.roomComplete else "锤已离手 · 承伤提高25%" if data.vulnerable else "观察招式 · 击败后开门"]
 		if not data.roomComplete:
-			encounter+=" · 影偶 %d / 8" % data.enemies.filter(func(enemy: Dictionary): return enemy.health>0).size()
+			lines.encounter+=" · 影偶 %d / 8" % data.enemies.filter(func(enemy: Dictionary): return enemy.health>0).size()
 	if data.objective=="combat" and not data.roomComplete:
-		var remaining: int = 0
-		for enemy in data.enemies:
-			if enemy.group==data.encounter and enemy.phase!="dead": remaining+=1
-		encounter=room.layout.roomTitle+" · 第 %d / %d 波" % [data.wave,data.waveCount]+"\n"+("下一波 %.1f 秒后出现" % data.waveDelay if data.waveDelay>0 else "影偶剩余 %d · 清完全部波次后开门" % remaining)
-	if data.journeyComplete: encounter="汤谷流程完成 · 可返回探索\nR 重开整段流程"
-	if not data.get("rewardPlaceholders",[]).is_empty(): encounter+="\nBoss战利品为未入库占位 · 阶段奖励后续接通"
-	lines.encounter=encounter
+		var remaining: int = data.enemies.filter(func(enemy: Dictionary): return enemy.group==data.encounter and enemy.phase!="dead").size()
+		lines.encounter=room.layout.roomTitle+" · 第 %d / %d 波" % [data.wave,data.waveCount]+"\n"+("下一波 %.1f 秒后出现" % data.waveDelay if data.waveDelay>0 else "影偶剩余 %d · 清完全部波次后开门" % remaining)
+	if data.get("segmentComplete",false) and data.get("isTest",false): lines.encounter="测试段完成 · 可返回探索\n不计正式完整通关 · R 从测试起点重试"
+	elif data.journeyComplete: lines.encounter="汤谷完整征程完成 · 全部主线已完成\n可返回探索 · R 重开需确认"
+	if not data.get("rewardPlaceholders",[]).is_empty(): lines.encounter+="\nBoss战利品为未入库占位 · 阶段奖励后续接通"
 	if state.feedback==null and state.interaction==null:
 		lines.interaction="走近门按 F 前往下一房间" if data.roomComplete else "完成本房任务后，来路与出口一起开放"
 		if data.objective in ["combat","boss"]: lines.interaction="血／蓝瓶落地后走近按 F 即时补充 · 满值留地"

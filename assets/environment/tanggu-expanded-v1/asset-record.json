@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-26",
+  "tool": "built-in image_gen",
+  "selection": "AI technical review; user native visual review pending",
+  "sources": {
+    "dry-creek.png": "af259aa03d84d9985de09aac1f755f4771065183f613b7f79cc2c5e7d28d9b85",
+    "ash-earth.png": "c745ad556eb589e7435e57a235dba5b1c4d391e82502e0bb693bfbabd933352c",
+    "home-selection-v1.png": "90313b0bf959fba6ccead5f1c1789d002549a44e31b1daacebe86b834cf26706",
+    "room-studies-v1.png": "dbd82efed04be49bb5181913dde2c7be6df7ac79adee3cfe96cd5cc2c8a4e660",
+    "overview-v1.png": "4fdb27fbdab0bc22eba0ab7aa7ee05444f39077e457fd0b625b2e7dc7dd02555",
+    "sun-fan.png": "e1668dd7a379946d48d905c2fcf63375d86634f5d9108ac6cf55c2c151e8d979"
+  },
+  "runtime": {
+    "dry-creek.png": "godot/assets/world/tanggu-expanded-v1/dry-creek.png",
+    "ash-earth.png": "godot/assets/world/tanggu-expanded-v1/ash-earth.png",
+    "sun-fan.png": "godot/assets/world/tanggu-expanded-v1/sun-fan.png"
+  },
+  "sunFanReference": {
+    "image": "references/room-studies-v1.png",
+    "use": "attached style/shape reference, lower-right fan court",
+    "generatedSource": "/Users/linxin/.codex/generated_images/01a17705-6f0e-7412-8cce-3ed50188be7e/call_fbbKDHv8jkY2WMIfgMV5zRl2.png",
+    "nativeReview": "pending"
+  }
+}

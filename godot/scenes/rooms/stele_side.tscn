@@ -1,0 +1,359 @@
+[gd_scene load_steps=23 format=3]
+[ext_resource type="Script" path="res://scripts/world/room_map.gd" id="map"]
+[ext_resource type="Script" path="res://scripts/world/map_item.gd" id="item"]
+[ext_resource type="PackedScene" path="res://scenes/world/environment_prop.tscn" id="prop"]
+[ext_resource type="PackedScene" path="res://scenes/world/room_portal.tscn" id="portal"]
+[ext_resource type="Script" path="res://scripts/world/terrain_surface.gd" id="surface"]
+[ext_resource type="Texture2D" path="res://assets/world/forest.png" id="forest"]
+[ext_resource type="Texture2D" path="res://assets/world/path.png" id="path"]
+[ext_resource type="Texture2D" path="res://assets/world/tree_green.tres" id="tree_green"]
+[ext_resource type="Texture2D" path="res://assets/world/tree_red.tres" id="tree_red"]
+[ext_resource type="Texture2D" path="res://assets/world/rocks.tres" id="rocks"]
+[ext_resource type="Texture2D" path="res://assets/world/ferns.tres" id="ferns"]
+[ext_resource type="Texture2D" path="res://assets/world/grass.tres" id="grass"]
+[ext_resource type="Texture2D" path="res://assets/world/wall_east.tres" id="wall_east"]
+[ext_resource type="Texture2D" path="res://assets/world/wall_west.tres" id="wall_west"]
+[ext_resource type="Texture2D" path="res://assets/world/pillar.tres" id="pillar"]
+[ext_resource type="Texture2D" path="res://assets/world/court.tres" id="court"]
+[ext_resource type="Texture2D" path="res://assets/world/stele.tres" id="stele"]
+[ext_resource type="Texture2D" path="res://assets/world/altar.tres" id="altar"]
+[ext_resource type="Texture2D" path="res://assets/world/camp.tres" id="camp"]
+[ext_resource type="Texture2D" path="res://assets/world/gateway.tres" id="gateway"]
+[ext_resource type="Texture2D" path="res://assets/world/root.tres" id="root"]
+[ext_resource type="Texture2D" path="res://assets/world/ruin_stone.tres" id="ruin_stone"]
+[node name="stele_side" type="Node2D"]
+script = ExtResource("map")
+room_id = "stele_side"
+room_title = "残碑幽径"
+objective = "explore"
+stele_title = "残碑幽径 · 根下余字（候选·待内容审核）"
+stele_text = "旧碑半埋在扶桑根下，落叶积在字缝里。溪水退去后，石面仍留着浅浅的水痕。\n\n再往谷内，草色渐暗，残门后的灰尘覆住了旧路。沿着尚能辨认的日纹，仍可回到前庭。"
+world_size = Vector2(1440,1040)
+floor_polygon = PackedVector2Array(0,0,1440,0,1440,1040,0,1040)
+[node name="Ground" type="Node2D" parent="."]
+script = ExtResource("surface")
+path_texture = ExtResource("path")
+[node name="Forest" type="Polygon2D" parent="Ground"]
+z_index = -100
+polygon = PackedVector2Array(0, 0, 1440, 0, 1440, 1040, 0, 1040)
+texture = ExtResource("forest")
+texture_repeat = 2
+[node name="RoomFloor" type="Polygon2D" parent="Ground"]
+z_index = -50
+polygon = PackedVector2Array(150, 700, 150, 450, 430, 450, 430, 240, 990, 240, 990, 440, 1280, 440, 1280, 800, 990, 800, 990, 650, 700, 650, 700, 800, 350, 850)
+texture = ExtResource("path")
+texture_repeat = 2
+[node name="Walkable" type="Node2D" parent="."]
+visible = false
+[node name="Floor" type="Polygon2D" parent="Walkable"]
+polygon = PackedVector2Array(150, 700, 150, 450, 430, 450, 430, 240, 990, 240, 990, 440, 1280, 440, 1280, 800, 990, 800, 990, 650, 700, 650, 700, 800, 350, 850)
+[node name="Metrics" type="Node2D" parent="."]
+position = Vector2(720,520)
+script = ExtResource("item")
+category = "road"
+size = Vector2(40,30)
+region = "残碑幽径"
+[node name="PlayerSpawn" type="Node2D" parent="."]
+position = Vector2(310,610)
+script = ExtResource("item")
+category = "spawn"
+size = Vector2(40,30)
+[node name="Stele" parent="." instance=ExtResource("prop")]
+position = Vector2(820,300)
+category = "obstacle"
+size = Vector2(58,40)
+texture_asset = ExtResource("stele")
+render_width = 185.0
+obstacle_kind = "stele"
+body_height = 170.0
+[node name="ReadStele" type="Node2D" parent="Stele"]
+position = Vector2(0,95)
+script = ExtResource("item")
+category = "interaction"
+size = Vector2(40,30)
+interaction_id = "stele"
+[node name="SilentWitness0" parent="." instance=ExtResource("prop")]
+position = Vector2(490,320)
+category = "obstacle"
+size = Vector2(36,24)
+texture_asset = ExtResource("stele")
+render_width = 105.0
+obstacle_kind = "stele"
+[node name="SilentWitness1" parent="." instance=ExtResource("prop")]
+position = Vector2(600,265)
+category = "obstacle"
+size = Vector2(36,24)
+texture_asset = ExtResource("stele")
+render_width = 95.0
+obstacle_kind = "stele"
+[node name="SilentWitness2" parent="." instance=ExtResource("prop")]
+position = Vector2(970,410)
+category = "obstacle"
+size = Vector2(36,24)
+texture_asset = ExtResource("stele")
+render_width = 110.0
+obstacle_kind = "stele"
+[node name="SilentWitness3" parent="." instance=ExtResource("prop")]
+position = Vector2(1100,440)
+category = "obstacle"
+size = Vector2(36,24)
+texture_asset = ExtResource("stele")
+render_width = 100.0
+obstacle_kind = "stele"
+[node name="SilentWitness4" parent="." instance=ExtResource("prop")]
+position = Vector2(1000,770)
+category = "obstacle"
+size = Vector2(36,24)
+texture_asset = ExtResource("stele")
+render_width = 90.0
+obstacle_kind = "stele"
+[node name="RootCurtain" parent="." instance=ExtResource("prop")]
+position = Vector2(660,200)
+category = "obstacle"
+size = Vector2(180,40)
+texture_asset = ExtResource("root")
+render_width = 290.0
+obstacle_kind = "root"
+[node name="FallenMarker" parent="." instance=ExtResource("prop")]
+position = Vector2(520,750)
+category = "obstacle"
+size = Vector2(100,28)
+texture_asset = ExtResource("ruin_stone")
+render_width = 145.0
+obstacle_kind = "wall"
+blocks_projectiles = false
+[node name="QuietCanopy0" parent="." instance=ExtResource("prop")]
+position = Vector2(80,340)
+category = "obstacle"
+size = Vector2(44,30)
+texture_asset = ExtResource("tree_green")
+render_width = 300.0
+obstacle_kind = "tree"
+[node name="QuietCanopy1" parent="." instance=ExtResource("prop")]
+position = Vector2(320,230)
+category = "obstacle"
+size = Vector2(44,30)
+texture_asset = ExtResource("tree_green")
+render_width = 290.0
+obstacle_kind = "tree"
+[node name="QuietCanopy2" parent="." instance=ExtResource("prop")]
+position = Vector2(600,100)
+category = "obstacle"
+size = Vector2(44,30)
+texture_asset = ExtResource("tree_green")
+render_width = 300.0
+obstacle_kind = "tree"
+[node name="QuietCanopy3" parent="." instance=ExtResource("prop")]
+position = Vector2(1040,160)
+category = "obstacle"
+size = Vector2(44,30)
+texture_asset = ExtResource("tree_red")
+render_width = 280.0
+obstacle_kind = "tree"
+[node name="QuietCanopy4" parent="." instance=ExtResource("prop")]
+position = Vector2(1360,350)
+category = "obstacle"
+size = Vector2(44,30)
+texture_asset = ExtResource("tree_green")
+render_width = 300.0
+obstacle_kind = "tree"
+[node name="QuietCanopy5" parent="." instance=ExtResource("prop")]
+position = Vector2(1390,900)
+category = "obstacle"
+size = Vector2(44,30)
+texture_asset = ExtResource("tree_green")
+render_width = 310.0
+obstacle_kind = "tree"
+[node name="QuietCanopy6" parent="." instance=ExtResource("prop")]
+position = Vector2(1150,1010)
+category = "obstacle"
+size = Vector2(44,30)
+texture_asset = ExtResource("tree_red")
+render_width = 270.0
+obstacle_kind = "tree"
+[node name="QuietCanopy7" parent="." instance=ExtResource("prop")]
+position = Vector2(780,950)
+category = "obstacle"
+size = Vector2(44,30)
+texture_asset = ExtResource("tree_green")
+render_width = 300.0
+obstacle_kind = "tree"
+[node name="QuietCanopy8" parent="." instance=ExtResource("prop")]
+position = Vector2(430,1000)
+category = "obstacle"
+size = Vector2(44,30)
+texture_asset = ExtResource("tree_green")
+render_width = 310.0
+obstacle_kind = "tree"
+[node name="QuietCanopy9" parent="." instance=ExtResource("prop")]
+position = Vector2(70,920)
+category = "obstacle"
+size = Vector2(44,30)
+texture_asset = ExtResource("tree_green")
+render_width = 300.0
+obstacle_kind = "tree"
+[node name="QuietFern0" parent="." instance=ExtResource("prop")]
+position = Vector2(310,420)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 85.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietFern1" parent="." instance=ExtResource("prop")]
+position = Vector2(440,440)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 100.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietFern2" parent="." instance=ExtResource("prop")]
+position = Vector2(660,270)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 115.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietFern3" parent="." instance=ExtResource("prop")]
+position = Vector2(920,270)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 85.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietFern4" parent="." instance=ExtResource("prop")]
+position = Vector2(1150,430)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 100.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietFern5" parent="." instance=ExtResource("prop")]
+position = Vector2(1210,790)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 115.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietFern6" parent="." instance=ExtResource("prop")]
+position = Vector2(960,690)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 85.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietFern7" parent="." instance=ExtResource("prop")]
+position = Vector2(730,760)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 100.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietFern8" parent="." instance=ExtResource("prop")]
+position = Vector2(440,830)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 115.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietFern9" parent="." instance=ExtResource("prop")]
+position = Vector2(200,710)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 85.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietFern10" parent="." instance=ExtResource("prop")]
+position = Vector2(600,690)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 100.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietFern11" parent="." instance=ExtResource("prop")]
+position = Vector2(700,230)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 115.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietStone0" parent="." instance=ExtResource("prop")]
+position = Vector2(400,390)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("rocks")
+render_width = 125.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietStone1" parent="." instance=ExtResource("prop")]
+position = Vector2(1010,340)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("rocks")
+render_width = 132.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietStone2" parent="." instance=ExtResource("prop")]
+position = Vector2(890,800)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("rocks")
+render_width = 139.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietStone3" parent="." instance=ExtResource("prop")]
+position = Vector2(200,800)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("rocks")
+render_width = 146.0
+obstacle_kind = "wall"
+flat = true
+[node name="QuietStone4" parent="." instance=ExtResource("prop")]
+position = Vector2(1320,840)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("rocks")
+render_width = 153.0
+obstacle_kind = "wall"
+flat = true
+[node name="Doors" type="Node2D" parent="."]
+[node name="stele" parent="Doors" instance=ExtResource("portal")]
+position = Vector2(150,635)
+portal_id = "stele"
+target_room = "stele"
+target_portal = "stele_side"
+target_title = "碑林遗径"
+[node name="Approach" parent="Doors/stele" index="4"]
+position = Vector2(100,-25)
+[node name="Arrival" parent="Doors/stele" index="5"]
+position = Vector2(140,-25)
+[editable path="Doors/stele"]
+[node name="court2" parent="Doors" instance=ExtResource("portal")]
+position = Vector2(1280,665)
+portal_id = "court2"
+target_room = "court2"
+target_portal = "stele_side"
+target_title = "扶桑残庭"
+[node name="Frame" parent="Doors/court2" index="0"]
+mirror_art = true
+[node name="LeftPost" parent="Doors/court2" index="2"]
+position = Vector2(65,-5)
+[node name="RightPost" parent="Doors/court2" index="3"]
+position = Vector2(-65,-50)
+[node name="Approach" parent="Doors/court2" index="4"]
+position = Vector2(-100,-25)
+[node name="Arrival" parent="Doors/court2" index="5"]
+position = Vector2(-140,-25)
+[editable path="Doors/court2"]

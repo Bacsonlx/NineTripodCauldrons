@@ -166,17 +166,17 @@ render_width = 130.0
 obstacle_kind = "wall"
 flat = true
 [node name="Doors" type="Node2D" parent="."]
-[node name="court1" parent="Doors" instance=ExtResource("portal")]
+[node name="root_fork" parent="Doors" instance=ExtResource("portal")]
 position = Vector2(150,565)
-portal_id = "court1"
-target_room = "court1"
+portal_id = "root_fork"
+target_room = "root_fork"
 target_portal = "stele"
-target_title = "日鸟石庭"
-[node name="Approach" parent="Doors/court1" index="4"]
+target_title = "幽根岔径"
+[node name="Approach" parent="Doors/root_fork" index="4"]
 position = Vector2(100,-25)
-[node name="Arrival" parent="Doors/court1" index="5"]
+[node name="Arrival" parent="Doors/root_fork" index="5"]
 position = Vector2(140,-25)
-[editable path="Doors/court1"]
+[editable path="Doors/root_fork"]
 [node name="court2" parent="Doors" instance=ExtResource("portal")]
 position = Vector2(1280,685)
 portal_id = "court2"
@@ -194,3 +194,20 @@ position = Vector2(-100,-25)
 [node name="Arrival" parent="Doors/court2" index="5"]
 position = Vector2(-140,-25)
 [editable path="Doors/court2"]
+[node name="stele_side" parent="Doors" instance=ExtResource("portal")]
+position = Vector2(1070,385)
+portal_id = "stele_side"
+target_room = "stele_side"
+target_portal = "stele"
+target_title = "残碑幽径"
+[node name="Frame" parent="Doors/stele_side" index="0"]
+mirror_art = true
+[node name="LeftPost" parent="Doors/stele_side" index="2"]
+position = Vector2(65,-5)
+[node name="RightPost" parent="Doors/stele_side" index="3"]
+position = Vector2(-65,-50)
+[node name="Approach" parent="Doors/stele_side" index="4"]
+position = Vector2(-100,-25)
+[node name="Arrival" parent="Doors/stele_side" index="5"]
+position = Vector2(-140,-25)
+[editable path="Doors/stele_side"]
