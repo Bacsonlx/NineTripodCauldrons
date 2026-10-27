@@ -8,7 +8,6 @@ const DIM = Color("b9a88a")
 const SLOTS: Array = [["weapon","主武","bow"],["armor","衣","robe"],["boots","履","boot"],["talisman","符","talisman"],["relic","器","relic"],["beast","神兽","beast"]]
 var items: Array = []
 var equipped: Dictionary = {"weapon":"bow_training","armor":"robe_hemp","boots":"boots_cloth","talisman":"","relic":"","beast":""}
-var tab: String = "stash"
 var category: String = "all"
 var selected: String = ""
 var preview: String = ""
@@ -23,7 +22,7 @@ var room_choice: OptionButton
 var mode_summary: Label
 var footer_title: Label
 var footer_summary: Label
-var warehouse_start: Button
+var bag_start: Button
 var modal: Control
 var modal_focus: Control
 var start_button: Button
@@ -32,10 +31,11 @@ var inventory: GridContainer
 var detail: VBoxContainer
 var tags: Label
 var notice: Label
-var warehouse_count: Label
+var bag_count: Label
+var avatar_badges: Array[Dictionary] = []
 @onready var sections: VBoxContainer = $Layout/Sections
 @onready var main: HBoxContainer = $Layout/Sections/Main
-@onready var warehouse: HBoxContainer = $Layout/Sections/Warehouse
+@onready var bag_panel: HBoxContainer = $Layout/Sections/Bag
 @onready var footer: HBoxContainer = $Layout/Sections/Footer
 
 func _ready() -> void:
@@ -46,7 +46,7 @@ func _ready() -> void:
 	build_stage($Layout/Sections/Main/Stage)
 	build_gear()
 	build_footer()
-	build_warehouse()
+	build_bag_panel()
 	resized.connect(layout_inventory)
 	if DisplayServer.get_name()!="headless": get_window().mode=Window.MODE_MAXIMIZED
 	start_button.grab_focus.call_deferred()
@@ -118,7 +118,7 @@ func icon(name_text: String) -> Texture2D:
 
 func build_header() -> void:
 	var header: HBoxContainer = $Layout/Sections/Header
-	var seal: Button = button("九",header,func(): show_warehouse(false),true)
+	var seal: Button = button("九",header,func(): show_bag_panel(false),true)
 	seal.add_theme_font_size_override("font_size",30)
 	var brand: VBoxContainer = column(header)
 	brand.add_theme_constant_override("separation",0)
@@ -223,7 +223,7 @@ func refresh_departure() -> void:
 	if start_button==null: return
 	footer_title.text=title; footer_summary.text=summary
 	start_button.text="进入测试" if testing else "踏入汤谷"
-	if warehouse_start!=null: warehouse_start.text=start_button.text
+	if bag_start!=null: bag_start.text=start_button.text
 
 func build_stage(stage: Control) -> void:
 	var title: Label = text("后\n羿\n\n附体",28)
@@ -237,10 +237,66 @@ func build_stage(stage: Control) -> void:
 	stage.add_child(hero)
 	var image: TextureRect = picture(HERO)
 	hero.add_child(image); image.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	build_avatar_badges(stage)
 	var caption: Label = text("后羿 · 附体\n点击影偶 · 细观其形",12)
 	caption.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	stage.add_child(caption); caption.anchor_left=0.15; caption.anchor_right=0.85
 	caption.anchor_top=0.88; caption.anchor_bottom=0.98
+
+func build_avatar_badges(parent: Control,compact: bool=false) -> void:
+	# The supplied portrait is a single, non-layered image. Existing slot icons
+	# and item names identify worn gear without inventing replacement art.
+	var positions: Dictionary = {
+		"weapon":Vector2(0.66,0.38), "armor":Vector2(0.18,0.45),
+		"boots":Vector2(0.46,0.82), "talisman":Vector2(0.48,0.56),
+		"relic":Vector2(0.67,0.66), "beast":Vector2(0.18,0.69)
+	}
+	var index: int=0
+	for slot in SLOTS:
+		var badge: PanelContainer = PanelContainer.new()
+		badge.name="GearBadge_"+slot[0]
+		badge.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		var badge_size: Vector2=Vector2(116,22) if compact else Vector2(116,30)
+		badge.custom_minimum_size=badge_size
+		var style: StyleBoxFlat=box(Color("10150ef2"),GOLD)
+		style.set_content_margin_all(2 if compact else 3)
+		badge.add_theme_stylebox_override("panel",style)
+		parent.add_child(badge)
+		var point: Vector2=Vector2(0.01,0.01+index*0.16) if compact else positions[slot[0]]
+		badge.anchor_left=point.x; badge.anchor_right=point.x
+		badge.anchor_top=point.y; badge.anchor_bottom=point.y
+		badge.offset_left=0; badge.offset_right=badge_size.x
+		badge.offset_top=0; badge.offset_bottom=badge_size.y
+		var row: HBoxContainer=HBoxContainer.new()
+		row.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		row.add_theme_constant_override("separation",3 if compact else 4)
+		badge.add_child(row)
+		var emblem: TextureRect=TextureRect.new()
+		emblem.name="Icon"; emblem.custom_minimum_size=Vector2(16,16) if compact else Vector2(20,20)
+		emblem.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+		emblem.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		emblem.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		row.add_child(emblem)
+		var name_label: Label=text("",10 if compact else 11)
+		name_label.name="ItemName"; name_label.size_flags_horizontal=Control.SIZE_EXPAND_FILL
+		row.add_child(name_label)
+		avatar_badges.append({"slot":slot[0],"badge":badge,"icon":emblem,"label":name_label,"iconName":slot[2],"view":"bag" if compact else "stage"})
+		index+=1
+	refresh_avatar_badges()
+
+func refresh_avatar_badges() -> void:
+	var shown: Dictionary=equipped.duplicate()
+	var hovered: Dictionary=item_by_id(preview)
+	var hovered_slot: String=hovered.get("slot","")
+	if not hovered_slot.is_empty(): shown[hovered_slot]=preview
+	for entry in avatar_badges:
+		var id: String=shown.get(entry.slot,"")
+		var item: Dictionary=item_by_id(id)
+		entry.badge.visible=not item.is_empty()
+		if item.is_empty(): continue
+		entry.icon.texture=icon(entry.iconName)
+		entry.label.text=str(item.get("name",""))
+		entry.badge.tooltip_text=str(item.get("name",""))+" · "+str(entry.slot)
 
 func build_gear() -> void:
 	var rail: VBoxContainer = column($Layout/Sections/Main/Gear)
@@ -248,8 +304,8 @@ func build_gear() -> void:
 	rail.add_child(text("试装预览 · 不带入战斗",12,GOLD))
 	slot_list=column(rail)
 	refresh_slots()
-	button("仓　仓 库　›",rail,func(): show_warehouse(true),true)
-	rail.add_child(text("行前试装 · 正式背包待接入",11,DIM))
+	button("行　行 囊　›",rail,func(): show_bag_panel(true),true)
+	rail.add_child(text("行前试装 · 不改变战斗配置",11,DIM))
 
 func item_by_id(id: String) -> Dictionary:
 	for item in items:
@@ -270,7 +326,7 @@ func refresh_slots() -> void:
 		node.custom_minimum_size.y=42
 
 func open_slot(slot: String) -> void:
-	show_warehouse(true)
+	show_bag_panel(true)
 	category="charm" if slot in ["talisman","relic"] else "gear"
 	refresh_inventory()
 
@@ -286,30 +342,30 @@ func build_footer() -> void:
 	start_button.custom_minimum_size=Vector2(224,60)
 	refresh_departure()
 
-func build_warehouse() -> void:
+func build_bag_panel() -> void:
 	var left: PanelContainer = PanelContainer.new()
 	left.custom_minimum_size.x=350; left.size_flags_horizontal=Control.SIZE_EXPAND_FILL
-	left.size_flags_stretch_ratio=0.7; warehouse.add_child(left)
+	left.size_flags_stretch_ratio=0.7; bag_panel.add_child(left)
 	var preview_box: VBoxContainer = column(left)
-	button("返回祠庙",preview_box,func(): show_warehouse(false))
+	button("返回祠庙",preview_box,func(): show_bag_panel(false))
 	var portrait: Control = Control.new()
 	portrait.custom_minimum_size.y=140; portrait.size_flags_vertical=Control.SIZE_EXPAND_FILL
 	preview_box.add_child(portrait)
 	var hero: TextureRect = picture(HERO)
 	portrait.add_child(hero); hero.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	build_avatar_badges(portrait,true)
 	tags=text("",12,GOLD); tags.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 	portrait.add_child(tags); tags.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	tags.offset_left=-140; tags.offset_top=12
 	preview_box.add_child(text("后羿 · 行前试装预览",19))
 	preview_box.add_child(text("所选物品暂不影响首关战斗。",13,DIM))
-	warehouse_start=button(start_button.text,preview_box,show_departure,true)
+	bag_start=button(start_button.text,preview_box,show_departure,true)
 	var panel: PanelContainer = PanelContainer.new()
-	panel.size_flags_horizontal=Control.SIZE_EXPAND_FILL; warehouse.add_child(panel)
+	panel.size_flags_horizontal=Control.SIZE_EXPAND_FILL; bag_panel.add_child(panel)
 	var right: VBoxContainer = column(panel)
-	var tabs: HBoxContainer = HBoxContainer.new(); right.add_child(tabs)
-	tabs.add_child(text("行前所藏",23)); spacer(tabs)
-	button("仓库",tabs,set_tab.bind("stash")); button("行囊",tabs,set_tab.bind("bag"))
-	warehouse_count=text("",12,GOLD); tabs.add_child(warehouse_count)
+	var list_header: HBoxContainer = HBoxContainer.new(); right.add_child(list_header)
+	list_header.add_child(text("行囊",23)); spacer(list_header)
+	bag_count=text("",12,GOLD); list_header.add_child(bag_count)
 	var filters: HBoxContainer = HBoxContainer.new(); right.add_child(filters)
 	for filter in [["all","全部"],["gear","装备"],["charm","符器"],["skill","技能"],["use","消耗"]]:
 		button(filter[1],filters,set_category.bind(filter[0]))
@@ -323,15 +379,11 @@ func build_warehouse() -> void:
 	detail=column(right); detail.custom_minimum_size.y=104
 	refresh_inventory()
 
-func set_tab(value: String) -> void:
-	tab=value; category="all"; selected=""; refresh_inventory()
-
 func set_category(value: String) -> void:
-	tab="stash"; category=value; selected=""; refresh_inventory()
+	category=value; selected=""; refresh_inventory()
 
 func matches_category(item: Dictionary) -> bool:
 	var slot: String = item.get("slot","")
-	if tab=="bag": return item.id in equipped.values() or slot.is_empty()
 	match category:
 		"gear": return not slot.is_empty()
 		"charm": return slot in ["talisman","relic"]
@@ -353,7 +405,7 @@ func refresh_inventory() -> void:
 		card.size_flags_horizontal=Control.SIZE_EXPAND_FILL; card.custom_minimum_size=Vector2(0,78)
 		card.mouse_entered.connect(preview_item.bind(item.id)); card.mouse_exited.connect(preview_item.bind(""))
 		card.focus_entered.connect(preview_item.bind(item.id)); card.focus_exited.connect(preview_item.bind(""))
-	warehouse_count.text="%d 件 · %s" % [count,"行囊预览" if tab=="bag" else "仓库预览"]
+	bag_count.text="%d 件 · 行前预览" % count
 	preview_item("")
 	refresh_detail()
 	layout_inventory.call_deferred()
@@ -384,20 +436,21 @@ func preview_item(id: String) -> void:
 		var current: Dictionary = item_by_id(equipped[slot[0]])
 		lines.append(slot[1]+" · "+("预览 "+str(item.name) if hot else str(current.get("name","未备"))))
 	tags.text="\n".join(lines)
+	refresh_avatar_badges()
 
 func layout_inventory() -> void:
 	if inventory==null: return
 	inventory.columns=5 if size.x>=1200 else 4 if size.x>=1000 else 3
 	$Layout/Sections/Main/Modes.custom_minimum_size.x=maxf(224,size.x*0.19)
 	$Layout/Sections/Main/Gear.custom_minimum_size.x=244 if size.x>=1100 else 208
-	warehouse.get_child(0).custom_minimum_size.x=350 if size.x>=1100 else 260
+	bag_panel.get_child(0).custom_minimum_size.x=350 if size.x>=1100 else 260
 	notice.visible=size.x>=1100
 
-func show_warehouse(open: bool) -> void:
-	main.visible=not open; footer.visible=not open; warehouse.visible=open
+func show_bag_panel(open: bool) -> void:
+	main.visible=not open; footer.visible=not open; bag_panel.visible=open
 	if open:
 		refresh_inventory()
-		button_focus(warehouse,"返回祠庙")
+		button_focus(bag_panel,"返回祠庙")
 	else: start_button.grab_focus()
 
 func button_focus(parent: Node,caption: String) -> void:
@@ -441,7 +494,7 @@ func show_departure() -> void:
 	var testing: bool = departure_mode=="quick"
 	var content: VBoxContainer = open_modal("快速测试 · 汤谷" if testing else "完整征程 · 汤谷")
 	var origin: String = str(room_maps[selected_room].roomTitle)
-	for line in ["起点："+origin+(" · 不计正式完整通关，可继续推进。" if testing else " · 完成全部主线后前往出口。"), "生命、蓝量与精力100 · Esc 暂停后可返回首页。", "本次将以现有首关默认角色、技能与数值出发。", "仓库试装预览不带入战斗；不写入存档。"]:
+	for line in ["起点："+origin+(" · 不计正式完整通关，可继续推进。" if testing else " · 完成全部主线后前往出口。"), "生命、蓝量与精力100 · Esc 暂停后可返回首页。", "本次将以现有首关默认角色、技能与数值出发。", "行囊试装预览不带入战斗；不写入存档。"]:
 		var label: Label = text(line,15,DIM)
 		label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; content.add_child(label)
 	button("返回准备",content,close_modal)
@@ -472,7 +525,7 @@ func show_portrait() -> void:
 func show_help() -> void:
 	if modal!=null: return
 	var content: VBoxContainer = open_modal("祠庙 · 供台")
-	for line in ["行程：完整征程，或选择房间进行快速测试。", "仓库：仅行前试装预览，不改变战斗配置。", "香火、碎片与存档尚未接入。", "Esc 关闭当前面板；F11 切换全屏。"]:
+	for line in ["行程：完整征程，或选择房间进行快速测试。", "行囊：仅行前试装预览，不改变战斗配置。", "香火、碎片与存档尚未接入。", "Esc 关闭当前面板；F11 切换全屏。"]:
 		content.add_child(text(line,15,DIM))
 	button("继续查看",content,close_modal)
 	trap_modal_focus(content)
@@ -481,7 +534,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey or not event.pressed or event.echo: return
 	if event.physical_keycode==KEY_ESCAPE:
 		if modal!=null: close_modal()
-		elif warehouse.visible: show_warehouse(false)
+		elif bag_panel.visible: show_bag_panel(false)
 		get_viewport().set_input_as_handled()
 	elif event.physical_keycode==KEY_F11:
 		get_window().mode=Window.MODE_MAXIMIZED if get_window().mode==Window.MODE_FULLSCREEN else Window.MODE_FULLSCREEN

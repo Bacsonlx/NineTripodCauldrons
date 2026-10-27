@@ -80,17 +80,17 @@ func run() -> void:
 			check(boss_index>=0,"房间列表包含真实索尔房间")
 			if boss_index>=0 and "--home-only" not in OS.get_cmdline_user_args():
 				choice.select(boss_index); choice.item_selected.emit(boss_index)
-				button_named(home,"仓　").pressed.emit()
+				button_named(home,"行　").pressed.emit()
 				button_named(home,"进入测试").grab_focus()
 				button_named(home,"进入测试").pressed.emit()
-				check(button_named(home,"确认入局")!=null,"仓库沿用测试选择打开确认")
+				check(button_named(home,"确认入局")!=null,"行囊页沿用测试选择打开确认")
 				key(KEY_ESCAPE)
-				check(root.gui_get_focus_owner()==button_named(home,"进入测试"),"取消出发焦点返回仓库按钮")
+				check(root.gui_get_focus_owner()==button_named(home,"进入测试"),"取消出发焦点返回行囊按钮")
 				button_named(home,"进入测试").pressed.emit()
 				button_named(home,"确认入局").pressed.emit()
 				await scene_changed
 				var game: Node = current_scene; game.set_physics_process(false)
-				check(game.journey.snapshot().roomId=="boss","仓库确认后从已选择的Boss房间出发")
+				check(game.journey.snapshot().roomId=="boss","行囊页确认后从已选择的Boss房间出发")
 				check(not has_meta("home_test_arguments"),"首页启动条件仅消费一次")
 				game.queue_free(); current_scene=null
 				await process_frame

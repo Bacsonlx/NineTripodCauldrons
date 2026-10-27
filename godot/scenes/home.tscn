@@ -60,7 +60,7 @@ custom_minimum_size = Vector2(244, 0)
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="Warehouse" type="HBoxContainer" parent="Layout/Sections"]
+[node name="Bag" type="HBoxContainer" parent="Layout/Sections"]
 visible = false
 layout_mode = 2
 size_flags_vertical = 3

@@ -25,6 +25,16 @@ func visible_text(node: Node,visible_only: bool=true) -> String:
 		if child is Control and (child.visible or not visible_only): result+="\n"+visible_text(child,visible_only)
 	return result
 
+func avatar_badge(home: Control,slot: String,view: String="stage") -> Dictionary:
+	var badges: Array=home.get("avatar_badges")
+	for entry in badges:
+		if entry.slot==slot and entry.view==view: return entry
+	return {}
+
+func equipped_item(home: Control,slot: String) -> String:
+	var equipped: Dictionary=home.get("equipped")
+	return equipped.get(slot,"")
+
 func escape_key() -> void:
 	var event: InputEventKey = InputEventKey.new()
 	event.keycode=KEY_ESCAPE; event.physical_keycode=KEY_ESCAPE; event.pressed=true
@@ -37,11 +47,29 @@ func run() -> void:
 	await process_frame
 	check(find_button(home,"完整征程")!=null and find_button(home,"快速测试")!=null,"完整征程与快速测试模式均在首页可见")
 	check(visible_text(home).contains("未接入") and visible_text(home).contains("不带入战斗"),"界面明确标记未接入数据与试装范围")
+	var armor_badge: Dictionary=avatar_badge(home,"armor")
+	var weapon_badge: Dictionary=avatar_badge(home,"weapon")
+	var bag_armor_badge: Dictionary=avatar_badge(home,"armor","bag")
+	check(not armor_badge.is_empty() and armor_badge.badge.visible and armor_badge.label.text=="素麻衣","角色装备标记显示当前衣槽装备")
+	check(not weapon_badge.is_empty() and weapon_badge.badge.visible and weapon_badge.label.text=="训练弓","角色装备标记显示当前武器")
+	var original_weapon: String=equipped_item(home,"weapon")
+	var preview_tags: Label=home.get("tags")
+	home.call("preview_item","robe_red")
+	check(equipped_item(home,"armor")=="robe_hemp" and armor_badge.label.text=="赤霞袍" and bag_armor_badge.label.text=="赤霞袍" and preview_tags.text.contains("衣 · 预览 赤霞袍"),"悬停预览只临时更新角色对应槽位展示，不改已装备状态")
+	home.call("preview_item","")
+	check(armor_badge.label.text=="素麻衣","结束悬停后角色展示恢复已装备物品")
+	home.call("show_bag_panel",true)
+	home.call("choose_item","robe_red")
+	check(equipped_item(home,"armor")=="robe_red" and equipped_item(home,"weapon")==original_weapon and armor_badge.label.text=="赤霞袍" and bag_armor_badge.label.text=="赤霞袍" and preview_tags.text.contains("衣 · 赤霞袍"),"更换衣槽装备同步角色与行囊预览且不影响武器槽")
+	home.call("choose_item","robe_hemp")
+	check(equipped_item(home,"armor")=="robe_hemp" and armor_badge.label.text=="素麻衣","再次更换同槽装备更新角色展示")
+	home.call("show_bag_panel",false)
 	var missing: String = ""
 	var font: Font = home.get_theme_font("font")
 	for character in visible_text(home,false):
 		if character.unicode_at(0)>32 and not font.has_char(character.unicode_at(0)) and not missing.contains(character): missing+=character
-	check(missing.is_empty(),"随包字体覆盖首页与仓库显示文案，缺字："+missing)
+	check(missing.is_empty(),"随包字体覆盖首页与行囊显示文案，缺字："+missing)
+	check(not visible_text(home).contains("仓库"),"初始页面不再展示仓库入口或设置项，背包入口仍保留")
 	for target in [Vector2(1280,720),Vector2(1920,1080),Vector2(1680,720),Vector2(1280,900)]:
 		home.size=target
 		await process_frame
@@ -55,15 +83,16 @@ func run() -> void:
 		check(stage.size.x>200,"逻辑画布 %s 保留中央人物空间" % target)
 		layouts.append({"size":[target.x,target.y],"gear_bottom":gear.get_global_rect().end.y,"footer_top":footer.get_global_rect().position.y,"fits":fits})
 	home.size=Vector2(1280,720)
-	find_button(home,"仓　").pressed.emit()
+	find_button(home,"行　").pressed.emit()
 	await process_frame
-	check(visible_text(home).contains("24 件"),"仓库初始显示24件原型展示物品")
+	check(visible_text(home).contains("24 件"),"行囊显示24件可浏览的原型物品")
+	find_button(home,"装备").pressed.emit()
+	check(visible_text(home).contains("15 件"),"行囊装备分类保留全部装备选项")
 	find_button(home,"符器").pressed.emit()
 	check(visible_text(home).contains("8 件"),"符器分类只显示8件符器")
 	find_button(home,"燧火").pressed.emit()
 	check(find_button(home,"燧火").text.contains("已试装"),"点击物品完成试装反馈")
-	find_button(home,"行囊").pressed.emit()
-	check(find_button(home,"燧火")!=null,"行囊预览包含已试装物品")
+	check(find_button(home,"燧火")!=null and visible_text(home).contains("行囊"),"行囊保留筛选结果与已试装物品")
 	escape_key()
 	await process_frame
 	check(home.get_node("Layout/Sections/Main").visible,"Esc经引擎输入管线返回供台")
