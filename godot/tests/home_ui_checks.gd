@@ -63,7 +63,17 @@ func run() -> void:
 	check(equipped_item(home,"armor")=="robe_red" and equipped_item(home,"weapon")==original_weapon and armor_badge.label.text=="赤霞袍" and bag_armor_badge.label.text=="赤霞袍" and preview_tags.text.contains("衣 · 赤霞袍"),"更换衣槽装备同步角色与行囊预览且不影响武器槽")
 	home.call("choose_item","robe_hemp")
 	check(equipped_item(home,"armor")=="robe_hemp" and armor_badge.label.text=="素麻衣","再次更换同槽装备更新角色展示")
+	home.call("choose_item","robe_hemp")
+	check(equipped_item(home,"armor")=="" and not armor_badge.badge.visible and not bag_armor_badge.badge.visible,"卸下衣槽后两处角色标记立即隐藏，不被焦点预览重新显示")
+	home.call("choose_item","robe_hemp")
+	var robe_card: Button=find_button(home,"赤霞袍")
+	robe_card.mouse_entered.emit()
+	check(armor_badge.label.text=="赤霞袍" and equipped_item(home,"armor")=="robe_hemp","鼠标进入物品卡仅预览对应装备")
+	robe_card.mouse_exited.emit()
+	check(armor_badge.label.text=="素麻衣","鼠标离开物品卡恢复已装备标记")
+	robe_card.mouse_entered.emit()
 	home.call("show_bag_panel",false)
+	check(armor_badge.label.text=="素麻衣" and home.get("preview")=="","退出行囊清除临时预览，首页恢复实际试装")
 	var missing: String = ""
 	var font: Font = home.get_theme_font("font")
 	for character in visible_text(home,false):

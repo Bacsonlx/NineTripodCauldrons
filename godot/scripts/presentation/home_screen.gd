@@ -418,6 +418,7 @@ func choose_item(id: String) -> void:
 	refresh_slots(); refresh_inventory()
 	var card: Button = inventory.get_node_or_null(NodePath(id))
 	if card!=null: card.grab_focus()
+	preview_item("")
 
 func refresh_detail() -> void:
 	clear_children(detail)
