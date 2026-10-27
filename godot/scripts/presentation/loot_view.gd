@@ -22,7 +22,11 @@ func update_state(state: Dictionary,seconds: float = 0.0) -> void:
 		if progress>=1: effect.node.queue_free(); fading.remove_at(index)
 	var live: Dictionary = {}
 	var target: String = str(state.interaction.get("dropId","")) if state.interaction!=null else ""
-	for item in state.get("drops",[])+state.get("rewardPlaceholders",[]):
+	# 不拼接临时数组：直接遍历两个来源，避免每帧分配。
+	var drops: Array = state.get("drops",[])
+	var rewards: Array = state.get("rewardPlaceholders",[])
+	for index in drops.size()+rewards.size():
+		var item: Dictionary = drops[index] if index<drops.size() else rewards[index-drops.size()]
 		var id: String = str(item.get("id","reward:"+item.kind))
 		live[id]=true
 		if not items.has(id): items[id]=make_item(item)

@@ -15,6 +15,17 @@ var ghost_timer: float = 0.0
 var was_dodging: bool = false
 var lower: Sprite2D
 var upper: Sprite2D
+# 性能：复用缓冲区、缓存帧／层级／角度写回，并允许画质策略限制叠加数量。
+var vfx_budget: int = 512
+var burst_buffer: Array[Dictionary] = []
+var trail_active: Dictionary = {}
+var last_used: int = 0
+var stamp_frame: Array[String] = []
+var stamp_depth: Array[int] = []
+var stamp_angle: Array[float] = []
+var pierce_text: Color = Color("ffe5a0")
+var normal_text: Color = Color("f6e8cd")
+const ANGLE_SENTINEL: float = -1.0e9
 
 func setup(frames: Dictionary,image: Texture2D,legs: Sprite2D,torso: Sprite2D) -> void:
 	atlas=frames; texture=image; lower=legs; upper=torso
@@ -24,16 +35,25 @@ func setup(frames: Dictionary,image: Texture2D,legs: Sprite2D,torso: Sprite2D) -
 		ghosts.append(pair)
 
 func stamp(frame_name: String,position: Vector2,size: Vector2,alpha: float,angle: float = 0.0,depth: int = 4000) -> void:
-	if used>=512: return
+	if used>=vfx_budget: return
 	if used==stamps.size():
-		var body: Sprite2D = Sprite2D.new()
-		body.texture=texture; body.region_enabled=true; add_child(body); stamps.append(body)
-	var body: Sprite2D = stamps[used]
+		var created: Sprite2D = Sprite2D.new()
+		created.texture=texture; created.region_enabled=true; add_child(created); stamps.append(created)
+		stamp_frame.append(""); stamp_depth.append(-1); stamp_angle.append(ANGLE_SENTINEL)
+	var slot: int = used
+	var body: Sprite2D = stamps[slot]
 	used+=1
 	var frame: Dictionary = atlas[frame_name]
-	body.region_rect=Rect2(frame.x,frame.y,frame.width,frame.height)
+	if stamp_frame[slot]!=frame_name:
+		body.region_rect=Rect2(frame.x,frame.y,frame.width,frame.height)
+		stamp_frame[slot]=frame_name
 	body.position=position; body.scale=size/Vector2(frame.width,frame.height)
-	body.modulate=Color(1,1,1,alpha); body.rotation=angle; body.z_index=depth; body.visible=true
+	body.modulate=Color(1,1,1,alpha)
+	if absf(stamp_angle[slot]-angle)>0.0001:
+		body.rotation=angle; stamp_angle[slot]=angle
+	if stamp_depth[slot]!=depth:
+		body.z_index=depth; stamp_depth[slot]=depth
+	if not body.visible: body.visible=true
 
 func falling(position: Vector2,progress: float) -> void:
 	for index in 10:
@@ -48,11 +68,13 @@ func update(state: Dictionary,seconds: float,clock: float) -> void:
 	if run_id!=state.runId:
 		run_id=state.runId; last_impact=-1; bursts.clear(); damage.clear(); trails.clear(); was_dodging=false; ghost_timer=0
 		for ghost in ghosts: ghost.age=1; ghost.lower.visible=false; ghost.upper.visible=false
-	var live_bursts: Array[Dictionary] = []
+	burst_buffer.clear()
 	for burst in bursts:
 		burst.age+=dt
-		if burst.age<(0.3 if burst.kind=="dust" else 0.32): live_bursts.append(burst)
-	bursts=live_bursts
+		if burst.age<(0.3 if burst.kind=="dust" else 0.32): burst_buffer.append(burst)
+	var recycled: Array[Dictionary] = bursts
+	bursts=burst_buffer
+	burst_buffer=recycled
 	for number in damage: number.age+=dt
 	for hit in state.effects:
 		if hit.id<=last_impact: continue
@@ -82,7 +104,8 @@ func update(state: Dictionary,seconds: float,clock: float) -> void:
 		if arrow.kind=="pierce":
 			var origin: Vector2 = Vector2(arrow.x,arrow.y)-Vector2.from_angle(arrow.angle)*900*arrow.age
 			bursts.append({"x":origin.x,"y":origin.y,"kind":"launch","age":0.0,"enemy":null,"angle":arrow.angle})
-	for label in labels: label.visible=false
+	for label in labels:
+		if label.visible: label.visible=false
 	for index in damage.size():
 		var number: Dictionary = damage[index]
 		if number.age>=0.65: continue
@@ -93,8 +116,43 @@ func update(state: Dictionary,seconds: float,clock: float) -> void:
 		var progress: float = number.age/0.65
 		var label: Label = labels[index]
 		var eased: float = 1-pow(1-progress,3)
-		label.text=str(number.damage); label.position=number.position-Vector2(0,44*eased); label.visible=true
-		label.modulate=Color("ffe5a0" if number.kind=="pierce" else "f6e8cd"); label.modulate.a=minf(1,(1-progress)*3); label.scale=Vector2.ONE*(1+0.5*pow(maxf(0,1-progress/0.24),2))
+		var number_text: String = str(number.damage)
+		if label.text!=number_text: label.text=number_text
+		label.position=number.position-Vector2(0,44*eased)
+		if not label.visible: label.visible=true
+		var tint: Color = pierce_text if number.kind=="pierce" else normal_text
+		tint.a=minf(1,(1-progress)*3)
+		label.modulate=tint
+		label.scale=Vector2.ONE*(1+0.5*pow(maxf(0,1-progress/0.24),2))
+	# 范围与波次提示优先占用预算，命中装饰只能使用剩余名额。
+	if state.rainPreview!=null:
+		var charge: float = clampf(1-state.skill.remaining/0.45,0,1)
+		stamp("ring",state.rainPreview,Vector2.ONE*220,0.22+charge*0.2,clock*0.3,2)
+		stamp("halo",state.rainPreview,Vector2.ONE*(280-charge*60),0.12+charge*0.12,-clock*0.6,2)
+		for index in 6:
+			var angle: float = index*TAU/6+clock*0.8
+			stamp("embers",state.rainPreview+Vector2.from_angle(angle)*(140-charge*42),Vector2(18,8),0.45,angle)
+		if state.skill.remaining<=0.16: falling(state.rainPreview,1-state.skill.remaining/0.16)
+	for rain in state.rains:
+		var position: Vector2 = Vector2(rain.x,rain.y)
+		for pulse in 3:
+			var until: float = pulse*0.18-rain.age
+			if pulse>0 and until>0 and until<=0.16: falling(position,1-until/0.16)
+			var age: float = rain.age-pulse*0.18
+			if age>=0 and age<0.18:
+				var progress: float = age/0.18
+				var spread: float = 1-pow(1-progress,3)
+				stamp("ring",position,Vector2.ONE*(90+spread*130),(1-progress)*0.65,0,2)
+				stamp("halo",position,Vector2.ONE*(160+spread*120),pow(1-progress,2)*0.2,0,2)
+				for index in 10:
+					stamp("spark",position+Vector2.from_angle(index*2.39996)*(20+sqrt(index/10.0)*75),Vector2.ONE*(34-14*progress),(1-progress)*0.65,index*2.39996)
+	# 下一波的地面预告不代表已激活敌人，也不参与碰撞。
+	if state.get("waveDelay",0)>0:
+		for enemy in state.enemies:
+			if enemy.group==state.encounter and enemy.phase=="inactive":
+				var progress: float = 1-state.waveDelay/1.2
+				stamp("ring",Vector2(enemy.x,enemy.y),Vector2(64,32)*(1.2-progress*0.2),0.3+progress*0.3,0,2)
+				stamp("embers",Vector2(enemy.x,enemy.y-16),Vector2(16,24)*(0.7+progress*0.3),0.4+progress*0.3,0,2)
 	for burst in bursts:
 		var progress: float = burst.age/(0.3 if burst.kind=="dust" else 0.32)
 		var spread: float = 1-pow(1-progress,3)
@@ -120,9 +178,9 @@ func update(state: Dictionary,seconds: float,clock: float) -> void:
 			for index in 5:
 				var angle: float = burst.angle+(index-2)*0.48
 				stamp("embers",position+Vector2(cos(angle),sin(angle))*(9+spread*(82 if strong else 54))+Vector2(0,progress*14),Vector2.ONE*(11-index*0.7)*alpha,alpha*0.9,angle)
-	var active: Dictionary = {}
+	trail_active.clear()
 	for arrow in state.arrows:
-		active[arrow.id]=true
+		trail_active[arrow.id]=true
 		var trail: Array = trails[arrow.id]
 		var position: Vector2 = Vector2(arrow.x,arrow.y)
 		if dt>0 and (trail.is_empty() or position.distance_to(trail.back())>7):
@@ -132,7 +190,7 @@ func update(state: Dictionary,seconds: float,clock: float) -> void:
 			stamp("feather",(trail[index-1]+trail[index])/2,Vector2(trail[index-1].distance_to(trail[index])+16,26 if arrow.kind=="pierce" else 9),float(index)/trail.size()*(0.8 if arrow.kind=="pierce" else 0.4),arrow.angle)
 		stamp("streak",position-Vector2.from_angle(arrow.angle)*18,Vector2(142,27) if arrow.kind=="pierce" else Vector2(42,8),0.85 if arrow.kind=="pierce" else 0.6,arrow.angle)
 	for id in trails.keys():
-		if not active.has(id): trails.erase(id)
+		if not trail_active.has(id): trails.erase(id)
 	var charging: bool = state.windup!=null or (state.skill!=null and state.skill.phase=="windup" and state.skill.kind=="pierce")
 	if charging:
 		var strong: bool = state.skill!=null and state.skill.kind=="pierce"
@@ -142,27 +200,6 @@ func update(state: Dictionary,seconds: float,clock: float) -> void:
 			for index in 6:
 				stamp("embers",state.grip+Vector2.from_angle(index*TAU/6+clock*2.5)*(48*(1-progress)+12),Vector2(14,9),0.7,index*TAU/6+clock*2.5)
 	if state.attack=="release": stamp("spark",state.grip,Vector2(17,17),0.45,state.player.angle)
-	if state.rainPreview!=null:
-		var charge: float = clampf(1-state.skill.remaining/0.45,0,1)
-		stamp("ring",state.rainPreview,Vector2.ONE*220,0.22+charge*0.2,clock*0.3,2)
-		stamp("halo",state.rainPreview,Vector2.ONE*(280-charge*60),0.12+charge*0.12,-clock*0.6,2)
-		for index in 6:
-			var angle: float = index*TAU/6+clock*0.8
-			stamp("embers",state.rainPreview+Vector2.from_angle(angle)*(140-charge*42),Vector2(18,8),0.45,angle)
-		if state.skill.remaining<=0.16: falling(state.rainPreview,1-state.skill.remaining/0.16)
-	for rain in state.rains:
-		var position: Vector2 = Vector2(rain.x,rain.y)
-		for pulse in 3:
-			var until: float = pulse*0.18-rain.age
-			if pulse>0 and until>0 and until<=0.16: falling(position,1-until/0.16)
-			var age: float = rain.age-pulse*0.18
-			if age>=0 and age<0.18:
-				var progress: float = age/0.18
-				var spread: float = 1-pow(1-progress,3)
-				stamp("ring",position,Vector2.ONE*(90+spread*130),(1-progress)*0.65,0,2)
-				stamp("halo",position,Vector2.ONE*(160+spread*120),pow(1-progress,2)*0.2,0,2)
-				for index in 10:
-					stamp("spark",position+Vector2.from_angle(index*2.39996)*(20+sqrt(index/10.0)*75),Vector2.ONE*(34-14*progress),(1-progress)*0.65,index*2.39996)
 	var dodging: bool = state.dodge>0
 	if dt>0:
 		ghost_timer+=dt
@@ -182,11 +219,6 @@ func update(state: Dictionary,seconds: float,clock: float) -> void:
 		for key in ["lower","upper"]:
 			ghost[key].visible=ghost.age<0.22
 			ghost[key].modulate=Color(0.8,0.65,0.32,pow(maxf(0,1-ghost.age/0.22),2)*0.5)
-	# 下一波的地面预告不代表已激活敌人，也不参与碰撞。
-	if state.get("waveDelay",0)>0:
-		for enemy in state.enemies:
-			if enemy.group==state.encounter and enemy.phase=="inactive":
-				var progress: float = 1-state.waveDelay/1.2
-				stamp("ring",Vector2(enemy.x,enemy.y),Vector2(64,32)*(1.2-progress*0.2),0.3+progress*0.3,0,2)
-				stamp("embers",Vector2(enemy.x,enemy.y-16),Vector2(16,24)*(0.7+progress*0.3),0.4+progress*0.3,0,2)
-	for index in range(used,stamps.size()): stamps[index].visible=false
+	for index in range(used,mini(last_used,stamps.size())):
+		if stamps[index].visible: stamps[index].visible=false
+	last_used=used

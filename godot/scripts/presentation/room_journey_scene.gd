@@ -13,6 +13,7 @@ var world_items: Node2D
 var pickup_label: Label
 var skill_view: Node2D
 var item_label: Label
+var journey_data: Dictionary = {}
 
 func build_hud() -> void:
 	super.build_hud()
@@ -99,6 +100,7 @@ func present_new_room() -> void:
 	if camp_panel!=null: camp_panel.room=room; camp_panel.controls=controls; camp_panel.signature=""
 	for body in enemy_bodies.values(): body.queue_free()
 	enemy_bodies.clear()
+	pose_cache.clear()
 	for body in arrows.values(): body.queue_free()
 	arrows.clear()
 	for enemy in room.snapshot().enemies:
@@ -106,7 +108,7 @@ func present_new_room() -> void:
 	backdrop.setup(room.layout,atlas,textures)
 	overview=false; overview_button.text="房间总览 · M"
 	walk_time=0; clock=0
-	update_camera(); present(room.snapshot(),0)
+	update_camera(); present(room.snapshot(),0); mark_presented()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.physical_keycode==KEY_I and event.pressed and not event.echo:
@@ -122,8 +124,10 @@ func guidance_at(_position: Vector2) -> Dictionary:
 	return {"region":room.layout.roomTitle,"landmark":{"safe":"安全房 · 可探索与通行","combat":"清除所有影偶后开门","explore":"阅读并合上残碑后开门","boss":"击败索尔后开门 · 锤离手时反击"}[room.layout.objective]}
 
 func present(snapshot: Dictionary,seconds: float) -> void:
+	# 复用本帧公开快照，避免第二次深拷贝；HUD 文本统一在 hud_lines() 写入一次。
+	journey_data=journey.snapshot(snapshot)
 	super.present(snapshot,seconds)
-	var data: Dictionary = journey.snapshot()
+	var data: Dictionary = journey_data
 	loot_view.update_state(data,seconds)
 	world_items.update(data)
 	skill_view.update(data)
@@ -142,14 +146,23 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 	boss_bar.visible=data.has("boss")
 	if data.has("boss"):
 		boss_view.update(data,clock); boss_bar.value=data.boss.health
-	encounter_label.text=room.layout.roomTitle+" · 已探索 %d / %d 房间" % [data.visitedRooms,Journey.ROOM_IDS.size()]+"\n"+("房间已完成 · 所有门已开放" if data.roomComplete else guidance_at(Vector2.ZERO).landmark)
+
+func hud_lines() -> Dictionary:
+	var lines: Dictionary = super.hud_lines()
+	var data: Dictionary = journey_data
+	if data.is_empty(): return lines
+	var encounter: String = room.layout.roomTitle+" · 已探索 %d / %d 房间" % [data.visitedRooms,Journey.ROOM_IDS.size()]+"\n"+("房间已完成 · 所有门已开放" if data.roomComplete else guidance_at(Vector2.ZERO).landmark)
 	if data.has("boss"):
-		encounter_label.text="索尔  %d / 1200\n%s" % [data.boss.health,"索尔已败退 · 前往出口完成首关" if data.roomComplete else "锤已离手 · 承伤提高25%" if data.vulnerable else "观察招式 · 击败后开门"]
+		encounter="索尔  %d / 1200\n%s" % [data.boss.health,"索尔已败退 · 前往出口完成首关" if data.roomComplete else "锤已离手 · 承伤提高25%" if data.vulnerable else "观察招式 · 击败后开门"]
 	if data.objective=="combat" and not data.roomComplete:
-		var remaining: int = data.enemies.filter(func(enemy: Dictionary): return enemy.group==data.encounter and enemy.phase!="dead").size()
-		encounter_label.text=room.layout.roomTitle+" · 第 %d / %d 波" % [data.wave,data.waveCount]+"\n"+("下一波 %.1f 秒后出现" % data.waveDelay if data.waveDelay>0 else "影偶剩余 %d · 清完全部波次后开门" % remaining)
-	if data.journeyComplete: encounter_label.text="汤谷流程完成 · 可返回探索\nR 重开整段流程"
-	if not data.get("rewardPlaceholders",[]).is_empty(): encounter_label.text+="\nBoss战利品为未入库占位 · 阶段奖励后续接通"
+		var remaining: int = 0
+		for enemy in data.enemies:
+			if enemy.group==data.encounter and enemy.phase!="dead": remaining+=1
+		encounter=room.layout.roomTitle+" · 第 %d / %d 波" % [data.wave,data.waveCount]+"\n"+("下一波 %.1f 秒后出现" % data.waveDelay if data.waveDelay>0 else "影偶剩余 %d · 清完全部波次后开门" % remaining)
+	if data.journeyComplete: encounter="汤谷流程完成 · 可返回探索\nR 重开整段流程"
+	if not data.get("rewardPlaceholders",[]).is_empty(): encounter+="\nBoss战利品为未入库占位 · 阶段奖励后续接通"
+	lines.encounter=encounter
 	if state.feedback==null and state.interaction==null:
-		interaction_label.text="走近门按 F 前往下一房间" if data.roomComplete else "完成本房任务后，来路与出口一起开放"
-		if data.objective=="combat": interaction_label.text="血／蓝瓶落地后走近按 F 即时补充 · 满值留地"
+		lines.interaction="走近门按 F 前往下一房间" if data.roomComplete else "完成本房任务后，来路与出口一起开放"
+		if data.objective=="combat": lines.interaction="血／蓝瓶落地后走近按 F 即时补充 · 满值留地"
+	return lines

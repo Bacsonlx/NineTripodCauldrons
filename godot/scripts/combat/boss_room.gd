@@ -38,6 +38,7 @@ func reset() -> void:
 	if paused or reading: return
 	super.reset()
 	completed=false; requested_door=""; wave_delay=0
+	invalidate_obstacles()
 	health=int(initial.get("health",100)); mana=int(initial.get("mana",100))
 	stamina=float(initial.get("stamina",100)); stamina_delay=float(initial.get("staminaDelay",0))
 	elapsed=0

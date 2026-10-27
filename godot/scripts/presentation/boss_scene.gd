@@ -54,7 +54,7 @@ func select_trial(index: int) -> void:
 	room.layout.grips=room.layout.grips.duplicate()
 	room.layout.grips[1]=TrainingRoom.point(atlas.upperDown.grip)
 	controls=Controls.new(room)
-	present(room.snapshot(),0)
+	present(room.snapshot(),0); mark_presented()
 
 func update_camera() -> void:
 	fit_boss_room()
@@ -64,12 +64,16 @@ func guidance_at(_position: Vector2) -> Dictionary:
 
 func present(snapshot: Dictionary,seconds: float) -> void:
 	super.present(snapshot,seconds)
-	var boss: Dictionary = snapshot.boss
+	boss_bar.value=snapshot.boss.health
+
+func hud_lines() -> Dictionary:
+	var lines: Dictionary = super.hud_lines()
+	var boss: Dictionary = state.boss
 	var phase: String = {"prepare":"观察对手","rest":"准备出招","chase":"正在逼近", "swing_warn":"横锤 · 侧移或退开", "swing":"横锤挥击", "swing_recover":"横锤收招 · 可反击", "throw_warn":"掷锤 · 横向走位", "flight":"锤已离手 · 承伤提高25%", "throw_recover":"接锤收招", "lightning":"落雷 · 持续走位", "dead":"已击败"}[boss.phase]
-	encounter_label.text="索尔  %d / 1200\n%s" % [boss.health,phase]
-	boss_bar.value=boss.health
-	interaction_label.text="WASD 移动 · 左键射箭 · Q / E 技能 · 空格闪避\n独立原型 · R 按当前条件重试 · Esc 暂停"
-	if snapshot.status=="complete":
-		status_label.visible=true
-		status_label.text="索尔已败退\n%.1f秒 · R 重试" % snapshot.elapsed
-	elif snapshot.status=="failed": status_label.text="影散于雷下\nR 按当前条件重试"
+	lines.encounter="索尔  %d / 1200\n%s" % [boss.health,phase]
+	lines.interaction="WASD 移动 · 左键射箭 · Q / E 技能 · 空格闪避\n独立原型 · R 按当前条件重试 · Esc 暂停"
+	if state.status=="complete":
+		lines.statusVisible=true
+		lines.status="索尔已败退\n%.1f秒 · R 重试" % state.elapsed
+	elif state.status=="failed": lines.status="影散于雷下\nR 按当前条件重试"
+	return lines

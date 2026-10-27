@@ -18,6 +18,10 @@ var slots: Dictionary = {}
 var captions: Dictionary = {}
 var costs: Dictionary = {}
 var loadout_actions: HBoxContainer
+var last_health: int = -1
+var last_health_max: int = -1
+var last_mana: int = -1
+var last_stamina: int = -1
 
 static func label(text: String,font_size: int) -> Label:
 	var node: Label = Label.new()
@@ -148,13 +152,25 @@ func add_meter(parent: VBoxContainer,title: String,color: Color,width: int) -> P
 	return meter
 
 func update_state(snapshot: Dictionary) -> void:
-	health.max_value=snapshot.get("healthMax",100)
-	health.value=snapshot.health
-	health_value.text="%d / %d" % [snapshot.health,snapshot.get("healthMax",100)]
+	# 数值未变时不重新格式化字符串，也不重复触发 ProgressBar／Label 重绘。
+	var health_max: int = snapshot.get("healthMax",100)
+	if snapshot.health!=last_health or health_max!=last_health_max:
+		last_health=snapshot.health
+		last_health_max=health_max
+		health.max_value=health_max
+		health.value=last_health
+		health_value.text="%d / %d" % [last_health,health_max]
 	if snapshot.has("resources"):
-		mana.value=snapshot.resources.mana; stamina.value=snapshot.resources.stamina
-		mana_value.text="%d / 100" % snapshot.resources.mana
-		stamina_value.text="%d / 100" % floori(snapshot.resources.stamina+0.000001)
+		var mana_now: int = snapshot.resources.mana
+		var stamina_exact: float = snapshot.resources.stamina
+		var stamina_now: int = floori(stamina_exact+0.000001)
+		if mana_now!=last_mana:
+			last_mana=mana_now
+			mana.value=mana_now; mana_value.text="%d / 100" % mana_now
+		if not is_equal_approx(stamina.value,stamina_exact): stamina.value=stamina_exact
+		if stamina_now!=last_stamina:
+			last_stamina=stamina_now
+			stamina_value.text="%d / 100" % stamina_now
 	for action in ["pierce","rain","dodge"]:
 		slots[action].insufficient=snapshot.has("resources") and (snapshot.resources.stamina+0.000001<25 if action=="dodge" else snapshot.resources.mana<snapshot.resources.costs[action])
 		slots[action].update_cooldown(snapshot.cooldowns[action])

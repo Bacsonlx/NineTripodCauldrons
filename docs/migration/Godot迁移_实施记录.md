@@ -202,3 +202,20 @@ Task P4／P5（旧T08／T09）：三本特殊书、真实占格与镶书、E/G�
 ## 2026-10-24 · 十二件道具玩法原型
 
 Task P6／P7：首关4器4契4符接入真实实物与效果，入口营地提供本局一次的12件原型台。原型点燃仅用于烧物／焚书，八容器战斗效果与正式奖励另期。操作、验证分类和待验项见[道具原型记录](../mvp/第一关玩法补全_道具原型实施记录_2026-10-24.md)。
+
+## 2026-10-27 · 性能分支审查修复与本地主线集成
+
+Task PERF-R01—R03：将 `b3dd33f`、`239f39b` 合入本地 `main` 的 `a10e563` 基线，修复切房／单精灵释放后的姿态缓存滞留、遮挡重复应用画布逆变换，以及低画质裁掉关键范围提示。合并保留主线营地、特殊技能、玩家／敌人可变生命上限。改动与回归范围见[性能记录第8节](../architecture/九鼎_性能优化_2026-10-26.md#8-审查缺陷修复2026-10-27)。
+
+验证对象为隔离集成候选，锁定引擎 `4.7.2.stable.official.ed1daf0bf`；不含主工作区原有未提交开发内容。[脚本 SHA-256 清单](../../output/performance-review-20261027/source-sha256.json)固定本轮实际被测版本。
+
+| 类别 | 状态与实际结果 | 证据与未覆盖项 |
+| --- | --- | --- |
+| 构建／导入 | 干净工作树首次导入、最终完整后台检查、Mac Universal／Windows x64 导出均通过 | [`check-and-export.log`](../../output/performance-review-20261027/check-and-export.log)；两包仅为构建结果 |
+| 逻辑／回归 | 修复前三类缺陷产生17个失败断言并退出1；修复后性能回归54项通过，规则55场景／4250快照通过 | [`regression-before.log`](../../output/performance-review-20261027/regression-before.log)、完整检查日志；54项含单精灵释放回归 |
+| 运行／加载 | Mac导出包 `--headless --quit-after 3` 加载通过，退出0，无脚本错误 | [`macos-package-load.log`](../../output/performance-review-20261027/macos-package-load.log)；仅后台加载，Windows实机暂缓 |
+| 交互／流程 | 输入适配、营地／道具／技能与切房回归通过；真实输入未验证 | 完整检查日志；未开窗口、未发送系统键鼠 |
+| 视觉／表现 | 未做原生画面验收 | 遮挡与关键预告仅有真实节点状态／坐标断言，不能替代GPU画面和动态观感 |
+| 性能／稳定性 | 工作量与缓存有界性回归通过；前台FPS和长时稳定性未验证 | 完整检查日志；不推导原生CPU／GPU收益，不关闭T15—T18 |
+
+产物保存在 `build/godot/performance-review-20261027/`，不覆盖旧候选包。SHA-256：Mac ZIP `42acbb3ac8d41a87ce935d4af8c26197f0aafcaebd7b0655f8ecdbdfc4558228`，Windows ZIP `2d6fcc587bb2ff6c158cb4bc6503ce0e22a05f6e49ba579171e8d2f2d5e5f86a`。原生画面、键鼠、前台性能及双平台实机验收仍按迁移Spec待验。

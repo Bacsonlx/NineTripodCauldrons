@@ -38,6 +38,21 @@ Mac ZIP 位于 `build/godot/NineTripods-godot-macos.zip`，为包含 arm64 的 U
 
 小样入口 `scenes/sample.tscn` 继续复用现有脚本；已批准小样的原包与源码校验保存在 sample 路径及 `docs/migration/sample-verification.json`，不把当前脚本追溯称为用户已批准版本。
 
+## 低配机器与性能诊断
+
+2026-10-26 后台性能调优已合入：缓存障碍集合、每帧只构造一次公开快照、HUD 文本一次写入、环境物件复用几何与画布逆变换、特效精灵缓冲复用；呈现改为跟随渲染帧（同帧后续物理 tick 只推进规则并累积时间，最多跳过 4 个 tick 兜底）。规则、数值、碰撞、输入中断和默认画面保持不变，详见[性能调优记录](../docs/architecture/九鼎_性能优化_2026-10-26.md)。
+
+后台工作量回归位于 `tests/performance_checks.gd`，已纳入 `tools/migration/check_godot.py`；同机前后对比使用 `python3 tools/migration/perf_godot.py --repeat 3`。该脚本只测量 headless 规则＋快照成本，**不是原生 FPS**，前台画面、手感、60 秒跑射和 5 分钟稳定性仍需用户在目标机器验收。
+
+需要降低低配机特效叠加时，可显式指定画质档位（默认 `high` 与已批准画面一致）：
+
+```sh
+./play --quality=auto    # 按帧时间自动在 512 / 256 / 96 个特效叠加间切换
+./play --quality=low     # 固定低档
+```
+
+原生包把参数放在 `--` 之后，例如 `NineTripods.exe -- --quality=auto`。画质档位只减少非玩法关键的特效叠加，不改碰撞、伤害、冷却或规则时间。
+
 ## 统一试玩入口
 
 `./play` 默认集成八房、技能与能量、索尔、血／蓝瓶与 F 补给；不需要 `--potion-drops` 等环境开关。专项使用 `./play --test boss`、`./play --test drops`、`./play --room court2`，可组合初始资源和固定种子。背包白盒用 `./play --test alpha`，后台规则用 `./play --test rules`。

@@ -29,6 +29,13 @@ class PlayCommandChecks(unittest.TestCase):
         command = shlex.split(result.stdout)
         self.assertEqual(command[command.index("--") + 1:], ["--test=boss", "--health=40", "--mana=0", "--stamina=0"])
 
+    def test_quality_is_forwarded_as_game_argument(self):
+        result = self.invoke("--quality", "auto")
+        command = shlex.split(result.stdout)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("--quality=auto", command)
+        self.assertLess(command.index("--"), command.index("--quality=auto"))
+
     def test_rules_always_run_headless(self):
         result = self.invoke("--test", "rules")
         self.assertEqual(result.returncode, 0, result.stderr)

@@ -34,6 +34,7 @@ def main():
     parser.add_argument("--mana", type=resource, help="初始蓝量 0—100")
     parser.add_argument("--stamina", type=resource, help="初始精力 0—100")
     parser.add_argument("--seed", type=nonnegative, help="固定掉落种子，仅用于重演")
+    parser.add_argument("--quality", choices=["high", "medium", "low", "auto"], help="画质档位；默认 high 保持已确认画面，auto 为低配机器自适应")
     parser.add_argument("--headless", action="store_true", help="后台运行，不打开窗口")
     parser.add_argument("--quit-after", type=nonnegative, help="指定主循环次数后退出，用于后台启动检查")
     parser.add_argument("--dry-run", action="store_true", help="只显示命令，不启动")
@@ -57,7 +58,7 @@ def main():
         command += ["--script", "res://tests/run_tests.gd"]
     else:
         options = [f"--test={args.test}"] if args.test else []
-        options += [f"--{key}={getattr(args, key)}" for key in ["room", "health", "mana", "stamina", "seed"] if getattr(args, key) is not None]
+        options += [f"--{key}={getattr(args, key)}" for key in ["room", "health", "mana", "stamina", "seed", "quality"] if getattr(args, key) is not None]
         if options:
             command += ["--", *options]
     if args.dry_run:

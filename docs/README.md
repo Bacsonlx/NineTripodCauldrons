@@ -9,6 +9,7 @@
 | 产品范围、玩法与术语 | [玩法与运行规则](product/十日_玩法与运行规则.md)、[根目录术语表](../GLOSSARY.md) | [六器玩法主干](product/九鼎_六器系统_玩法主干确认稿_v0.3.md)、相关 [ADR](adr/) |
 | 当前技术方向 | [架构选型结论](architecture/九鼎_架构选型结论.md) | [ADR-0010](adr/0010-godot-migration-direction.md)、[Godot 迁移方案](architecture/九鼎_Godot架构评估与迁移落地方案_2026-10-19.md) |
 | 当前 Godot 工程与地图 | [Godot README](../godot/README.md)、[房间地图说明](guides/汤谷房间地图使用说明.md) | [迁移实施记录](migration/Godot迁移_实施记录.md) |
+| 掉帧、卡顿与低配调优 | [首轮性能调优](architecture/九鼎_性能优化_2026-10-26.md) | [后台工作量回归](../godot/tests/performance_checks.gd)、[测量脚本](../tools/migration/perf_godot.py)、[候选验收记录](migration/Godot候选_验收记录.md) |
 | 故事与美术来源 | [世界观与故事框架 v1.2](story/十日_世界观与故事框架_v1.2.pdf)、[故事基线及影响](story/九鼎_故事基线_v1.2与架构影响.md) | [美术资产库](art/美术资产库_v0.1/README.md)、`assets/` 中的源文件与制作记录 |
 | 实施规格与验收 | [Godot 迁移 Spec](mvp/九鼎_Godot迁移_Spec.md) 或相应 MVP Spec | [候选验收记录](migration/Godot候选_验收记录.md)、`mvp/` 中相应实施记录 |
 
@@ -28,7 +29,7 @@
 | --- | --- | --- |
 | 产品规划与规则 | [`product/`](product/) | 当前玩法确认记录、六器主干；`基础玩法文档_v0.2.html` 与 `十日_道具图鉴_v0.1.html` 是旧版候选稿，冲突时以确认记录为准。战斗数值提案和已确认波次合同位于 [`balance/`](balance/)。 |
 | 故事与大纲 | [`story/`](story/) | 世界观 PDF、故事基线及架构影响；`十日_游戏故事大纲.html` 是历史故事圣经。 |
-| 技术规划与工程沿革 | [`architecture/`](architecture/) | 当前架构结论、Godot 迁移方案；`十日_技术架构与实现风险评估.md`、工程初始化和架构修复记录描述旧 Electron／Phaser 阶段。设计取舍和替代关系见 [`adr/`](adr/)。 |
+| 技术规划与工程沿革 | [`architecture/`](architecture/) | 当前架构结论、Godot 迁移方案、[首轮性能调优](architecture/九鼎_性能优化_2026-10-26.md)（后台逻辑层瓶颈与工作量预算）；`十日_技术架构与实现风险评估.md`、工程初始化和架构修复记录描述旧 Electron／Phaser 阶段。设计取舍和替代关系见 [`adr/`](adr/)。 |
 | 功能规格、任务与验收 | [`mvp/`](mvp/) | `*Spec*` 和需求／范围讨论为规划，`*票据草稿*` 为历史拆票稿，`*实现与验收记录*`、发布记录和日志为实施证据；同目录存放是为了保持每轮 MVP 的资料链。 |
 | 迁移与交付证据 | [`migration/`](migration/) | Godot 实施状态、候选验收、行为映射、Steam 核查和冻结基线。T15—T18 的完整候选原生体验与双平台实机待验，Windows 实测暂缓，因此迁移文档仍需保留。`baseline-*`、`candidate-evidence/`、`sample-evidence/` 是历史可还原证据，不随当前路径重写。 |
 | 美术与其他资源 | [`art/`](art/)、[`../assets/`](../assets/) | `art/` 保存资产清单、来源／待定项和 Sprite Forge 指南；可视化查阅与状态管理使用 [资产管理中心](../tools/asset_center/README.md)（`python3 tools/asset_center/run.py`）；`assets/` 是源图、图集元数据及制作记录。`godot/assets/` 是游戏使用的资源，`output/` 是概念预览、生成过程与历史验证产物；不要把预览当正式资源。 |
