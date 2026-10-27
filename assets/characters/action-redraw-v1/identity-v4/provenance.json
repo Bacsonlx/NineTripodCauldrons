@@ -1,0 +1,392 @@
+[
+  {
+    "clip": "hero-archery-upper",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-right.png",
+    "assembly": "output/art/CHR-001/2026-10-27-four-direction-v4/frames/archery-right/animation.json",
+    "indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "source_cell_roots": [
+      [
+        246,
+        409
+      ],
+      [
+        222,
+        409
+      ],
+      [
+        210,
+        409
+      ],
+      [
+        180,
+        409
+      ],
+      [
+        230,
+        352
+      ],
+      [
+        222,
+        352
+      ],
+      [
+        211,
+        353
+      ],
+      [
+        223,
+        351
+      ]
+    ],
+    "rgba_sha256": [
+      "5116cb9c467681e480118b6a3a2ad85c597aa746f3a51a005a032268072979e6",
+      "bc9e174be3dbfc362e5f5a39c6c5cd77743998aee5452a0a9b3ba185e11aa936",
+      "6207d2dcc0372dac88b6d477bcfcc2c2330c910df609a4abb8bd68c637745ecd",
+      "466664adb78100946e5ac9c41b680ba87d7ab2bc58cea3f39b49601b8aa627fc",
+      "8b2e4d350851194bf705e2d8129b30fa19d8a2bed16b0dc605336575064442d5",
+      "cff9f12ba577c081695e262a167dc8c9aeeea5494ebccd8217fb039d903d97bf",
+      "d422fc740fea9e8dcfa13515d0966f8fc71aac7e4f52b3fe1a348b61bd1f1291",
+      "aa2dd1f69cf843420f0ed7a7e8bd38b02b4ae52732abc0aa25ba83322ff8483c"
+    ],
+    "atlas_sha256": "86e74085b10b2bd30938455bd7c6c89d75cf3b68a068bebfca3ea62c5d127ec3"
+  },
+  {
+    "clip": "hero-archery-left",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-left-up-spacing.png",
+    "assembly": "output/art/CHR-001/2026-10-27-four-direction-v4/frames/archery-left-up-spacing/animation.json",
+    "indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "source_cell_roots": [
+      [
+        250,
+        406
+      ],
+      [
+        250,
+        407
+      ],
+      [
+        232,
+        408
+      ],
+      [
+        226,
+        405
+      ]
+    ],
+    "rgba_sha256": [
+      "fcf07b4420d45cf8c7512376c536ecb60cf7ec49e0139ebc67943a7f6eccf812",
+      "9d7aaedf4a5befb15d8cbff31ab6fa5f9abd95c899004f643e0469fe9e5bef2b",
+      "8d35c36fe6f0cce13007b4ed9af238c0b496bd89423d362ccf3fd767c4cee59a",
+      "eb68d80dd61c32e792799034639aaffaf576c9edddaa3f19100bc59e91e7ce1b"
+    ],
+    "atlas_sha256": "489d2321158338928dd2c7f2876dd0d7b749a44eb37ee33b67d8f718ca2e56b3"
+  },
+  {
+    "clip": "hero-archery-up",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-up-pose.png",
+    "assembly": "output/art/CHR-001/2026-10-27-four-direction-v4/frames/archery-up-pose/animation.json",
+    "indices": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "source_cell_roots": [
+      [
+        245,
+        339
+      ],
+      [
+        244,
+        339
+      ],
+      [
+        243,
+        350
+      ],
+      [
+        245,
+        350
+      ]
+    ],
+    "rgba_sha256": [
+      "857640be6a52fdc09eafc4d007900f62e480184d57d19d3a87418b7372d0eb49",
+      "49fc1ed7797668d5a7436ffc4f363e89500e2597646824fa2143f6fdc1f0ced8",
+      "0283219f904bee37c9f6629e7081efab7b5a4624e580d7a464f99c757e892e16",
+      "09702bcc2e6f9ee3be8d359b29c3e8f09c9f19fb837852db5614703492da06a4"
+    ],
+    "atlas_sha256": "b1417c905ec6d99b303a2c033b10633b64165f757092a7d658f082e5573d45f0"
+  },
+  {
+    "clip": "hero-skills-upper",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/skills-right.png",
+    "assembly": "output/art/CHR-001/2026-10-27-four-direction-v4/frames/skills-right/animation.json",
+    "indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "source_cell_roots": [
+      [
+        245,
+        437
+      ],
+      [
+        201,
+        437
+      ],
+      [
+        216,
+        437
+      ],
+      [
+        216,
+        437
+      ],
+      [
+        250,
+        381
+      ],
+      [
+        239,
+        383
+      ],
+      [
+        238,
+        382
+      ],
+      [
+        245,
+        384
+      ]
+    ],
+    "rgba_sha256": [
+      "6eae4965528090a1581299ac34dc2f7b614f8613d32b395f9b00573f564e0821",
+      "59969badffeab0e7592e15d2383e3a57da6c78deb5e7cbfdf345e2ec3aa1d45d",
+      "35a86e4409b20d9133e3d84aa14ba18d6f102f16741b0817a0f4efab8c0c916b",
+      "ade9e150cbccc086a6d70f86326fb22253d70d5575c087799620702b6b2297d2",
+      "afa5c972287d45b1c4d8d9a173e0fa0f0622265f007e14e473f4385522018f0c",
+      "ce05b94fdd8ab8e1ff02b517d2b547284617207ff3d7241ae83463b4ab350b94",
+      "839b259b12ade93fca353fe6fcbe1cc8709bb5b903b852a60b030ce10d410aa1",
+      "35efe6c656db5718ec7ff9760293e8dbfd673377c17843b8b3dacdd4a41036a5"
+    ],
+    "atlas_sha256": "c064b0b34c857d4031466a5747369c4954551ebca33f11a49d8a1a4239a27b69"
+  },
+  {
+    "clip": "hero-run-lower",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/run-lower.png",
+    "assembly": "output/art/CHR-001/2026-10-27-four-direction-v4/frames/run-lower/animation.json",
+    "indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "source_cell_roots": [
+      [
+        235,
+        128
+      ],
+      [
+        245,
+        124
+      ],
+      [
+        220,
+        130
+      ],
+      [
+        230,
+        126
+      ],
+      [
+        235,
+        85
+      ],
+      [
+        245,
+        84
+      ],
+      [
+        220,
+        87
+      ],
+      [
+        230,
+        84
+      ]
+    ],
+    "rgba_sha256": [
+      "e17b846628cdf140c42b78da340a336437d25a9b08292e178e6f55b81c52b9f2",
+      "0acd55ae945f13442a3abe5400bca492980e7d8626811afb2bf4baed40cfb4cc",
+      "c3ed7e383fc7077e072d0a6f8ac756327506bdf41d49fd9ac40399a15a1c5b69",
+      "2b7d326cec9fef6357abb4f11deb3efb79b619a30bf3e457f029f3f6ee54b220",
+      "f0ef5774c7586259968806c75990f04ea6dfb243d477b2ba720aa13260cb0d40",
+      "f9cdcec957febbe3594aec3c2899fc706c6f4d014ab02b6512e5ad694922325f",
+      "34f7c6f85f0e7723127ce22d9330f747aa731aacbcece97a24f4e3e9631402fb",
+      "c2e08214440fda9ef89bfe273db616bf6bbb889b4f40ce2bb751a48b6d971f21"
+    ],
+    "atlas_sha256": "0968f65dd61f70c6f251831a333e9ff09970012a5bd2b30fc7afd835ebd085dc"
+  },
+  {
+    "clip": "hero-skills-direction-0",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/skills-directions-weapons.png",
+    "assembly": "output/art/CHR-001/2026-10-27-four-direction-v4/frames/skills-directions-weapons/animation.json",
+    "indices": [
+      0,
+      4,
+      8,
+      12
+    ],
+    "source_cell_roots": [
+      [
+        163,
+        323
+      ],
+      [
+        225,
+        356
+      ],
+      [
+        206,
+        303
+      ],
+      [
+        195,
+        252
+      ]
+    ],
+    "rgba_sha256": [
+      "24b41d39e0241c73175c575dad2805551b68920ce9c27157b2de26c00c7bfe57",
+      "e8038e223a89d0faeb15693ab40380c3378e5706f6f684fdabe97158445c5804",
+      "47f6c5d31f8d8a0d33e328986bc3cc461879533ace05583d9d27a3b67d494995",
+      "9f247e79b0cc91c875950809c6f997e10a525d07f5d8e2b0eb8a52f4c3abdd22"
+    ],
+    "atlas_sha256": "b34384ab8acd489b22a6ef1fe7e1b218bf08a4286c1486b2e3756906d55979e7"
+  },
+  {
+    "clip": "hero-skills-direction-1",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/skills-directions-weapons.png",
+    "assembly": "output/art/CHR-001/2026-10-27-four-direction-v4/frames/skills-directions-weapons/animation.json",
+    "indices": [
+      1,
+      5,
+      9,
+      13
+    ],
+    "source_cell_roots": [
+      [
+        163,
+        323
+      ],
+      [
+        175,
+        358
+      ],
+      [
+        180,
+        305
+      ],
+      [
+        173,
+        252
+      ]
+    ],
+    "rgba_sha256": [
+      "b16e37688090b5d6e08be090cb643834ec5d9a3866097387f3d58fedfabf8b1a",
+      "595f8ce6e42ab6f6181eeab2b76844b6c2d12ad66b92e883c4868925f94c8bd8",
+      "55447f1a2f070d051741e5ddab1852548a10541ab196937c51ca4bb803c5636b",
+      "d45393c606a9e088c463e1aa060781abf1f8526daecb90c3cfbe3ddcee05a4ba"
+    ],
+    "atlas_sha256": "bedbe755414114a5b00b1dcd8a0a24d837175fd83aaf3d4c657a5e48a0d41a26"
+  },
+  {
+    "clip": "hero-skills-direction-2",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/skills-directions-weapons.png",
+    "assembly": "output/art/CHR-001/2026-10-27-four-direction-v4/frames/skills-directions-weapons/animation.json",
+    "indices": [
+      2,
+      6,
+      10,
+      14
+    ],
+    "source_cell_roots": [
+      [
+        151,
+        323
+      ],
+      [
+        131,
+        358
+      ],
+      [
+        142,
+        306
+      ],
+      [
+        145,
+        252
+      ]
+    ],
+    "rgba_sha256": [
+      "11a8489dae7441e64bbe9be0a0f6f3b7429ed5a4bd865f74bc39319f132a028a",
+      "1993d817d9a38232c84fc1ee1e3efda15c4857dc79d20d76665d6df44033e00b",
+      "f6d8650ee5b5e3236a9e72866b4e5beddef00b04c6f4a20ed1171000a34df448",
+      "730bf574a30620a0d7ca0a7b883751d98c83c7cb67e20585f10897a5c87a13bb"
+    ],
+    "atlas_sha256": "c63a1059b88d922a732febf7875e88dbec6410dd4fe0c36575916de5bf7702f2"
+  },
+  {
+    "clip": "hero-skills-direction-3",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/skills-directions-weapons.png",
+    "assembly": "output/art/CHR-001/2026-10-27-four-direction-v4/frames/skills-directions-weapons/animation.json",
+    "indices": [
+      7,
+      11,
+      15
+    ],
+    "source_cell_roots": [
+      [
+        145,
+        358
+      ],
+      [
+        146,
+        311
+      ],
+      [
+        149,
+        252
+      ]
+    ],
+    "rgba_sha256": [
+      "a04666d860930de3fecc271938689eda1d80b9bfeb95a71f53a6e4072b671773",
+      "469d9a94d4c6041630fcb73664adf6c1d087a55550b2271b8e43beaf369ea883",
+      "64916f0221387927897263088d9859b63a3d653a450aa2aefddd44bf12fd5a27"
+    ],
+    "atlas_sha256": "2bc97b8f68cce88b6413fa71aa04c0486776d6b5e4994633f6b75f5e8d50ce3b"
+  }
+]

@@ -46,7 +46,13 @@ func run(game: Node2D, check: Callable) -> void:
 		other.player.facing=facing; other.player.angle=facing*PI/2; other.attack="draw"
 		other.grip=Vector2(other.player.x,other.player.y)+Room.GRIPS[facing]
 		game.present(other,0)
-		check.call(game.torso.texture==game.textures.upper and game.bow.visible and game.nocked_arrow.visible, "其他方向保留原上身和独立弓箭层")
+		if facing==0:
+			other.player.moving=false
+			other.windup=0.04
+			game.present(other,0)
+			check.call(game.frame_actor.upper.visible and game.frame_actor.upper.clip=="hero-archery-upper" and not game.bow.visible and not game.nocked_arrow.visible,"向右原地射箭使用新上身帧，不重复叠弓")
+		else:
+			check.call(game.frame_actor.upper.visible and game.frame_actor.upper.clip==("hero-archery-left" if facing==2 else "hero-archery-up") and not game.torso.visible and not game.bow.visible and not game.nocked_arrow.visible, "左／上使用统一身份上身且不叠旧武器")
 	game.controls.interrupt(); game.room.reset()
 	depart(game)
 	point=Vector2(game.room.player.x,game.room.player.y)
@@ -55,7 +61,7 @@ func run(game: Node2D, check: Callable) -> void:
 		game.controls.key_down(code)
 		snapshot=game.controls.update(point+Vector2(0,40),true,0.01)
 		game.present(snapshot,0)
-		check.call(game.torso.texture==game.textures.skills and game.bow.visible, "Q／E／闪避继续使用原技能姿态和武器层")
+		check.call(game.frame_actor.upper.visible and game.frame_actor.upper.clip=="hero-skills-direction-1" and not game.bow.visible and not game.nocked_arrow.visible, "Q／E／闪避使用统一身份联绘上身且没有悬空武器")
 		var expected_grip: Vector2 = Vector2(snapshot.player.x,snapshot.player.y)+Room.SKILL_GRIPS[{KEY_Q:"pierce",KEY_E:"rain",KEY_SPACE:"dodge"}[code]][1]
 		check.call(snapshot.grip.is_equal_approx(expected_grip), "技能不使用新的普通箭出箭点")
 		game.controls.interrupt(); game.room.reset()
@@ -63,8 +69,9 @@ func run(game: Node2D, check: Callable) -> void:
 		game.controls.update(point+Vector2(0,200),true,0)
 	game.room.hurt=0.1
 	game.present(game.room.snapshot(),0)
-	check.call(game.torso.texture==game.textures.skills and game.bow.visible and game.bow.position.is_equal_approx(point+Room.GRIPS[1]), "受击仍使用原技能图及对应旧握点")
+	check.call(game.frame_actor.upper.visible and game.frame_actor.upper.clip=="hero-skills-direction-1" and not game.bow.visible and not game.nocked_arrow.visible, "受击弓与持弓手联绘，不残留独立武器")
 	game.room.hurt=0
+	game.present(game.room.snapshot(),0)
 	game.controls.key_down(KEY_ESCAPE)
 	snapshot=game.room.snapshot(); game.present(snapshot,0)
 	check.call(snapshot.paused and game.torso.texture==game.textures.upperDown and not game.bow.visible, "暂停后保留新版且无重复武器")

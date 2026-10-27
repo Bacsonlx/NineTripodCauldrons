@@ -1,0 +1,156 @@
+{
+  "date": "2026-10-24",
+  "route": "host_image / built-in image_gen (2026-10-23)",
+  "model": "not disclosed by tool",
+  "cost": "not disclosed by tool",
+  "source_task": "ui-home-imagegen-20261023",
+  "runtime_scene": "res://scenes/home.tscn",
+  "scope": "home UI only; no combat actor replacement",
+  "files": [
+    {
+      "path": "assets/ui/home-v1/hero-refined-v2.png",
+      "sha256": "dd17b22eedccf13b184045219ec1e977e823812d0d7809afe83945f9d062764a",
+      "bytes": 2037566
+    },
+    {
+      "path": "assets/ui/home-v1/shrine-background.png",
+      "sha256": "de03570b1a7de0d3146d31359e0c5f6aa8ed385064ac94b3658aaa67223bbc89",
+      "bytes": 2122590
+    },
+    {
+      "path": "assets/ui/home-v1/background-prompt.txt",
+      "sha256": "5173c44c69b1eaf58edc77e888ffeb85840cde31dd2e0baf75b03773f4f411b5",
+      "bytes": 1424
+    },
+    {
+      "path": "assets/ui/home-v1/hero-alpha-prompt.txt",
+      "sha256": "6c3aa2bf7f59c6fe23c66c1e166e1f0e1e4904432083bec64357491e7389d6a1",
+      "bytes": 856
+    },
+    {
+      "path": "assets/ui/home-v1/hero-refinement-prompt.txt",
+      "sha256": "cc17de4881551121e5cd362b5c9bf839e8bf541f4a33446f35cda0793f87c8ec",
+      "bytes": 3410
+    },
+    {
+      "path": "assets/ui/home-v1/home-prompt.txt",
+      "sha256": "dc455398a8c6073549013825eacb8fb27196fbf8a436ae81d75f67076c031805",
+      "bytes": 3596
+    },
+    {
+      "path": "godot/assets/ui/home-v1/hero-refined-v2.png",
+      "sha256": "dd17b22eedccf13b184045219ec1e977e823812d0d7809afe83945f9d062764a",
+      "bytes": 2037566
+    },
+    {
+      "path": "godot/assets/ui/home-v1/hero-refined-v2.png.import",
+      "sha256": "5660f13f2c2473cf8a9d0b4b673074a79864e37fc184e67ac757a2f0db9c2922",
+      "bytes": 966
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/beast.svg",
+      "sha256": "1f920cdf14acb5a65bc6b86d10192a3d05eb6331cde157600e3eaec6722783ba",
+      "bytes": 322
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/beast.svg.import",
+      "sha256": "387195c391e262f3dee516b9372ec61a4ff5665a224af8d9232edfbef412167f",
+      "bytes": 1040
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/book.svg",
+      "sha256": "94f26dab8e9adb54d3ea9f615e9965169d09829851807bddfd86b9b92134a16e",
+      "bytes": 272
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/book.svg.import",
+      "sha256": "41d782ec8d09f4c14010cd5325be4db94a5836f3e29c237cac9377f4bf25960f",
+      "bytes": 1037
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/boot.svg",
+      "sha256": "f5378ec5d0b2e5667373f27cec12d247aabeb1d4b2b680e67e31003df1b9293a",
+      "bytes": 243
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/boot.svg.import",
+      "sha256": "40fa669aec3ae39b6ee60ab0e9f662e2c4139dbf9f7108485d0a2d6c139156a9",
+      "bytes": 1037
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/bow.svg",
+      "sha256": "eab678785c6b4fd27b7d132709da3222c8ffdc3fe29a132c5e7663e1b1ae89c2",
+      "bytes": 275
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/bow.svg.import",
+      "sha256": "7490788dec4851adc09b2bf7200eb82ea72d23c845807d6c3f224177fedbe9da",
+      "bytes": 1033
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/potion.svg",
+      "sha256": "a66c35619b017b3de1b40f1eba691b85abf823ea762797b193bd0165c3b5c87d",
+      "bytes": 270
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/potion.svg.import",
+      "sha256": "694cafa2a6efa4e47a847cdf0b5983a9277fecd15b28f6a9f7b01c90f2e27e52",
+      "bytes": 1043
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/relic.svg",
+      "sha256": "6b2a3c25bcbe019f040706b5e9027e67c447f86fe1d8945679f3fadc2fd8207c",
+      "bytes": 285
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/relic.svg.import",
+      "sha256": "9f35b6ec1435ab98f667b6eb5728318ed0491d9d5e850e36f736d9d3c7b79dd1",
+      "bytes": 1039
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/robe.svg",
+      "sha256": "7d4d1fc4fd91ab6e35da67c6eab3b4c3c07d59b824f3c1b4066837b52d2b3950",
+      "bytes": 249
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/robe.svg.import",
+      "sha256": "4b722c196c055f4a980d47e99ad58be7caa9b67fe492e548cd75d91814419dcf",
+      "bytes": 1037
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/soul.svg",
+      "sha256": "d8a792f2c5c4f9fc8e676d733b1fa1c9fa59030be3539a79bea624cde9ead297",
+      "bytes": 259
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/soul.svg.import",
+      "sha256": "2340ae90fc8e273122c0b449d597be304608ea897a587f6174771f20f5c6ea79",
+      "bytes": 1037
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/talisman.svg",
+      "sha256": "6433291343c33fae468a1948c87f6fc64cc7f326ffd7ee291b50cdceac3f63ba",
+      "bytes": 244
+    },
+    {
+      "path": "godot/assets/ui/home-v1/icons/talisman.svg.import",
+      "sha256": "1003adf59765d34f5d82dfe4923eda4b39db64cd09bb9e9a575a0865069862d4",
+      "bytes": 1049
+    },
+    {
+      "path": "godot/assets/ui/home-v1/items.json",
+      "sha256": "a5521ef87e19d62af82899288de4f1239400bf83b2baa1c1ca754363d255b7b7",
+      "bytes": 6458
+    },
+    {
+      "path": "godot/assets/ui/home-v1/shrine-background.png",
+      "sha256": "de03570b1a7de0d3146d31359e0c5f6aa8ed385064ac94b3658aaa67223bbc89",
+      "bytes": 2122590
+    },
+    {
+      "path": "godot/assets/ui/home-v1/shrine-background.png.import",
+      "sha256": "d296b1ad0bba47989f8646364c012ca4d89d5b4e885ad0bf27f783965c4784d1",
+      "bytes": 972
+    }
+  ]
+}

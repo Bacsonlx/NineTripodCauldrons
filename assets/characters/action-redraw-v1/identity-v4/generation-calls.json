@@ -1,0 +1,236 @@
+[
+  {
+    "id": "archery-right",
+    "tool": "image_gen.imagegen",
+    "art_source": "host_image",
+    "model": "unknown (not returned)",
+    "cost": null,
+    "prompt_file": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/archery-right.txt",
+    "prompt": "Use case: identity-preserve.\nAsset type: repair existing modular 2D game upper-body animation; real alpha transparency.\nInput image 1 is the canonical approved FRONT/DOWN archer identity, proportions, head size, camera tilt, ivory linen/black cuffs/bronze belt/red scarf design and woodcut line treatment. Input image 2 is the exact RIGHT-facing 8-pose animation to REPAIR, not a second identity.\nRedraw image 2 as eight upper-body poses in a spacious 4-column by 2-row grid, row-major order. Retain its eight distinct bow action phases: relaxed ready, raise/nock, partial draw, full draw at cheek, release fingers, follow-through, recover, relaxed ready. No legs, pelvis, floor, shadows or loose arrows. End each BODY at the LOWER EDGE OF THE BLACK WAIST BELT. Hands and bow may extend below belt, with transparent surroundings. No skirt or trousers. Leave at least 12 percent cell margin to prevent any sprite touching another.\nCRITICAL CORRECTION: make this the SAME child's 90-degree rightward turn from image 1. Compact torso and voluminous tied topknot, same head/skull size, SAME neck-to-belt and shoulder-to-belt proportions. Fixed elevated 3/4 top-down game camera at every pose. The child looks toward screen RIGHT with a visible right profile / three-quarter face, NOT down at his feet and NOT toward the viewer. Keep neutral ready torso upright as in image 1, no giant head, no lean-crouch idle, no aged/slender replacement. Head size and belt-to-crown distance constant across all eight cells; a pose changes hands not anatomy. Complete topknot.\nUse exactly one bow per pose, same carved warm brown-gold bow as canonical image 1, correctly turned for RIGHT aiming; left holding hand grips central bow, right draw hand at cheek during draw, visible taut string to draw hand, arrow only before release. Precise hand contact. Bow orientation remains compatible with rightward aim. No effects, text, cell lines or labels. Fine warm woodcut/ink texture, no glossy anime finish. Genuine transparent background.\n",
+    "referenced_image_paths": [
+      "/Users/linxin/Developer/GAME/十日/assets/characters/child/down-archery-v3.png",
+      "/Users/linxin/Developer/GAME/十日/assets/characters/action-redraw-v1/layered-v2/sheets/hero-archery-upper.png"
+    ],
+    "transparent_background": true,
+    "tool_returned_path": "/Users/linxin/.codex/generated_images/01a177c1-6e3a-75a1-ad07-76b21118a761/exec-258e792f-28bb-41c5-8ed3-4d21a301fdaf.png",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-right.png",
+    "selected": true,
+    "sheet_sha256": "258ed8e3e04400f6510b13d8738dbd322a3bcb003877dc378c015a87bbf30ba5",
+    "references_sha256": {
+      "assets/characters/child/down-archery-v3.png": "3c3f596f09252a6035b8e7f103f0421cccdf4b58f2db5f8a405d9db6a75ee288",
+      "assets/characters/action-redraw-v1/layered-v2/sheets/hero-archery-upper.png": "3ea9ba120a4b8c7d03223fd9aa112769a9e8048a8bf0e9642550c3e878b03371"
+    },
+    "archive_sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-right.png",
+    "archive_prompt": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/archery-right.txt",
+    "selection_reason": "AI selected for integration; user visual acceptance pending.",
+    "selected_source_sheet": "assets/characters/action-redraw-v1/identity-v4/sheets/archery-right.png"
+  },
+  {
+    "id": "archery-left-up",
+    "tool": "image_gen.imagegen",
+    "art_source": "host_image",
+    "model": "unknown (not returned)",
+    "cost": null,
+    "prompt_file": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/archery-left-up.txt",
+    "prompt": "Use case: identity-preserve. Production transparent modular game sprite repair.\nImage 1 is the approved canonical FRONT/DOWN child archer. Image 2 shows older poses for orientation only; its differently proportioned/slender character is NOT the identity to retain.\nDraw exactly EIGHT separate UPPER-BODY sprites, FOUR equal columns by TWO equal rows, large empty transparent gutters. ROW 1 faces LEFT throughout: ready / full draw / release / recover. ROW 2 faces UP / AWAY throughout: ready / full draw / release / recover. Strict game cardinal directions: left at 180 degrees, up away from viewer; all seen through same fixed elevated 3/4 top-down camera as image 1. No profile camera at eye level. Up row shows back of same round head, complete thick black topknot tied with red cord; no face to viewer.\nMake the SAME child as image 1 turned in place: equal skull volume, same short compact torso, shoulder width and substantial ivory cross-lapel sleeves, black cuffs, black belt and round bronze buckle, vermilion neck scarf/two tails. Same head-to-torso ratio and belt-to-crown height in all eight cells and in canonical input. No anatomy stretching as hands move, no alternate outfit or adult/slim face. Waist belt at same local height. END THE BODY exactly at belt lower edge, NO legs, skirt/pelvis, floor, shadows or effects. Hands / bow can extend below waist but nothing else.\nInclude exactly ONE SAME brown-gold recurved carved bow as image 1 in EACH cell. Turn bow physically with the body: left row aims left with leftward arrow before release; up row aims away/up with foreshortened bow across shoulders in front of body, naturally occluded. Full draw connects pulling fingers/string/arrow nock at cheek; release and recover have NO nocked arrow. Short scarf above waist except shallow tails. Keep identity, style, camera and body size invariant. All heads, bows and tails fully contained within own cell; at least 12% empty cell margin. Rich ink/woodblock linen finish matching input 1, not glossy anime, no labels, grids or text. Actual alpha background.\n",
+    "referenced_image_paths": [
+      "/Users/linxin/Developer/GAME/十日/assets/characters/child/down-archery-v3.png",
+      "/Users/linxin/Developer/GAME/十日/assets/mvp/child-upper-refined-v3.png"
+    ],
+    "transparent_background": true,
+    "tool_returned_path": "/Users/linxin/.codex/generated_images/01a177c1-6e3a-75a1-ad07-76b21118a761/exec-25c603a9-05b2-452c-a993-bc34cd2dcf3a.png",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-left-up.png",
+    "selected": false,
+    "sheet_sha256": "8ed7cc77cdd3084fa2c6cd070df451b5c7f8752ff3f2985be285d9e00b9e4743",
+    "references_sha256": {
+      "assets/characters/child/down-archery-v3.png": "3c3f596f09252a6035b8e7f103f0421cccdf4b58f2db5f8a405d9db6a75ee288",
+      "assets/mvp/child-upper-refined-v3.png": "1b08ed48d6eb324a07d64babc20241854d6d12a55d0135a4167ed835b72d36f9"
+    },
+    "archive_sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-left-up.png",
+    "archive_prompt": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/archery-left-up.txt",
+    "selection_reason": "Rejected: rear belt buckle / front scarf knot on back, insufficient margin; spacing revision replaces it."
+  },
+  {
+    "id": "archery-left-up-spacing",
+    "tool": "image_gen.imagegen",
+    "art_source": "host_image",
+    "model": "unknown (not returned)",
+    "cost": null,
+    "prompt_file": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/archery-left-up-spacing.txt",
+    "prompt": "Edit the first image ONLY with these exact corrections. Keep same eight sprites, 4-column x2-row ordering (top row LEFT ready/draw/release/recover; bottom row UP/BACK same four phases), same head identity, poses, colours and carved ink finish. Second input is canonical child identity only.\n1. Make each ENTIRE sprite 20% smaller around its own cell centre, expanding the image with generous truly transparent gutters if necessary. NO sprite or scarf may touch an adjacent sprite or any outer image edge. Current far-right scarf tails are cut by image edge; paint the missing scarf ends naturally inside its own cell. Each sprite must have empty transparent border on all four sides, including topknots, bow tips, arrowheads, scarf tails and belt.\n2. In the UP/BACK row only, the belt is a PLAIN black strap viewed from behind: remove rear bronze ring buckles. Scarf knot is on the front of neck and therefore NOT visible from behind: remove rear bow/knot and keep one continuous draped scarf collar across back. The front tunic crossing/knot must not appear on back. Preserve up-facing poses, topknots and body size.\nDo not redesign any front/left facial details, change bow phases or add extra figures. No grid, text, shadows, legs, pelvis or effects. Bodies stop at lower black belt edge. Real transparent alpha background.\n",
+    "referenced_image_paths": [
+      "/Users/linxin/Developer/GAME/十日/output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-left-up.png",
+      "/Users/linxin/Developer/GAME/十日/assets/characters/child/down-archery-v3.png"
+    ],
+    "transparent_background": true,
+    "tool_returned_path": "/Users/linxin/.codex/generated_images/01a177c1-6e3a-75a1-ad07-76b21118a761/exec-a4d31b4c-256b-400b-8c75-34a487749166.png",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-left-up-spacing.png",
+    "selected": true,
+    "sheet_sha256": "82f232aadfd6ea6ee4b2521dde1e71a6989ad0fd45c8f8d91156e6462f61da35",
+    "references_sha256": {
+      "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-left-up.png": "8ed7cc77cdd3084fa2c6cd070df451b5c7f8752ff3f2985be285d9e00b9e4743",
+      "assets/characters/child/down-archery-v3.png": "3c3f596f09252a6035b8e7f103f0421cccdf4b58f2db5f8a405d9db6a75ee288"
+    },
+    "archive_sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-left-up-spacing.png",
+    "archive_prompt": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/archery-left-up-spacing.txt",
+    "selection_reason": "Selected top row for left; bottom row superseded by up-pose repair.",
+    "selected_source_sheet": "assets/characters/action-redraw-v1/identity-v4/sheets/archery-left-up-spacing.png"
+  },
+  {
+    "id": "archery-up-pose",
+    "tool": "image_gen.imagegen",
+    "art_source": "host_image",
+    "model": "unknown (not returned)",
+    "cost": null,
+    "prompt_file": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/archery-up-pose.txt",
+    "prompt": "Edit ONLY the bottom row (UP/AWAY facing) of the first image. Keep the entire top row pixel-for-pixel if possible: LEFT ready, draw, release, recover. Keep image dimensions, layout, transparent background, body and head scale, bottom-row waist registration, identity, hair, outfit and scarf exactly unchanged. Second image is the same approved identity reference, not a new design.\nThe defect is that all four UP-facing poses look like raising a bow overhead for a spell. They must be ordinary HORIZONTAL archery aimed toward the top of the game screen, seen from behind by the same elevated camera. Lower the elbows and forearms: BOTH arms extend FORWARD AWAY from viewer, in FRONT of the chest, never up over head. Holding hand is toward upper-left of torso around SHOULDER height; drawing hand draws back to the side of cheek for full draw. Bow lies physically in front of torso and is mostly OCCLUDED by head/shoulder from this back view. Bow ends can peek to either side of shoulder, but NO bow or holding hand higher than TOPKNOT, and no arch raised over hair. Nocked arrow points up/away with strong foreshortening. Place its visible TIP near shoulder level beside head, not far above hair. Before release taut bowstring connects drawing fingers and two bow tips; after release no nocked arrow. Four bottom-row phases: relaxed ready with lowered bow, full draw to cheek, release fingers by cheek with holding arm forward, recovered lowered bow. Not arrow-rain, salute or overhead pose.\nPreserve complete topknots, plain black BACK belt with NO buckle, continuous red back scarf collar without front knot, existing head-to-waist lengths and anatomical proportions. Bodies stop at waist. No new legs, effects, shadows, text or grids. All sprites and scarf tails inside cell with visible transparent gutters.\n",
+    "referenced_image_paths": [
+      "/Users/linxin/Developer/GAME/十日/output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-left-up-spacing.png",
+      "/Users/linxin/Developer/GAME/十日/assets/characters/child/down-archery-v3.png"
+    ],
+    "transparent_background": true,
+    "tool_returned_path": "/Users/linxin/.codex/generated_images/01a177c1-6e3a-75a1-ad07-76b21118a761/exec-e5ec4e0b-17b1-46d3-b4dd-1952f0cef8ec.png",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-up-pose.png",
+    "selected": true,
+    "sheet_sha256": "0890c96f1e2c04297112e6488157451c9fbff948172bcd51ae57d15decd00d05",
+    "references_sha256": {
+      "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-left-up-spacing.png": "82f232aadfd6ea6ee4b2521dde1e71a6989ad0fd45c8f8d91156e6462f61da35",
+      "assets/characters/child/down-archery-v3.png": "3c3f596f09252a6035b8e7f103f0421cccdf4b58f2db5f8a405d9db6a75ee288"
+    },
+    "archive_sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/archery-up-pose.png",
+    "archive_prompt": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/archery-up-pose.txt",
+    "selection_reason": "Selected bottom row for up; top row not used.",
+    "selected_source_sheet": "assets/characters/action-redraw-v1/identity-v4/sheets/archery-up-pose.png"
+  },
+  {
+    "id": "skills-right",
+    "tool": "image_gen.imagegen",
+    "art_source": "host_image",
+    "model": "unknown (not returned)",
+    "cost": null,
+    "prompt_file": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/skills-right.txt",
+    "prompt": "Use case: identity-preserve. Edit the SECOND input's eight right-facing upper body skill poses to exactly match the FIRST input's approved child archer identity and proportions.\nRetain 4 columns x 2 rows and eight distinct actions: row1 four pierce-arrow Q phases (ready, horizontal full draw, release, recover); row2 four arrow-rain E phases (raise bow toward sky, full upward draw, fingers release, recover). All face RIGHT with fixed elevated camera, and only head/eyes tilt up when rain action requires it. Head skull/topknot SIZE, ivory tunic shoulder width, short child torso length, black cuffs, bronze-ring black belt and red scarf are identical to canonical image 1 in every pose. Avoid changing into older/skinnier boy. Same woodcut/ink texture. Body ends precisely at belt LOWER edge, no pelvis/skirt/legs. Include one correct same carved brown-gold bow per sprite, taut string to rear hand before release, no arrows after release. Preserve all eight distinct poses while keeping crown-to-belt proportion constant except natural head tilt. Give every sprite 15 percent empty transparent cell margin, no contact or overlap between sprites, no object cut by sheet edge. Genuine transparency, no scenery, text, grid or shadows.\n",
+    "referenced_image_paths": [
+      "/Users/linxin/Developer/GAME/十日/assets/characters/child/down-archery-v3.png",
+      "/Users/linxin/Developer/GAME/十日/assets/characters/action-redraw-v1/layered-v2/sheets/hero-skills-upper.png"
+    ],
+    "transparent_background": true,
+    "tool_returned_path": "/Users/linxin/.codex/generated_images/01a177c1-6e3a-75a1-ad07-76b21118a761/exec-6ea76bd1-0a49-4d60-8786-2424e9ae01e1.png",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/skills-right.png",
+    "selected": true,
+    "sheet_sha256": "b0910fc0d7e5315cb9923911c5bcfb60336dad3546aa3070e6cb0ef42e76db55",
+    "references_sha256": {
+      "assets/characters/child/down-archery-v3.png": "3c3f596f09252a6035b8e7f103f0421cccdf4b58f2db5f8a405d9db6a75ee288",
+      "assets/characters/action-redraw-v1/layered-v2/sheets/hero-skills-upper.png": "66a3e1a342a5492a86c9bd412515ace10bb01e9b79735db70b2e27892c6872b8"
+    },
+    "archive_sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/skills-right.png",
+    "archive_prompt": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/skills-right.txt",
+    "selection_reason": "AI selected for integration; user visual acceptance pending.",
+    "selected_source_sheet": "assets/characters/action-redraw-v1/identity-v4/sheets/skills-right.png"
+  },
+  {
+    "id": "skills-directions",
+    "tool": "image_gen.imagegen",
+    "art_source": "host_image",
+    "model": "unknown (not returned)",
+    "cost": null,
+    "prompt_file": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/skills-directions.txt",
+    "prompt": "Use case: identity-preserve. Repair a modular 2D game character UPPER BODY sprite sheet. Image 1 is the canonical approved child; image 2 supplies required exact POSES and DIRECTIONS only.\nRebuild image2 as 4 columns x 4 rows, SIXTEEN fully isolated transparent upper bodies. Column directions exactly RIGHT, DOWN/TOWARD, LEFT, UP/AWAY. Rows exactly: (1) full draw horizontal pierce arrow Q, (2) raise arms and look skyward arrow rain E, (3) low torso lean dodge, (4) slight hunched hurt hand on chest. NO weapons, bows, arrows or effect marks (these are separate engine layers). Do not change the pose semantics or turn an up/back sprite toward viewer.\nCorrect EVERY figure to same design, head/skull volume, topknot mass, short compact child torso, ivory cross-lapel sleeve width, black cuffs, black belt and round bronze buckle, vermilion neck scarf as canonical image1. Match its elevated three-quarter game camera for every column. The original older slender side profiles and low-camera backs are the defect; replace them with SAME child rotated in place. Preserve adult-free child anatomy. Same tunic cloth texture/ink linework. No variable head size between cells. Entire body ENDS at black belt lower edge; no skirt/pelvis/legs, no shadow. Keep scarf tails contained above belt where possible. Full head, arms, belt and scarf fully inside own cell with 12% transparent gutter on ALL sides. No touching neighbor or frame edge, no text/grid/labels. Real alpha transparency.\n",
+    "referenced_image_paths": [
+      "/Users/linxin/Developer/GAME/十日/assets/characters/child/down-archery-v3.png",
+      "/Users/linxin/Developer/GAME/十日/assets/mvp02/child-skills-upper-v1.png"
+    ],
+    "transparent_background": true,
+    "tool_returned_path": "/Users/linxin/.codex/generated_images/01a177c1-6e3a-75a1-ad07-76b21118a761/exec-e01f1a41-b4e3-41cb-9b12-17b8fb2518f0.png",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/skills-directions.png",
+    "selected": false,
+    "sheet_sha256": "8c1c0d23ee0f614af339ed2337d85a1f117f15e39ff37c57c8bd410a8220a996",
+    "references_sha256": {
+      "assets/characters/child/down-archery-v3.png": "3c3f596f09252a6035b8e7f103f0421cccdf4b58f2db5f8a405d9db6a75ee288",
+      "assets/mvp02/child-skills-upper-v1.png": "400cea6ef879542e1dbbd27782109333bbee715232efbc6b0f4d5c6b448147e3"
+    },
+    "archive_sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/skills-directions.png",
+    "archive_prompt": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/skills-directions.txt",
+    "selection_reason": "Intermediate body revision; integrated-weapon revision replaces it after actual-scene review found separate bow/hand mismatch.",
+    "selected_source_sheet": "assets/characters/action-redraw-v1/identity-v4/sheets/skills-directions.png"
+  },
+  {
+    "id": "run-lower",
+    "tool": "image_gen.imagegen",
+    "art_source": "host_image",
+    "model": "unknown (not returned)",
+    "cost": null,
+    "prompt_file": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/run-lower.txt",
+    "prompt": "Use case: identity-preserve. Edit existing game character lower-body run poses to match the SAME lower-body clothing/proportions in input1. Input1 is the four-direction approved lower-body CLOTHING reference; input2 is eight right-facing running frames to repair.\nKeep input2's 4 columns x 2 rows, eight sequential rightward running poses, clear near/far leg alternation and no torso/head/arms/weapons. Correct its exaggerated huge boots / tiny upper shins and giant front sole to input1's compact indigo baggy trousers, cream shin wraps, small flat black cloth shoes with ochre trim. The ivory ragged TUNIC SKIRT visible in input1 must be present, same length covering upper thighs and same torn panels in all poses; no redesign. Top cut is exactly just BELOW black waist belt: do NOT duplicate the belt or ring buckle (upper body has belt). Top of each sprite is the SAME waist seam, with same apparent hip width. Match fixed elevated 3/4 game camera, right-facing throughout. Hip-to-contact-foot height constant for grounded poses; natural run flexion only. No lunge toward camera, no giant sole pointed toward viewer, no giant near leg. Preserve woodcut ink/linen texture and colours from input1. Generous 15% transparent gutter in each cell, nothing touching neighboring cells or image edge. No floor/shadow/effects/text/grid. Real alpha transparency.\n",
+    "referenced_image_paths": [
+      "/Users/linxin/Developer/GAME/十日/assets/mvp02/child-lower-unified-v2.png",
+      "/Users/linxin/Developer/GAME/十日/assets/characters/action-redraw-v1/layered-v2/sheets/hero-run-lower.png"
+    ],
+    "transparent_background": true,
+    "tool_returned_path": "/Users/linxin/.codex/generated_images/01a177c1-6e3a-75a1-ad07-76b21118a761/exec-7fcfa423-dc9e-4fd1-9225-337ce5e5fe0c.png",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/run-lower.png",
+    "selected": true,
+    "sheet_sha256": "c39ea2798ea412be17ef5f22a45f18712efe0f72ae2baf7e1b86443f42031190",
+    "references_sha256": {
+      "assets/mvp02/child-lower-unified-v2.png": "b5431c80309bebb1c10f03a35073916ebe26553f6c0643afe5d98befc260fa7f",
+      "assets/characters/action-redraw-v1/layered-v2/sheets/hero-run-lower.png": "437b529be1cf8836b6c1f91c9ff5feed5823ec6cef77d87bec3f74a1c996c7d8"
+    },
+    "archive_sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/run-lower.png",
+    "archive_prompt": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/run-lower.txt",
+    "selection_reason": "AI selected for integration; user visual acceptance pending.",
+    "selected_source_sheet": "assets/characters/action-redraw-v1/identity-v4/sheets/run-lower.png"
+  },
+  {
+    "id": "dodge-right",
+    "tool": "image_gen.imagegen",
+    "art_source": "host_image",
+    "model": "unknown (not returned)",
+    "cost": null,
+    "prompt_file": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/dodge-right.txt",
+    "prompt": "Use case: identity-preserve. Repair image3's eight whole-body rightward dodge poses to the SAME approved child archer, WITHOUT changing the eight movement phases. Image1 is exact face, skull/topknot size, short torso, shoulder width, ivory/black/red cloth and ink rendering identity. Image2 is the required lower-body clothing/proportions reference: indigo baggy trousers, ragged ivory tunic skirt, cream shin wraps, small flat black shoes, black belt/bronze ring. Image3 is pose reference only and its changing body sizes are defects.\n4 columns by 2 rows, eight distinct whole-body dodge states left-to-right top-to-bottom: anticipation, lowered center, push, extended low glide, tuck, braking contact, rising, restored ready. Face RIGHT throughout at same elevated three-quarter game camera. Same child head size and body segment lengths across all poses, no growth/shrink as he crouches, no baby-like big head/huge boots. Include exactly one same carved brown-gold bow gripped safely, no nocked arrow or floating effects. Preserve legitimate pose compression/flight and foot contact, no shadows/scenery/motion streaks. Complete hair and feet, all artwork within its own cell with 12% empty margin, real transparent background, no text/labels/grid.\n",
+    "referenced_image_paths": [
+      "/Users/linxin/Developer/GAME/十日/assets/characters/child/down-archery-v3.png",
+      "/Users/linxin/Developer/GAME/十日/assets/mvp02/child-lower-unified-v2.png",
+      "/Users/linxin/Developer/GAME/十日/output/art/action-redraw/2026-10-26-prototype-v1/sheets/hero-dodge.png"
+    ],
+    "transparent_background": true,
+    "tool_returned_path": "/Users/linxin/.codex/generated_images/01a177c1-6e3a-75a1-ad07-76b21118a761/exec-cdaeffa3-f3cc-43aa-a559-5ea9dd13ec52.png",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/dodge-right.png",
+    "selected": false,
+    "sheet_sha256": "e17e455d79829cad43692b90e905f73e066edba86bebbce00738d27877fb38bc",
+    "references_sha256": {
+      "assets/characters/child/down-archery-v3.png": "3c3f596f09252a6035b8e7f103f0421cccdf4b58f2db5f8a405d9db6a75ee288",
+      "assets/mvp02/child-lower-unified-v2.png": "b5431c80309bebb1c10f03a35073916ebe26553f6c0643afe5d98befc260fa7f",
+      "output/art/action-redraw/2026-10-26-prototype-v1/sheets/hero-dodge.png": "1a6a3b7c375d51a6a53cfb68ccc1d9c734d658b97039cab80eccafd2f87f9bef"
+    },
+    "archive_sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/dodge-right.png",
+    "archive_prompt": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/dodge-right.txt",
+    "selection_reason": "Not selected: no clear proportional improvement over existing full-body dodge; keep the existing eight-pose clip and its fixed 0.20 scale."
+  },
+  {
+    "id": "skills-directions-weapons",
+    "tool": "image_gen.imagegen",
+    "art_source": "host_image",
+    "model": "unknown (not returned)",
+    "cost": null,
+    "prompt_file": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/skills-directions-weapons.txt",
+    "prompt": "Use case: precise-object-edit / identity-preserve. Repair the FIRST input's exact 16 modular upper-body game poses. Preserve each head, face, hair, body proportions, torso lean, waist registration, outfit and direction from input1. Input2 shows canonical approved identity AND exact carved brown-gold bow design. The problem is a separate game bow floats away from the hands; integrate the held bow correctly into each sprite.\nKeep FOUR columns x FOUR rows, 16 fully SEPARATED UPPER BODY sprites. Column directions RIGHT, DOWN/towards viewer, LEFT, UP/away from viewer. Row1 pierce arrow Q full draw, Row2 rain E skyward full draw, Row3 low dodge pose, Row4 hunched hurt pose. Keep exactly these phase/direction semantics and the same child head and body segment sizes across ALL cells, with constant scale and elevated three-quarter game camera.\nADD exactly ONE SAME BOW physically gripped in a hand per sprite, natural hand wrapping the central grip, and correct bowstring contacting the pulling hand. Adapt hand fingers only as required to grip it. Q row: arrow nock and rear fingers at cheek, taut string joins upper bow tip, draw fingers, lower tip, arrow points in that column's aiming direction with valid foreshortening. DOWN row1 bow should be横置 in front of lower chest like canonical input2, string converges to pulling fingers below face and arrow aims down towards viewer. UP row1 arms extend FORWARD/AWAY at chest height and bow is in front of head/torso, naturally OCCLUDED from back, not raised overhead. E row2 bow raised toward sky in holding hand, other hand pulls to cheek, arrow/string connect; appropriate rotated front/left/back camera but same anatomy. Dodge row3 and hurt row4: bow safely held close to body in holding hand, bowstring relaxed, NO nocked arrows. No detached weapons or arrows, no duplicate bow/string.\nBody ends exactly at LOWER edge of black waist belt; NO pelvis/skirt/legs. Back view has PLAIN black belt without buckle, and no front scarf knot on back. Preserve existing short ivory tunic body, black cuffs, red neck scarf and hair, premium carved ink/woodcut texture. No new clothing/face variants or giant hands. Every head/bow/scarf must be FULLY INSIDE OWN CELL with at least 12% transparent gutter on each side; scale the whole arrangement down uniformly to leave space if needed. Do NOT let adjacent figures/bows touch. No grid, text, labels, shadows, scenery or magic effects. Real transparent alpha background.\n",
+    "referenced_image_paths": [
+      "/Users/linxin/Developer/GAME/十日/output/art/CHR-001/2026-10-27-four-direction-v4/sheets/skills-directions.png",
+      "/Users/linxin/Developer/GAME/十日/assets/characters/child/down-archery-v3.png"
+    ],
+    "transparent_background": true,
+    "tool_returned_path": "/Users/linxin/.codex/generated_images/01a177c1-6e3a-75a1-ad07-76b21118a761/exec-fc454817-f08a-449d-87ef-942fe914e7f4.png",
+    "sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/skills-directions-weapons.png",
+    "selected": true,
+    "selection_reason": "AI selected 15 of 16 frames: back-facing Q arrow points right and is excluded; runtime reuses approved-direction ordinary up full draw. User native visual acceptance pending.",
+    "sheet_sha256": "e7b775fad4ded48dd44e6d4b98663122a496115fafb9f885de7720757a72f60d",
+    "references_sha256": {
+      "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/skills-directions.png": "8c1c0d23ee0f614af339ed2337d85a1f117f15e39ff37c57c8bd410a8220a996",
+      "assets/characters/child/down-archery-v3.png": "3c3f596f09252a6035b8e7f103f0421cccdf4b58f2db5f8a405d9db6a75ee288"
+    },
+    "archive_sheet": "output/art/CHR-001/2026-10-27-four-direction-v4/sheets/skills-directions-weapons.png",
+    "archive_prompt": "output/art/CHR-001/2026-10-27-four-direction-v4/prompts/skills-directions-weapons.txt",
+    "selected_source_sheet": "assets/characters/action-redraw-v1/identity-v4/sheets/skills-directions-weapons.png"
+  }
+]

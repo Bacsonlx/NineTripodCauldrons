@@ -1,0 +1,163 @@
+[
+  {
+    "id": "hero-run-lower",
+    "tool": "image_gen.imagegen",
+    "art_source": "host_image",
+    "model": "unknown (not returned)",
+    "cost": "unknown (not returned)",
+    "edit_target": "output/art/action-redraw/2026-10-26-prototype-v1/sheets/hero-run.png",
+    "prompt": "assets/characters/action-redraw-v1/layered-v2/prompts/lower-run.txt",
+    "sheet": "assets/characters/action-redraw-v1/layered-v2/sheets/hero-run-lower.png",
+    "sheet_sha256": "437b529be1cf8836b6c1f91c9ff5feed5823ec6cef77d87bec3f74a1c996c7d8",
+    "atlas_sha256": "26cdf21c87add55bf698ab04d5f7fc5fa9e3a1e9f30428f69c2d77f2449b2aa6",
+    "source_cell_belt_centers": [
+      [
+        249,
+        153
+      ],
+      [
+        242,
+        149
+      ],
+      [
+        243,
+        150
+      ],
+      [
+        241,
+        148
+      ],
+      [
+        256,
+        144
+      ],
+      [
+        246,
+        140
+      ],
+      [
+        253,
+        144
+      ],
+      [
+        262,
+        136
+      ]
+    ],
+    "padding": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "tool_returned_file": "/Users/linxin/.codex/generated_images/01a177c1-6e3a-75a1-ad07-76b21118a761/exec-5a594e94-a38e-405c-ba5a-d48f76407c82.png"
+  },
+  {
+    "id": "hero-archery-upper",
+    "tool": "image_gen.imagegen",
+    "art_source": "host_image",
+    "model": "unknown (not returned)",
+    "cost": "unknown (not returned)",
+    "edit_target": "output/art/action-redraw/2026-10-26-layered-v2/sheets/hero-archery-upper.png",
+    "prompt": "assets/characters/action-redraw-v1/layered-v2/prompts/upper-archery-spacing-v2.txt",
+    "sheet": "assets/characters/action-redraw-v1/layered-v2/sheets/hero-archery-upper.png",
+    "sheet_sha256": "3ea9ba120a4b8c7d03223fd9aa112769a9e8048a8bf0e9642550c3e878b03371",
+    "atlas_sha256": "ca420da152fef98dffcb0af35021c274a84cdf27926be2ad76dbbee69ae7456e",
+    "source_cell_belt_centers": [
+      [
+        235,
+        338
+      ],
+      [
+        216,
+        357
+      ],
+      [
+        188,
+        359
+      ],
+      [
+        184,
+        360
+      ],
+      [
+        244,
+        305
+      ],
+      [
+        232,
+        306
+      ],
+      [
+        207,
+        309
+      ],
+      [
+        223,
+        306
+      ]
+    ],
+    "padding": [
+      3,
+      0,
+      0,
+      0
+    ],
+    "parent_reference": "output/art/action-redraw/2026-10-26-prototype-v1/sheets/hero-archery.png",
+    "selection_reason": "Original upper sheet merged neighboring components and produced two empty frames. Spaced revision has eight nonempty isolated poses.",
+    "tool_returned_file": "/Users/linxin/.codex/generated_images/01a177c1-6e3a-75a1-ad07-76b21118a761/exec-7449a23b-eb90-491f-b297-458f88cbb12e.png"
+  },
+  {
+    "id": "hero-skills-upper",
+    "tool": "image_gen.imagegen",
+    "art_source": "host_image",
+    "model": "unknown (not returned)",
+    "cost": "unknown (not returned)",
+    "edit_target": "output/art/action-redraw/2026-10-26-prototype-v1/sheets/hero-skills.png",
+    "prompt": "assets/characters/action-redraw-v1/layered-v2/prompts/upper-skills.txt",
+    "sheet": "assets/characters/action-redraw-v1/layered-v2/sheets/hero-skills-upper.png",
+    "sheet_sha256": "66a3e1a342a5492a86c9bd412515ace10bb01e9b79735db70b2e27892c6872b8",
+    "atlas_sha256": "ce793623ba2fee3e8b0aeffc893c6cbbedd4961374a87c27c8cf24d677ce890e",
+    "source_cell_belt_centers": [
+      [
+        225,
+        375
+      ],
+      [
+        211,
+        374
+      ],
+      [
+        195,
+        374
+      ],
+      [
+        206,
+        374
+      ],
+      [
+        223,
+        352
+      ],
+      [
+        221,
+        350
+      ],
+      [
+        211,
+        348
+      ],
+      [
+        236,
+        351
+      ]
+    ],
+    "padding": [
+      13,
+      0,
+      0,
+      18
+    ],
+    "tool_returned_file": "/Users/linxin/.codex/generated_images/01a177c1-6e3a-75a1-ad07-76b21118a761/exec-e25e2bf1-be74-459a-acc6-57cfbfb824e7.png"
+  }
+]

@@ -546,6 +546,7 @@ func use_quick(room: RefCounted) -> void:
 
 func enemy_defeated(enemy: Dictionary, room: RefCounted) -> void:
 	kill_record()
+	if room.layout.get("objective","")=="boss": return
 	# 第一批每波首个真实击杀一件符，避免把旧12怪掉落率套到42怪。
 	var wave_key: String = "%s:%d" % [room.layout.get("roomId",""),enemy.group]
 	if rewarded_waves.has(wave_key): return

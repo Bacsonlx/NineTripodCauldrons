@@ -14,6 +14,9 @@ var pickup_label: Label
 var skill_view: Node2D
 var item_label: Label
 var journey_data: Dictionary = {}
+var pause_menu: ColorRect
+var resume_button: Button
+var returning_home: bool = false
 
 func build_hud() -> void:
 	super.build_hud()
@@ -38,13 +41,48 @@ func build_hud() -> void:
 	item_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
 	item_label.offset_left=-450; item_label.offset_right=-24; item_label.offset_top=-255; item_label.offset_bottom=-190
 	item_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; hud.add_child(item_label)
+	var pause_layer: CanvasLayer = CanvasLayer.new(); pause_layer.layer=30; add_child(pause_layer)
+	pause_menu=ColorRect.new(); pause_menu.name="PauseMenu"; pause_menu.color=Color("080d09ed")
+	pause_menu.theme=hud.theme; pause_layer.add_child(pause_menu)
+	pause_menu.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT); pause_menu.hide()
+	var center: CenterContainer = CenterContainer.new(); pause_menu.add_child(center)
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var menu: VBoxContainer = VBoxContainer.new(); menu.add_theme_constant_override("separation",16); center.add_child(menu)
+	menu.add_child(make_label("已暂停",26))
+	menu.add_child(make_label("返回首页将结束本次测试，不保留进度。",16))
+	resume_button=Button.new(); resume_button.text="继续测试 · Esc"; menu.add_child(resume_button)
+	resume_button.custom_minimum_size.y=48; resume_button.pressed.connect(resume_test)
+	var back: Button = Button.new(); back.text="返回首页"; menu.add_child(back)
+	back.custom_minimum_size.y=48; back.pressed.connect(return_home)
+	resume_button.focus_next=resume_button.get_path_to(back); resume_button.focus_previous=resume_button.get_path_to(back)
+	back.focus_next=back.get_path_to(resume_button); back.focus_previous=back.get_path_to(resume_button)
+
+func resume_test() -> void:
+	controls.interrupt(); room.set_paused(false)
+	present(room.snapshot(),0)
+
+func return_home() -> void:
+	if returning_home or not room.paused: return
+	returning_home=true; controls.interrupt()
+	get_viewport().set_input_as_handled()
+	enter_home.call_deferred()
+
+func enter_home() -> void:
+	var error: Error = get_tree().change_scene_to_file("res://scenes/home.tscn")
+	if error!=OK:
+		returning_home=false; push_error("首页加载失败："+str(error))
 
 func layout_boss_bar() -> void:
 	boss_bar.offset_top=hud.encounter.position.y+60
 	boss_bar.offset_bottom=boss_bar.offset_top+12
 
 func _ready() -> void:
-	var options: Dictionary = PlayOptions.parse(Array(OS.get_cmdline_user_args()))
+	var arguments: Array = Array(OS.get_cmdline_user_args())
+	# 首页选择只消费一次；命令行启动继续使用原参数。
+	if get_tree().has_meta("home_test_arguments"):
+		arguments=get_tree().get_meta("home_test_arguments")
+		get_tree().remove_meta("home_test_arguments")
+	var options: Dictionary = PlayOptions.parse(arguments)
 	if options.has("error"):
 		push_error(options.error); get_tree().quit(2); return
 	if options.mode=="alpha":
@@ -94,8 +132,7 @@ func present_new_room() -> void:
 	controls.interrupt()
 	mount_map()
 	room=journey.active
-	room.layout.grips=room.layout.grips.duplicate()
-	room.layout.grips[1]=atlas.upperDown.grip.duplicate()
+	register_player_grips()
 	controls=Controls.new(room)
 	if camp_panel!=null: camp_panel.room=room; camp_panel.controls=controls; camp_panel.signature=""
 	for body in enemy_bodies.values(): body.queue_free()
@@ -108,6 +145,7 @@ func present_new_room() -> void:
 	backdrop.setup(room.layout,atlas,textures)
 	overview=false; overview_button.text="房间总览 · M"
 	walk_time=0; clock=0
+	frame_actor.reset_pose()
 	update_camera(); present(room.snapshot(),0); mark_presented()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -128,6 +166,13 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 	journey_data=journey.snapshot(snapshot)
 	super.present(snapshot,seconds)
 	var data: Dictionary = journey_data
+	var show_pause: bool = room.paused and not data.reading
+	if pause_menu.visible!=show_pause:
+		pause_menu.visible=show_pause
+		if show_pause: resume_button.grab_focus()
+		else:
+			var focused: Control = get_viewport().gui_get_focus_owner()
+			if focused!=null and pause_menu.is_ancestor_of(focused): focused.release_focus()
 	loot_view.update_state(data,seconds)
 	world_items.update(data)
 	skill_view.update(data)
@@ -136,6 +181,7 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 	var runtime: Dictionary = data.itemEffects
 	item_label.text="V：%s · 快马%.1f秒 · 司晨%d/3" % [(quick.name+" #"+str(quick.id)) if not quick.is_empty() else "未绑定实物",runtime.haste,runtime.morningUses]
 	if data.alpha.prototypeBurn: item_label.text+="\n原型B：只测试烧物／焚书；容器战斗效果未开放"
+
 	var card: Dictionary = data.alpha.pickupCard
 	pickup_label.visible=not data.alpha.camp and not data.reading
 	pickup_label.text=("%s · %.1f秒\n%s" % [card.name,card.remaining,card.reason]+("\nTab 尝试转坛" if not card.attempted else "")) if not card.is_empty() else "I 营地整理（完成房间并靠近整理点）\n"+data.alpha.message
@@ -154,6 +200,8 @@ func hud_lines() -> Dictionary:
 	var encounter: String = room.layout.roomTitle+" · 已探索 %d / %d 房间" % [data.visitedRooms,Journey.ROOM_IDS.size()]+"\n"+("房间已完成 · 所有门已开放" if data.roomComplete else guidance_at(Vector2.ZERO).landmark)
 	if data.has("boss"):
 		encounter="索尔  %d / 1200\n%s" % [data.boss.health,"索尔已败退 · 前往出口完成首关" if data.roomComplete else "锤已离手 · 承伤提高25%" if data.vulnerable else "观察招式 · 击败后开门"]
+		if not data.roomComplete:
+			encounter+=" · 影偶 %d / 8" % data.enemies.filter(func(enemy: Dictionary): return enemy.health>0).size()
 	if data.objective=="combat" and not data.roomComplete:
 		var remaining: int = 0
 		for enemy in data.enemies:
@@ -164,5 +212,5 @@ func hud_lines() -> Dictionary:
 	lines.encounter=encounter
 	if state.feedback==null and state.interaction==null:
 		lines.interaction="走近门按 F 前往下一房间" if data.roomComplete else "完成本房任务后，来路与出口一起开放"
-		if data.objective=="combat": lines.interaction="血／蓝瓶落地后走近按 F 即时补充 · 满值留地"
+		if data.objective in ["combat","boss"]: lines.interaction="血／蓝瓶落地后走近按 F 即时补充 · 满值留地"
 	return lines

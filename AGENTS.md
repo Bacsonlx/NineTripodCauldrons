@@ -46,7 +46,11 @@
 
 制作人物、道具、图标、短特效，或对已有图片切帧、对齐、打包时，先读取 [Agent Sprite Forge 使用指南](docs/art/Agent_Sprite_Forge使用指南.md)，按任务使用用户级 `generate2dsprite`／`video2dsprite`。安装锁与依赖位于 `tools/asset_forge/`；生图路线、角色分层合同及加工验收以该指南为准。
 
+制作、修订或接入资产前，读取[资产追溯](docs/guides/验证证据与资产追溯.md#资产追溯)，在现有素材 README 维护“参考 → 候选／修订 → 选择依据 → 正式源文件 → 运行引用 → 验证证据”；用户决定和 AI 评审理由分别记录。
+
 ### Verification
+
+修改或验收游戏前，读取[验证证据](docs/guides/验证证据与资产追溯.md#验证证据)，选择相关检查并在任务记录及交付结论中分类报告构建、逻辑、运行、交互、视觉、性能的结果与证据；未验证／不适用说明原因。构建通过不等于试玩通过，视觉确认注明对象、版本和范围。
 
 修改 Godot 代码后运行 `python3 tools/migration/check_godot.py`（导入、规则测试、完整场景）；规则／输入可单独运行 `godot --headless --path godot --script res://tests/run_tests.gd`。资源与呈现改动同时检查干净导入及对应原生包；导出用 `python3 tools/migration/export_godot.py`。纯文档改动检查链接、命令与状态一致性。
 

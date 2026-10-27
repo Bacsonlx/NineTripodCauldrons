@@ -395,6 +395,7 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 			for enemy in enemies:
 				if enemy.group==encounter: enemy.phase="chase"
 	for enemy in enemies:
+		if enemy.get("boss",false): continue
 		enemy.flash=maxf(0,enemy.flash-seconds)
 		if enemy.phase=="inactive": continue
 		var pushed: bool = enemy.knockTime>0

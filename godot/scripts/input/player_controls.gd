@@ -21,7 +21,7 @@ func key_down(code: int,repeated: bool = false) -> void:
 	var hidden: bool = room.ui_paused()
 	if code==KEY_ESCAPE:
 		if room.reading: room.close_reading()
-		else: room.set_paused(not hidden)
+		else: room.set_paused(not room.paused)
 		interrupt()
 	elif code==KEY_R:
 		if not hidden: room.reset(); interrupt()

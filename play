@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""快速启动当前 Godot 第一关，或选择已有专项内容。"""
+"""启动 Godot 首页并进入汤谷，或直接选择已有专项内容。"""
 import argparse
 import json
 from pathlib import Path
@@ -28,7 +28,7 @@ def nonnegative(text):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--test", choices=["level", "boss", "drops", "alpha", "rules"], help="专项内容；省略则正常进入第一关")
+    parser.add_argument("--test", choices=["level", "boss", "drops", "alpha", "rules"], help="专项内容；省略则先进入首页，level 可直达第一关")
     parser.add_argument("--room", choices=ROOMS, help="从指定房间开始，R 仍从该房间重试")
     parser.add_argument("--health", type=resource, help="初始生命 1—100")
     parser.add_argument("--mana", type=resource, help="初始蓝量 0—100")

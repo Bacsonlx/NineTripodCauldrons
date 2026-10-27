@@ -18,6 +18,7 @@ var torso: Sprite2D
 var bow: Sprite2D
 var nocked_arrow: Sprite2D
 var failed: Sprite2D
+var frame_actor: Node2D
 var enemy_bodies: Dictionary = {}
 var backdrop: Node2D
 var combat_effects: Node2D
@@ -65,9 +66,6 @@ func _ready() -> void:
 		room=create_room(layout)
 		controls=Controls.new(room)
 	atlas = JSON.parse_string(FileAccess.get_file_as_string("res://assets/generated/atlas.json"))
-	# 按正式素材的离弦箭尖标定普通箭起点；技能仍使用各自握点。
-	room.layout.grips = room.layout.grips.duplicate()
-	room.layout.grips[1] = atlas.upperDown.grip.duplicate() if room.layout.grips[1] is Dictionary else Vector2(atlas.upperDown.grip.x, atlas.upperDown.grip.y)
 	for key in atlas:
 		textures[key] = load("res://assets/generated/%s.png" % key)
 	if has_node("TangguMap"):
@@ -81,6 +79,9 @@ func _ready() -> void:
 	failed = sprite("failed")
 	bow = sprite("bow")
 	nocked_arrow = arrow_sprite()
+	frame_actor=preload("res://scripts/presentation/player_frame_actor.gd").new()
+	add_child(frame_actor)
+	register_player_grips()
 	var initial: Dictionary = room.snapshot()
 	for enemy in initial.enemies:
 		enemy_bodies[enemy.id]=sprite({"bird":"enemy","paper":"enemyPaper","wood":"enemyWood"}[enemy.appearance])
@@ -97,7 +98,8 @@ func _ready() -> void:
 	get_window().mouse_exited.connect(func(): pointer_inside = false; controls.pointer_leave())
 	get_window().mouse_entered.connect(func(): pointer_inside = true)
 	get_viewport().size_changed.connect(func(): controls.interrupt(); update_camera())
-	get_window().mode = Window.MODE_MAXIMIZED
+	if get_window().mode not in [Window.MODE_FULLSCREEN,Window.MODE_EXCLUSIVE_FULLSCREEN]:
+		get_window().mode = Window.MODE_MAXIMIZED
 	update_camera()
 	present(state,0.0)
 	var arguments: PackedStringArray = OS.get_cmdline_user_args()
@@ -116,6 +118,14 @@ func create_backdrop() -> Node2D:
 
 func create_room(layout: Dictionary) -> TrainingRoom:
 	return Room.new(layout)
+
+func register_player_grips() -> void:
+	# 联绘普通箭取正式拉满帧箭尖；复制布局，不改共享常量或技能握点。
+	room.layout.grips=room.layout.grips.duplicate()
+	var sources: Array = [frame_actor.upper.clips["hero-archery-upper"],atlas.upperDown,frame_actor.upper.clips["hero-archery-left"],frame_actor.upper.clips["hero-archery-up"]]
+	for facing in 4:
+		var grip: Dictionary = sources[facing].grip
+		room.layout.grips[facing]=grip.duplicate() if room.layout.grips[facing] is Dictionary else Vector2(grip.x,grip.y)
 
 func pose(node: Sprite2D, key: String, index: int, point: Vector2) -> void:
 	# 帧未变时只有位置变化：纹理／区域／锚点／缩放保持原值，
@@ -210,7 +220,7 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 	elif state.dodge>0 or state.get("skillDash",{}).get("remaining",0)>0: upper_key="skills"; upper_frame=8+p.facing
 	elif state.skill!=null and state.skill.phase=="windup": upper_key="skills"; upper_frame=(4 if state.skill.kind=="rain" else 0)+p.facing
 	elif state.skill!=null: upper_frame=(2 if state.skill.remaining>0.06 else 3)*4+p.facing
-	var down_pose: bool = p.facing==1 and upper_key=="upper" and state.skill==null
+	var down_pose: bool = p.facing==1 and upper_key=="upper"
 	if down_pose: upper_key="upperDown"; upper_frame=attack
 	pose(torso,upper_key,upper_frame,point+Vector2(0,-30+bob))
 	pose(failed, "failed", p.facing, point)
@@ -235,11 +245,23 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 	nocked_arrow.rotation = p.angle
 	nocked_arrow.z_index = int(p.y) + 3
 	nocked_arrow.visible=(state.attack=="draw" or (state.skill!=null and state.skill.kind=="pierce" and state.skill.phase=="windup")) and state.status!="failed" and not down_pose
+	frame_actor.update_state(state,movement,room.cooldown,bob)
+	frame_actor.modulate.a=alpha
+	if frame_actor.body.visible:
+		legs.hide(); torso.hide(); bow.hide(); nocked_arrow.hide()
+	else:
+		if frame_actor.lower.visible: legs.hide()
+		if frame_actor.upper.visible: torso.hide(); bow.hide(); nocked_arrow.hide()
+	combat_effects.lower=frame_actor.body if frame_actor.body.visible else frame_actor.lower if frame_actor.lower.visible else legs
+	combat_effects.upper=frame_actor.upper if frame_actor.upper.visible else torso
 	if is_instance_valid(obstacle_body): obstacle_body.modulate.a=0.3 if p.y<room.obstacle.get_center().y and p.y>room.obstacle.get_center().y-126 and absf(p.x-room.obstacle.get_center().x)<100 else 1.0
 	if is_instance_valid(backdrop): backdrop.update(state,clock)
+	var live_enemies: Dictionary = {}
 	for enemy in state.enemies:
-		var body: Sprite2D = enemy_bodies[enemy.id]
 		var key: String = {"bird":"enemy","paper":"enemyPaper","wood":"enemyWood"}[enemy.appearance]
+		live_enemies[enemy.id]=true
+		if not enemy_bodies.has(enemy.id): enemy_bodies[enemy.id]=sprite(key)
+		var body: Sprite2D = enemy_bodies[enemy.id]
 		var row: int = 6 if enemy.phase=="dead" else 5 if enemy.flash>0 else 3 if enemy.phase=="warn" else 4 if enemy.phase=="swing" else (0 if enemy.timer<0.18 else 5) if enemy.phase=="recover" else 1+int(clock*8)%2
 		if enemy.has("role") and enemy.phase=="recover" and enemy.flash<=0:
 			row=4 if enemy.role=="paper" and enemy.timer>1.15 else 0
@@ -251,6 +273,9 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 		var tint: Color = flash_tint if enemy.flash>0 else Color.WHITE
 		tint.a=enemy.timer/0.6 if enemy.phase=="dead" else 1.0
 		if body.modulate!=tint: body.modulate=tint
+	for id in enemy_bodies.keys():
+		if not live_enemies.has(id):
+			enemy_bodies[id].queue_free(); enemy_bodies.erase(id)
 	var live_arrows: Dictionary = {}
 	for arrow in state.arrows:
 		live_arrows[arrow.id] = true

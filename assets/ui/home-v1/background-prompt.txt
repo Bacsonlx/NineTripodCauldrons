@@ -1,0 +1,7 @@
+Use case: precise-object-edit
+Asset type: background scene plate for the HTML implementation of the supplied 九鼎 home mockup.
+Input image 1 is the chosen composition to preserve exactly.
+Primary request: Produce the clean full-bleed BACKGROUND PLATE of this exact 16:9 scene. Preserve all scene geometry, shrine arch, parchment mountain painting, setting, ornamental top valance, side temple lattice columns, foreground dark carved altar, two candles, brass censer, warm colors and light. Keep the background pixel composition aligned to the reference.
+Remove ALL user interface: all header/footer panels, all side menus and loadout rows and outlines and all text, seals, numbers, arrows, buttons, the vertical 后羿 and 无名之子 labels. Replace header/footer and side panel areas with naturally continuous dark temple / very subdued ink mountain environment, with smooth dark quiet space ready for HTML UI overlaid in precisely the same areas.
+Remove ONLY the CHILD CHARACTER and his bow from the central parchment screen: reconstruct the mountain painting naturally in his place. Do not remove the altar/candles/censer or arch.
+Do NOT render any text, glyph, logo, menu, icon, seal, UI frame or child. The central frame stays around x=28%..72%, the parchment crest at y=8%, character space inside remains empty, altar y=79%..89%. Same full landscape aspect and scene composition. No additional objects. No labels.

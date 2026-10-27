@@ -1,0 +1,610 @@
+{
+  "route": "built-in image_gen",
+  "art_source": "host_image",
+  "model": "未披露",
+  "cost": "未披露",
+  "source_pixels_modified": false,
+  "import_size_limit": 256,
+  "assets": [
+    {
+      "id": "swift-horse",
+      "name": "快马",
+      "kind": "器",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        239,
+        68,
+        1062,
+        1188
+      ],
+      "atlas_region": [
+        47,
+        13,
+        171,
+        231
+      ],
+      "sha256": "ab9c0559f906f3f0b496f872d912962e5138a29b91e31d357cb4ed4194a9789f",
+      "transparent_fraction": 0.7557,
+      "source": "assets/props/first-level-items-v1/swift-horse.png",
+      "runtime": "godot/assets/items/first-level-v1/swift-horse.tres"
+    },
+    {
+      "id": "dawn-rooster",
+      "name": "司晨",
+      "kind": "器",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        244,
+        84,
+        1150,
+        1194
+      ],
+      "atlas_region": [
+        48,
+        16,
+        188,
+        229
+      ],
+      "sha256": "8ea5888dcbac77375a072829daef73726901696a03d0bb8951126972146defc7",
+      "transparent_fraction": 0.6775,
+      "source": "assets/props/first-level-items-v1/dawn-rooster.png",
+      "runtime": "godot/assets/items/first-level-v1/dawn-rooster.tres"
+    },
+    {
+      "id": "water-boar",
+      "name": "豕涉",
+      "kind": "器",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        73,
+        253,
+        1190,
+        1062
+      ],
+      "atlas_region": [
+        14,
+        50,
+        230,
+        168
+      ],
+      "sha256": "d039eab2879a801b6f0bf6196f8e39f3beff2caa20e347fd89ef43f8e1c2319e",
+      "transparent_fraction": 0.6314,
+      "source": "assets/props/first-level-items-v1/water-boar.png",
+      "runtime": "godot/assets/items/first-level-v1/water-boar.tres"
+    },
+    {
+      "id": "grave-guard",
+      "name": "守冢",
+      "kind": "器",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        273,
+        85,
+        1057,
+        1164
+      ],
+      "atlas_region": [
+        54,
+        16,
+        163,
+        223
+      ],
+      "sha256": "b7ecc399176ce08e0408c42942ac1ea6075056ab91ad0d89d171a51dc4c61acd",
+      "transparent_fraction": 0.6489,
+      "source": "assets/props/first-level-items-v1/grave-guard.png",
+      "runtime": "godot/assets/items/first-level-v1/grave-guard.tres"
+    },
+    {
+      "id": "hoard-pact",
+      "name": "囤积",
+      "kind": "契",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        456,
+        108,
+        954,
+        1143
+      ],
+      "atlas_region": [
+        92,
+        21,
+        104,
+        214
+      ],
+      "sha256": "40f5f825fd28d66ebbec72d783c03f3041c4ba25733c8fe87b7d040972974def",
+      "transparent_fraction": 0.7829,
+      "source": "assets/props/first-level-items-v1/hoard-pact.png",
+      "runtime": "godot/assets/items/first-level-v1/hoard-pact.tres"
+    },
+    {
+      "id": "herb-pact",
+      "name": "素食",
+      "kind": "契",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        452,
+        55,
+        1000,
+        1201
+      ],
+      "atlas_region": [
+        91,
+        10,
+        114,
+        236
+      ],
+      "sha256": "b1fe7667145cd36e951bb1573fa5f24e4ea7db9b17601ac4def305b952df57f8",
+      "transparent_fraction": 0.7652,
+      "source": "assets/props/first-level-items-v1/herb-pact.png",
+      "runtime": "godot/assets/items/first-level-v1/herb-pact.tres"
+    },
+    {
+      "id": "charcoal-pact",
+      "name": "涂炭",
+      "kind": "契",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        435,
+        68,
+        948,
+        1191
+      ],
+      "atlas_region": [
+        87,
+        13,
+        108,
+        231
+      ],
+      "sha256": "6244e1ba7958d901cb3846e4c84a14d7c01dbbf9b83315ef4205dd5064796262",
+      "transparent_fraction": 0.7641,
+      "source": "assets/props/first-level-items-v1/charcoal-pact.png",
+      "runtime": "godot/assets/items/first-level-v1/charcoal-pact.tres"
+    },
+    {
+      "id": "burning-pact",
+      "name": "焚书",
+      "kind": "契",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        442,
+        68,
+        983,
+        1187
+      ],
+      "atlas_region": [
+        89,
+        13,
+        113,
+        231
+      ],
+      "sha256": "e2f91b8498183bec4aa6abfb59384689568f00f3cc379b03a8304b7776760979",
+      "transparent_fraction": 0.767,
+      "source": "assets/props/first-level-items-v1/burning-pact.png",
+      "runtime": "godot/assets/items/first-level-v1/burning-pact.tres"
+    },
+    {
+      "id": "rat-whisker",
+      "name": "鼠毫",
+      "kind": "符",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        148,
+        221,
+        1106,
+        1038
+      ],
+      "atlas_region": [
+        29,
+        44,
+        198,
+        169
+      ],
+      "sha256": "068efbf174af6c7ece7c416b1f34eaca7ea1b00b6b8eefe4dd48f0f299acb4e1",
+      "transparent_fraction": 0.6557,
+      "source": "assets/props/first-level-items-v1/rat-whisker.png",
+      "runtime": "godot/assets/items/first-level-v1/rat-whisker.tres"
+    },
+    {
+      "id": "tiger-fang",
+      "name": "虎牙",
+      "kind": "符",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        474,
+        66,
+        903,
+        1122
+      ],
+      "atlas_region": [
+        95,
+        12,
+        91,
+        218
+      ],
+      "sha256": "6905ee65ad89aff67b02eb1fa9af54483ddfa93b848c407d602fac31c1c44696",
+      "transparent_fraction": 0.8395,
+      "source": "assets/props/first-level-items-v1/tiger-fang.png",
+      "runtime": "godot/assets/items/first-level-v1/tiger-fang.tres"
+    },
+    {
+      "id": "ram-horn",
+      "name": "羊角",
+      "kind": "符",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        282,
+        100,
+        1001,
+        1137
+      ],
+      "atlas_region": [
+        56,
+        19,
+        150,
+        214
+      ],
+      "sha256": "25fdaf89550906561e31a177667851d3d195954a28fd14f3631d81563e115cac",
+      "transparent_fraction": 0.7299,
+      "source": "assets/props/first-level-items-v1/ram-horn.png",
+      "runtime": "godot/assets/items/first-level-v1/ram-horn.tres"
+    },
+    {
+      "id": "flint-fire",
+      "name": "燧火",
+      "kind": "符",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        231,
+        90,
+        1024,
+        1083
+      ],
+      "atlas_region": [
+        46,
+        17,
+        164,
+        205
+      ],
+      "sha256": "fcfca79aacb6d7e5412d398fada83b4c5f09daca5b8ef57b4b6130ef3f0af20c",
+      "transparent_fraction": 0.7763,
+      "source": "assets/props/first-level-items-v1/flint-fire.png",
+      "runtime": "godot/assets/items/first-level-v1/flint-fire.tres"
+    },
+    {
+      "id": "training-bow",
+      "name": "训练弓",
+      "kind": "装备",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        498,
+        49,
+        891,
+        1187
+      ],
+      "atlas_region": [
+        100,
+        9,
+        83,
+        235
+      ],
+      "sha256": "4bab62af9f1e547cbe5eecb1aa3cd1895c062c5f79929a3aa6ab6636448d587d",
+      "transparent_fraction": 0.9461,
+      "source": "assets/props/first-level-items-v1/training-bow.png",
+      "runtime": "godot/assets/items/first-level-v1/training-bow.tres"
+    },
+    {
+      "id": "cloth-shoes",
+      "name": "布履",
+      "kind": "装备",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        174,
+        208,
+        1098,
+        1034
+      ],
+      "atlas_region": [
+        34,
+        41,
+        191,
+        171
+      ],
+      "sha256": "354f3539d396e13a19bd2f714953537e0a0dfe12e9d9c772e5c08319e792feb3",
+      "transparent_fraction": 0.6802,
+      "source": "assets/props/first-level-items-v1/cloth-shoes.png",
+      "runtime": "godot/assets/items/first-level-v1/cloth-shoes.tres"
+    },
+    {
+      "id": "azure-dragon",
+      "name": "青龙",
+      "kind": "神兽",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        156,
+        36,
+        1173,
+        1211
+      ],
+      "atlas_region": [
+        31,
+        6,
+        210,
+        243
+      ],
+      "sha256": "c738d683cf88117178fd8b7f26f4ee696a0bbcd369016b343c22856d3671817a",
+      "transparent_fraction": 0.5866,
+      "source": "assets/props/first-level-items-v1/azure-dragon.png",
+      "runtime": "godot/assets/items/first-level-v1/azure-dragon.tres"
+    },
+    {
+      "id": "piercing-book",
+      "name": "穿透箭",
+      "kind": "技能书",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        293,
+        90,
+        970,
+        1151
+      ],
+      "atlas_region": [
+        58,
+        17,
+        141,
+        219
+      ],
+      "sha256": "0be4aee9c30697471742307e87abbc3dfcba527b6e38947c926935cac8b5599f",
+      "transparent_fraction": 0.5681,
+      "source": "assets/props/first-level-items-v1/piercing-book.png",
+      "runtime": "godot/assets/items/first-level-v1/piercing-book.tres"
+    },
+    {
+      "id": "rain-book",
+      "name": "箭雨",
+      "kind": "技能书",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        165,
+        145,
+        1143,
+        1126
+      ],
+      "atlas_region": [
+        32,
+        28,
+        203,
+        203
+      ],
+      "sha256": "6e343bc0a03ae5f0fecd741fbad1f1d5aabd3919c4ec739066744c4e9c0d3c37",
+      "transparent_fraction": 0.4458,
+      "source": "assets/props/first-level-items-v1/rain-book.png",
+      "runtime": "godot/assets/items/first-level-v1/rain-book.tres"
+    },
+    {
+      "id": "backwind-book",
+      "name": "回风",
+      "kind": "技能书",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        276,
+        146,
+        979,
+        1115
+      ],
+      "atlas_region": [
+        55,
+        28,
+        146,
+        201
+      ],
+      "sha256": "2b7dd75cf5cfc11dab9bd3d82e0fc1e95dcd41843ccf5d47f9a33e104eaf9273",
+      "transparent_fraction": 0.5725,
+      "source": "assets/props/first-level-items-v1/backwind-book.png",
+      "runtime": "godot/assets/items/first-level-v1/backwind-book.tres"
+    },
+    {
+      "id": "charge-book",
+      "name": "蓄势",
+      "kind": "技能书",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        303,
+        94,
+        987,
+        1160
+      ],
+      "atlas_region": [
+        61,
+        18,
+        142,
+        220
+      ],
+      "sha256": "285a4c27b8cb09c532b9be9b0a37dd49207f37e04417385a770db9e5ac23d206",
+      "transparent_fraction": 0.561,
+      "source": "assets/props/first-level-items-v1/charge-book.png",
+      "runtime": "godot/assets/items/first-level-v1/charge-book.tres"
+    },
+    {
+      "id": "dragon-wind-book",
+      "name": "引风书",
+      "kind": "技能书",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_bbox": [
+        299,
+        189,
+        999,
+        1093
+      ],
+      "atlas_region": [
+        60,
+        37,
+        145,
+        187
+      ],
+      "sha256": "df9cd2a682ab4ef57f06fbceab213c518089baaa9f12e8300bf0bde30425ecf2",
+      "transparent_fraction": 0.6138,
+      "source": "assets/props/first-level-items-v1/dragon-wind-book.png",
+      "runtime": "godot/assets/items/first-level-v1/dragon-wind-book.tres"
+    }
+  ]
+}

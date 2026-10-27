@@ -1,0 +1,83 @@
+{
+  "art_source": "existing",
+  "sources": [
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/hero-dodge/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-dodge.png",
+      "sha256": "6734ae47c83cd0574625e549d75a49c7a571568eb616592a11c32e6dcdf90f51"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/thor-walk/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/thor-walk.png",
+      "sha256": "533ab76a6389c1e7d5c26fe73cc4e2e2ad6eb6eebffee5659fdec8cb103e7acb"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/thor-swing-v2/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/thor-swing-v2.png",
+      "sha256": "5923f0b2e64c8fdd5fd3c8c3c20674b24ec95a0cf028e5b9ded6348b2b390856"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/thor-throw/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/thor-throw.png",
+      "sha256": "eaf89befa7e817f4666da051aeeb10e6fae6ee32d9495c06c0dfb573e0106030"
+    },
+    {
+      "source": "output/art/action-redraw/2026-10-26-prototype-v1/frames/thor-lightning/atlas.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/thor-lightning.png",
+      "sha256": "a2e2554d15917066f8eb20d03ca180ee8c9a34b5ab03be4c73f05f5212090142"
+    },
+    {
+      "source": "assets/characters/action-redraw-v1/identity-v4/hero-archery-upper.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-archery-upper.png",
+      "sha256": "86e74085b10b2bd30938455bd7c6c89d75cf3b68a068bebfca3ea62c5d127ec3"
+    },
+    {
+      "source": "assets/characters/action-redraw-v1/identity-v4/hero-archery-left.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-archery-left.png",
+      "sha256": "489d2321158338928dd2c7f2876dd0d7b749a44eb37ee33b67d8f718ca2e56b3"
+    },
+    {
+      "source": "assets/characters/action-redraw-v1/identity-v4/hero-archery-up.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-archery-up.png",
+      "sha256": "b1417c905ec6d99b303a2c033b10633b64165f757092a7d658f082e5573d45f0"
+    },
+    {
+      "source": "assets/characters/action-redraw-v1/identity-v4/hero-skills-upper.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-skills-upper.png",
+      "sha256": "c064b0b34c857d4031466a5747369c4954551ebca33f11a49d8a1a4239a27b69"
+    },
+    {
+      "source": "assets/characters/action-redraw-v1/identity-v4/hero-run-lower.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-run-lower.png",
+      "sha256": "0968f65dd61f70c6f251831a333e9ff09970012a5bd2b30fc7afd835ebd085dc"
+    },
+    {
+      "source": "assets/characters/action-redraw-v1/identity-v4/hero-skills-direction-0.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-skills-direction-0.png",
+      "sha256": "b34384ab8acd489b22a6ef1fe7e1b218bf08a4286c1486b2e3756906d55979e7"
+    },
+    {
+      "source": "assets/characters/action-redraw-v1/identity-v4/hero-skills-direction-1.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-skills-direction-1.png",
+      "sha256": "bedbe755414114a5b00b1dcd8a0a24d837175fd83aaf3d4c657a5e48a0d41a26"
+    },
+    {
+      "source": "assets/characters/action-redraw-v1/identity-v4/hero-skills-direction-2.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-skills-direction-2.png",
+      "sha256": "c63a1059b88d922a732febf7875e88dbec6410dd4fe0c36575916de5bf7702f2"
+    },
+    {
+      "source": "assets/characters/action-redraw-v1/identity-v4/hero-skills-direction-3.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-skills-direction-3.png",
+      "sha256": "2bc97b8f68cce88b6413fa71aa04c0486776d6b5e4994633f6b75f5e8d50ce3b"
+    }
+  ],
+  "scale_registration": {
+    "source": "assets/characters/action-redraw-v1/scale-v3/scales.json",
+    "sha256": "4717b232ceffb6604584e3f09e1900a7ab0144fefd73636f78deb2d292bbd3b1"
+  },
+  "identity_registration": {
+    "source": "assets/characters/action-redraw-v1/identity-v4/clips.json",
+    "sha256": "75af295e3280131132e3f606e55e504b05048e1583d779b868fe9cdcc69a1480"
+  }
+}

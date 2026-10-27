@@ -1,5 +1,7 @@
 extends VBoxContainer
 
+const Art = preload("res://scripts/presentation/item_art.gd")
+
 signal command_requested(intent: Dictionary)
 
 var equipment: OptionButton
@@ -25,6 +27,9 @@ func setup(room: TrainingRoom) -> void:
 	embedded_glyphs=OptionButton.new(); add_child(embedded_glyphs)
 	main_button=Button.new(); main_button.text="指定为唯一主符"; add_child(main_button)
 	main_button.pressed.connect(func(): command_requested.emit({"action":"main_glyph","equipmentId":selected_id(equipment),"glyphId":selected_id(embedded_glyphs)}))
+	for menu in [equipment,loose_glyphs,embedded_glyphs]:
+		menu.add_theme_constant_override("icon_max_width",24)
+		menu.get_popup().add_theme_constant_override("icon_max_width",24)
 	refresh(room.snapshot())
 
 func selected_id(menu: OptionButton) -> int:
@@ -48,9 +53,9 @@ func refresh(snapshot: Dictionary) -> void:
 	for item in items:
 		if item.state!="normal" or item.get("shadow",false): continue
 		if item.name in ["训练弓","布履"] and item.region in ["equipment","warehouse","altar"]:
-			equipment.add_item("%s #%d · %s" % [item.name,item.id,item.region]); equipment.set_item_metadata(equipment.item_count-1,item.id)
+			equipment.add_icon_item(Art.texture(item.name),"%s #%d · %s" % [item.name,item.id,item.region]); equipment.set_item_metadata(equipment.item_count-1,item.id)
 		if item.kind=="符" and item.region in ["equipment","warehouse","altar"]:
-			loose_glyphs.add_item("%s #%d" % [item.name,item.id]); loose_glyphs.set_item_metadata(loose_glyphs.item_count-1,item.id)
+			loose_glyphs.add_icon_item(Art.texture(item.name),"%s #%d" % [item.name,item.id]); loose_glyphs.set_item_metadata(loose_glyphs.item_count-1,item.id)
 	restore_selection(equipment,equipment_id); restore_selection(loose_glyphs,glyph_id)
 	summary.text="最终构筑预览：生命上限 %d · 拾取 %.0f\n已应用：生命 %d / %d · 拾取 %.0f；出发时一次应用，不回血。" % [state.equipment.healthMax,state.equipment.pickupRadius,snapshot.health,snapshot.healthMax,state.appliedEquipment.pickupRadius]
 	select_equipment()
@@ -68,7 +73,7 @@ func select_equipment() -> void:
 		var names: PackedStringArray = []
 		for glyph in target.get("glyphs",[]):
 			names.append(glyph.name)
-			embedded_glyphs.add_item(glyph.name+(" · 主符" if glyph.id==target.get("mainGlyphId",-1) else ""))
+			embedded_glyphs.add_icon_item(Art.texture(glyph.name),glyph.name+(" · 主符" if glyph.id==target.get("mainGlyphId",-1) else ""))
 			embedded_glyphs.set_item_metadata(embedded_glyphs.item_count-1,glyph.id)
 		description.text="已嵌 %d / 3：%s\n唯一归属：%s；只有装备区启用普通符效果。" % [names.size(),"、".join(names),target.container if not target.container.is_empty() else "无"]
 	restore_selection(embedded_glyphs,previous)

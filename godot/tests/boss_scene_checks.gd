@@ -23,7 +23,7 @@ func check_skills() -> void:
 	root.add_child(view)
 	var effects: Node2D = view.get_node("SkillEffects")
 	check(view.character.scale.is_equal_approx(Vector2.ONE*1.25),"正式Boss形象额外放大25%，规则范围不随角色缩放")
-	var original: Node2D = load("res://scripts/presentation/thor_motion_candidate.gd").new()
+	var original: Node2D = load("res://scripts/presentation/thor_frame_actor.gd").new()
 	root.add_child(original)
 	var close: TrainingRoom = load("res://scripts/combat/boss_room.gd").new({"spawn":Vector2(840,520)})
 	var saw_swing: bool = false
@@ -31,9 +31,7 @@ func check_skills() -> void:
 		close.update({},0.01); view.update(close.snapshot(),0)
 		if close.snapshot().boss.phase!="swing": continue
 		saw_swing=effects.get_node("SwingArc").visible
-		var forearm: Sprite2D = view.character.get_node("far_forearm")
-		var tip: Vector2 = forearm.to_global(forearm.offset+forearm.texture.get_size()*view.character.JOINTS.far_forearm[1])
-		check(absf(tip.distance_to(forearm.global_position)-38.75)<0.02,"默认Boss实际横锤使用已确认的31单位远前臂，不再沿用39单位错长")
+		check(view.character.body.clip=="thor-swing-v2" and view.character.body.frame_index==4,"默认Boss横锤生效相使用新绘画的挥击帧")
 		for vertex in effects.get_node("SwingArc").polygon:
 			check(vertex.length()<=180.001,"锤弧纹理不越过180单位真实危险扇区")
 		close.set_paused(true)
@@ -44,20 +42,28 @@ func check_skills() -> void:
 		close.set_paused(false)
 		break
 	check(saw_swing,"真实近身横锤阶段显示已导入的锤弧美术")
-	var far: TrainingRoom = load("res://scripts/combat/boss_room.gd").new()
+	var far: TrainingRoom = load("res://scripts/combat/boss_room.gd").new({"health":10000})
 	var outbound: bool = false
 	var inbound: bool = false
 	var lightning: Dictionary = {}
 	var contacts: bool = false
-	for i in 950:
+	var scale_checked: bool = false
+	for i in 1700:
 		far.update({},0.01)
 		var state: Dictionary = far.snapshot()
 		view.update(state,0)
 		original.update_state(state)
 		if state.vulnerable:
 			var ground: Vector2 = Vector2(state.hammer.x,state.hammer.y)
-			var expected_hammer: Vector2 = ground+(original.get_node("hammer").global_position-ground)*1.25
-			check(view.character.get_node("hammer").global_position.distance_to(expected_hammer)<0.02,"角色放大只改变空中锤体高度／体量，不放大规则地面飞行距离")
+			if not scale_checked:
+				# 不同缩放的真实行走会产生不同落脚姿态；用相同中立站姿隔离体量检查。
+				var reference: Node2D = load("res://scripts/presentation/thor_frame_actor.gd").new()
+				var enlarged: Node2D = load("res://scripts/presentation/thor_frame_actor.gd").new()
+				enlarged.visual_scale=1.25; root.add_child(reference); root.add_child(enlarged)
+				reference.update_state(state); enlarged.update_state(state)
+				var expected_hammer: Vector2 = ground+(reference.get_node("hammer").global_position-ground)*1.25
+				check(enlarged.get_node("hammer").global_position.distance_to(expected_hammer)<0.02,"同一站姿放大只改变空中锤体高度／体量，不放大规则地面飞行距离")
+				reference.free(); enlarged.free(); scale_checked=true
 			var wake: Sprite2D = effects.get_node("HammerWake")
 			check(wake.visible and wake.position.is_equal_approx(view.character.get_node("hammer").global_position),"电流拖尾跟随实际空中锤体，保持地面路径独立")
 			var expected: Vector2 = Vector2.LEFT if state.hammer.leg=="out" else Vector2.RIGHT
@@ -83,6 +89,27 @@ func check_skills() -> void:
 	view.update(dying,0)
 	check(effects.get_child_count()==2 and not effects.get_node("SwingArc").visible,"Boss死亡后清理全部技能威胁表现")
 	original.free(); view.free()
+
+func check_reinforcements() -> void:
+	set_meta("home_test_arguments",["--test=boss","--seed=1"])
+	var game: Node2D = load("res://scenes/tanggu_first_level.tscn").instantiate()
+	root.add_child(game); game.set_physics_process(false)
+	await process_frame
+	game.room.update({},2.01); game.present(game.room.snapshot(),0)
+	check(game.boss_view.state.summons.size()==4 and game.enemy_bodies.is_empty(),"首页Boss入口读取四个真实召怪预警，尚未创建敌人精灵")
+	game.room.update({},1.0); game.present(game.room.snapshot(),0)
+	var state: Dictionary = game.room.snapshot()
+	check(game.enemy_bodies.size()==4 and state.enemies.all(func(enemy: Dictionary): return game.enemy_bodies.has(enemy.id) and game.enemy_bodies[enemy.id].visible),"延迟出生的小怪动态创建精灵并显示，不依赖开场预建")
+	check(game.encounter_label.text.contains("影偶 4 / 8") and game.interaction_label.text.contains("F"),"Boss HUD显示小怪数量和战中补给操作")
+	game.controls.interrupt(true)
+	var frozen: Dictionary = game.room.snapshot()
+	game.room.update({},10); game.present(game.room.snapshot(),0)
+	check(game.room.snapshot().summons==frozen.summons and game.room.snapshot().enemies==frozen.enemies,"真实失焦适配冻结援军和已出生小怪")
+	game.room.set_paused(false)
+	game.journey.update({"restart":true},0); game.present_new_room()
+	await process_frame
+	check(game.enemy_bodies.is_empty() and game.room.snapshot().enemies.is_empty() and game.room.snapshot().summons.is_empty(),"R重开清理动态小怪精灵和规则，保留Boss专项起点")
+	game.free()
 
 func run() -> void:
 	var map: Node2D = load("res://scenes/rooms/boss.tscn").instantiate()
@@ -173,5 +200,6 @@ func run() -> void:
 	game.queue_free()
 	await process_frame
 	check_skills()
+	await check_reinforcements()
 	print(JSON.stringify({"checks":checks,"failures":failures}))
 	quit(0 if failures.is_empty() else 1)

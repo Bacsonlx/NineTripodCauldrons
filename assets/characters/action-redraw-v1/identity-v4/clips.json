@@ -1,0 +1,351 @@
+{
+  "hero-archery-upper": {
+    "size": [
+      470,
+      468
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        272,
+        409
+      ],
+      [
+        248,
+        409
+      ],
+      [
+        236,
+        409
+      ],
+      [
+        206,
+        409
+      ],
+      [
+        256,
+        352
+      ],
+      [
+        248,
+        352
+      ],
+      [
+        237,
+        353
+      ],
+      [
+        249,
+        351
+      ]
+    ],
+    "scale": 0.172,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "muzzle_frame": 3,
+    "muzzle_px": [
+      451,
+      277
+    ],
+    "grip": {
+      "x": 42.14,
+      "y": -52.704
+    }
+  },
+  "hero-archery-left": {
+    "size": [
+      456,
+      450
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        250,
+        406
+      ],
+      [
+        250,
+        407
+      ],
+      [
+        232,
+        408
+      ],
+      [
+        226,
+        405
+      ]
+    ],
+    "scale": 0.204,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "muzzle_frame": 1,
+    "muzzle_px": [
+      27,
+      281
+    ],
+    "grip": {
+      "x": -45.492,
+      "y": -55.704
+    }
+  },
+  "hero-archery-up": {
+    "size": [
+      459,
+      453
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        245,
+        339
+      ],
+      [
+        244,
+        339
+      ],
+      [
+        243,
+        350
+      ],
+      [
+        245,
+        350
+      ]
+    ],
+    "scale": 0.24,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "head_rects": [
+      [
+        145,
+        105,
+        195,
+        181
+      ],
+      [
+        140,
+        105,
+        198,
+        181
+      ],
+      [
+        145,
+        118,
+        193,
+        172
+      ],
+      [
+        145,
+        118,
+        193,
+        172
+      ]
+    ],
+    "muzzle_frame": 1,
+    "muzzle_px": [
+      228,
+      77
+    ],
+    "grip": {
+      "x": -3.84,
+      "y": -92.88
+    }
+  },
+  "hero-skills-upper": {
+    "size": [
+      470,
+      469
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        255,
+        437
+      ],
+      [
+        211,
+        437
+      ],
+      [
+        226,
+        437
+      ],
+      [
+        226,
+        437
+      ],
+      [
+        260,
+        381
+      ],
+      [
+        249,
+        383
+      ],
+      [
+        248,
+        382
+      ],
+      [
+        255,
+        384
+      ]
+    ],
+    "scale": 0.178,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png"
+  },
+  "hero-run-lower": {
+    "size": [
+      442,
+      445
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        235,
+        128
+      ],
+      [
+        245,
+        124
+      ],
+      [
+        220,
+        130
+      ],
+      [
+        230,
+        126
+      ],
+      [
+        235,
+        85
+      ],
+      [
+        245,
+        84
+      ],
+      [
+        220,
+        87
+      ],
+      [
+        230,
+        84
+      ]
+    ],
+    "scale": 0.11,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png"
+  },
+  "hero-skills-direction-0": {
+    "size": [
+      367,
+      388
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        170,
+        323
+      ],
+      [
+        232,
+        356
+      ],
+      [
+        213,
+        303
+      ],
+      [
+        202,
+        252
+      ]
+    ],
+    "scale": 0.213,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png"
+  },
+  "hero-skills-direction-1": {
+    "size": [
+      367,
+      388
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        170,
+        323
+      ],
+      [
+        182,
+        358
+      ],
+      [
+        187,
+        305
+      ],
+      [
+        180,
+        252
+      ]
+    ],
+    "scale": 0.2,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png"
+  },
+  "hero-skills-direction-2": {
+    "size": [
+      367,
+      388
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        158,
+        323
+      ],
+      [
+        138,
+        358
+      ],
+      [
+        149,
+        306
+      ],
+      [
+        152,
+        252
+      ]
+    ],
+    "scale": 0.21,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png"
+  },
+  "hero-skills-direction-3": {
+    "size": [
+      367,
+      388
+    ],
+    "columns": 3,
+    "roots": [
+      [
+        152,
+        358
+      ],
+      [
+        153,
+        311
+      ],
+      [
+        156,
+        252
+      ]
+    ],
+    "scale": 0.21,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png"
+  }
+}

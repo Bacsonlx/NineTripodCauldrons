@@ -1,0 +1,246 @@
+[
+  {
+    "id": "bow_training",
+    "name": "训练弓",
+    "slot": "weapon",
+    "type": "武具",
+    "rarity": "凡",
+    "icon": "bow",
+    "desc": "训练载体，无额外属性；嵌符与镶书待接通。",
+    "note": "点击装备到主武槽。"
+  },
+  {
+    "id": "bow_xuanniao",
+    "name": "玄鸟弓",
+    "slot": "weapon",
+    "type": "武具",
+    "rarity": "精",
+    "icon": "bow",
+    "desc": "弓臂如玄鸟展翼，弦鸣清越。原型视觉占位，属性未定。",
+    "note": "点击装备到主武槽。"
+  },
+  {
+    "id": "robe_hemp",
+    "name": "素麻衣",
+    "slot": "armor",
+    "type": "衣",
+    "rarity": "凡",
+    "icon": "robe",
+    "desc": "粗麻本色，轻便无碍。",
+    "note": "点击装备到衣槽。"
+  },
+  {
+    "id": "robe_red",
+    "name": "赤霞袍",
+    "slot": "armor",
+    "type": "衣",
+    "rarity": "精",
+    "icon": "robe",
+    "desc": "赤霞覆肩，行止带风。原型视觉占位，属性未定。",
+    "note": "点击装备到衣槽。"
+  },
+  {
+    "id": "boots_cloth",
+    "name": "布履",
+    "slot": "boots",
+    "type": "履",
+    "rarity": "凡",
+    "icon": "boot",
+    "desc": "训练载体，无额外属性。",
+    "note": "点击装备到履槽。"
+  },
+  {
+    "id": "boots_cloud",
+    "name": "踏云履",
+    "slot": "boots",
+    "type": "履",
+    "rarity": "精",
+    "icon": "boot",
+    "desc": "足下生云，闪避更轻。原型视觉占位，属性未定。",
+    "note": "点击装备到履槽。"
+  },
+  {
+    "id": "talis_tiger",
+    "name": "虎牙",
+    "slot": "talisman",
+    "type": "符",
+    "rarity": "残",
+    "icon": "talisman",
+    "glyph": "虎",
+    "desc": "装备区生效：普通箭／穿透箭暴击率 +6 个百分点。",
+    "note": "点击嵌入符位；主角腰间出现符纸。"
+  },
+  {
+    "id": "talis_fire",
+    "name": "燧火",
+    "slot": "talisman",
+    "type": "符",
+    "rarity": "常",
+    "icon": "talisman",
+    "glyph": "火",
+    "desc": "普通箭／穿透箭命中时附加 3 秒燃烧，每秒 2 伤。",
+    "note": "点击嵌入符位；主角腰间出现符纸。"
+  },
+  {
+    "id": "talis_mouse",
+    "name": "鼠毫",
+    "slot": "talisman",
+    "type": "符",
+    "rarity": "残",
+    "icon": "talisman",
+    "glyph": "毫",
+    "desc": "道具拾取半径由 80 提升到 84。",
+    "note": "点击嵌入符位；主角腰间出现符纸。"
+  },
+  {
+    "id": "talis_goat",
+    "name": "羊角",
+    "slot": "talisman",
+    "type": "符",
+    "rarity": "残",
+    "icon": "talisman",
+    "glyph": "角",
+    "desc": "最大生命 +30，不自动补血。",
+    "note": "点击嵌入符位；主角腰间出现符纸。"
+  },
+  {
+    "id": "relic_fast",
+    "name": "快马",
+    "slot": "relic",
+    "type": "器",
+    "rarity": "残",
+    "icon": "relic",
+    "desc": "使用后移速 +40%，持续 3 秒；消耗一件。",
+    "note": "点击放入随身器位；主角腰侧出现行囊。"
+  },
+  {
+    "id": "relic_chen",
+    "name": "司晨",
+    "slot": "relic",
+    "type": "器",
+    "rarity": "良",
+    "icon": "relic",
+    "desc": "使当前遭遇的敌人停止行动 1 秒；本局最多三件。",
+    "note": "点击放入随身器位；主角腰侧出现行囊。"
+  },
+  {
+    "id": "relic_water",
+    "name": "豕涉",
+    "slot": "relic",
+    "type": "器",
+    "rarity": "常",
+    "icon": "relic",
+    "desc": "在地面留下减速水洼，持续 6 秒。",
+    "note": "点击放入随身器位；主角腰侧出现行囊。"
+  },
+  {
+    "id": "relic_tomb",
+    "name": "守冢",
+    "slot": "relic",
+    "type": "器",
+    "rarity": "常",
+    "icon": "relic",
+    "desc": "放置一座吸引普通怪的墓碑，持续 8 秒。",
+    "note": "点击放入随身器位；主角腰侧出现行囊。"
+  },
+  {
+    "id": "beast_qinglong",
+    "name": "青龙",
+    "slot": "beast",
+    "type": "神兽",
+    "rarity": "神",
+    "icon": "beast",
+    "desc": "真实邻接木系气息；引风主动技能待接通。",
+    "note": "点击与青龙同行；主角身后浮现气息环。"
+  },
+  {
+    "id": "skill_pierce",
+    "name": "穿透箭",
+    "type": "技能书",
+    "rarity": "—",
+    "icon": "book",
+    "count": 1,
+    "desc": "沿瞄准方向释放，贯穿敌人；冷却 4 秒。",
+    "note": "在局内经脉区装备，行前不可换装。"
+  },
+  {
+    "id": "skill_rain",
+    "name": "箭雨",
+    "type": "技能书",
+    "rarity": "—",
+    "icon": "book",
+    "count": 1,
+    "desc": "在合法地面落点降下三段箭雨；冷却 8 秒。",
+    "note": "在局内经脉区装备，行前不可换装。"
+  },
+  {
+    "id": "skill_wind",
+    "name": "回风",
+    "type": "技能书",
+    "rarity": "—",
+    "icon": "book",
+    "count": 1,
+    "desc": "向移动方向位移 120，不提供无敌。",
+    "note": "在局内经脉区装备，行前不可换装。"
+  },
+  {
+    "id": "skill_charge",
+    "name": "蓄势",
+    "type": "技能书",
+    "rarity": "—",
+    "icon": "book",
+    "count": 1,
+    "desc": "接下来两次普通箭伤害 +50%。",
+    "note": "在局内经脉区装备，行前不可换装。"
+  },
+  {
+    "id": "skill_lead",
+    "name": "引风书",
+    "type": "技能书",
+    "rarity": "—",
+    "icon": "book",
+    "count": 1,
+    "desc": "神兽·位移，留下可再次冲行的风道。",
+    "note": "在局内经脉区装备，行前不可换装。"
+  },
+  {
+    "id": "potion_health",
+    "name": "血瓶",
+    "type": "消耗",
+    "rarity": "—",
+    "icon": "potion",
+    "count": 3,
+    "desc": "按 F 拾取，立即恢复 20 生命；满血留地。",
+    "note": "局内掉落与拾取，行前只作库存展示。"
+  },
+  {
+    "id": "potion_mana",
+    "name": "蓝瓶",
+    "type": "消耗",
+    "rarity": "—",
+    "icon": "potion",
+    "count": 2,
+    "desc": "按 F 拾取，立即恢复 20 蓝量；满蓝留地。",
+    "note": "局内掉落与拾取，行前只作库存展示。"
+  },
+  {
+    "id": "soul_common",
+    "name": "凡品器魂",
+    "type": "材料",
+    "rarity": "凡",
+    "icon": "soul",
+    "count": 7,
+    "desc": "用于 +1～+3 强化，每堆最多 5 个。",
+    "note": "强化材料，不可装备。"
+  },
+  {
+    "id": "soul_fine",
+    "name": "精品器魂",
+    "type": "材料",
+    "rarity": "精",
+    "icon": "soul",
+    "count": 3,
+    "desc": "用于 +4～+6 强化，每堆最多 5 个。",
+    "note": "强化材料，不可装备。"
+  }
+]

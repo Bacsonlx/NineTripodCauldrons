@@ -69,7 +69,7 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 func hud_lines() -> Dictionary:
 	var lines: Dictionary = super.hud_lines()
 	var boss: Dictionary = state.boss
-	var phase: String = {"prepare":"观察对手","rest":"准备出招","chase":"正在逼近", "swing_warn":"横锤 · 侧移或退开", "swing":"横锤挥击", "swing_recover":"横锤收招 · 可反击", "throw_warn":"掷锤 · 横向走位", "flight":"锤已离手 · 承伤提高25%", "throw_recover":"接锤收招", "lightning":"落雷 · 持续走位", "dead":"已击败"}[boss.phase]
+	var phase: String = {"prepare":"观察对手","rest":"准备出招","chase":"正在逼近","reposition":"正在调整投锤站位", "swing_warn":"横锤 · 侧移或退开", "swing":"横锤挥击", "swing_recover":"横锤收招 · 可反击", "throw_warn":"掷锤 · 横向走位", "flight":"锤已离手 · 承伤提高25%", "throw_recover":"接锤收招", "lightning":"落雷 · 持续走位", "dead":"已击败"}[boss.phase]
 	lines.encounter="索尔  %d / 1200\n%s" % [boss.health,phase]
 	lines.interaction="WASD 移动 · 左键射箭 · Q / E 技能 · 空格闪避\n独立原型 · R 按当前条件重试 · Esc 暂停"
 	if state.status=="complete":

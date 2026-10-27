@@ -12,7 +12,7 @@ func _initialize() -> void:
 	run.call_deferred()
 
 func run() -> void:
-	check(ProjectSettings.get_setting("application/run/main_scene")=="res://scenes/tanggu_first_level.tscn","启动工程直接进入新地图")
+	check(ProjectSettings.get_setting("application/run/main_scene")=="res://scenes/boot.tscn","启动工程经首页路由，首关地图仍可独立加载")
 	var map: Node2D = load("res://scenes/tanggu_first_level_map.tscn").instantiate()
 	root.add_child(map)
 	check(not map.has_node("ArtPlate") and not map.has_node("Foreground"),"运行地图不包含完整原图底板或原图遮挡裁片")
