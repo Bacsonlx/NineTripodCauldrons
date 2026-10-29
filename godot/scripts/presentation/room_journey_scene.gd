@@ -150,6 +150,9 @@ func _ready() -> void:
 	var options: Dictionary = PlayOptions.parse(arguments)
 	if options.has("error"):
 		push_error(options.error); get_tree().quit(2); return
+	if get_tree().has_meta("home_initial_backpack"):
+		options.initial_backpack=get_tree().get_meta("home_initial_backpack").duplicate(true)
+		get_tree().remove_meta("home_initial_backpack")
 	if options.mode=="alpha":
 		get_tree().change_scene_to_file.bind("res://scenes/tanggu_alpha.tscn").call_deferred()
 		return
@@ -166,6 +169,9 @@ func _ready() -> void:
 	skill_view=load("res://scripts/presentation/loadout_skill_view.gd").new(); skill_view.z_index=4095; add_child(skill_view)
 	super._ready()
 	camp_panel=load("res://scripts/gameplay/camp_panel.gd").new(); add_child(camp_panel); camp_panel.setup(room,controls)
+	hud.backpack_button_pressed.connect(func(): if camp_panel!=null: camp_panel.toggle_backpack())
+	if controls!=null and controls.has_signal("backpack_toggle_requested"):
+		controls.backpack_toggle_requested.connect(func(): if camp_panel!=null: camp_panel.toggle_backpack())
 
 	if options.startRoom=="boss" and DisplayServer.get_name()!="headless": get_window().mode=Window.MODE_FULLSCREEN
 	overview_button.text="房间总览 · M"
@@ -191,6 +197,9 @@ func create_room(_layout: Dictionary) -> TrainingRoom:
 
 func _physics_process(seconds: float) -> void:
 	super._physics_process(seconds)
+	if journey!=null and journey.active!=null and ("requested_camp" in journey.active and journey.active.requested_camp):
+		journey.active.requested_camp=false
+		if camp_panel!=null and not camp_panel.backpack_open: camp_panel.open_backpack()
 	if journey!=null and journey.consume_transition(): present_new_room()
 
 func present_new_room() -> void:
@@ -199,7 +208,11 @@ func present_new_room() -> void:
 	room=journey.active
 	register_player_grips()
 	controls=Controls.new(room)
-	if camp_panel!=null: camp_panel.room=room; camp_panel.controls=controls; camp_panel.signature=""
+	if controls!=null and controls.has_signal("backpack_toggle_requested"):
+		controls.backpack_toggle_requested.connect(func(): if camp_panel!=null: camp_panel.toggle_backpack())
+	if camp_panel!=null:
+		camp_panel.room=room; camp_panel.controls=controls; camp_panel.signature=""
+		camp_panel.backpack_open=false; camp_panel.panel.visible=false
 	for body in enemy_bodies.values(): body.queue_free()
 	enemy_bodies.clear()
 	pose_cache.clear()
@@ -215,6 +228,12 @@ func present_new_room() -> void:
 
 func _input(event: InputEvent) -> void:
 	if room==null or returning_home: return
+	if camp_panel!=null and camp_panel.backpack_open:
+		if event is InputEventKey and event.pressed and not event.echo:
+			if event.physical_keycode==KEY_ESCAPE or event.physical_keycode==KEY_B:
+				camp_panel.close_backpack(); get_viewport().set_input_as_handled(); return
+			elif event.physical_keycode==KEY_R and camp_panel.backpack_mode=="camp":
+				camp_panel.rotate_selected(); get_viewport().set_input_as_handled(); return
 	if confirmation!=null:
 		if event is InputEventKey:
 			if event.physical_keycode==KEY_ESCAPE and event.pressed and not event.echo: cancel_confirmation()
@@ -234,9 +253,10 @@ func _input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if confirmation!=null or returning_home:
 		get_viewport().set_input_as_handled(); return
-	if event is InputEventKey and event.physical_keycode==KEY_I and event.pressed and not event.echo:
-		controls.interrupt(); room.update({"alpha":{"action":"camp"}},0)
-		get_viewport().set_input_as_handled(); return
+	if event is InputEventKey and event.physical_keycode==KEY_B and event.pressed and not event.echo:
+		if camp_panel!=null:
+			camp_panel.toggle_backpack()
+			get_viewport().set_input_as_handled(); return
 	super._unhandled_input(event)
 
 func guidance_at(_position: Vector2) -> Dictionary:
@@ -254,6 +274,7 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 		else:
 			var focused: Control = get_viewport().gui_get_focus_owner()
 			if focused!=null and pause_menu.is_ancestor_of(focused): focused.release_focus()
+	if camp_panel!=null: hud.set_backpack_open(camp_panel.backpack_open)
 	loot_view.update_state(data,seconds)
 	world_items.update(data)
 	skill_view.update(data)
@@ -261,11 +282,10 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 	var quick: Dictionary = data.alpha.quickItem
 	var runtime: Dictionary = data.itemEffects
 	item_label.text="V：%s · 快马%.1f秒 · 司晨%d/3" % [(quick.name+" #"+str(quick.id)) if not quick.is_empty() else "未绑定实物",runtime.haste,runtime.morningUses]
-	if data.alpha.prototypeBurn: item_label.text+="\n原型B：只测试烧物／焚书；容器战斗效果未开放"
 
 	var card: Dictionary = data.alpha.pickupCard
 	pickup_label.visible=not data.alpha.camp and not data.reading
-	pickup_label.text=("%s · %.1f秒\n%s" % [card.name,card.remaining,card.reason]+("\nTab 尝试转坛" if not card.attempted else "")) if not card.is_empty() else "I 营地整理（完成房间并靠近整理点）\n"+data.alpha.message
+	pickup_label.text=("%s · %.1f秒\n%s" % [card.name,card.remaining,card.reason]+("\nTab 转入祭坛" if not card.attempted else "")) if not card.is_empty() else "B 背包查看（完成房间并靠近整理点可整理）\n"+data.alpha.message
 	if data.alpha.camp and not room.paused: status_label.visible=false
 
 	minimap.update_state(data.roomGraph)
@@ -274,7 +294,8 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 	if data.has("boss"):
 		boss_view.update(data,clock); boss_bar.value=data.boss.health
 	var origin: String = str(journey.layouts[journey.initial_options.get("startRoom","entry")].roomTitle)
-	run_label.text=("快速测试 · 起点："+origin+"\n不计正式完整通关") if data.get("isTest",false) else "完整征程 · 起点：汤谷入口"
+	run_label.text="完整征程 · 起点：汤谷入口"
+	run_label.visible=not data.get("isTest",false)
 
 func hud_lines() -> Dictionary:
 	var lines: Dictionary = super.hud_lines()
@@ -288,9 +309,8 @@ func hud_lines() -> Dictionary:
 	if data.objective=="combat" and not data.roomComplete:
 		var remaining: int = data.enemies.filter(func(enemy: Dictionary): return enemy.group==data.encounter and enemy.phase!="dead").size()
 		lines.encounter=room.layout.roomTitle+" · 第 %d / %d 波" % [data.wave,data.waveCount]+"\n"+("下一波 %.1f 秒后出现" % data.waveDelay if data.waveDelay>0 else "影偶剩余 %d · 清完全部波次后开门" % remaining)
-	if data.get("segmentComplete",false) and data.get("isTest",false): lines.encounter="测试段完成 · 可返回探索\n不计正式完整通关 · R 从测试起点重试"
+	if data.get("segmentComplete",false) and data.get("isTest",false): lines.encounter="本段行程完成 · 可返回探索"
 	elif data.journeyComplete: lines.encounter="汤谷完整征程完成 · 全部主线已完成\n可返回探索 · R 重开需确认"
-	if not data.get("rewardPlaceholders",[]).is_empty(): lines.encounter+="\nBoss战利品为未入库占位 · 阶段奖励后续接通"
 	if state.feedback==null and state.interaction==null:
 		lines.interaction="走近门按 F 前往下一房间" if data.roomComplete else "完成本房任务后，来路与出口一起开放"
 		if data.objective in ["combat","boss"]: lines.interaction="血／蓝瓶落地后走近按 F 即时补充 · 满值留地"

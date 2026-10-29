@@ -1,5 +1,7 @@
 extends Control
 
+signal backpack_button_pressed
+
 const Slot = preload("res://scripts/presentation/action_slot.gd")
 const TEXT = Color("f2e6c5")
 var health: ProgressBar
@@ -10,6 +12,7 @@ var mana_value: Label
 var stamina_value: Label
 var encounter: Label
 var interaction: Label
+var bag_button: Button
 var status: Label
 var reading: ColorRect
 var toolbar: HBoxContainer
@@ -20,6 +23,7 @@ var costs: Dictionary = {}
 const DEFAULT_INSCRIPTION: String = "汤谷 · 碑林遗字\n\n风过残碑\n\n山风过谷，石火未冷。\n旧路覆叶，仍有人循光而行。\n碑上余字，已随岁月漫漶。"
 var inscription: Label
 var loadout_actions: HBoxContainer
+var source_summary: Label
 var last_health: int = -1
 var last_health_max: int = -1
 var last_mana: int = -1
@@ -104,10 +108,10 @@ func _ready() -> void:
 	loadout_actions.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	loadout_actions.position=Vector2(24,-212); loadout_actions.add_theme_constant_override("separation",12)
 	loadout_actions.mouse_filter=Control.MOUSE_FILTER_IGNORE; add_child(loadout_actions)
-	for definition in [["special2","G"],["wind","C"]]:
+	for definition in [["backwind","G"],["charge","T"],["wind","C"]]:
 		var slot: Control = Slot.new(); slot.name=definition[0].capitalize()
 		slot.custom_minimum_size=Vector2(60,88); slot.mouse_filter=Control.MOUSE_FILTER_IGNORE
-		slot.icon=load("res://assets/ui/dodge.tres"); loadout_actions.add_child(slot)
+		slot.icon=load("res://assets/ui/%s.tres" % ("attack" if definition[0]=="charge" else "dodge")); loadout_actions.add_child(slot)
 		var key: Label = label(definition[1],12); key.position=Vector2(2,-5); slot.add_child(key)
 		slot.counter=label("",21); slot.counter.position=Vector2(0,19); slot.counter.size=Vector2(60,28)
 		slot.counter.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; slot.add_child(slot.counter)
@@ -116,11 +120,36 @@ func _ready() -> void:
 		var cost: Label = label("",10); cost.position=Vector2(0,82); cost.size.x=60
 		cost.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; cost.add_theme_color_override("font_color",Color("63c4ce"))
 		slot.add_child(cost); costs[definition[0]]=cost; slots[definition[0]]=slot
+	source_summary=label("Q/E 来源 训练弓 · G 来源 布履\nT 来源 弓＋履羁绊 · C 来源 青龙",11)
+	source_summary.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+	source_summary.position=Vector2(24,-248); add_child(source_summary)
+	bag_button=Button.new(); bag_button.name="BagButton"
+	bag_button.text="背包 · B"
+	bag_button.focus_mode=Control.FOCUS_NONE
+	bag_button.mouse_filter=Control.MOUSE_FILTER_STOP
+	bag_button.add_theme_font_size_override("font_size",14)
+	bag_button.add_theme_color_override("font_color",Color("f4e5be"))
+	var btn_norm: StyleBoxFlat = StyleBoxFlat.new()
+	btn_norm.bg_color = Color(0.10, 0.14, 0.10, 0.92)
+	btn_norm.border_color = Color(0.65, 0.55, 0.35, 0.75)
+	btn_norm.border_width_left = 1; btn_norm.border_width_top = 1; btn_norm.border_width_right = 1; btn_norm.border_width_bottom = 1
+	btn_norm.content_margin_left = 8; btn_norm.content_margin_top = 6; btn_norm.content_margin_right = 8; btn_norm.content_margin_bottom = 6
+	bag_button.add_theme_stylebox_override("normal", btn_norm)
+	var btn_hov: StyleBoxFlat = StyleBoxFlat.new()
+	btn_hov.bg_color = Color(0.16, 0.22, 0.16, 0.95)
+	btn_hov.border_color = Color("ead29a")
+	btn_hov.border_width_left = 1; btn_hov.border_width_top = 1; btn_hov.border_width_right = 1; btn_hov.border_width_bottom = 1
+	btn_hov.content_margin_left = 8; btn_hov.content_margin_top = 6; btn_hov.content_margin_right = 8; btn_hov.content_margin_bottom = 6
+	bag_button.add_theme_stylebox_override("hover", btn_hov)
+	bag_button.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	bag_button.offset_left=-140; bag_button.offset_top=-68; bag_button.offset_right=-24; bag_button.offset_bottom=-24
+	bag_button.pressed.connect(func(): backpack_button_pressed.emit())
+	add_child(bag_button)
 	interaction=label("",14); interaction.name="Interaction"
 	interaction.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 	interaction.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	interaction.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	interaction.offset_left=-580; interaction.offset_top=-76; interaction.offset_right=-24; interaction.offset_bottom=-24
+	interaction.offset_left=-600; interaction.offset_top=-68; interaction.offset_right=-152; interaction.offset_bottom=-24
 	add_child(interaction)
 	status=label("",26); status.name="Status"
 	status.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; status.vertical_alignment=VERTICAL_ALIGNMENT_CENTER
@@ -142,7 +171,11 @@ func layout_edges() -> void:
 	encounter.position=Vector2((size.x-330)/2,24 if size.x>=1280 else 148)
 	toolbar.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	toolbar.offset_left=-214; toolbar.offset_top=24; toolbar.offset_right=-24
-	interaction.offset_left=-minf(580,size.x-340)
+	if bag_button!=null:
+		bag_button.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+		bag_button.offset_left=-140; bag_button.offset_top=-68; bag_button.offset_right=-24; bag_button.offset_bottom=-24
+	interaction.offset_right=-152
+	interaction.offset_left=-minf(600,size.x-340)
 
 func add_meter(parent: VBoxContainer,title: String,color: Color,width: int) -> ProgressBar:
 	var row: HBoxContainer = HBoxContainer.new()
@@ -181,26 +214,25 @@ func update_state(snapshot: Dictionary) -> void:
 		slots[action].insufficient=snapshot.has("resources") and (snapshot.resources.stamina+0.000001<25 if action=="dodge" else snapshot.resources.mana<snapshot.resources.costs[action])
 		slots[action].update_cooldown(snapshot.cooldowns[action])
 
-	var loadout: bool = snapshot.get("alpha",{}).has("specialSlots")
-	loadout_actions.visible=loadout
-	if not loadout:
-		captions.rain.text="箭雨"; costs.rain.text="28 蓝量"; slots.rain.duration=8.0
-		slots.rain.icon=load("res://assets/ui/rain.tres")
+	var loadout: bool = snapshot.get("alpha",{}).has("skills")
+	loadout_actions.visible=loadout; source_summary.visible=loadout
 	if loadout:
-		for index in 2:
-			var choice: Dictionary = snapshot.alpha.specialSlots[index]
-			var kind: String = choice.get("skill","") if choice.active else ""
-			var action: String = "rain" if index==0 else "special2"
-			captions[action].text={"rain":"箭雨","backwind":"回风","charge":"蓄势"}.get(kind,"未启用")
+		var beast_name: String = snapshot.get("alpha",{}).get("blessingBeast","青龙")
+		source_summary.text="Q/E 来源 训练弓 · G 来源 布履\nT 来源 弓＋履羁绊 · C 来源 "+beast_name
+		for kind in snapshot.alpha.skills:
+			if not slots.has(kind): continue
+			var skill: Dictionary = snapshot.alpha.skills[kind]
+			var action: String = kind
 			var cost: int = snapshot.get("resources",{}).get("costs",{}).get(kind,0)
-			costs[action].text="%d 蓝量" % cost if not kind.is_empty() else "空槽"
-			slots[action].duration={"rain":8.0,"backwind":5.0,"charge":10.0}.get(kind,1.0)
-			slots[action].icon=load("res://assets/ui/%s.tres" % ("rain" if kind=="rain" else "dodge" if kind=="backwind" else "attack"))
-			slots[action].insufficient=kind.is_empty() or snapshot.has("resources") and snapshot.resources.mana<cost
-			slots[action].update_cooldown(snapshot.cooldowns.get(kind,0.0))
-		var extra: bool = snapshot.get("windExtraReady",false)
-		captions.wind.text="引风追加" if extra else "引风"
-		costs.wind.text="追加0蓝" if extra else "16 蓝量"
-		slots.wind.duration=8.0
-		slots.wind.insufficient=not extra and snapshot.has("resources") and snapshot.resources.mana<16
-		slots.wind.update_cooldown(0 if extra else snapshot.cooldowns.get("wind",0.0))
+			var extra: bool = kind=="wind" and snapshot.get("windExtraReady",false)
+			captions[action].text="引风追加" if extra else skill.name
+			var missing_hint: String = {"pierce":"需训练弓","rain":"需训练弓","backwind":"需布履","charge":"需弓＋履","wind":"需青龙","tiger":"需白虎","phoenix":"需朱雀"}.get(kind,"需穿戴")
+			costs[action].text=("追加0蓝" if extra else "%d 蓝量" % cost) if skill.active else missing_hint
+			slots[action].duration={"pierce":4.0,"rain":8.0,"backwind":5.0,"charge":10.0,"wind":8.0,"tiger":6.0,"phoenix":7.0}.get(kind,5.0)
+			slots[action].insufficient=not skill.active or not extra and snapshot.has("resources") and snapshot.resources.mana<cost
+			slots[action].update_cooldown(0 if extra else snapshot.cooldowns.get(kind,0.0))
+
+func set_backpack_open(open: bool) -> void:
+	if bag_button!=null:
+		bag_button.text="收起 · B" if open else "背包 · B"
+		bag_button.add_theme_color_override("font_color",Color("c8382b") if open else Color("d8cfc0"))

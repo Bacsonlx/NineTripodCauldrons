@@ -44,7 +44,7 @@ func export_home() -> void:
 	await process_frame
 	await process_frame
 	if arguments.size()>1 and arguments[1]=="quick":
-		var quick: Button = find_button(home,"快速测试")
+		var quick: Button = find_button(home,"自选起点")
 		if quick!=null: quick.pressed.emit()
 		await process_frame
 		await process_frame

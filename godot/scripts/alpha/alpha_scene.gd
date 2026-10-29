@@ -70,7 +70,7 @@ func _ready() -> void:
 	status_label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	var body: HBoxContainer = HBoxContainer.new(); column.add_child(body)
 	var grid_column: VBoxContainer = VBoxContainer.new(); body.add_child(grid_column)
-	label("装备 6×5 ｜ 祭坛 4×4 ｜ 经脉 5×2 ｜ 仓库 4（封闭格显示 ×）",grid_column)
+	label("装备 6×5 ｜ 祭坛 4×4 ｜ 收纳 4（封闭格显示 ×）",grid_column)
 	var grid: GridContainer = GridContainer.new()
 	grid.columns=10; grid_column.add_child(grid)
 	for y in 8:

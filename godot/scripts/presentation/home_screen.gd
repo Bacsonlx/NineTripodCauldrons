@@ -1,13 +1,18 @@
 extends Control
 
 const Journey = preload("res://scripts/journey/room_journey.gd")
+const Alpha = preload("res://scripts/alpha/alpha_state.gd")
+const Art = preload("res://scripts/presentation/item_art.gd")
 const HERO = preload("res://assets/ui/home-v1/hero-refined-v2.png")
 const PAPER = Color("f4e5be")
 const GOLD = Color("c5a363")
 const DIM = Color("b9a88a")
 const SLOTS: Array = [["weapon","主武","bow"],["armor","衣","robe"],["boots","履","boot"],["talisman","符","talisman"],["relic","器","relic"],["beast","神兽","beast"]]
 var items: Array = []
-var equipped: Dictionary = {"weapon":"bow_training","armor":"robe_hemp","boots":"boots_cloth","talisman":"","relic":"","beast":""}
+var prepared_alpha: RefCounted
+var prepared_selected_id: int = -1
+var prepared_rotated: bool = false
+var equipped: Dictionary = {"weapon":"bow_training","armor":"","boots":"boots_cloth","talisman":"","relic":"","beast":"beast_qinglong"}
 var category: String = "all"
 var selected: String = ""
 var preview: String = ""
@@ -29,6 +34,8 @@ var start_button: Button
 var slot_list: VBoxContainer
 var inventory: GridContainer
 var detail: VBoxContainer
+var backpack_grid: GridContainer
+var backpack_cells: Array[Button] = []
 var tags: Label
 var notice: Label
 var bag_count: Label
@@ -39,7 +46,14 @@ var avatar_badges: Array[Dictionary] = []
 @onready var footer: HBoxContainer = $Layout/Sections/Footer
 
 func _ready() -> void:
-	items=JSON.parse_string(FileAccess.get_file_as_string("res://assets/ui/home-v1/items.json"))
+	var catalog: Array = JSON.parse_string(FileAccess.get_file_as_string("res://assets/ui/home-v1/items.json"))
+	var real_names: Array[String] = ["训练弓","布履","青龙","羊角","鼠毫","素食"]
+	prepared_alpha=Alpha.new(1,true,[])
+	prepared_alpha.reset(Vector2.ZERO)
+	prepared_alpha.camp=true
+	items=catalog.filter(func(item: Dictionary): return real_names.has(str(item.get("name",""))))
+	var vegetarian: Dictionary=prepared_alpha.definition("素食")
+	items.append({"id":"pact_vegetarian","name":"素食","slot":"","type":"契","rarity":vegetarian.get("quality","常"),"icon":"talisman","desc":vegetarian.get("description","")})
 	build_theme()
 	build_header()
 	build_modes()
@@ -126,7 +140,7 @@ func build_header() -> void:
 	spacer(header)
 	header.add_child(text("祠 庙 · 供 台",18,GOLD))
 	spacer(header)
-	header.add_child(text("香火  未接入\n碎片  未接入",11,DIM))
+	header.add_child(text("香火  后续开放\n碎片  后续开放",11,DIM))
 	header.add_child(text("未入局",16))
 	button("？",header,show_help)
 
@@ -141,7 +155,7 @@ func build_modes() -> void:
 	var rail: VBoxContainer = column($Layout/Sections/Main/Modes)
 	rail.add_child(text("选择行程",11,DIM)); rail.add_child(text("行 程",28))
 	var group: ButtonGroup = ButtonGroup.new()
-	for entry in [["full","完整征程\n汤谷首关 · 目标15–20分钟"],["quick","快速测试\n选择关卡与房间起点"]]:
+	for entry in [["full","完整征程\n汤谷首关 · 目标15–20分钟"],["quick","自选起点\n从已开放房间开始"]]:
 		var portal: Button = button(entry[1],rail,select_mode.bind(entry[0]))
 		portal.toggle_mode=true; portal.button_group=group
 		portal.alignment=HORIZONTAL_ALIGNMENT_LEFT; portal.custom_minimum_size.y=80
@@ -216,13 +230,13 @@ func departure_arguments() -> Array:
 
 func refresh_departure() -> void:
 	var testing: bool = departure_mode=="quick"
-	var title: String = "快速测试 · 汤谷" if testing else "完整征程 · 汤谷"
+	var title: String = "自选起点 · 汤谷" if testing else "完整征程 · 汤谷"
 	var origin: String = str(room_maps.get(selected_room,{}).get("roomTitle","汤谷入口"))
 	var summary: String = "起点："+origin+" · 生命／蓝量／精力100" if testing else "从汤谷入口开始 · 目标15–20分钟"
-	mode_summary.text="新建测试局，可继续推进\n独立初始状态，不计正式通关" if testing else "从入口开启完整征程\n完成全部主线后前往出口"
+	mode_summary.text="从选定房间开始本次行程\n完成后仍可继续探索" if testing else "从入口开启完整征程\n完成全部主线后前往出口"
 	if start_button==null: return
 	footer_title.text=title; footer_summary.text=summary
-	start_button.text="进入测试" if testing else "踏入汤谷"
+	start_button.text="进入行程" if testing else "踏入汤谷"
 	if bag_start!=null: bag_start.text=start_button.text
 
 func build_stage(stage: Control) -> void:
@@ -300,12 +314,12 @@ func refresh_avatar_badges() -> void:
 
 func build_gear() -> void:
 	var rail: VBoxContainer = column($Layout/Sections/Main/Gear)
-	rail.add_child(text("本次神降",11,DIM)); rail.add_child(text("行 装",28))
-	rail.add_child(text("试装预览 · 不带入战斗",12,GOLD))
+	rail.add_child(text("本次神降",11,DIM)); rail.add_child(text("背 包",28))
+	rail.add_child(text("本局起始构筑",12,GOLD))
 	slot_list=column(rail)
 	refresh_slots()
-	button("行　行 囊　›",rail,func(): show_bag_panel(true),true)
-	rail.add_child(text("行前试装 · 不改变战斗配置",11,DIM))
+	button("整 理 背 包　›",rail,func(): show_bag_panel(true),true)
+	rail.add_child(text("确认出发后带入本局",11,DIM))
 
 func item_by_id(id: String) -> Dictionary:
 	for item in items:
@@ -335,7 +349,7 @@ func build_footer() -> void:
 	footer_title=text("",23); description.add_child(footer_title)
 	footer_summary=text("",12,DIM); description.add_child(footer_summary)
 	spacer(footer)
-	notice=text("现有默认构筑 · 试装不带入战斗",12,GOLD)
+	notice=text("当前背包会带入本次行程",12,GOLD)
 	footer.add_child(notice); spacer(footer)
 	start_button=button("踏入汤谷",footer,show_departure,true)
 	start_button.add_theme_font_size_override("font_size",26)
@@ -357,17 +371,28 @@ func build_bag_panel() -> void:
 	tags=text("",12,GOLD); tags.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 	portrait.add_child(tags); tags.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	tags.offset_left=-140; tags.offset_top=12
-	preview_box.add_child(text("后羿 · 行前试装预览",19))
-	preview_box.add_child(text("所选物品暂不影响首关战斗。",13,DIM))
+	preview_box.add_child(text("后羿 · 本局背包",19))
+	preview_box.add_child(text("物品与空间布局会带入本次行程。",13,DIM))
 	bag_start=button(start_button.text,preview_box,show_departure,true)
 	var panel: PanelContainer = PanelContainer.new()
 	panel.size_flags_horizontal=Control.SIZE_EXPAND_FILL; bag_panel.add_child(panel)
 	var right: VBoxContainer = column(panel)
 	var list_header: HBoxContainer = HBoxContainer.new(); right.add_child(list_header)
-	list_header.add_child(text("行囊",23)); spacer(list_header)
+	list_header.add_child(text("背包空间",23)); spacer(list_header)
 	bag_count=text("",12,GOLD); list_header.add_child(bag_count)
+	backpack_grid=GridContainer.new(); backpack_grid.name="BackpackGrid"; backpack_grid.columns=10
+	backpack_grid.add_theme_constant_override("h_separation",4); backpack_grid.add_theme_constant_override("v_separation",4)
+	right.add_child(backpack_grid)
+	for index in 50:
+		var cell: Vector2i=Vector2i(index%10,index/10)
+		var tile: Button=Button.new(); tile.custom_minimum_size=Vector2(48,42)
+		tile.focus_mode=Control.FOCUS_NONE
+		tile.expand_icon=true
+		tile.add_theme_constant_override("icon_max_width", 32)
+		tile.pressed.connect(home_grid_cell.bind(cell))
+		backpack_grid.add_child(tile); backpack_cells.append(tile)
 	var filters: HBoxContainer = HBoxContainer.new(); right.add_child(filters)
-	for filter in [["all","全部"],["gear","装备"],["charm","符器"],["skill","技能"],["use","消耗"]]:
+	for filter in [["all","全部"],["gear","装备"],["charm","符器"],["use","消耗"]]:
 		button(filter[1],filters,set_category.bind(filter[0]))
 	var scroll: ScrollContainer = ScrollContainer.new()
 	scroll.size_flags_vertical=Control.SIZE_EXPAND_FILL
@@ -387,7 +412,6 @@ func matches_category(item: Dictionary) -> bool:
 	match category:
 		"gear": return not slot.is_empty()
 		"charm": return slot in ["talisman","relic"]
-		"skill": return item.type=="技能书"
 		"use": return item.type in ["消耗","材料"]
 	return true
 
@@ -398,35 +422,40 @@ func refresh_inventory() -> void:
 		if not matches_category(item): continue
 		count+=1
 		var is_equipped: bool = item.id in equipped.values()
-		var card: Button = button(str(item.name)+("\n已试装" if is_equipped else "\n"+str(item.type)),inventory,choose_item.bind(item.id),is_equipped)
-		card.name=item.id; card.tooltip_text="试装预览："+str(item.name)
+		var card: Button = button(str(item.name)+("\n已携带" if is_equipped else "\n"+str(item.type)),inventory,choose_item.bind(item.id),is_equipped)
+		card.name=item.id; card.tooltip_text="查看："+str(item.name)
 		card.icon=icon(item.icon); card.expand_icon=true; card.add_theme_constant_override("icon_max_width",22)
 		card.add_theme_font_size_override("font_size",13)
 		card.size_flags_horizontal=Control.SIZE_EXPAND_FILL; card.custom_minimum_size=Vector2(0,78)
 		card.mouse_entered.connect(preview_item.bind(item.id)); card.mouse_exited.connect(preview_item.bind(""))
 		card.focus_entered.connect(preview_item.bind(item.id)); card.focus_exited.connect(preview_item.bind(""))
-	bag_count.text="%d 件 · 行前预览" % count
+	bag_count.text="%d 件 · 本局起始背包" % count
 	preview_item("")
 	refresh_detail()
+	refresh_backpack_grid()
 	layout_inventory.call_deferred()
 
 func choose_item(id: String) -> void:
 	selected=id
 	var item: Dictionary = item_by_id(id)
-	var slot: String = item.get("slot","")
-	if not slot.is_empty(): equipped[slot]="" if equipped[slot]==id else id
-	refresh_slots(); refresh_inventory()
+	prepared_selected_id=-1
+	for carried in prepared_alpha.items:
+		if carried.name==item.get("name",""):
+			prepared_selected_id=carried.id
+			prepared_rotated=carried.rotated
+			break
 	var card: Button = inventory.get_node_or_null(NodePath(id))
 	if card!=null: card.grab_focus()
-	preview_item("")
+	preview_item(id)
+	refresh_detail()
 
 func refresh_detail() -> void:
 	clear_children(detail)
 	var item: Dictionary = item_by_id(selected)
-	detail.add_child(text(str(item.get("name","行前整理 · 预览")),20))
-	var description: Label = text("原型说明（未生效）："+str(item.desc) if not item.is_empty() else "点击物品试装，悬停或聚焦查看六器签。",12,DIM)
+	detail.add_child(text(str(item.get("name","背包整理")),20))
+	var description: Label = text(str(item.desc) if not item.is_empty() else "选择物品，再点击背包格子调整位置。",12,DIM)
 	description.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; detail.add_child(description)
-	detail.add_child(text("本轮征程使用既有默认配置；试装不会改变战斗属性。",12,GOLD))
+	detail.add_child(text("进入汤谷后使用同一份背包布局；局内仅在安全营地整理。",12,GOLD))
 
 func preview_item(id: String) -> void:
 	preview=id
@@ -441,18 +470,78 @@ func preview_item(id: String) -> void:
 
 func layout_inventory() -> void:
 	if inventory==null: return
-	inventory.columns=5 if size.x>=1200 else 4 if size.x>=1000 else 3
-	$Layout/Sections/Main/Modes.custom_minimum_size.x=maxf(224,size.x*0.19)
-	$Layout/Sections/Main/Gear.custom_minimum_size.x=244 if size.x>=1100 else 208
-	bag_panel.get_child(0).custom_minimum_size.x=350 if size.x>=1100 else 260
-	notice.visible=size.x>=1100
+	inventory.columns=5
+	$Layout/Sections/Main/Modes.custom_minimum_size.x=224
+	$Layout/Sections/Main/Gear.custom_minimum_size.x=244
+	bag_panel.get_child(0).custom_minimum_size.x=350
+	notice.visible=true
+
+func home_grid_cell(cell: Vector2i) -> void:
+	if prepared_alpha==null: return
+	if prepared_selected_id<0:
+		for item in prepared_alpha.items:
+			if item.region in Alpha.REGIONS and Rect2i(item.cell,Alpha.shape(item,item.rotated)).has_point(cell):
+				prepared_selected_id=item.id
+				prepared_rotated=item.rotated
+				selected=item_by_name(item.name).get("id","")
+				break
+	else:
+		var item: Dictionary=prepared_alpha.find_item(prepared_selected_id)
+		if not item.is_empty():
+			prepared_alpha.place(item,cell,prepared_rotated)
+			prepared_alpha.recount()
+			refresh_equipped_from_backpack()
+			prepared_selected_id=-1
+	refresh_slots(); refresh_backpack_grid(); refresh_detail()
+
+func item_by_name(name_text: String) -> Dictionary:
+	for item in items:
+		if item.get("name","")==name_text: return item
+	return {}
+
+func refresh_equipped_from_backpack() -> void:
+	var next: Dictionary={"weapon":"","armor":"","boots":"","talisman":"","relic":"","beast":""}
+	var slots: Dictionary={"训练弓":"weapon","布履":"boots","青龙":"beast"}
+	for item in prepared_alpha.items:
+		var slot: String=str(slots.get(item.name,""))
+		if item.region=="equipment" and not slot.is_empty():
+			var entry: Dictionary=item_by_name(item.name)
+			next[slot]=entry.get("id","")
+		elif item.region=="equipment" and item.kind in ["符","契"]:
+			next.talisman=item_by_name(item.name).get("id","")
+	equipped=next
+
+func refresh_backpack_grid() -> void:
+	if backpack_grid==null or prepared_alpha==null: return
+	for index in backpack_cells.size():
+		var cell: Vector2i=Vector2i(index%10,index/10)
+		var tile: Button=backpack_cells[index]
+		var region: String=""
+		for key in Alpha.REGIONS:
+			if Alpha.REGIONS[key].has_point(cell): region=key; break
+		tile.disabled=region.is_empty()
+		tile.text=Alpha.NAMES.get(region,"").left(1) if not region.is_empty() else "×"
+		tile.icon=null
+		tile.modulate=Color("a69e89") if region.is_empty() else Color("e2d7bb")
+		for item in prepared_alpha.items:
+			if item.region in Alpha.REGIONS and Rect2i(item.cell,Alpha.shape(item,item.rotated)).has_point(cell):
+				tile.text="" if Art.texture(item.name)!=null else item.name.left(2)
+				tile.icon=Art.texture(item.name)
+				tile.modulate=Art.tint(item)
+				tile.modulate=Color("f0c764") if item.id==prepared_selected_id else Color("aaccb6")
+				tile.tooltip_text=item.name+"\n"+item.description
+				break
+		if prepared_alpha.altar_analysis.get("energized_ids",[]).has(prepared_selected_id):
+			tile.modulate=Color("f0c764")
 
 func show_bag_panel(open: bool) -> void:
 	main.visible=not open; footer.visible=not open; bag_panel.visible=open
 	if open:
 		refresh_inventory()
 		button_focus(bag_panel,"返回祠庙")
-	else: start_button.grab_focus()
+		selected=""; prepared_selected_id=-1; preview_item(""); refresh_backpack_grid()
+	else:
+		selected=""; prepared_selected_id=-1; preview_item(""); start_button.grab_focus()
 
 func button_focus(parent: Node,caption: String) -> void:
 	for child in parent.get_children():
@@ -493,9 +582,9 @@ func close_modal() -> void:
 func show_departure() -> void:
 	if modal!=null or launching: return
 	var testing: bool = departure_mode=="quick"
-	var content: VBoxContainer = open_modal("快速测试 · 汤谷" if testing else "完整征程 · 汤谷")
+	var content: VBoxContainer = open_modal("自选起点 · 汤谷" if testing else "完整征程 · 汤谷")
 	var origin: String = str(room_maps[selected_room].roomTitle)
-	for line in ["起点："+origin+(" · 不计正式完整通关，可继续推进。" if testing else " · 完成全部主线后前往出口。"), "生命、蓝量与精力100 · Esc 暂停后可返回首页。", "本次将以现有首关默认角色、技能与数值出发。", "行囊试装预览不带入战斗；不写入存档。"]:
+	for line in ["起点："+origin+(" · 本次为独立行程。" if testing else " · 完成全部主线后前往出口。"), "生命、蓝量与精力100 · Esc 暂停后可返回首页。", "本次将带入首页背包中的真实物品与空间布局。", "进入汤谷后背包默认关闭，可按 B 查看。"]:
 		var label: Label = text(line,15,DIM)
 		label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; content.add_child(label)
 	button("返回准备",content,close_modal)
@@ -510,9 +599,11 @@ func confirm_departure() -> void:
 
 func enter_journey() -> void:
 	get_tree().set_meta("home_test_arguments",departure_arguments())
+	get_tree().set_meta("home_initial_backpack",prepared_alpha.items.duplicate(true))
 	var error: Error = get_tree().change_scene_to_file("res://scenes/tanggu_first_level.tscn")
 	if error!=OK:
 		get_tree().remove_meta("home_test_arguments")
+		get_tree().remove_meta("home_initial_backpack")
 		launching=false; close_modal(); notice.text="首关加载失败，请重试。"; push_error("首关加载失败："+str(error))
 
 func show_portrait() -> void:
@@ -526,7 +617,7 @@ func show_portrait() -> void:
 func show_help() -> void:
 	if modal!=null: return
 	var content: VBoxContainer = open_modal("祠庙 · 供台")
-	for line in ["行程：完整征程，或选择房间进行快速测试。", "行囊：仅行前试装预览，不改变战斗配置。", "香火、碎片与存档尚未接入。", "Esc 关闭当前面板；F11 切换全屏。"]:
+	for line in ["行程：完整征程，或从已开放房间开始。", "背包：整理结果会带入本次汤谷行程。", "香火、碎片与存档将在后续章节开放。", "Esc 关闭当前面板；F11 切换全屏。"]:
 		content.add_child(text(line,15,DIM))
 	button("继续查看",content,close_modal)
 	trap_modal_focus(content)

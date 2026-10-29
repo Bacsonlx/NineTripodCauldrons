@@ -13,6 +13,7 @@ var initial_options: Dictionary = {}
 var drop_seed: int = 0
 var inventory: RefCounted
 var started_msec: int = 0
+var departure_inventory_snapshot: Array = []
 
 static func direction_label(target: String,source: String) -> String:
 	if target in ["moss_side","stele_side","ember_side"]: return "可选支路"
@@ -49,18 +50,20 @@ func _init(definitions: Dictionary,options: Dictionary = {}) -> void:
 	layouts=definitions
 	initial_options=options.duplicate()
 	initial_options.isTest=options.get("isTest",options.get("startRoom","entry")!="entry" or options.get("mode","") in ["boss","drops"])
+	if initial_options.has("initial_backpack"):
+		departure_inventory_snapshot=initial_options.initial_backpack.duplicate(true)
 	restart()
 
 func restart() -> void:
 	started_msec=Time.get_ticks_msec()
 	rooms.clear(); current_id=initial_options.get("startRoom","entry"); generation+=1
 	drop_seed=int(initial_options.get("dropSeed",randi()))
-	inventory=TrainingRoom.AlphaState.new(drop_seed,true)
-	inventory.reset(TrainingRoom.point(layouts[current_id].spawn),current_id)
-	if current_id!="entry": inventory.camp=false; inventory.departed=true
+	inventory=TrainingRoom.AlphaState.new(drop_seed,true,departure_inventory_snapshot)
+	inventory.reset(TrainingRoom.point(layouts[current_id].spawn))
+	inventory.camp=false; inventory.departed=true
+	if departure_inventory_snapshot.is_empty():
+		departure_inventory_snapshot=inventory.items.duplicate(true)
 	active=create_room(layouts[current_id]); rooms[current_id]=active
-	for item in inventory.items:
-		if item.get("teaching",false) and not active.can_walk(item.world): item.world=active.potion_location(item.world)
 	active.run_id=generation
 	active.health=int(initial_options.get("health",100))
 	active.mana=int(initial_options.get("mana",100))
@@ -118,6 +121,7 @@ func create_room(data: Dictionary) -> TrainingRoom:
 	data=data.duplicate(true)
 	data.gameplay=true
 	for door in data.doors: door.routeLabel=direction_label(door.target,data.roomId)
+	data.commercialDepthRewards=not initial_options.isTest and data.has("constructionRewardWaves")
 	if initial_options.get("potionDrops",false):
 		data.potionDrops=true
 		data.dropSeed=drop_seed+str(data.roomId).hash()

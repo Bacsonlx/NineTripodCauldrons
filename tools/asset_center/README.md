@@ -51,7 +51,69 @@ http://localhost:8899
 
 ---
 
-## 📁 目录架构
+## InstaBox 一键部署
+
+在项目根目录双击 `deploy-assets.command`，或执行：
+
+```bash
+python3 tools/asset_center/deploy.py
+```
+
+目标为已创建的免费机器 `jiuding-asset-center`
+（`m_agqxzavig73nnfofr6sxgvcvka`），公开端口为 `8899`。
+部署程序调用官方 InstaBox CLI；本机已准备在 `.scratch/instabox/instabox`，
+也可以使用 PATH 中的 `instabox` 或通过 `INSTABOX_BIN` 指定。
+
+首次使用需要在项目根目录的 `.env.instabox` 中设置部署凭据：
+
+```json
+{
+  "api_key": "在 InstaBox 控制台创建的部署密钥",
+  "username": "admin",
+  "password": "独立的网页访问密码"
+}
+```
+
+该文件已由现有 `.gitignore` 中的 `.env.*` 规则排除，并应保持 `600` 权限。
+API 密钥只需要 `machines:write`（包含读取），不需要删除机器或快照权限。
+密钥也可以从环境变量 `INSTABOX_API_KEY` 传入；不要提交密钥、密码或带凭据的访问链接。
+
+部署行为：
+
+- 自动启动已停止的机器、恢复已暂停的机器；使用原机器，避免重复创建。
+- 按文件内容校验，只上传变化的服务代码、前端、玩法配置与图片素材。
+  不上传 `.git`、Node.js 依赖、原生游戏包及本机凭据。
+- CSV、JSON 和分类 Markdown 只在服务器缺少主数据时初始化；
+  后续部署保留云端编辑，**不会用本机旧表覆盖云端记录**。
+- 更新前停止服务并备份服务器 `docs/art/`，随后安装 systemd 服务，
+  启用开机启动、故障重启及网页用户名/密码认证。
+- 验证本机服务和公网 HTTPS 数据接口，并确认未登录访问返回 `401`。
+
+持久文件位于服务器 `/data/home/jiuding-asset-center/`：
+
+- `workspace/`：服务、素材和云端资产表。
+- `backups/`：每次更新前的资产记录备份。
+- `service.env`：网页认证配置，只允许所有者读取。
+
+本机 `.scratch/instabox/deployment.json` 保存最近部署的网址和变化文件数。
+首次约上传 1.75 GB 的图片和代码，后续为增量上传。
+本机和云端的表格不会自动双向合并；云端编辑可用页面中的 JSON／CSV 导出功能取回，
+服务器备份也可使用 `instabox pull` 下载。服务更新期间有短暂停机；
+部署失败会明确退出，不会自动回滚代码。
+
+免费计划的暂停和时长限制以 InstaBox 控制台为准：
+当前空闲 30 分钟或连续运行 8 小时后暂停。
+官方文档说明，空闲自动暂停后访问公开网址会唤醒机器；
+手动暂停／停止需要恢复，执行一键部署也会恢复。
+这不等同于全天在线的生产托管。
+
+部署相关验证：
+
+```bash
+python3 -m unittest discover -s tools/asset_center -p 'test_deployment.py' -v
+```
+
+## 本地文件结构
 
 ```
 tools/asset_center/

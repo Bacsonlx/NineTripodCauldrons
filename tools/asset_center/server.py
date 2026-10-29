@@ -9,6 +9,8 @@ import os
 import sys
 import json
 import mimetypes
+import base64
+import hmac
 from pathlib import Path
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 import urllib.parse
@@ -38,17 +40,43 @@ class AssetCenterHandler(SimpleHTTPRequestHandler):
 
     def end_headers(self):
         # Enable CORS and disable aggressive caching for local dev
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        if not os.environ.get("ASSET_CENTER_PASSWORD"):
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+            self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
         super().end_headers()
 
+    def authorize(self):
+        password = os.environ.get("ASSET_CENTER_PASSWORD", "")
+        if not password and os.environ.get("ASSET_CENTER_AUTH_REQUIRED") != "1":
+            return True
+        username = os.environ.get("ASSET_CENTER_USERNAME", "admin")
+        expected = "Basic " + base64.b64encode(
+            f"{username}:{password}".encode("utf-8")
+        ).decode("ascii")
+        supplied = self.headers.get("Authorization", "")
+        if password and hmac.compare_digest(supplied.encode(), expected.encode()):
+            return True
+        self.send_response(401)
+        self.send_header("WWW-Authenticate", 'Basic realm="Jiuding Asset Center", charset="UTF-8"')
+        self.send_header("Content-Length", "0")
+        self.end_headers()
+        return False
+
+    def do_HEAD(self):
+        if self.authorize():
+            super().do_HEAD()
+
     def do_OPTIONS(self):
+        if not self.authorize():
+            return
         self.send_response(200)
         self.end_headers()
 
     def do_GET(self):
+        if not self.authorize():
+            return
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
 
@@ -61,6 +89,17 @@ class AssetCenterHandler(SimpleHTTPRequestHandler):
             super().do_GET()
 
     def do_POST(self):
+        if not self.authorize():
+            return
+        if os.environ.get("ASSET_CENTER_PASSWORD"):
+            origin = self.headers.get("Origin")
+            public_origin = os.environ.get("ASSET_CENTER_PUBLIC_ORIGIN", "").rstrip("/")
+            same_host = origin and urllib.parse.urlsplit(origin).netloc == self.headers.get("Host")
+            if self.headers.get("Sec-Fetch-Site") == "cross-site" or (
+                origin and origin.rstrip("/") != public_origin and not same_host
+            ):
+                self.send_error_response(403, "Cross-origin writes are forbidden")
+                return
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
 
@@ -128,9 +167,16 @@ class AssetCenterHandler(SimpleHTTPRequestHandler):
 
         # Security check: must reside inside WORKSPACE_ROOT
         try:
-            safe_path.relative_to(WORKSPACE_ROOT)
+            relative = safe_path.relative_to(WORKSPACE_ROOT)
         except ValueError:
             self.send_error_response(403, "Forbidden path access")
+            return
+
+        if os.environ.get("ASSET_CENTER_PASSWORD") and (
+            not (relative.parts[:1] == ("assets",) or relative.parts[:2] == ("output", "art"))
+            or safe_path.suffix.lower() not in {".png", ".webp", ".jpg", ".jpeg", ".svg"}
+        ):
+            self.send_error_response(403, "Forbidden media path")
             return
 
         if not safe_path.exists() or not safe_path.is_file():
@@ -165,7 +211,9 @@ class AssetCenterHandler(SimpleHTTPRequestHandler):
         self.wfile.write(resp)
 
 def run_server(port=8899):
-    server_address = ("", port)
+    if os.environ.get("ASSET_CENTER_AUTH_REQUIRED") == "1" and not os.environ.get("ASSET_CENTER_PASSWORD"):
+        raise RuntimeError("ASSET_CENTER_PASSWORD is required for public deployment")
+    server_address = (os.environ.get("ASSET_CENTER_HOST", ""), port)
     httpd = ThreadingHTTPServer(server_address, AssetCenterHandler)
     print(f"\n=======================================================")
     print(f"  九鼎 · 十日 | 资产管理中心服务已启动")

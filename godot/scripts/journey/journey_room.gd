@@ -2,6 +2,7 @@ extends "res://scripts/combat/training_room.gd"
 
 var completed: bool = false
 var requested_door: String = ""
+var requested_camp: bool = false
 var wave_delay: float = 0.0
 
 func _init(data: Dictionary) -> void:
@@ -43,6 +44,13 @@ func nearest_interaction() -> Dictionary:
 		var reason: Variant = "影散后无法过门" if status=="failed" else "暂停中无法过门" if paused or reading else "完成本房间任务后开门" if not completed else null
 		closest={"id":"door:"+door.id,"doorId":door.id,"point":location,"label":door.get("routeLabel","前往")+" · "+door.title,"reason":reason}
 		distance=gap
+	for camp in layout.get("camps",[]):
+		var location: Vector2 = point(camp)
+		var gap: float = origin.distance_to(location)
+		if gap>80 or gap>=distance or not clear_path(origin,location): continue
+		var reason: Variant = "影散后无法整理" if status=="failed" else "暂停中无法整理" if paused or reading else "清庭后可整理" if not completed else null
+		closest={"id":"camp","point":location,"label":"安全营地 · 整理背包","reason":reason}
+		distance=gap
 	return closest
 
 func interact() -> void:
@@ -51,6 +59,10 @@ func interact() -> void:
 	if target.has("doorId"):
 		if target.reason!=null: feedback={"text":target.reason,"remaining":1.6,"healed":false}
 		else: requested_door=target.doorId
+		return
+	if target.get("id","")=="camp":
+		if target.reason!=null: feedback={"text":target.reason,"remaining":1.6,"healed":false}
+		else: requested_camp=true
 		return
 	super.interact()
 
@@ -79,4 +91,4 @@ func arrive(travel: Dictionary,location: Vector2,facing: int,generation: int) ->
 	player.moving=false; run_id=generation
 	cancel_input(); paper_arrows.clear(); arrows.clear(); rains.clear(); effects.clear(); invalid.clear(); feedback.clear()
 	interact_held=true
-	dodge_time=0; dodge_invulnerability=0; requested_door=""
+	dodge_time=0; dodge_invulnerability=0; requested_door=""; requested_camp=false

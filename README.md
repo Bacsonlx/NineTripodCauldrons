@@ -45,6 +45,7 @@ Codex 已接入项目级 `jiuding_godot` MCP，工程查询、场景／节点／
 - `tools/migration/`：素材转换、Godot检查和双平台导出；`build/godot/`：本地产物。
 - `assets/mvp/`、`assets/mvp02/`、`assets/mvp03/`：复用源素材、帧裁切与制作记录。
 - [`docs/`](docs/README.md)：按产品、故事、技术、操作指南与实施证据分类的文档索引；`output/`：历史观察与生成证据。
+- [文件与资产清理记录](docs/art/项目文件与资产清理_2026-10-27.md)：已清理副本、资产分类入口、历史材料保留原因和验证证据。
 - `src/`、根 `tests/`、`scripts/`及npm配置：旧版Electron／Phaser代码、行为参照与制作工具。
 
 战斗参数与后续属性建议见 [战斗数值方案](docs/balance/九鼎_战斗数值方案_v0.1.md)；当前动作和反馈实现以Godot为准，旧TypeScript修复过程见 [历史架构修复记录](docs/architecture/九鼎_架构深化修复记录_2026-10-19.md)。源素材沿用 [MVP-02制作记录](assets/mvp02/制作与接入记录.md)与 [MVP-03制作记录](assets/mvp03/制作与接入记录.md)。各版本历史见 [更新日志](CHANGELOG.md)。

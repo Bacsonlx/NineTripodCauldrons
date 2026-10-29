@@ -28,6 +28,7 @@ func run(check: Callable) -> void:
 	check.call(run.snapshot().camps==[Vector2(400,600)],"公开营地快照不能修改真实整理点")
 	var food: Dictionary = run.snapshot().alpha.items.filter(func(item: Dictionary): return item.name=="素食")[0]
 	check.call(food.description.contains("已接通"),"已接通的素食详情明确说明祭坛生效与停时")
+	command(run,{"action":"camp"})
 	var bow: int = id_of(run,"训练弓")
 	command(run,{"action":"embed","equipmentId":bow,"glyphId":id_of(run,"羊角")})
 	command(run,{"action":"embed","equipmentId":id_of(run,"布履"),"glyphId":id_of(run,"鼠毫")})
@@ -64,4 +65,4 @@ func run(check: Callable) -> void:
 	check.call(run.snapshot().resources==before,"失焦后背包指令不能绕过暂停推进资源")
 	PlayerControls.new(run.active).key_down(KEY_ESCAPE)
 	run.update({"restart":true},0)
-	check.call(run.snapshot().roomId=="entry" and run.snapshot().alpha.items.size()==10 and run.snapshot().healthMax==100,"新局清空旧掉落与装备效果，重新进入入口营地")
+	check.call(run.snapshot().roomId=="entry" and run.snapshot().alpha.items.size()==6 and run.snapshot().healthMax==100,"新局清空旧掉落与装备效果，重新进入入口营地")

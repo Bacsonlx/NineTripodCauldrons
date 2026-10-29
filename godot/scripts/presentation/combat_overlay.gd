@@ -47,6 +47,17 @@ func _draw() -> void:
 		var center: Vector2 = Vector2(state.invalid.x,state.invalid.y)
 		draw_line(center-Vector2(9,9),center+Vector2(9,9),Color("e87956"),2)
 		draw_line(center-Vector2(9,-9),center+Vector2(9,-9),Color("e87956"),2)
+	for mine in state.get("mines",[]):
+		var center: Vector2 = Vector2(mine.x,mine.y)
+		var progress: float = clampf(mine.remaining/3.0,0,1)
+		draw_circle(center,8,Color(0.78,0.22,0.13,0.8))
+		draw_arc(center,18,0,TAU,24,Color(0.95,0.68,0.28,0.65),2)
+		draw_arc(center,28,-PI/2,-PI/2+TAU*progress,20,Color("e7c278"),3)
+	for recall in state.get("recalls",[]):
+		var point: Vector2 = Vector2(recall.point)
+		draw_arc(point,18,0,TAU,24,Color(0.63,0.88,0.75,0.7),2)
+		draw_line(point-Vector2(12,0),point+Vector2(12,0),Color("d9f0cf"),1)
+		draw_line(point-Vector2(0,12),point+Vector2(0,12),Color("d9f0cf"),1)
 	if pointer_inside and not state.paused and state.status!="failed":
 		draw_arc(aim,6,0,TAU,24,Color("f5dbad"),1.2)
 		draw_line(aim-Vector2(11,0),aim-Vector2(4,0),Color("f5dbad"),1.2)

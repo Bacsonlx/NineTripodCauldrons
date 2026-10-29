@@ -32,7 +32,7 @@ static func calculate(items: Array[Dictionary], previous: Dictionary) -> Diction
 	var records: Array[Dictionary] = []
 	for item in items:
 		if item.region!="altar": continue
-		var eligible: bool = (item.kind!="装备" or item.get("mainGlyph",false)) and OPPOSITE.has(item.container) and item.kind not in ["神兽","技能书"] and item.state=="normal" and item.get("eligible",true)
+		var eligible: bool = (item.kind!="装备" or item.get("mainGlyph",false)) and OPPOSITE.has(item.container) and item.kind!="神兽" and item.state=="normal" and item.get("eligible",true)
 		var weighted: bool = false
 		if eligible and item.container=="木":
 			for cell in cells(item):

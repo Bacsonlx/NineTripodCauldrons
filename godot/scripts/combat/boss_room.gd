@@ -38,7 +38,8 @@ static func arena_layout() -> Dictionary:
 
 func _init(fixture: Dictionary = {}) -> void:
 	initial=fixture.duplicate(true)
-	var data: Dictionary = fixture.duplicate(true) if fixture.has("width") else arena_layout()
+	var data: Dictionary = arena_layout()
+	data.merge(fixture, true)
 	data.spawn=initial.get("spawn",data.spawn)
 	if data.get("gameplay",false) or data.get("mode","")=="gameplay": data.potionDrops=true
 	super(data)
@@ -253,6 +254,10 @@ func impact(hit: Dictionary,kind: String,angle: float,attack: Dictionary = {}) -
 		super.impact(hit,kind,angle,attack); return
 	var boss: Dictionary = enemies[0]
 	if boss.health<=0: return
+	if boss.phase in ["swing_warn","throw_warn","prepare"]:
+		if kind=="pierce" or has_spatial_synergy("推击强控") or attack.get("critical",false):
+			boss.phase="prepare"; boss.timer=1.0; boss.struck=false
+			feedback={"text":"破绽断招！","remaining":1.0,"healed":false}
 	var damage: int = mini(boss.health,roundi(ATTACKS[kind].damage*damage_multiplier(kind,attack)*(1.25 if kind!="burn" and not hammer.is_empty() else 1.0)))
 	boss.health-=damage; boss.flash=0.12; hits+=1
 	apply_item_hit(boss,kind,attack)
@@ -267,7 +272,18 @@ func impact(hit: Dictionary,kind: String,angle: float,attack: Dictionary = {}) -
 		for enemy in enemies:
 			if enemy.id==BOSS_ID: continue
 			enemy.health=0; enemy.phase="dead"; enemy.timer=0
-		if has_loadout_skills(): alpha.kill_record(); clear_skill_effects()
+		if has_loadout_skills():
+			alpha.kill_record(); clear_skill_effects()
+			var info: Dictionary = get_divine_name_and_weakness()
+			alpha.record_stele_inscription({
+				"beast": alpha.blessing_beast,
+				"tier": alpha.blessing_tier,
+				"winner": info.winner,
+				"harm": info.harm,
+				"pacts": alpha.pacts.duplicate(),
+				"synergies": alpha.altar_analysis.get("synergies",[]).duplicate(true),
+				"time": elapsed
+			})
 		if potion_drops:
 			reward_placeholders=[{"kind":"equipment","label":"装备 · 未入库占位","x":boss.x-32,"y":boss.y},{"kind":"item","label":"道具 · 未入库占位","x":boss.x+32,"y":boss.y}]
 		cancel_pending(); arrows.clear(); rains.clear()
@@ -295,6 +311,33 @@ static func segment_circle(from: Vector2,to: Vector2,center: Vector2,radius: flo
 	var entry: float = (-b-sqrt(discriminant))/(2*a)
 	return entry if entry>=0 and entry<=1 else -1
 
+func get_divine_name_and_weakness() -> Dictionary:
+	var winner: String = ""
+	var harm: String = ""
+	if alpha!=null and alpha.ranking.has("winner"):
+		winner=alpha.ranking.get("winner","")
+		harm=alpha.ranking.get("harm","")
+	var titles: Dictionary = {
+		"木": {"name": "古神念名 · 岁木神君", "weakness": "弱点：惧雷刑贯通，以穿透箭或强控可断其招"},
+		"火": {"name": "古神念名 · 祝融之残", "weakness": "弱点：惧水沉冰熄，以闪避引雷可断其招"},
+		"金": {"name": "古神念名 · 白帝之刃", "weakness": "弱点：惧火焚熔金，以暴击推击可断其招"},
+		"雷": {"name": "古神念名 · 震天神将", "weakness": "弱点：惧木祠生发，以神兽风道可断其招"},
+		"场": {"name": "古神念名 · 破阵斗煞", "weakness": "弱点：惧塔镇锁气，以穿透箭击破绽可断其招"},
+		"水": {"name": "古神念名 · 玄冥之魄", "weakness": "弱点：惧土葬重岳，以强力击退可断其招"},
+		"土": {"name": "古神念名 · 后土残魂", "weakness": "弱点：惧木根破隙，以箭雨震地可断其招"},
+		"塔": {"name": "古神念名 · 锁魔铜尊", "weakness": "弱点：惧场斗碎甲，以连续射击可断其招"},
+		"镜": {"name": "古神念名 · 幻照影神", "weakness": "弱点：惧草野伏击，以近身破隙可断其招"},
+		"草": {"name": "古神念名 · 幽野荒魂", "weakness": "弱点：惧明镜鉴破，以穿透箭直指心核可断其招"}
+	}
+	var default_entry: Dictionary = {"name": "古神念名 · 雷庭索尔", "weakness": "弱点：横锤与投锤前摇破绽，以穿透箭或推击可断其蓄力"}
+	var entry: Dictionary = titles.get(winner, default_entry)
+	return {
+		"divineName": entry.name,
+		"weakness": entry.weakness,
+		"winner": winner,
+		"harm": harm
+	}
+
 func snapshot() -> Dictionary:
 	var data: Dictionary = super.snapshot()
 	data.enemies=data.enemies.filter(func(enemy: Dictionary): return enemy.id!=BOSS_ID)
@@ -305,5 +348,8 @@ func snapshot() -> Dictionary:
 	data.lightning=lightning.duplicate(true)
 	data.vulnerable=not hammer.is_empty()
 	data.throwTarget=throw_target() if not enemies.is_empty() else Vector2.ZERO
+	var divine_info: Dictionary = get_divine_name_and_weakness()
+	data.bossDivineName=divine_info.divineName
+	data.bossWeakness=divine_info.weakness
 	if potion_drops: data.rewardPlaceholders=reward_placeholders.duplicate(true)
 	return data

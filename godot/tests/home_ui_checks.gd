@@ -2,120 +2,77 @@ extends SceneTree
 
 var failures: Array[String] = []
 var checks: int = 0
-var layouts: Array = []
 
-func check(ok: bool,message: String) -> void:
+func check(ok: bool, message: String) -> void:
 	checks+=1
 	if not ok: failures.append(message); push_error(message)
 
 func _initialize() -> void:
-	create_timer(30).timeout.connect(func(): push_error("首页界面检查超时"); quit(1))
+	create_timer(30).timeout.connect(func(): push_error("首页背包检查超时"); quit(1))
 	run.call_deferred()
 
-func find_button(node: Node,prefix: String) -> Button:
+func find_button(node: Node, prefix: String) -> Button:
 	if node is Button and node.text.begins_with(prefix): return node
 	for child in node.get_children():
-		var found: Button = find_button(child,prefix)
+		var found: Button=find_button(child,prefix)
 		if found!=null: return found
 	return null
 
-func visible_text(node: Node,visible_only: bool=true) -> String:
-	var result: String = node.text if node is Label or node is Button else ""
+func visible_text(node: Node) -> String:
+	var result: String=node.text if node is Label or node is Button else ""
 	for child in node.get_children():
-		if child is Control and (child.visible or not visible_only): result+="\n"+visible_text(child,visible_only)
+		if child is Control and child.visible: result+="\n"+visible_text(child)
 	return result
 
-func avatar_badge(home: Control,slot: String,view: String="stage") -> Dictionary:
-	var badges: Array=home.get("avatar_badges")
-	for entry in badges:
-		if entry.slot==slot and entry.view==view: return entry
-	return {}
-
-func equipped_item(home: Control,slot: String) -> String:
-	var equipped: Dictionary=home.get("equipped")
-	return equipped.get(slot,"")
-
-func escape_key() -> void:
-	var event: InputEventKey = InputEventKey.new()
-	event.keycode=KEY_ESCAPE; event.physical_keycode=KEY_ESCAPE; event.pressed=true
-	root.push_input(event)
-
 func run() -> void:
-	var home: Control = load("res://scenes/home.tscn").instantiate()
+	var home: Control=load("res://scenes/home.tscn").instantiate()
 	root.add_child(home); current_scene=home
 	await process_frame
 	await process_frame
-	check(find_button(home,"完整征程")!=null and find_button(home,"快速测试")!=null,"完整征程与快速测试模式均在首页可见")
-	check(visible_text(home).contains("未接入") and visible_text(home).contains("不带入战斗"),"界面明确标记未接入数据与试装范围")
-	var armor_badge: Dictionary=avatar_badge(home,"armor")
-	var weapon_badge: Dictionary=avatar_badge(home,"weapon")
-	var bag_armor_badge: Dictionary=avatar_badge(home,"armor","bag")
-	check(not armor_badge.is_empty() and armor_badge.badge.visible and armor_badge.label.text=="素麻衣","角色装备标记显示当前衣槽装备")
-	check(not weapon_badge.is_empty() and weapon_badge.badge.visible and weapon_badge.label.text=="训练弓","角色装备标记显示当前武器")
-	var original_weapon: String=equipped_item(home,"weapon")
-	var preview_tags: Label=home.get("tags")
-	home.call("preview_item","robe_red")
-	check(equipped_item(home,"armor")=="robe_hemp" and armor_badge.label.text=="赤霞袍" and bag_armor_badge.label.text=="赤霞袍" and preview_tags.text.contains("衣 · 预览 赤霞袍"),"悬停预览只临时更新角色对应槽位展示，不改已装备状态")
-	home.call("preview_item","")
-	check(armor_badge.label.text=="素麻衣","结束悬停后角色展示恢复已装备物品")
-	home.call("show_bag_panel",true)
-	home.call("choose_item","robe_red")
-	check(equipped_item(home,"armor")=="robe_red" and equipped_item(home,"weapon")==original_weapon and armor_badge.label.text=="赤霞袍" and bag_armor_badge.label.text=="赤霞袍" and preview_tags.text.contains("衣 · 赤霞袍"),"更换衣槽装备同步角色与行囊预览且不影响武器槽")
-	home.call("choose_item","robe_hemp")
-	check(equipped_item(home,"armor")=="robe_hemp" and armor_badge.label.text=="素麻衣","再次更换同槽装备更新角色展示")
-	home.call("choose_item","robe_hemp")
-	check(equipped_item(home,"armor")=="" and not armor_badge.badge.visible and not bag_armor_badge.badge.visible,"卸下衣槽后两处角色标记立即隐藏，不被焦点预览重新显示")
-	home.call("choose_item","robe_hemp")
-	var robe_card: Button=find_button(home,"赤霞袍")
-	robe_card.mouse_entered.emit()
-	check(armor_badge.label.text=="赤霞袍" and equipped_item(home,"armor")=="robe_hemp","鼠标进入物品卡仅预览对应装备")
-	robe_card.mouse_exited.emit()
-	check(armor_badge.label.text=="素麻衣","鼠标离开物品卡恢复已装备标记")
-	robe_card.mouse_entered.emit()
+
+	check(find_button(home,"完整征程")!=null and find_button(home,"自选起点")!=null,"首页提供正式征程与自选起点入口")
+	var text_value: String=visible_text(home)
+	for forbidden in ["仓库","试装","原型","快速测试","未接入","不带入战斗"]:
+		check(not text_value.contains(forbidden),"正式首页不显示开发态词汇："+forbidden)
+	var prepared: RefCounted=home.get("prepared_alpha")
+	check(prepared!=null and prepared.items.size()==6,"首页使用六件真实起始物品")
+	check(home.get("backpack_cells").size()==50,"首页背包与局内保持50格空间")
+	var names: Array[String]=[]
+	for item in prepared.items: names.append(item.name)
+	for expected in ["训练弓","布履","青龙","羊角","鼠毫","素食"]:
+		check(names.has(expected),"首页起始背包包含真实物品："+expected)
+	var bag_button: Button=find_button(home,"整 理 背 包")
+	check(bag_button!=null,"首页提供正式背包入口")
+	if bag_button!=null: bag_button.pressed.emit()
+	await process_frame
+	check(home.get_node("Layout/Sections/Bag").visible,"点击首页背包入口打开背包空间")
+	check(str(home.get("bag_count").text).contains("6 件"),"首页背包显示真实携带数量")
+	var grid: GridContainer=home.get("backpack_grid")
+	check(grid!=null and grid.columns==10 and grid.get_child_count()==50,"首页背包绘制装备、祭坛、收纳三段空间")
+	var home_rect: Rect2=home.get_global_rect()
+	var bag_rect: Rect2=home.get_node("Layout/Sections/Bag").get_global_rect()
+	check(home_rect.encloses(bag_rect),"首页背包面板完整收纳在当前窗口内")
+	check(home_rect.encloses(grid.get_global_rect()),"首页背包网格不溢出当前窗口")
+	var compact_cells: bool=true
+	for cell in home.get("backpack_cells"):
+		if cell.size.x>64.0 or cell.size.y>64.0:
+			compact_cells=false
+			break
+	check(compact_cells,"首页背包格子保持紧凑尺寸，不被物品贴图原始尺寸撑大")
+	home.call("choose_item","talis_goat")
+	home.call("home_grid_cell",Vector2i(6,0))
+	var goat: Dictionary={}
+	for item in prepared.items:
+		if item.name=="羊角": goat=item
+	check(goat.get("region","")=="altar" and goat.get("cell",Vector2i(-1,-1))==Vector2i(6,0),"首页摆放结果写入真实背包布局")
 	home.call("show_bag_panel",false)
-	check(armor_badge.label.text=="素麻衣" and home.get("preview")=="","退出行囊清除临时预览，首页恢复实际试装")
-	var missing: String = ""
-	var font: Font = home.get_theme_font("font")
-	for character in visible_text(home,false):
-		if character.unicode_at(0)>32 and not font.has_char(character.unicode_at(0)) and not missing.contains(character): missing+=character
-	check(missing.is_empty(),"随包字体覆盖首页与行囊显示文案，缺字："+missing)
-	check(not visible_text(home).contains("仓库"),"初始页面不再展示仓库入口或设置项，背包入口仍保留")
-	for target in [Vector2(1280,720),Vector2(1920,1080),Vector2(1680,720),Vector2(1280,900)]:
-		home.size=target
-		await process_frame
-		await process_frame
-		var stage: Control = home.get_node("Layout/Sections/Main/Stage")
-		var gear: Control = home.get_node("Layout/Sections/Main/Gear")
-		var footer: Control = home.get_node("Layout/Sections/Footer")
-		var bounds: Rect2 = Rect2(Vector2.ZERO,target)
-		var fits: bool = bounds.encloses(gear.get_global_rect()) and bounds.encloses(footer.get_global_rect()) and gear.get_global_rect().end.y<=footer.get_global_rect().position.y
-		check(fits,"逻辑画布 %s 下行装栏与出发操作不越界、不相交" % target)
-		check(stage.size.x>200,"逻辑画布 %s 保留中央人物空间" % target)
-		layouts.append({"size":[target.x,target.y],"gear_bottom":gear.get_global_rect().end.y,"footer_top":footer.get_global_rect().position.y,"fits":fits})
-	home.size=Vector2(1280,720)
-	find_button(home,"行　").pressed.emit()
+	var start: Button=find_button(home,"踏入汤谷")
+	check(start!=null,"首页保留正式出发入口")
+	if start!=null: start.pressed.emit()
 	await process_frame
-	check(visible_text(home).contains("24 件"),"行囊显示24件可浏览的原型物品")
-	find_button(home,"装备").pressed.emit()
-	check(visible_text(home).contains("15 件"),"行囊装备分类保留全部装备选项")
-	find_button(home,"符器").pressed.emit()
-	check(visible_text(home).contains("8 件"),"符器分类只显示8件符器")
-	find_button(home,"燧火").pressed.emit()
-	check(find_button(home,"燧火").text.contains("已试装"),"点击物品完成试装反馈")
-	check(find_button(home,"燧火")!=null and visible_text(home).contains("行囊"),"行囊保留筛选结果与已试装物品")
-	escape_key()
-	await process_frame
-	check(home.get_node("Layout/Sections/Main").visible,"Esc经引擎输入管线返回供台")
-	find_button(home,"踏入汤谷").grab_focus()
-	find_button(home,"踏入汤谷").pressed.emit()
-	var dialog: Control = home.get_node("HomeDialog")
-	check(visible_text(dialog).contains("不带入战斗") and visible_text(dialog).contains("现有首关默认"),"真实出发确认明确不应用试装物品")
-	check(dialog.is_ancestor_of(root.gui_get_focus_owner()),"确认层获得键盘焦点")
-	escape_key()
-	await process_frame
-	check(home.get_node_or_null("HomeDialog")==null,"Esc关闭确认层且没有进入首关")
-	check(root.gui_get_focus_owner()==find_button(home,"踏入汤谷"),"确认层关闭后焦点回到出发按钮")
+	var dialog: Node=home.get_node_or_null("HomeDialog")
+	check(dialog!=null and visible_text(dialog).contains("真实物品与空间布局"),"出发确认说明背包会进入本局")
 	home.queue_free(); current_scene=null
 	await process_frame
-	print(JSON.stringify({"home_ui_checks":checks,"failures":failures,"layouts":layouts}))
+	print(JSON.stringify({"home_ui_checks":checks,"failures":failures}))
 	quit(0 if failures.is_empty() else 1)

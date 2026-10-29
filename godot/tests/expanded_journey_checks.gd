@@ -41,7 +41,7 @@ func fight_until_wave(run: RefCounted,wave: int) -> void:
 	check(false,"战斗必须在有限时间内推进")
 
 func rewards(run: RefCounted) -> Array:
-	return run.snapshot().alpha.items.filter(func(item: Dictionary): return item.name in ["羊角","鼠毫"] and not str(item.get("roomId","")).is_empty())
+	return run.snapshot().alpha.items.filter(func(item: Dictionary): return item.name in ["羊角","虎牙","鼠毫","燧火"] and not str(item.get("roomId","")).is_empty())
 
 func reward_checks() -> void:
 	var maps: Dictionary = {"moss_side":combat_fixture("moss_side",2,[1]),"court1":combat_fixture("court1",2,[0])}
@@ -95,6 +95,7 @@ func time_checks() -> void:
 	var entry: Dictionary = fixture("entry")
 	entry.camps=[Vector2(300,520)]
 	var run: RefCounted = Journey.new({"entry":entry},{"isTest":true})
+	run.update({"alpha":{"action":"camp"}},0)
 	run.update({},3)
 	check(is_equal_approx(run.snapshot().get("activeSeconds",-1),0),"初始整理不计有效冒险时间")
 	run.update({"alpha":{"action":"depart"}},0)

@@ -41,14 +41,14 @@ func run() -> void:
 	await process_frame
 	await process_frame
 	var full: Button = button_named(home,"完整征程")
-	var quick: Button = button_named(home,"快速测试")
-	check(full!=null and quick!=null,"首页有完整征程和快速测试两个原生入口")
+	var quick: Button = button_named(home,"自选起点")
+	check(full!=null and quick!=null,"首页有完整征程和自选起点两个原生入口")
 	if full!=null and quick!=null:
 		check(full.button_pressed and not quick.button_pressed,"默认持久选中完整征程")
 		check(full.get_node("SelectionMark").visible and not quick.get_node("SelectionMark").visible,"默认模式以控件色块标记选中，无字体依赖")
 		quick.pressed.emit()
 		check(quick.get_node("SelectionMark").visible and not full.get_node("SelectionMark").visible,"切换模式同步原生色块标记")
-		check(quick.button_pressed and not full.button_pressed and button_named(home,"进入测试")!=null,"选择测试同步选中态和底部按钮")
+		check(quick.button_pressed and not full.button_pressed and button_named(home,"进入行程")!=null,"选择测试同步选中态和底部按钮")
 		for window_size in [Vector2i(1920,1080),Vector2i(1280,720),Vector2i(800,450)]:
 			root.size=window_size
 			await process_frame
@@ -65,7 +65,7 @@ func run() -> void:
 		check(full.button_pressed and button_named(home,"踏入汤谷")!=null,"切回完整征程同步底部按钮")
 		quick.pressed.emit()
 		var choices: Array[Node] = home.find_children("RoomChoice","OptionButton",true,false)
-		check(choices.size()==1,"快速测试显示真实房间下拉控件")
+		check(choices.size()==1,"自选起点显示真实房间下拉控件")
 		if choices.size()==1:
 			var choice: OptionButton = choices[0]
 			check(choice.item_count==16,"首页提供全部16个已实现房间")
@@ -80,13 +80,13 @@ func run() -> void:
 			check(boss_index>=0,"房间列表包含真实索尔房间")
 			if boss_index>=0 and "--home-only" not in OS.get_cmdline_user_args():
 				choice.select(boss_index); choice.item_selected.emit(boss_index)
-				button_named(home,"行　").pressed.emit()
-				button_named(home,"进入测试").grab_focus()
-				button_named(home,"进入测试").pressed.emit()
-				check(button_named(home,"确认入局")!=null,"行囊页沿用测试选择打开确认")
+				button_named(home,"整 理 背 包").pressed.emit()
+				button_named(home,"进入行程").grab_focus()
+				button_named(home,"进入行程").pressed.emit()
+				check(button_named(home,"确认入局")!=null,"背包页沿用起点选择打开确认")
 				key(KEY_ESCAPE)
-				check(root.gui_get_focus_owner()==button_named(home,"进入测试"),"取消出发焦点返回行囊按钮")
-				button_named(home,"进入测试").pressed.emit()
+				check(root.gui_get_focus_owner()==button_named(home,"进入行程"),"取消出发焦点返回行囊按钮")
+				button_named(home,"进入行程").pressed.emit()
 				button_named(home,"确认入局").pressed.emit()
 				await scene_changed
 				var game: Node = current_scene; game.set_physics_process(false)
@@ -115,7 +115,7 @@ func check_formal_confirmation() -> void:
 	var depart: Button = button_named(game,"确认构筑并出发")
 	if depart!=null: depart.pressed.emit()
 	var before: Dictionary = game.journey.snapshot()
-	key(KEY_I)
+	key(KEY_B)
 	await process_frame
 	var camping: Dictionary = game.journey.snapshot()
 	key(KEY_R)
@@ -186,7 +186,7 @@ func check_test_starts() -> void:
 		var home: Control = load("res://scenes/home.tscn").instantiate()
 		root.add_child(home); current_scene=home
 		await process_frame
-		button_named(home,"快速测试").pressed.emit()
+		button_named(home,"自选起点").pressed.emit()
 		var choice: OptionButton = home.find_child("RoomChoice",true,false)
 		var index: int = -1
 		for candidate in choice.item_count:
@@ -196,7 +196,7 @@ func check_test_starts() -> void:
 			home.free(); current_scene=null
 			continue
 		choice.select(index); choice.item_selected.emit(index)
-		button_named(home,"进入测试").pressed.emit()
+		button_named(home,"进入行程").pressed.emit()
 		var dialog: Control = home.get_node("HomeDialog")
 		var labels: Array[Node] = dialog.find_children("*","Label",true,false)
 		check(labels.any(func(label: Label): return label.text.contains("起点："+home.room_maps[id].roomTitle)),"出发确认显示所选房间："+id)
@@ -208,19 +208,19 @@ func check_test_starts() -> void:
 		var before: Dictionary = game.journey.snapshot()
 		check(not has_meta("home_test_arguments"),"实际首页传入条件消费一次："+id)
 		check(before.get("isTest",false) and before.roomId==id,"显式房间起点始终是测试（含entry）："+id)
-		check(before.health==100 and before.resources.mana==100 and before.resources.stamina==100,"测试默认三资源100："+id)
+		check(before.health==100 and before.resources.mana==100 and before.resources.stamina==100,"自选起点默认三资源100："+id)
 		check(not before.journeyComplete and before.visitedRooms==1,"房间测试不伪造前序完成："+id)
 		check(Vector2(before.player.x,before.player.y)==Vector2(game.room.layout.spawn.x,game.room.layout.spawn.y) and game.room.can_walk(Vector2(before.player.x,before.player.y)),"使用房间默认合法出生点："+id)
-		check(before.alpha.camp==(id=="entry"),"只有入口测试先整理，其他房按正常任务触发："+id)
+		check(not before.alpha.camp,"所有测试起点均默认关闭背包并可直接行动："+id)
 		var identity: Label = game.hud.get_node("JourneyIdentity")
-		check(identity.text.contains("快速测试") and identity.text.contains(game.room.layout.roomTitle),"HUD持续显示测试身份与所选起点："+id)
+		check(not identity.visible and identity.text.contains("完整征程"),"自选起点不在正式HUD暴露开发身份："+id)
 		var depart: Button = button_named(game,"确认构筑并出发")
 		if depart!=null: depart.pressed.emit()
 		key(KEY_R)
 		await process_frame
 		var after: Dictionary = game.journey.snapshot()
-		check(after.runId==before.runId+1 and after.roomId==id,"快速测试R直接回到所选起点新局："+id)
-		check(after.get("isTest",false) and after.health==100 and after.resources.mana==100 and after.resources.stamina==100 and after.visitedRooms==1,"测试重试保留身份和初始条件并清空临时进度："+id)
+		check(after.runId==before.runId+1 and after.roomId==id,"自选起点R直接回到所选起点新局："+id)
+		check(after.get("isTest",false) and after.health==100 and after.resources.mana==100 and after.resources.stamina==100 and after.visitedRooms==1,"自选起点重试保留身份和初始条件并清空临时进度："+id)
 		game.queue_free(); current_scene=null
 		await process_frame
 
@@ -229,7 +229,8 @@ func check_failed_retry() -> void:
 	var game: Node = load("res://scenes/tanggu_first_level.tscn").instantiate()
 	root.add_child(game); current_scene=game; game.set_physics_process(false)
 	await process_frame
-	button_named(game,"确认构筑并出发").pressed.emit()
+	var depart_f = button_named(game,"确认构筑并出发")
+	if depart_f!=null: depart_f.pressed.emit()
 	var before: Dictionary = game.journey.snapshot()
 	walk_room(game,TrainingRoom.point(game.room.layout.doors[0].point))
 	key(KEY_F); game._physics_process(0)

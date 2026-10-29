@@ -3,6 +3,8 @@ extends Node
 const PlayOptions = preload("res://scripts/input/play_options.gd")
 
 func _ready() -> void:
+	if DisplayServer.get_name() != "headless":
+		get_window().title = "九鼎 · 汤谷"
 	var arguments: Array = Array(OS.get_cmdline_user_args())
 	var options: Dictionary = PlayOptions.parse(arguments)
 	if options.has("error"):

@@ -15,7 +15,7 @@ func _draw() -> void:
 	for location in camps:
 		var color: Color = Color("98c8ae") if camp_ready else Color("777777")
 		draw_arc(location,26,0,TAU,32,color,2)
-		draw_string(ThemeDB.fallback_font,location+Vector2(-35,-32),"营地 · I" if camp_ready else "清庭后整理",HORIZONTAL_ALIGNMENT_LEFT,-1,16,color)
+		draw_string(ThemeDB.fallback_font,location+Vector2(-35,-32),"营地 · B" if camp_ready else "清庭后整理",HORIZONTAL_ALIGNMENT_LEFT,-1,16,color)
 	for item in items:
 		if item.region!="ground": continue
 		var location: Vector2 = TrainingRoom.point(item.world)

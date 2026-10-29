@@ -9,8 +9,9 @@ func _initialize() -> void:
 	var run = Journey.new(Journey.read_maps(),{"potionDrops":true,"dropSeed":13})
 	var state: Dictionary = run.snapshot()
 	check(state.has("alpha"),"默认十六房首关直接持有局内背包")
-	if state.has("alpha"):
-		check(state.alpha.camp,"正常出发从入口营地构筑开始")
+	check(not state.alpha.camp,"正常出发默认关闭背包，不冻结游戏")
+	run.update({"alpha":{"action":"camp"}},0)
+	check(run.snapshot().alpha.camp,"位于安全营地可进入整理状态")
 	var bow: int = item_id(run,"训练弓")
 	var horn: int = item_id(run,"羊角")
 	run.update({"alpha":{"action":"embed","equipmentId":bow,"glyphId":horn}},0)

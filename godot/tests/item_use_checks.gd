@@ -36,7 +36,7 @@ func run(check: Callable) -> void:
 	carry(stone,"守冢"); act(stone,{"action":"depart"}); use(stone,Vector2(800,548))
 	stone.update({},1.2)
 	check.call(stone.snapshot().health==100 and not stone.snapshot().itemEffects.tomb.is_empty() and stone.snapshot().itemEffects.tomb.health<80,"普通敌优先攻击范围内80血墓碑，玩家不受该次伤害")
-	check.call(stone.snapshot().enemies[0].phase!="dead" and stone.snapshot().alpha.items.filter(func(item: Dictionary): return item.region=="ground" and not item.get("prototype",false) and not item.get("teaching",false)).is_empty(),"攻击墓碑不产生敌人击杀或物品收益")
+	check.call(stone.snapshot().enemies[0].phase!="dead" and stone.snapshot().alpha.items.filter(func(item: Dictionary): return item.region=="ground" and not item.get("prototype",false)).is_empty(),"攻击墓碑不产生敌人击杀或物品收益")
 	var data: Dictionary = Boss.arena_layout(); data.mode="gameplay"; data.roomId="entry"
 	var boss: TrainingRoom = Boss.new(data)
 	act(boss,{"action":"prototype_kit"})

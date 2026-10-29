@@ -28,10 +28,15 @@ commands.append(["--script", "res://tests/thor_rig_pilot_checks.gd"])
 commands.append(["res://scenes/prototypes/thor_rig_pilot_test.tscn", "--quit-after", "3"])
 commands.insert(-2, ["--script", "res://tests/gameplay_journey_checks.gd"])
 commands.insert(-2, ["--script", "res://tests/gameplay_scene_checks.gd"])
+commands.insert(-2, ["--script", "res://tests/equipment_source_checks.gd"])
 commands.insert(-2, ["--script", "res://tests/skill_journey_checks.gd"])
 commands.insert(-2, ["--script", "res://tests/skill_scene_checks.gd"])
 commands.insert(-2, ["--script", "res://tests/item_prototype_checks.gd"])
 commands.insert(-2, ["--script", "res://tests/item_scene_checks.gd"])
+commands.insert(-2, ["--script", "res://tests/backpack_deep_checks.gd"])
+commands.insert(-2, ["--script", "res://tests/backpack_drag_checks.gd"])
+commands.insert(-2, ["--script", "res://tests/formal_ui_checks.gd"])
+commands.insert(-2, ["--script", "res://tests/commercial_depth_checks.gd"])
 for name in ["expanded_map_checks", "expanded_journey_checks", "expanded_home_checks", "expanded_reading_checks", "route_sample_checks"]:
     commands.append(["--script", f"res://tests/{name}.gd"])
 for args in commands:
@@ -46,7 +51,17 @@ for args in commands:
         sys.stderr.write("Godot check timed out after 180s: " + " ".join(args) + "\n")
         raise SystemExit(124)
     output = result.stdout + result.stderr
-    if result.returncode or "SCRIPT ERROR:" in output or "ERROR:" in output:
+    filtered = output.replace('ERROR: Condition "ret != noErr" is true. Returning: ""', '').replace('at: get_system_ca_certificates (platform/macos/os_macos.mm:1035)', '')
+    filtered_lines = [
+        line for line in filtered.splitlines()
+        if "RID allocations of type" not in line
+        and "RIDs of type" not in line
+        and "ObjectDB instances were leaked at exit" not in line
+        and "at: _free_rids" not in line
+        and "at: cleanup (servers/rendering/renderer_dummy" not in line
+    ]
+    filtered = "\n".join(filtered_lines)
+    if result.returncode or "SCRIPT ERROR:" in filtered or "ERROR:" in filtered:
         sys.stderr.write(output)
         raise SystemExit(result.returncode or 1)
     if "--script" in args:

@@ -1,11 +1,13 @@
 class_name PlayerControls
 extends RefCounted
 
+signal backpack_toggle_requested
+
 var room: TrainingRoom
 var keys: Dictionary = {}
 var burn: bool = false
 var quick_action: String = ""
-var special_pulses: Dictionary = {"special1":false,"special2":false,"beast":false}
+var loadout_pulses: Dictionary = {"backwind":false,"charge":false,"beast":false}
 var fire: bool = false
 var fire_pulse: bool = false
 var interact: bool = false
@@ -27,17 +29,18 @@ func key_down(code: int,repeated: bool = false) -> void:
 		if not hidden: room.reset(); interrupt()
 	elif code==KEY_F:
 		if not hidden or room.reading: interact=true; interact_pulse=true
-	elif code==KEY_B and room.alpha!=null:
+	elif code==KEY_B:
+		backpack_toggle_requested.emit()
+	elif code==KEY_X and room.alpha!=null:
 		if not room.paused and not room.reading and room.status!="failed": burn=true
 	elif not hidden and room.status!="failed":
 		if code==KEY_TAB and room.alpha!=null: quick_action="quick_altar"
 		elif code==KEY_V and room.alpha!=null: quick_action="use_quick"
 		elif code==KEY_Q: skills.pierce=true
-		elif code==KEY_E:
-			if room.has_loadout_skills(): special_pulses.special1=true
-			else: skills.rain=true
-		elif code==KEY_G and room.has_loadout_skills(): special_pulses.special2=true
-		elif code==KEY_C and room.has_loadout_skills(): special_pulses.beast=true
+		elif code==KEY_E: skills.rain=true
+		elif code==KEY_G and room.has_loadout_skills(): loadout_pulses.backwind=true
+		elif code==KEY_T and room.has_loadout_skills(): loadout_pulses.charge=true
+		elif code==KEY_C and room.has_loadout_skills(): loadout_pulses.beast=true
 		elif code==KEY_SPACE: skills.dodge=true
 		else: keys[code]=true
 
@@ -51,11 +54,11 @@ func pointer_down(inside: bool) -> void:
 func pointer_up() -> void:
 	fire=false
 func pointer_leave() -> void:
-	special_pulses={"special1":false,"special2":false,"beast":false}
+	loadout_pulses={"backwind":false,"charge":false,"beast":false}
 	quick_action=""; fire=false; fire_pulse=false; skills.pierce=false; skills.rain=false
 	room.cancel_pending()
 func interrupt(blur: bool = false) -> void:
-	special_pulses={"special1":false,"special2":false,"beast":false}
+	loadout_pulses={"backwind":false,"charge":false,"beast":false}
 	if blur: room.set_paused(true)
 	keys.clear(); quick_action=""; burn=false; fire=false; fire_pulse=false; interact=false; interact_pulse=false
 	skills={"pierce":false,"rain":false,"dodge":false}
@@ -67,11 +70,11 @@ func update(aim: Vector2,inside: bool,seconds: float) -> Dictionary:
 	var move: Vector2 = movement()
 	var input: Dictionary = {"moveX":move.x,"moveY":move.y,"aim":aim,"fire":fire or fire_pulse,"pointerInside":inside,"interact":interact or interact_pulse}
 	input.merge(skills)
-	if room.has_loadout_skills(): input.merge(special_pulses)
+	if room.has_loadout_skills(): input.merge(loadout_pulses)
 	if room.alpha!=null: input.burn=burn
 	if not quick_action.is_empty(): input.alpha={"action":quick_action}
 	room.update(input,seconds)
-	special_pulses={"special1":false,"special2":false,"beast":false}
+	loadout_pulses={"backwind":false,"charge":false,"beast":false}
 	quick_action=""; burn=false; fire_pulse=false; interact_pulse=false; skills={"pierce":false,"rain":false,"dodge":false}
 	if room.reading!=was_reading: interrupt()
 	# 每帧只在此处构造一次公开快照，供相机、HUD 与特效共用。

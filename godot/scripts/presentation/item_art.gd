@@ -16,11 +16,8 @@ const TEXTURES: Dictionary = {
 	"训练弓":preload("res://assets/items/first-level-v1/training-bow.tres"),
 	"布履":preload("res://assets/items/first-level-v1/cloth-shoes.tres"),
 	"青龙":preload("res://assets/items/first-level-v1/azure-dragon.tres"),
-	"穿透箭":preload("res://assets/items/first-level-v1/piercing-book.tres"),
-	"箭雨":preload("res://assets/items/first-level-v1/rain-book.tres"),
-	"回风":preload("res://assets/items/first-level-v1/backwind-book.tres"),
-	"蓄势":preload("res://assets/items/first-level-v1/charge-book.tres"),
-	"引风书":preload("res://assets/items/first-level-v1/dragon-wind-book.tres")
+	"白虎":preload("res://assets/items/first-level-v1/tiger-fang.tres"),
+	"朱雀":preload("res://assets/items/first-level-v1/flint-fire.tres")
 }
 
 static func texture(title: String) -> Texture2D:
