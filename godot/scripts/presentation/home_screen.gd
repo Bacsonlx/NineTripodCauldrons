@@ -7,6 +7,7 @@ const HERO = preload("res://assets/ui/home-v1/hero-refined-v2.png")
 const PAPER = Color("f4e5be")
 const GOLD = Color("c5a363")
 const DIM = Color("b9a88a")
+const RED = Color("d17b68")
 const SLOTS: Array = [["weapon","主武","bow"],["armor","衣","robe"],["boots","履","boot"],["talisman","符","talisman"],["relic","器","relic"],["beast","神兽","beast"]]
 var items: Array = []
 var prepared_alpha: RefCounted
@@ -36,10 +37,18 @@ var inventory: GridContainer
 var detail: VBoxContainer
 var backpack_grid: GridContainer
 var backpack_cells: Array[Button] = []
+var grid_art: Control
 var tags: Label
 var notice: Label
 var bag_count: Label
+var bag_feedback: Label
 var avatar_badges: Array[Dictionary] = []
+var dragging: bool = false
+var drag_id: int = -1
+var drag_grab_offset: Vector2i = Vector2i.ZERO
+var drag_origin: Vector2i = Vector2i.ZERO
+var drag_valid: bool = false
+var drag_error: String = ""
 @onready var sections: VBoxContainer = $Layout/Sections
 @onready var main: HBoxContainer = $Layout/Sections/Main
 @onready var bag_panel: HBoxContainer = $Layout/Sections/Bag
@@ -380,17 +389,35 @@ func build_bag_panel() -> void:
 	var list_header: HBoxContainer = HBoxContainer.new(); right.add_child(list_header)
 	list_header.add_child(text("背包空间",23)); spacer(list_header)
 	bag_count=text("",12,GOLD); list_header.add_child(bag_count)
+	var grid_wrap: Control = Control.new()
+	grid_wrap.name="BackpackGridWrap"
+	grid_wrap.custom_minimum_size=Vector2(520,226)
+	grid_wrap.size_flags_horizontal=Control.SIZE_EXPAND_FILL
+	right.add_child(grid_wrap)
 	backpack_grid=GridContainer.new(); backpack_grid.name="BackpackGrid"; backpack_grid.columns=10
+	backpack_grid.custom_minimum_size=Vector2(520,226)
 	backpack_grid.add_theme_constant_override("h_separation",4); backpack_grid.add_theme_constant_override("v_separation",4)
-	right.add_child(backpack_grid)
+	grid_wrap.add_child(backpack_grid)
+	grid_art=load("res://scripts/presentation/item_grid_art.gd").new()
+	grid_art.name="BackpackGridArt"
+	grid_art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	grid_wrap.add_child(grid_art)
 	for index in 50:
 		var cell: Vector2i=Vector2i(index%10,index/10)
 		var tile: Button=Button.new(); tile.custom_minimum_size=Vector2(48,42)
 		tile.focus_mode=Control.FOCUS_NONE
-		tile.expand_icon=true
-		tile.add_theme_constant_override("icon_max_width", 32)
-		tile.pressed.connect(home_grid_cell.bind(cell))
+		tile.mouse_default_cursor_shape=Control.CURSOR_DRAG
+		var region: String = region_for_cell(cell)
+		var tile_bg: Color = Color("121a16") if region=="equipment" else Color("211b12") if region=="altar" else Color("2a1b13") if region=="warehouse" else Color("0c100d")
+		var tile_border: Color = Color("465c4b") if region=="equipment" else Color("806738") if region=="altar" else Color("8b563b") if region=="warehouse" else Color("242a23")
+		tile.add_theme_stylebox_override("normal",box(tile_bg,tile_border))
+		tile.add_theme_stylebox_override("hover",box(tile_bg.lightened(0.12),GOLD))
+		tile.add_theme_stylebox_override("pressed",box(tile_bg.lightened(0.20),GOLD))
+		tile.mouse_entered.connect(func(): on_backpack_cell_hover(cell))
+		tile.mouse_exited.connect(func(): on_backpack_cell_unhover(cell))
+		tile.gui_input.connect(func(event: InputEvent): on_backpack_cell_input(event,cell))
 		backpack_grid.add_child(tile); backpack_cells.append(tile)
+	grid_art.cells=backpack_cells
 	var filters: HBoxContainer = HBoxContainer.new(); right.add_child(filters)
 	for filter in [["all","全部"],["gear","装备"],["charm","符器"],["use","消耗"]]:
 		button(filter[1],filters,set_category.bind(filter[0]))
@@ -402,6 +429,9 @@ func build_bag_panel() -> void:
 	inventory.add_theme_constant_override("h_separation",6); inventory.add_theme_constant_override("v_separation",6)
 	scroll.add_child(inventory)
 	detail=column(right); detail.custom_minimum_size.y=104
+	bag_feedback=text("",12,RED)
+	bag_feedback.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	right.add_child(bag_feedback)
 	refresh_inventory()
 
 func set_category(value: String) -> void:
@@ -453,9 +483,11 @@ func refresh_detail() -> void:
 	clear_children(detail)
 	var item: Dictionary = item_by_id(selected)
 	detail.add_child(text(str(item.get("name","背包整理")),20))
-	var description: Label = text(str(item.desc) if not item.is_empty() else "选择物品，再点击背包格子调整位置。",12,DIM)
+	var description: Label = text(str(item.desc) if not item.is_empty() else "选择物品，再按住拖拽到目标格调整位置。",12,DIM)
 	description.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; detail.add_child(description)
 	detail.add_child(text("进入汤谷后使用同一份背包布局；局内仅在安全营地整理。",12,GOLD))
+	if bag_feedback!=null and not bag_feedback.text.is_empty():
+		detail.add_child(text(bag_feedback.text,12,RED))
 
 func preview_item(id: String) -> void:
 	preview=id
@@ -475,6 +507,146 @@ func layout_inventory() -> void:
 	$Layout/Sections/Main/Gear.custom_minimum_size.x=244
 	bag_panel.get_child(0).custom_minimum_size.x=350
 	notice.visible=true
+
+func region_for_cell(cell: Vector2i) -> String:
+	for key in Alpha.REGIONS:
+		if Alpha.REGIONS[key].has_point(cell): return key
+	return ""
+
+func home_item_at_cell(cell: Vector2i) -> Dictionary:
+	if prepared_alpha==null: return {}
+	for item in prepared_alpha.items:
+		if item.region in Alpha.REGIONS and Rect2i(item.cell,Alpha.shape(item,item.rotated)).has_point(cell):
+			return item
+	return {}
+
+func cell_at_global(global_position: Vector2) -> Vector2i:
+	for index in backpack_cells.size():
+		if backpack_cells[index].get_global_rect().has_point(global_position):
+			return Vector2i(index%10,index/10)
+	return Vector2i(-1,-1)
+
+func set_bag_feedback(message: String, error: bool=false) -> void:
+	if bag_feedback==null: return
+	bag_feedback.text=message
+	bag_feedback.add_theme_color_override("font_color",RED if error else GOLD)
+
+func on_backpack_cell_input(event: InputEvent, cell: Vector2i) -> void:
+	if not event is InputEventMouseButton: return
+	var mouse_event: InputEventMouseButton=event as InputEventMouseButton
+	if mouse_event.button_index!=MOUSE_BUTTON_LEFT: return
+	if mouse_event.pressed:
+		var target: Dictionary=home_item_at_cell(cell)
+		if not target.is_empty():
+			choose_item_by_prepared_id(target.id)
+			begin_backpack_drag(cell)
+		elif prepared_selected_id>=0:
+			begin_backpack_drag(cell)
+		get_viewport().set_input_as_handled()
+
+func choose_item_by_prepared_id(item_id: int) -> void:
+	if prepared_alpha==null: return
+	var item: Dictionary=prepared_alpha.find_item(item_id)
+	if item.is_empty(): return
+	prepared_selected_id=item.id
+	prepared_rotated=item.rotated
+	var catalog_item: Dictionary=item_by_name(item.name)
+	selected=str(catalog_item.get("id",""))
+	preview_item(selected)
+	refresh_detail()
+
+func begin_backpack_drag(cell: Vector2i) -> void:
+	if prepared_alpha==null: return
+	var item: Dictionary=prepared_alpha.find_item(prepared_selected_id)
+	if item.is_empty(): return
+	dragging=true
+	drag_id=item.id
+	drag_grab_offset=cell-item.cell
+	drag_origin=item.cell
+	update_backpack_drag_preview(cell)
+
+func update_backpack_drag_preview(cell: Vector2i) -> void:
+	if not dragging or prepared_alpha==null: return
+	var item: Dictionary=prepared_alpha.find_item(drag_id)
+	if item.is_empty(): return
+	var origin: Vector2i=cell-drag_grab_offset
+	var target: Dictionary=home_item_at_cell(cell)
+	var target_origin: Vector2i=origin
+	if not target.is_empty() and target.id!=drag_id:
+		target_origin=target.cell
+	drag_origin=target_origin
+	var error: String=""
+	if not target.is_empty() and target.id!=drag_id and target.cell==target_origin:
+		error=prepared_alpha.swap_error(item,target)
+	else:
+		error=prepared_alpha.placement_error(item,origin,prepared_rotated,item.id)
+	drag_error=error
+	drag_valid=error.is_empty()
+	var footprint: Array[Vector2i]=[]
+	var shape: Vector2i=Alpha.shape(item,prepared_rotated)
+	for y in range(origin.y,origin.y+shape.y):
+		for x in range(origin.x,origin.x+shape.x):
+			footprint.append(Vector2i(x,y))
+	grid_art.hover_preview={"active":true,"valid":drag_valid,"cells":footprint}
+	grid_art.queue_redraw()
+	set_bag_feedback(("可放置："+item.name if drag_valid else "无法放置："+drag_error),not drag_valid)
+
+func on_backpack_cell_hover(cell: Vector2i) -> void:
+	if dragging: update_backpack_drag_preview(cell)
+
+func on_backpack_cell_unhover(_cell: Vector2i) -> void:
+	if not dragging: return
+
+func finish_backpack_drag(global_position: Vector2) -> void:
+	if not dragging or prepared_alpha==null: return
+	var cell: Vector2i=cell_at_global(global_position)
+	if cell.x<0:
+		set_bag_feedback("无法放置：目标不在背包网格内，物品未移动",true)
+		clear_backpack_drag()
+		return
+	update_backpack_drag_preview(cell)
+	if not drag_valid:
+		set_bag_feedback("无法放置："+drag_error+"，物品未移动",true)
+		clear_backpack_drag()
+		return
+	var item: Dictionary=prepared_alpha.find_item(drag_id)
+	var target: Dictionary=home_item_at_cell(cell)
+	var changed: bool=false
+	if not target.is_empty() and target.id!=drag_id:
+		changed=prepared_alpha.swap_items(item,target)
+	else:
+		changed=prepared_alpha.place(item,drag_origin,prepared_rotated)
+	if changed:
+		prepared_alpha.recount()
+		refresh_equipped_from_backpack()
+		refresh_slots()
+		refresh_backpack_grid()
+		refresh_detail()
+		set_bag_feedback(prepared_alpha.message)
+	clear_backpack_drag()
+
+func clear_backpack_drag() -> void:
+	dragging=false
+	drag_id=-1
+	drag_grab_offset=Vector2i.ZERO
+	drag_origin=Vector2i.ZERO
+	drag_valid=false
+	drag_error=""
+	if grid_art!=null:
+		grid_art.hover_preview={}
+		grid_art.queue_redraw()
+
+func _input(event: InputEvent) -> void:
+	if not bag_panel.visible or not dragging: return
+	if event is InputEventMouseMotion:
+		var motion: InputEventMouseMotion=event as InputEventMouseMotion
+		var cell: Vector2i=cell_at_global(motion.position)
+		if cell.x>=0: update_backpack_drag_preview(cell)
+	elif event is InputEventMouseButton:
+		var mouse_event: InputEventMouseButton=event as InputEventMouseButton
+		if mouse_event.button_index==MOUSE_BUTTON_LEFT and not mouse_event.pressed:
+			finish_backpack_drag(mouse_event.position)
+			get_viewport().set_input_as_handled()
 
 func home_grid_cell(cell: Vector2i) -> void:
 	if prepared_alpha==null: return
@@ -519,20 +691,22 @@ func refresh_backpack_grid() -> void:
 		var region: String=""
 		for key in Alpha.REGIONS:
 			if Alpha.REGIONS[key].has_point(cell): region=key; break
-		tile.disabled=region.is_empty()
-		tile.text=Alpha.NAMES.get(region,"").left(1) if not region.is_empty() else "×"
+		tile.disabled=false
+		tile.text=""
 		tile.icon=null
-		tile.modulate=Color("a69e89") if region.is_empty() else Color("e2d7bb")
+		tile.tooltip_text=Alpha.NAMES.get(region,"不可用区域") if not region.is_empty() else "不可用区域"
+		tile.modulate=Color("e2d7bb")
 		for item in prepared_alpha.items:
 			if item.region in Alpha.REGIONS and Rect2i(item.cell,Alpha.shape(item,item.rotated)).has_point(cell):
-				tile.text="" if Art.texture(item.name)!=null else item.name.left(2)
-				tile.icon=Art.texture(item.name)
 				tile.modulate=Art.tint(item)
-				tile.modulate=Color("f0c764") if item.id==prepared_selected_id else Color("aaccb6")
 				tile.tooltip_text=item.name+"\n"+item.description
 				break
-		if prepared_alpha.altar_analysis.get("energized_ids",[]).has(prepared_selected_id):
-			tile.modulate=Color("f0c764")
+	if grid_art!=null:
+		grid_art.items=prepared_alpha.items
+		grid_art.altar_analysis=prepared_alpha.altar_analysis
+		grid_art.selected_id=prepared_selected_id
+		grid_art.aura_cells=[]
+		grid_art.queue_redraw()
 
 func show_bag_panel(open: bool) -> void:
 	main.visible=not open; footer.visible=not open; bag_panel.visible=open

@@ -159,6 +159,14 @@ func _initialize() -> void:
 	var edited: Dictionary = map.get_layout()
 	var packed: PackedScene = PackedScene.new()
 	var edited_path: String = "user://editor-roundtrip-%d.tscn" % OS.get_process_id()
+	var test_probe: FileAccess = FileAccess.open(edited_path, FileAccess.WRITE)
+	if test_probe==null:
+		if not DirAccess.dir_exists_absolute(ProjectSettings.globalize_path("res://.tmp")):
+			DirAccess.make_dir_absolute(ProjectSettings.globalize_path("res://.tmp"))
+		edited_path = "res://.tmp/editor-roundtrip-%d.tscn" % OS.get_process_id()
+	else:
+		test_probe.close()
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(edited_path))
 	var saved: bool = packed.pack(map)==OK and ResourceSaver.save(packed,edited_path)==OK
 	check(saved,"四类编辑器配置可以保存为原生场景")
 	if not saved:

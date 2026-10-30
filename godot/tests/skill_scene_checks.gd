@@ -25,13 +25,14 @@ func run() -> void:
 	game.camp_panel.send({"action":"place","id":id(game,"布履"),"cell":Vector2i(3,0)})
 	game.camp_panel.send({"action":"depart"}); game.present(game.room.snapshot(),0)
 	check(game.hud.captions.rain.text=="箭雨" and game.hud.costs.rain.text=="28 蓝量" and game.hud.captions.backwind.text=="回风" and game.hud.captions.charge.text=="蓄势","E/G/T自动显示对应技能和原费用")
-	check(game.hud.loadout_actions.visible and game.hud.source_summary.visible and game.hud.captions.wind.text=="引风","HUD提供G/T/C及来源说明，保留普攻Q与基础闪避")
+	check(game.hud.loadout_actions==game.hud.actions and game.hud.loadout_actions.visible and not game.hud.source_summary.visible and game.hud.actions.get_child_count()==7 and game.hud.captions.wind.text=="引风","HUD将G/T/C与普攻、Q/E、闪避合并为一行，来源改由悬停说明提供")
 	var missing: String = ""
 	var font: Font = game.hud.theme.default_font
 	for text in [game.camp_panel.skills_ui.summary.text,game.hud.source_summary.text]:
 		for character in text:
 			if character.unicode_at(0)>32 and not font.has_char(character.unicode_at(0)) and not missing.contains(character): missing+=character
 	check(missing.is_empty(),"随包字体覆盖新技能来源与羁绊文案，缺字："+missing)
+	check(game.hud.slots.backwind.tooltip_text.contains("来源：装备：布履") and game.hud.slots.charge.tooltip_text.contains("来源：羁绊：训练弓＋布履"),"G/T悬停说明读取真实技能来源")
 	game.controls.key_down(KEY_T); game.controls.key_up(KEY_T)
 	game.present(game.controls.update(Vector2(800,608),true,0.01),0)
 	check(game.hud.slots.charge.counter.text=="10.0" and game.hud.mana.value==84 and game.skill_view.state.charge.layers==2,"T短按只支付16蓝，HUD冷却与手部层数跟真实状态一致")
@@ -44,7 +45,7 @@ func run() -> void:
 	check(game.room.snapshot()==before,"技能表现与HUD不重新结算费用或消耗追加机会")
 	for dimensions in [Vector2(800,450),Vector2(1280,720),Vector2(1920,1080)]:
 		game.hud.size=dimensions; await process_frame
-		check(Rect2(Vector2.ZERO,dimensions).encloses(game.hud.loadout_actions.get_rect()) and game.hud.loadout_actions.get_rect().end.x<dimensions.x/2,"%s附加动作不越界或遮中央" % dimensions)
+		check(Rect2(Vector2.ZERO,dimensions).encloses(game.hud.actions.get_rect()) and game.hud.actions.get_rect().end.x<dimensions.x/2 and game.hud.actions.size.y<=72,"%s单行动作栏不越界、不换行或遮中央" % dimensions)
 	game.journey.restart(); game.present_new_room(); game.camp_panel.refresh()
 	check(game.room.snapshot().charge.layers==0 and game.room.snapshot().windPath.is_empty() and game.room.snapshot().alpha.skills.rain.active,"R重开清旧增幅与风道，并从默认装备恢复资格")
 	game.queue_free(); await process_frame

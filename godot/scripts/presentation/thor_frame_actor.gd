@@ -34,6 +34,7 @@ func update_state(state: Dictionary) -> void:
 		hammer.hide()
 		if fallen==null:
 			fallen=preload("res://scripts/presentation/thor_puppet.gd").new()
+			fallen.visual_scale=visual_scale
 			add_child(fallen)
 		var local_state: Dictionary = state.duplicate(true)
 		local_state.boss.x=0; local_state.boss.y=0

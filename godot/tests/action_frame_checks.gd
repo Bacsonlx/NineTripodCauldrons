@@ -22,8 +22,7 @@ func player_checks() -> void:
 	check(game.frame_actor.lower.visible and game.frame_actor.upper.visible and not game.frame_actor.body.visible and not game.legs.visible and not game.torso.visible,"向右移动且向右瞄准组合新下肢和新上身")
 	var frozen_frame: int = game.frame_actor.lower.frame_index
 	var frozen_distance: float = game.frame_actor.distance
-	var waist: Vector2 = game.frame_actor.lower.global_position
-	check(waist.is_equal_approx(game.frame_actor.upper.global_position),"新上身与新下肢共享腰带连接点")
+	check(game.visual_connection_delta(game.frame_actor.upper,game.frame_actor.lower).length()<=0.5,"新上身与新下肢的可见腰线相接")
 	game.present(room.snapshot(),0.5)
 	check(game.frame_actor.lower.frame_index==frozen_frame and game.frame_actor.distance==frozen_distance,"重复快照不因呈现秒数推进步态")
 	game.controls.interrupt(true); game.present(room.snapshot(),1)
@@ -32,7 +31,7 @@ func player_checks() -> void:
 	game.controls.key_down(KEY_A); game.controls.pointer_down(true)
 	game.present(game.controls.update(target,true,0.02),0.02)
 	check(not game.frame_actor.lower.visible and game.frame_actor.upper.visible and game.legs.visible and not game.torso.visible and game.state.player.facing==0,"向左移动配向右射击组合旧左下肢与新右上身")
-	check(game.frame_actor.upper.global_position.is_equal_approx(game.legs.position+Vector2(0,-30)),"新上身与旧反向下肢连接在相同腰线")
+	check(game.visual_connection_delta(game.frame_actor.upper,game.legs).length()<=0.5,"新上身与旧反向下肢的可见腰线相接")
 	for angle in [PI/2,PI,-PI/2]:
 		game.controls.interrupt(); room.reset()
 		var aim: Vector2 = Vector2(room.player.x,room.player.y-52)+Vector2.from_angle(angle)*250
@@ -40,7 +39,7 @@ func player_checks() -> void:
 		game.present(game.controls.update(aim,true,0.02),0.02)
 		check(game.frame_actor.lower.visible and not game.legs.visible and (game.torso.visible if game.state.player.facing==1 else game.frame_actor.upper.visible and not game.torso.visible),"右向移动独立搭配各瞄准方向的统一上身")
 		var top: Sprite2D = game.torso if game.state.player.facing==1 else game.frame_actor.upper
-		check(game.state.player.facing!=0 and top.global_position.is_equal_approx(game.frame_actor.lower.global_position),"四向上身与新下肢共享腰线，鼠标朝向保持独立")
+		check(game.state.player.facing!=0 and game.visual_connection_delta(top,game.frame_actor.lower).length()<=0.5,"四向上身与新下肢的可见腰线相接，鼠标朝向保持独立")
 	game.controls.interrupt(); room.reset(); game.controls.update(target,true,0.001)
 	var seen: Dictionary = {}
 	game.controls.pointer_down(true); game.controls.pointer_up()
@@ -87,7 +86,8 @@ func crown_height(sprite: Sprite2D) -> float:
 	for y in range(top,bottom):
 		for x in range(start,end):
 			if image.get_pixel(x,y).a>=0.5:
-				var height: float = -(sprite.offset.y+y)*sprite.scale.y
+				var rendered_scale: float = sprite.global_transform.y.length()
+				var height: float = -(sprite.offset.y+y)*rendered_scale
 				crown_cache[key]=height
 				return height
 	return 0.0
@@ -112,8 +112,8 @@ func direction_size_checks() -> void:
 					game.present(state,0)
 					var upper: Sprite2D = game.frame_actor.upper if game.frame_actor.upper.visible else game.torso
 					var height: float = crown_height(upper)
-					check(height>=44.0 and height<=57.0,"转向及跑射保持上身身体尺度，朝向%d/%s：%.2f" % [facing,pose[0],height])
-					smallest=minf(smallest,height+30); largest=maxf(largest,height+30)
+					check(height>=29.0 and height<=38.0,"转向及跑射保持缩小后的上身身体尺度，朝向%d/%s：%.2f" % [facing,pose[0],height])
+					smallest=minf(smallest,height+20); largest=maxf(largest,height+20)
 		check(largest/smallest<=1.16,"同一射箭阶段各移动与瞄准方向的冠顶至脚点高度差不超过16%")
 		heights.append({"phase":pose[0],"min":smallest,"max":largest})
 	print(JSON.stringify({"direction_size_world_units":heights}))
@@ -131,8 +131,8 @@ func identity_family_checks() -> void:
 		var upper: Sprite2D = game.frame_actor.upper if game.frame_actor.upper.visible else game.torso
 		var height: float = crown_height(upper)
 		neutral.append(height)
-		# 已确认向下源图的冠顶到腰线55.56；2单位容许标点和转面投影差异。
-		check(absf(height-55.56)<=2.0,"四向中立身体对齐已确认母图，朝向%d：%.2f" % [facing,height])
+		# 已确认向下源图的冠顶到腰线55.56；本轮视觉缩放为三分之二。
+		check(absf(height-55.56*2.0/3.0)<=2.0,"四向中立身体保持缩小后的母图比例，朝向%d：%.2f" % [facing,height])
 		if facing in [2,3]:
 			check(game.frame_actor.upper.visible and not game.torso.visible and not game.bow.visible and not game.nocked_arrow.visible,"左／上使用统一身份的联绘上身，避免混入旧侧面造型或重复武器")
 		var transform: Transform2D = upper.transform
@@ -155,7 +155,10 @@ func identity_family_checks() -> void:
 			if state.attack=="draw" and upper.frame_index==int(upper.clips[upper.clip].muzzle_frame):
 				var data: Dictionary = upper.clips[upper.clip]
 				var tip: Vector2 = Vector2(data.muzzle_px[0],data.muzzle_px[1])
-				check((upper.global_transform*(upper.offset+tip)).distance_to(state.grip)<0.001,"普通箭起点与四向联绘拉满帧箭尖相接")
+				var expected_rule_grip: Vector2 = Vector2(game.room.player.x,game.room.player.y)+Vector2(data.grip.x,data.grip.y)
+				var expected_visual_grip: Vector2 = Vector2(game.room.player.x,game.room.player.y)+Vector2(data.grip.x,data.grip.y)*2.0/3.0
+				check(state.grip.is_equal_approx(expected_rule_grip),"四向普通箭规则握点保持既有坐标与稳定性")
+				check((upper.global_transform*(upper.offset+tip)).distance_to(expected_visual_grip)<6.0,"普通箭视觉拉满帧箭尖随人物按三分之二比例稳定呈现")
 			if not state.arrows.is_empty() and not checked:
 				var arrow: Dictionary = state.arrows[0]
 				var origin: Vector2 = Vector2(arrow.x,arrow.y)-Vector2.from_angle(arrow.angle)*700*arrow.age

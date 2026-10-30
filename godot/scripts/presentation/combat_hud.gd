@@ -4,6 +4,19 @@ signal backpack_button_pressed
 
 const Slot = preload("res://scripts/presentation/action_slot.gd")
 const TEXT = Color("f2e6c5")
+const SLOT_SIZE := Vector2(44,72)
+const SLOT_ICON_SIZE := Vector2(44,44)
+const ACTION_SEPARATION: int = 8
+const LOADOUT_KINDS: Array[String] = ["backwind","charge","wind"]
+const SKILL_DESCRIPTIONS: Dictionary = {
+	"attack":"基础射箭。左键按下后按当前射击间隔发射普通箭。",
+	"pierce":"发射一支穿透箭，可穿过目标并造成穿透伤害。",
+	"rain":"向目标区域降下箭雨，对范围内敌人造成多段伤害。",
+	"dodge":"向当前输入方向闪避，消耗精力并提供短暂保护。",
+	"backwind":"沿移动方向回风冲刺，改变玩家位置并避开危险。",
+	"charge":"蓄势强化接下来的两发普通箭，消耗蓝量并记录蓄势层。",
+	"wind":"引风冲刺并留下风道；风道内可追加一次不耗蓝的引风。"
+}
 var health: ProgressBar
 var health_value: Label
 var mana: ProgressBar
@@ -79,50 +92,19 @@ func _ready() -> void:
 	add_child(toolbar)
 	actions=HBoxContainer.new(); actions.name="Actions"
 	actions.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	actions.position=Vector2(24,-112); actions.add_theme_constant_override("separation",12)
-	actions.mouse_filter=Control.MOUSE_FILTER_IGNORE; add_child(actions)
+	actions.position=Vector2(24,-96); actions.add_theme_constant_override("separation",ACTION_SEPARATION)
+	actions.mouse_filter=Control.MOUSE_FILTER_PASS; add_child(actions)
 	for definition in [["attack","普攻","左键",1.0],["pierce","穿透箭","Q",4.0],["rain","箭雨","E",8.0],["dodge","闪避","空格",1.0]]:
-		var slot: Control = Slot.new()
-		slot.name=definition[0].capitalize(); slot.icon=load("res://assets/ui/%s.tres" % definition[0])
-		slot.duration=definition[3]; slot.custom_minimum_size=Vector2(60,88)
-		slot.mouse_filter=Control.MOUSE_FILTER_IGNORE
-		var key: Label = label(definition[2],12)
-		key.position=Vector2(2,-5)
-		key.add_theme_color_override("font_outline_color",Color("141812"))
-		key.add_theme_constant_override("outline_size",5); slot.add_child(key)
-		slot.counter=label("",21); slot.counter.name="Cooldown"
-		slot.counter.position=Vector2(0,19); slot.counter.size=Vector2(60,28)
-		slot.counter.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; slot.add_child(slot.counter)
-		var caption: Label = label(definition[1],13)
-		caption.position=Vector2(0,64); caption.size.x=60
-		captions[definition[0]]=caption
-		caption.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; slot.add_child(caption)
-		if definition[0]!="attack":
-			var cost: Label = label("25 精力" if definition[0]=="dodge" else "12 蓝量" if definition[0]=="pierce" else "28 蓝量",10)
-			costs[definition[0]]=cost
-			cost.position=Vector2(0,82); cost.size.x=60; cost.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-			cost.add_theme_color_override("font_color",Color("82b65b") if definition[0]=="dodge" else Color("63c4ce"))
-			slot.add_child(cost)
-		actions.add_child(slot); slots[definition[0]]=slot
-	loadout_actions=HBoxContainer.new(); loadout_actions.name="LoadoutActions"
-	loadout_actions.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	loadout_actions.position=Vector2(24,-212); loadout_actions.add_theme_constant_override("separation",12)
-	loadout_actions.mouse_filter=Control.MOUSE_FILTER_IGNORE; add_child(loadout_actions)
+		var cost_text: String = "" if definition[0]=="attack" else "25 精力" if definition[0]=="dodge" else "12 蓝量" if definition[0]=="pierce" else "28 蓝量"
+		add_action_slot(definition[0],definition[1],definition[2],definition[3],cost_text,definition[0]=="dodge")
 	for definition in [["backwind","G"],["charge","T"],["wind","C"]]:
-		var slot: Control = Slot.new(); slot.name=definition[0].capitalize()
-		slot.custom_minimum_size=Vector2(60,88); slot.mouse_filter=Control.MOUSE_FILTER_IGNORE
-		slot.icon=load("res://assets/ui/%s.tres" % ("attack" if definition[0]=="charge" else "dodge")); loadout_actions.add_child(slot)
-		var key: Label = label(definition[1],12); key.position=Vector2(2,-5); slot.add_child(key)
-		slot.counter=label("",21); slot.counter.position=Vector2(0,19); slot.counter.size=Vector2(60,28)
-		slot.counter.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; slot.add_child(slot.counter)
-		var caption: Label = label("",13); caption.position=Vector2(0,64); caption.size.x=60
-		caption.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; slot.add_child(caption); captions[definition[0]]=caption
-		var cost: Label = label("",10); cost.position=Vector2(0,82); cost.size.x=60
-		cost.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; cost.add_theme_color_override("font_color",Color("63c4ce"))
-		slot.add_child(cost); costs[definition[0]]=cost; slots[definition[0]]=slot
+		add_action_slot(definition[0],"未启用",definition[1],5.0,"",false)
+	loadout_actions=actions
 	source_summary=label("Q/E 来源 训练弓 · G 来源 布履\nT 来源 弓＋履羁绊 · C 来源 青龙",11)
-	source_summary.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	source_summary.position=Vector2(24,-248); add_child(source_summary)
+	source_summary.visible=false
+	add_child(source_summary)
+	for kind in LOADOUT_KINDS:
+		slots[kind].visible=false
 	bag_button=Button.new(); bag_button.name="BagButton"
 	bag_button.text="背包 · B"
 	bag_button.focus_mode=Control.FOCUS_NONE
@@ -163,6 +145,37 @@ func _ready() -> void:
 	set_inscription("","")
 	resized.connect(layout_edges)
 	layout_edges()
+
+func add_action_slot(kind: String,title: String,key_text: String,duration: float,cost_text: String,is_stamina: bool) -> void:
+	var slot: Control = Slot.new()
+	slot.name=kind.capitalize()
+	slot.set_slot_size(SLOT_ICON_SIZE)
+	slot.custom_minimum_size=SLOT_SIZE
+	slot.mouse_filter=Control.MOUSE_FILTER_STOP
+	slot.mouse_default_cursor_shape=Control.CURSOR_HELP
+	slot.duration=duration
+	slot.icon=load("res://assets/ui/%s.tres" % ("attack" if kind=="charge" else "dodge" if kind in ["backwind","wind"] else kind))
+	var key: Label = label(key_text,11)
+	key.position=Vector2(1,-4)
+	key.size=Vector2(SLOT_SIZE.x-2,16)
+	key.horizontal_alignment=HORIZONTAL_ALIGNMENT_LEFT
+	key.add_theme_color_override("font_outline_color",Color("141812"))
+	key.add_theme_constant_override("outline_size",4)
+	slot.add_child(key)
+	slot.counter=label("",17); slot.counter.name="Cooldown"
+	slot.counter.position=Vector2(0,14); slot.counter.size=Vector2(SLOT_SIZE.x,20)
+	slot.counter.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; slot.add_child(slot.counter)
+	var caption: Label = label(title,11)
+	caption.position=Vector2(0,45); caption.size=Vector2(SLOT_SIZE.x,16)
+	caption.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+	captions[kind]=caption; slot.add_child(caption)
+	if kind!="attack":
+		var cost: Label = label(cost_text,9)
+		cost.position=Vector2(0,60); cost.size=Vector2(SLOT_SIZE.x,14)
+		cost.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+		cost.add_theme_color_override("font_color",Color("82b65b") if is_stamina else Color("63c4ce"))
+		costs[kind]=cost; slot.add_child(cost)
+	actions.add_child(slot); slots[kind]=slot
 
 func set_inscription(title: String,body: String) -> void:
 	inscription.text=(DEFAULT_INSCRIPTION if body.is_empty() else title+"\n\n"+body)+"\n\nF / Esc 合上残碑 · 阅读时已暂停"
@@ -210,27 +223,56 @@ func update_state(snapshot: Dictionary) -> void:
 		if stamina_now!=last_stamina:
 			last_stamina=stamina_now
 			stamina_value.text="%d / 100" % stamina_now
+	var resources: Dictionary = snapshot.get("resources",{})
+	var costs_snapshot: Dictionary = resources.get("costs",{})
+	slots.attack.insufficient=false
+	slots.attack.update_cooldown(0)
+	slots.attack.tooltip_text=tooltip_for("attack",snapshot,{},0,false)
 	for action in ["pierce","rain","dodge"]:
-		slots[action].insufficient=snapshot.has("resources") and (snapshot.resources.stamina+0.000001<25 if action=="dodge" else snapshot.resources.mana<snapshot.resources.costs[action])
-		slots[action].update_cooldown(snapshot.cooldowns[action])
-
+		var required: int = 25 if action=="dodge" else int(costs_snapshot.get(action,0))
+		slots[action].insufficient=resources.is_empty() or (resources.stamina+0.000001<required if action=="dodge" else resources.mana<required)
+		slots[action].update_cooldown(snapshot.cooldowns.get(action,0.0))
+		slots[action].tooltip_text=tooltip_for(action,snapshot,{},required,false)
 	var loadout: bool = snapshot.get("alpha",{}).has("skills")
-	loadout_actions.visible=loadout; source_summary.visible=loadout
+	for kind in LOADOUT_KINDS:
+		slots[kind].visible=loadout
+	source_summary.visible=false
 	if loadout:
 		var beast_name: String = snapshot.get("alpha",{}).get("blessingBeast","青龙")
 		source_summary.text="Q/E 来源 训练弓 · G 来源 布履\nT 来源 弓＋履羁绊 · C 来源 "+beast_name
-		for kind in snapshot.alpha.skills:
-			if not slots.has(kind): continue
-			var skill: Dictionary = snapshot.alpha.skills[kind]
-			var action: String = kind
-			var cost: int = snapshot.get("resources",{}).get("costs",{}).get(kind,0)
+		for kind in LOADOUT_KINDS:
+			var skill: Dictionary = snapshot.alpha.skills.get(kind,{})
+			var cost: int = int(costs_snapshot.get(kind,0))
 			var extra: bool = kind=="wind" and snapshot.get("windExtraReady",false)
-			captions[action].text="引风追加" if extra else skill.name
-			var missing_hint: String = {"pierce":"需训练弓","rain":"需训练弓","backwind":"需布履","charge":"需弓＋履","wind":"需青龙","tiger":"需白虎","phoenix":"需朱雀"}.get(kind,"需穿戴")
-			costs[action].text=("追加0蓝" if extra else "%d 蓝量" % cost) if skill.active else missing_hint
-			slots[action].duration={"pierce":4.0,"rain":8.0,"backwind":5.0,"charge":10.0,"wind":8.0,"tiger":6.0,"phoenix":7.0}.get(kind,5.0)
-			slots[action].insufficient=not skill.active or not extra and snapshot.has("resources") and snapshot.resources.mana<cost
-			slots[action].update_cooldown(0 if extra else snapshot.cooldowns.get(kind,0.0))
+			var active: bool = bool(skill.get("active",false))
+			captions[kind].text="引风追加" if extra else str(skill.get("name",kind))
+			var missing_hint: String = {"backwind":"需布履","charge":"需弓＋履","wind":"需"+beast_name}.get(kind,"需穿戴")
+			costs[kind].text=("追加0蓝" if extra else "%d 蓝量" % cost) if active else missing_hint
+			slots[kind].duration={"backwind":5.0,"charge":10.0,"wind":8.0}.get(kind,5.0)
+			slots[kind].insufficient=not active or not extra and resources.mana<cost
+			slots[kind].update_cooldown(0 if extra else snapshot.cooldowns.get(kind,0.0))
+			slots[kind].tooltip_text=tooltip_for(kind,snapshot,skill,cost,extra)
+
+func tooltip_for(kind: String,snapshot: Dictionary,skill: Dictionary,required: int,extra: bool) -> String:
+	var title: String = str(captions[kind].text)
+	var key_text: String = {"attack":"左键","pierce":"Q","rain":"E","dodge":"空格","backwind":"G","charge":"T","wind":"C"}.get(kind,"")
+	var lines: Array[String] = [title+"  ·  "+key_text,SKILL_DESCRIPTIONS.get(kind,"")]
+	if kind in LOADOUT_KINDS:
+		lines.append("来源："+str(skill.get("source","未接入")))
+		if not bool(skill.get("active",false)):
+			lines.append("状态："+str(skill.get("reason","来源未满足")))
+		else:
+			lines.append("消耗："+("追加 0 蓝" if extra else "%d 蓝量" % required))
+	else:
+		lines.append("消耗："+("25 精力" if kind=="dodge" else "无"))
+	var remaining: float = slots[kind].remaining
+	if remaining>0.001:
+		lines.append("状态：冷却中 · %.1f 秒" % remaining)
+	elif slots[kind].insufficient:
+		lines.append("状态："+("精力不足" if kind=="dodge" else "蓝量不足"))
+	else:
+		lines.append("状态：可用")
+	return "\n".join(lines)
 
 func set_backpack_open(open: bool) -> void:
 	if bag_button!=null:

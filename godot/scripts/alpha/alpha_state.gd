@@ -249,6 +249,12 @@ func add_item(title: String, region: String, cell: Vector2i) -> Dictionary:
 static func shape(item: Dictionary, rotated: bool) -> Vector2i:
 	return Vector2i(item.size.y,item.size.x) if rotated else item.size
 
+func region_for(item: Dictionary, cell: Vector2i, rotated: bool) -> String:
+	var rectangle: Rect2i = Rect2i(cell,shape(item,rotated))
+	for key in REGIONS:
+		if REGIONS[key].encloses(rectangle): return key
+	return ""
+
 func at_cell(cell: Vector2i) -> Dictionary:
 	for item in items:
 		if REGIONS.has(item.region) and Rect2i(item.cell,shape(item,item.rotated)).has_point(cell): return item
@@ -260,11 +266,7 @@ func placement_error(item: Dictionary, cell: Vector2i, rotated: bool, ignore_id:
 	if item.get("state","")=="burning": return "燃烧中仍占原格，不能移动"
 	if item.get("locked",false): return "物品已锁定，不能移动"
 	var rectangle: Rect2i = Rect2i(cell,shape(item,rotated))
-	var region: String = ""
-	for key in REGIONS:
-		if REGIONS[key].encloses(rectangle):
-			region=key
-			break
+	var region: String = region_for(item,cell,rotated)
 	if region.is_empty(): return "目标位置越界、跨区或不可用"
 	if item.get("shadow",false) and region!="altar": return "残影只能放入祭坛"
 	if item.get("kind","")=="神兽" and region!="equipment": return "神兽只能放入装备区"
@@ -284,15 +286,35 @@ func place(item: Dictionary, cell: Vector2i, rotated: bool) -> bool:
 	if not error.is_empty():
 		message="放置失败："+error
 		return false
-	var rectangle: Rect2i = Rect2i(cell,shape(item,rotated))
-	var region: String = ""
-	for key in REGIONS:
-		if REGIONS[key].encloses(rectangle):
-			region=key
-			break
+	var region: String = region_for(item,cell,rotated)
 	if region=="altar" and item.region!="altar": next_order+=1; item.order=next_order
 	item.cell=cell; item.region=region; item.rotated=rotated
 	message="已摆放 "+item.name+" · "+NAMES[region]
+	return true
+
+func swap_error(first: Dictionary, second: Dictionary) -> String:
+	if first.is_empty() or second.is_empty(): return "需要两个有效物品"
+	if first.id == second.id: return "不能与自己交换"
+	var first_error: String = placement_error(first,second.cell,first.rotated,second.id)
+	if not first_error.is_empty(): return first_error
+	var second_error: String = placement_error(second,first.cell,second.rotated,first.id)
+	if not second_error.is_empty(): return second_error
+	return ""
+
+func swap_items(first: Dictionary, second: Dictionary) -> bool:
+	var error: String = swap_error(first,second)
+	if not error.is_empty():
+		message="交换失败："+error
+		return false
+	var first_cell: Vector2i = first.cell
+	var second_cell: Vector2i = second.cell
+	var first_rotated: bool = first.rotated
+	var second_rotated: bool = second.rotated
+	first.cell=second_cell
+	first.region=region_for(first,first.cell,first_rotated)
+	second.cell=first_cell
+	second.region=region_for(second,second.cell,second_rotated)
+	message="已交换 "+first.name+" 与 "+second.name
 	return true
 
 func command(action: Dictionary, room: RefCounted) -> void:

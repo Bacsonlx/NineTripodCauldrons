@@ -8,6 +8,7 @@ const Overlay = preload("res://scripts/presentation/combat_overlay.gd")
 const Effects = preload("res://scripts/presentation/combat_effects.gd")
 const Controls = preload("res://scripts/input/player_controls.gd")
 const QualityPolicy = preload("res://scripts/presentation/quality_policy.gd")
+const ACTOR_VISUAL_SCALE: float = 2.0/3.0
 var room: TrainingRoom = Room.new()
 var controls: PlayerControls = Controls.new(room)
 var state: Dictionary = {}
@@ -41,6 +42,7 @@ var view_origin: Vector2 = Vector2.ZERO
 var view_zoom: float = 1.0
 var aim: Vector2 = Vector2.ZERO
 var pose_cache: Dictionary = {}
+var alpha_bounds_cache: Dictionary = {}
 var quality
 var flash_tint: Color = Color("ffedc5")
 var pierce_tint: Color = Color("ffd06c")
@@ -80,6 +82,7 @@ func _ready() -> void:
 	bow = sprite("bow")
 	nocked_arrow = arrow_sprite()
 	frame_actor=preload("res://scripts/presentation/player_frame_actor.gd").new()
+	frame_actor.scale=Vector2.ONE*ACTOR_VISUAL_SCALE
 	add_child(frame_actor)
 	register_player_grips()
 	var initial: Dictionary = room.snapshot()
@@ -127,7 +130,7 @@ func register_player_grips() -> void:
 		var grip: Dictionary = sources[facing].grip
 		room.layout.grips[facing]=grip.duplicate() if room.layout.grips[facing] is Dictionary else Vector2(grip.x,grip.y)
 
-func pose(node: Sprite2D, key: String, index: int, point: Vector2) -> void:
+func pose(node: Sprite2D, key: String, index: int, point: Vector2, scale_multiplier: float = 1.0) -> void:
 	# 帧未变时只有位置变化：纹理／区域／锚点／缩放保持原值，
 	# 避免每个精灵每帧向 RenderingServer 重复提交 6 次属性写入。
 	var id: int = node.get_instance_id()
@@ -142,8 +145,23 @@ func pose(node: Sprite2D, key: String, index: int, point: Vector2) -> void:
 	node.region_rect = Rect2(frame.x, frame.y, frame.width, frame.height)
 	node.centered = false
 	node.offset = Vector2(-frame.originX * frame.width, -frame.originY * frame.height)
-	node.scale = Vector2.ONE * float(frame.get("scale", atlas[key].scale))
+	node.scale = Vector2.ONE * float(frame.get("scale", atlas[key].scale)) * scale_multiplier
 	node.position = point
+
+func waist_point(node: Sprite2D) -> Vector2:
+	if node==null: return Vector2.ZERO
+	if node==legs: return node.global_position+Vector2(0,-30.0*ACTOR_VISUAL_SCALE)
+	return node.global_position
+
+func visual_connection_delta(upper: Sprite2D, lower: Sprite2D) -> Vector2:
+	if upper==null or lower==null or not upper.visible or not lower.visible:
+		return Vector2.ZERO
+	return waist_point(lower)-waist_point(upper)
+
+func align_visual_connection(upper: Sprite2D, lower: Sprite2D) -> void:
+	if upper==null or lower==null or not upper.visible or not lower.visible:
+		return
+	upper.global_position+=visual_connection_delta(upper,lower)
 
 func update_camera() -> void:
 	var size: Vector2 = get_viewport_rect().size
@@ -212,7 +230,7 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 	var leg_direction: int = direction(movement.angle()) if p.moving else p.facing
 	var frame: int = (1 + int(walk_time * 12) % 6) * 4 + leg_direction if p.moving else leg_direction
 	var bob: float = sin(walk_time * PI * 24.0 / 7.0) * 0.8 if p.moving else 0.0
-	pose(legs, "lower", frame, point + Vector2(0, bob))
+	pose(legs, "lower", frame, point + Vector2(0, bob), ACTOR_VISUAL_SCALE)
 	var attack: int = {"idle":0,"draw":1,"release":2,"recover":3}[state.attack]
 	var upper_key: String = "upper"
 	var upper_frame: int = attack*4+p.facing
@@ -222,8 +240,8 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 	elif state.skill!=null: upper_frame=(2 if state.skill.remaining>0.06 else 3)*4+p.facing
 	var down_pose: bool = p.facing==1 and upper_key=="upper"
 	if down_pose: upper_key="upperDown"; upper_frame=attack
-	pose(torso,upper_key,upper_frame,point+Vector2(0,-30+bob))
-	pose(failed, "failed", p.facing, point)
+	pose(torso,upper_key,upper_frame,point+Vector2(0,-30*ACTOR_VISUAL_SCALE+bob), ACTOR_VISUAL_SCALE)
+	pose(failed, "failed", p.facing, point, ACTOR_VISUAL_SCALE)
 	legs.z_index = int(p.y)
 	torso.z_index = int(p.y) + 1
 	failed.z_index = int(p.y) + 1
@@ -237,7 +255,7 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 	var bow_grip: Vector2 = state.grip
 	if p.facing==1 and not down_pose and state.dodge<=0 and state.get("skillDash",{}).get("remaining",0)<=0 and not (state.skill!=null and state.skill.phase=="windup"):
 		bow_grip=point+Room.GRIPS[1]
-	pose(bow,"bow",1 if state.attack=="draw" or (state.skill!=null and state.skill.phase=="windup") else 2 if state.attack=="release" else 0,bow_grip+Vector2(0,bob))
+	pose(bow,"bow",1 if state.attack=="draw" or (state.skill!=null and state.skill.phase=="windup") else 2 if state.attack=="release" else 0,bow_grip+Vector2(0,bob),ACTOR_VISUAL_SCALE)
 	bow.rotation=-PI/2 if state.skill!=null and state.skill.kind=="rain" and state.skill.phase=="windup" else p.angle
 	bow.z_index = int(p.y) + 2
 	bow.visible = state.status != "failed" and not down_pose
@@ -252,6 +270,12 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 	else:
 		if frame_actor.lower.visible: legs.hide()
 		if frame_actor.upper.visible: torso.hide(); bow.hide(); nocked_arrow.hide()
+	var lower_visual: Sprite2D = frame_actor.lower if frame_actor.lower.visible else legs
+	var upper_visual: Sprite2D = frame_actor.upper if frame_actor.upper.visible else torso
+	if not frame_actor.body.visible:
+		align_visual_connection(upper_visual,lower_visual)
+		if upper_visual==frame_actor.upper:
+			frame_actor.refresh_head_repair()
 	combat_effects.lower=frame_actor.body if frame_actor.body.visible else frame_actor.lower if frame_actor.lower.visible else legs
 	combat_effects.upper=frame_actor.upper if frame_actor.upper.visible else torso
 	if is_instance_valid(obstacle_body): obstacle_body.modulate.a=0.3 if p.y<room.obstacle.get_center().y and p.y>room.obstacle.get_center().y-126 and absf(p.x-room.obstacle.get_center().x)<100 else 1.0
@@ -265,7 +289,7 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 		var row: int = 6 if enemy.phase=="dead" else 5 if enemy.flash>0 else 3 if enemy.phase=="warn" else 4 if enemy.phase=="swing" else (0 if enemy.timer<0.18 else 5) if enemy.phase=="recover" else 1+int(clock*8)%2
 		if enemy.has("role") and enemy.phase=="recover" and enemy.flash<=0:
 			row=4 if enemy.role=="paper" and enemy.timer>1.15 else 0
-		pose(body,key,row*4+direction(enemy.angle),Vector2(enemy.x,enemy.y))
+		pose(body,key,row*4+direction(enemy.angle),Vector2(enemy.x,enemy.y),ACTOR_VISUAL_SCALE)
 		var depth: int = int(enemy.y)
 		if body.z_index!=depth: body.z_index=depth
 		var shown: bool = enemy.phase!="inactive" and (enemy.phase!="dead" or enemy.timer>0)
@@ -350,7 +374,7 @@ func _draw() -> void:
 			continue
 		var alpha: float = character.timer / 0.6 if phase == "dead" else 1.0
 		draw_set_transform(Vector2(character.x, character.y), 0, Vector2(1, 0.35))
-		draw_circle(Vector2.ZERO, 18, Color(0.02, 0.03, 0.02, 0.4 * alpha))
+		draw_circle(Vector2.ZERO, 18 * ACTOR_VISUAL_SCALE, Color(0.02, 0.03, 0.02, 0.4 * alpha))
 		draw_set_transform(Vector2.ZERO)
 	for enemy in state.enemies:
 		if enemy.phase=="inactive" or enemy.phase=="dead": continue

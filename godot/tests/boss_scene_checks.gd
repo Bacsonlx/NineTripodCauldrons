@@ -22,7 +22,7 @@ func check_skills() -> void:
 	view.standalone_environment=false
 	root.add_child(view)
 	var effects: Node2D = view.get_node("SkillEffects")
-	check(view.character.scale.is_equal_approx(Vector2.ONE*1.25),"正式Boss形象额外放大25%，规则范围不随角色缩放")
+	check(view.character.scale.is_equal_approx(Vector2.ONE*(1.25*2.0/3.0)),"正式Boss保留相对体量并将视觉缩放到原来的三分之二，规则范围不随角色缩放")
 	var original: Node2D = load("res://scripts/presentation/thor_frame_actor.gd").new()
 	root.add_child(original)
 	var close: TrainingRoom = load("res://scripts/combat/boss_room.gd").new({"spawn":Vector2(840,520)})

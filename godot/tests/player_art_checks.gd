@@ -7,12 +7,44 @@ func depart(game: Node2D) -> void:
 
 func run(game: Node2D, check: Callable) -> void:
 	depart(game)
+	check.call(game.frame_actor.scale.is_equal_approx(Vector2.ONE*2.0/3.0), "玩家人物视觉缩放到原来的三分之二，规则脚点仍由父节点保持")
 	check.call(game.atlas.has("upperDown"), "正式场景加载已确认的 v3 向下射箭资源")
+	game.present(game.room.snapshot(),0)
+	for enemy in game.room.snapshot().enemies:
+		var key: String = {"bird":"enemy","paper":"enemyPaper","wood":"enemyWood"}[enemy.appearance]
+		var body: Sprite2D = game.enemy_bodies[enemy.id]
+		check.call(body.scale.is_equal_approx(Vector2.ONE*float(game.atlas[key].scale)*2.0/3.0), "野怪视觉缩放到原来的三分之二，规则实体位置保持不变")
 	var point: Vector2 = Vector2(game.state.player.x, game.state.player.y)
 	var snapshot: Dictionary = game.controls.update(point+Vector2(0,200),true,0)
 	game.present(snapshot,0)
+	var side_state: Dictionary = game.room.snapshot()
+	side_state.player.facing=2; side_state.player.moving=false; side_state.attack="idle"
+	game.present(side_state,0)
+	check.call(game.frame_actor.upper.visible and game.visual_connection_delta(game.frame_actor.upper,game.legs).length()<=0.5, "正面侧向联绘上身与旧下身按可见像素腰线相接")
+	game.present(snapshot,0)
 	check.call(game.torso.texture==game.textures.get("upperDown"), "向下待机使用新上身")
 	check.call(not game.bow.visible and not game.nocked_arrow.visible, "联绘上身不重复叠加旧弓和搭弦箭")
+	var back_state: Dictionary = game.room.snapshot()
+	back_state.player.facing=3; back_state.player.moving=false; back_state.attack="idle"
+	game.present(back_state,0)
+	check.call(game.frame_actor.upper.visible and game.frame_actor.head.visible, "背面转身启用独立头部校准层")
+	check.call(is_equal_approx(game.frame_actor.head.scale.x/game.frame_actor.upper.scale.x,0.86), "背面头部按原始头部矩形独立缩小，不改变身体与弓的比例")
+	check.call(game.visual_connection_delta(game.frame_actor.upper,game.legs).length()<=0.5, "背面联绘上身与旧下身按可见像素腰线相接")
+	var unchanged: Dictionary = game.room.snapshot().duplicate(true)
+	game.present(unchanged,0)
+	check.call(game.room.snapshot()==unchanged, "人物视觉校准不修改规则快照")
+	check.call(game.legs.global_position.is_equal_approx(point) and game.frame_actor.global_position.is_equal_approx(point), "缩放后脚点与规则实体位置完全一致，无漂移")
+	for test_atk in ["idle", "draw", "release", "recover"]:
+		for test_facing in 4:
+			var test_state: Dictionary = game.room.snapshot()
+			test_state.player.facing = test_facing
+			test_state.attack = test_atk
+			game.present(test_state, 0)
+			var test_up: Sprite2D = game.frame_actor.upper if game.frame_actor.upper.visible else game.torso
+			var test_low: Sprite2D = game.frame_actor.lower if game.frame_actor.lower.visible else game.legs
+			check.call(game.visual_connection_delta(test_up, test_low).length() <= 0.5, "四向及射击阶段上下身腰线相接：朝向%d/%s" % [test_facing, test_atk])
+	var vp_rect: Rect2 = game.get_viewport_rect()
+	check.call(vp_rect.size.x >= 640 and vp_rect.size.y >= 360, "视口几何规格支持人物正常渲染不越界")
 	var phases: Dictionary = {}
 	var launch_checked: bool = false
 	game.controls.pointer_down(true); game.controls.pointer_up()
@@ -25,7 +57,10 @@ func run(game: Node2D, check: Callable) -> void:
 		check.call(not game.bow.visible and not game.nocked_arrow.visible, "射箭全过程不叠加旧弓箭")
 		if snapshot.attack=="draw":
 			var visual_tip: Vector2 = game.torso.position+(Vector2(272,650)+game.torso.offset)*game.torso.scale
-			check.call(visual_tip.distance_to(snapshot.grip)<0.001, "拉满箭尖与正式出箭点相接")
+			var expected_rule_grip: Vector2 = point+Vector2(game.atlas.upperDown.grip.x,game.atlas.upperDown.grip.y)
+			var expected_visual_grip: Vector2 = point+Vector2(game.atlas.upperDown.grip.x,game.atlas.upperDown.grip.y)*2.0/3.0
+			check.call(snapshot.grip.is_equal_approx(expected_rule_grip), "规则出箭点保持既有坐标与稳定性")
+			check.call(visual_tip.distance_to(expected_visual_grip)<0.5, "拉满箭尖随向下射箭按三分之二比例稳定呈现")
 		if not snapshot.arrows.is_empty() and not launch_checked:
 			launch_checked=true
 			var arrow: Dictionary = snapshot.arrows[0]

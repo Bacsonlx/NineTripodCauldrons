@@ -3,7 +3,7 @@ extends "res://scripts/presentation/boss_view.gd"
 func _ready() -> void:
 	super._ready()
 	character=preload("res://scripts/presentation/thor_frame_actor.gd").new()
-	character.visual_scale=1.25
+	character.visual_scale=1.25*2.0/3.0
 	add_child(character)
 
 func update(snapshot: Dictionary,clock: float) -> void:

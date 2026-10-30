@@ -1,4 +1,5 @@
 """Verify the locked engine, import, public tests and full scene; fail on script errors."""
+import os
 import json
 from pathlib import Path
 import subprocess
@@ -35,15 +36,22 @@ commands.insert(-2, ["--script", "res://tests/item_prototype_checks.gd"])
 commands.insert(-2, ["--script", "res://tests/item_scene_checks.gd"])
 commands.insert(-2, ["--script", "res://tests/backpack_deep_checks.gd"])
 commands.insert(-2, ["--script", "res://tests/backpack_drag_checks.gd"])
+commands.insert(-2, ["--script", "res://tests/home_backpack_drag_checks.gd"])
 commands.insert(-2, ["--script", "res://tests/formal_ui_checks.gd"])
 commands.insert(-2, ["--script", "res://tests/commercial_depth_checks.gd"])
 for name in ["expanded_map_checks", "expanded_journey_checks", "expanded_home_checks", "expanded_reading_checks", "route_sample_checks"]:
     commands.append(["--script", f"res://tests/{name}.gd"])
+sandbox_home = Path("/private/tmp/godot-home")
+sandbox_home.mkdir(parents=True, exist_ok=True)
+godot_env = os.environ.copy()
+if not os.access(Path.home(), os.W_OK):
+    godot_env["HOME"] = str(sandbox_home)
+
 for args in commands:
     command = ["godot", "--headless", "--path", str(root / "godot"), *args]
     print("Running (timeout 180s): " + " ".join(command), flush=True)
     try:
-        result = subprocess.run(command, capture_output=True, text=True, timeout=180)
+        result = subprocess.run(command, capture_output=True, text=True, timeout=180, env=godot_env)
     except subprocess.TimeoutExpired as error:
         for captured in [error.stdout, error.stderr]:
             if captured:
