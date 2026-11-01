@@ -407,5 +407,34 @@
     "scale": 0.21,
     "anchor_kind": "reviewed lower belt edge / matching waist seam",
     "identity_reference": "assets/characters/child/down-archery-v3.png"
+  },
+  "hero-back-full": {
+    "size": [
+      543,
+      724
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        272,
+        700
+      ],
+      [
+        272,
+        700
+      ],
+      [
+        272,
+        700
+      ],
+      [
+        272,
+        700
+      ]
+    ],
+    "scale": 0.12,
+    "anchor_kind": "semantic ground contact at the shared foot baseline",
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "source": "assets/characters/action-redraw-v1/back-full-body-v2/hero-back-full.png"
   }
 }

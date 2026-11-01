@@ -128,13 +128,18 @@ func identity_family_checks() -> void:
 		var state: Dictionary = game.room.snapshot()
 		state.player.facing=facing; state.player.moving=false
 		game.present(state,0)
-		var upper: Sprite2D = game.frame_actor.upper if game.frame_actor.upper.visible else game.torso
+		var upper: Sprite2D = game.frame_actor.body if facing==3 and game.frame_actor.body.visible else game.frame_actor.upper if game.frame_actor.upper.visible else game.torso
 		var height: float = crown_height(upper)
 		neutral.append(height)
 		# 已确认向下源图的冠顶到腰线55.56；本轮视觉缩放为三分之二。
-		check(absf(height-55.56*2.0/3.0)<=2.0,"四向中立身体保持缩小后的母图比例，朝向%d：%.2f" % [facing,height])
-		if facing in [2,3]:
+		if facing==3:
+			check(height>=40.0 and height<=49.0,"背面完整身保持注册后的总高度，朝向%d：%.2f" % [facing,height])
+			check(game.frame_actor.body.visible and game.frame_actor.body.clip=="hero-back-full" and not game.frame_actor.upper.visible and not game.frame_actor.head.visible,"背向中立使用完整身背面资产，避免上下身切割")
+		elif facing==2:
+			check(absf(height-55.56*2.0/3.0)<=2.0,"四向中立身体保持缩小后的母图比例，朝向%d：%.2f" % [facing,height])
 			check(game.frame_actor.upper.visible and not game.torso.visible and not game.bow.visible and not game.nocked_arrow.visible,"左／上使用统一身份的联绘上身，避免混入旧侧面造型或重复武器")
+		else:
+			check(absf(height-55.56*2.0/3.0)<=2.0,"四向中立身体保持缩小后的母图比例，朝向%d：%.2f" % [facing,height])
 		var transform: Transform2D = upper.transform
 		game.room.set_paused(true); state=game.room.snapshot(); state.player.facing=facing
 		game.present(state,1)

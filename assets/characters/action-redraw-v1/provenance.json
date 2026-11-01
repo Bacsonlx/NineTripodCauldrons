@@ -70,6 +70,14 @@
       "source": "assets/characters/action-redraw-v1/identity-v4/hero-skills-direction-3.png",
       "runtime": "godot/assets/characters/action-redraw-v1/hero-skills-direction-3.png",
       "sha256": "2bc97b8f68cce88b6413fa71aa04c0486776d6b5e4994633f6b75f5e8d50ce3b"
+    },
+    {
+      "source": "assets/characters/action-redraw-v1/back-full-body-v2/hero-back-full.png",
+      "runtime": "godot/assets/characters/action-redraw-v1/hero-back-full.png",
+      "sha256": "8c44c49b30aabd679bdeb6d9f9a4e4a88e8e16d793dcdd7d3e6703b94093dd63",
+      "art_source": "image_gen.imagegen",
+      "candidate": "output/art/CHR-001/2026-10-30-back-full-body-v2/normalized/hero-back-full.png",
+      "revision": "v2: compact hair and corrected second-cell bow angle"
     }
   ],
   "scale_registration": {

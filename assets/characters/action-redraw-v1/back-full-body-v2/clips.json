@@ -1,0 +1,119 @@
+{
+  "size": [
+    543,
+    724
+  ],
+  "columns": 4,
+  "roots": [
+    [
+      272,
+      700
+    ],
+    [
+      272,
+      700
+    ],
+    [
+      272,
+      700
+    ],
+    [
+      272,
+      700
+    ]
+  ],
+  "scale": 0.12,
+  "anchor_kind": "semantic ground contact at the shared foot baseline",
+  "identity_reference": "assets/characters/child/down-archery-v3.png",
+  "source": "assets/characters/action-redraw-v1/back-full-body-v2/hero-back-full.png",
+  "frames": [
+    {
+      "name": "idle_back",
+      "index": 0,
+      "box": [
+        0,
+        0,
+        543,
+        724
+      ],
+      "source_alpha_bbox": [
+        27,
+        55,
+        529,
+        680
+      ],
+      "registered_shift_y": 20,
+      "root": [
+        272,
+        700
+      ],
+      "sha256": "347023f535be1668e6ead541abd7cf3080988350619f4d4ac2f42f7553fd2901"
+    },
+    {
+      "name": "draw_back",
+      "index": 1,
+      "box": [
+        543,
+        0,
+        543,
+        724
+      ],
+      "source_alpha_bbox": [
+        0,
+        45,
+        519,
+        674
+      ],
+      "registered_shift_y": 26,
+      "root": [
+        272,
+        700
+      ],
+      "sha256": "79bf0e25bb921df532f0f8bed199c211d434e4da56de4e9a2da5fea2ac19b892"
+    },
+    {
+      "name": "release_back",
+      "index": 2,
+      "box": [
+        1086,
+        0,
+        543,
+        724
+      ],
+      "source_alpha_bbox": [
+        12,
+        27,
+        522,
+        724
+      ],
+      "registered_shift_y": -24,
+      "root": [
+        272,
+        700
+      ],
+      "sha256": "793495df9080d59348336e05815d0697bcbfe2a3411942431cfdaeefadcff422"
+    },
+    {
+      "name": "recover_back",
+      "index": 3,
+      "box": [
+        1629,
+        0,
+        543,
+        724
+      ],
+      "source_alpha_bbox": [
+        7,
+        57,
+        513,
+        678
+      ],
+      "registered_shift_y": 22,
+      "root": [
+        272,
+        700
+      ],
+      "sha256": "a5d66ae0bae79e7a79a85ce242eb55a9f3d732ec7fb9e7a85b5f1da0c0d10fc9"
+    }
+  ]
+}

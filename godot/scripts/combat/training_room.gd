@@ -38,6 +38,7 @@ var charge_remaining: float = 0.0
 var charge_layers: int = 0
 var beast_held: bool = false
 var wind_path: Dictionary = {}
+var backwind_strike: Dictionary = {}
 var item_aim: Vector2 = Vector2.ZERO
 var pact_thunder_timer: float = 15.0
 var gameplay: bool = false
@@ -133,7 +134,7 @@ func reset() -> void:
 	arrows.clear(); effects.clear(); mines.clear(); recalls.clear(); rains.clear(); flashes.clear()
 	paper_arrows.clear(); next_paper_arrow=0
 	loadout_held={"backwind":false,"charge":false}; special_cooldowns={"backwind":0.0,"charge":0.0,"wind":0.0}
-	skill_dash_remaining=0; charge_remaining=0; charge_layers=0; beast_held=false; wind_path={}
+	skill_dash_remaining=0; charge_remaining=0; charge_layers=0; beast_held=false; wind_path={}; backwind_strike={}
 	for target in layout.targets: flashes.append(0.0)
 	health=100; health_max=100; hurt=0; protection=0; status="running"; encounter=0
 	pending_mana=0; mana=100; stamina=100; stamina_delay=0
@@ -190,6 +191,9 @@ func step(input: Dictionary, seconds: float) -> void:
 	if not feedback.is_empty():
 		feedback.remaining-=seconds
 		if feedback.remaining<=0: feedback={}
+	if not backwind_strike.is_empty():
+		backwind_strike.remaining=maxf(0,float(backwind_strike.remaining)-seconds)
+		if backwind_strike.remaining<=0: backwind_strike={}
 	if gate_opening>0:
 		gate_opening=maxf(0,gate_opening-seconds)
 		if gate_opening==0:
@@ -243,6 +247,7 @@ func step(input: Dictionary, seconds: float) -> void:
 			if kind=="backwind" and special_cooldowns.backwind<=0:
 				var direction: Vector2 = movement.normalized() if movement.length()>0 else -skill_aim(input)
 				if start_skill_dash("backwind",direction):
+					trigger_backwind_strike(point(player),direction.angle())
 					special_cooldowns.backwind=5.0; pierce_pressed=false; rain_pressed=false
 			elif kind=="charge" and special_cooldowns.charge<=0 and charge_layers==0 and skill_dash_remaining==0 and windup<0 and piercing<0 and raining.is_empty() and skill_recovery==0:
 				if spend_instant("charge"):
@@ -601,6 +606,16 @@ func cancel_pending() -> void:
 	pending_mana=0
 	windup=-1; piercing=-1; raining={}; attack_released=false; needs_release=false
 
+func trigger_backwind_strike(origin: Vector2, angle: float) -> void:
+	backwind_strike={"point":origin,"remaining":0.22,"radius":120.0,"angle":angle}
+	effects.append({"id":next_effect,"kind":"wind_burst","remaining":0.22,"age":0.0,"damage":0,"angle":angle,"x":origin.x,"y":origin.y,"enemy":null,"damagePosition":origin})
+	next_effect+=1
+	for enemy in enemies:
+		if enemy.group!=encounter or enemy.phase=="dead": continue
+		var delta: Vector2 = point(enemy)-origin
+		if delta.length()>120.0: continue
+		impact({"x":enemy.x,"y":enemy.y-35,"target":null,"enemy":enemy.id},"wind_burst",angle,{"critical":false})
+
 func spend_energy(action: String) -> bool:
 	if not energy_enabled: return true
 	var cost: int = ENERGY_COSTS[action]
@@ -617,6 +632,13 @@ func restore_mana(amount: int) -> void:
 	if restored>0:
 		var previous: int = int(feedback.get("mana",0))
 		feedback={"text":"蓝量 +%d" % (previous+restored),"mana":previous+restored,"remaining":0.8,"healed":false}
+
+func restore_stamina(amount: int) -> void:
+	var restored: int = mini(amount,100-ceili(stamina))
+	stamina=minf(100,stamina+restored)
+	if restored>0:
+		stamina_delay=maxf(stamina_delay,1.2)
+		feedback={"text":"精力 +%d" % restored,"stamina":int(stamina),"remaining":0.8,"healed":false}
 
 func drop_potion(enemy: Dictionary) -> void:
 	var last: bool = true
@@ -869,6 +891,7 @@ func snapshot() -> Dictionary:
 		result.cooldowns.merge(special_cooldowns)
 		result.skillDash={"kind":skill_dash_kind,"remaining":skill_dash_remaining,"direction":skill_dash_direction}
 		result.windPath=wind_path.duplicate(true)
+		result.backwindStrike=backwind_strike.duplicate(true)
 		result.windExtraReady=wind_extra_ready()
 		result.charge={"remaining":charge_remaining,"layers":charge_layers}
 	if alpha!=null:
@@ -1013,6 +1036,7 @@ func cast_wind(input: Dictionary, movement: Vector2) -> bool:
 	if not wind_extra_ready(): return false
 	if not start_skill_dash("wind_extra",direction,false): return false
 	wind_path.extra=0
+	restore_stamina(20)
 	return true
 
 func arrow_crosses_wind_path(origin: Vector2, angle: float) -> bool:
@@ -1051,7 +1075,7 @@ func wind_extra_ready() -> bool:
 	return false
 
 func clear_skill_effects() -> void:
-	charge_layers=0; charge_remaining=0; skill_dash_remaining=0; wind_path={}
+	charge_layers=0; charge_remaining=0; skill_dash_remaining=0; wind_path={}; backwind_strike={}
 	if has_loadout_skills(): alpha.runtime.clear()
 
 func refresh_item_stats() -> void:

@@ -8,14 +8,48 @@ const SLOT_SIZE := Vector2(44,72)
 const SLOT_ICON_SIZE := Vector2(44,44)
 const ACTION_SEPARATION: int = 8
 const LOADOUT_KINDS: Array[String] = ["backwind","charge","wind"]
+const ACTION_ORDER: Array = [
+	{"kind":"attack","title":"普攻","key":"左键","duration":1.0,"cost":"","source_kind":"base","source":"人物基础","stamina":false},
+	{"kind":"pierce","title":"穿透箭","key":"Q","duration":4.0,"cost":"12 蓝量","source_kind":"equipment","source":"装备：训练弓","stamina":false},
+	{"kind":"rain","title":"箭雨","key":"E","duration":8.0,"cost":"28 蓝量","source_kind":"equipment","source":"装备：训练弓","stamina":false},
+	{"kind":"backwind","title":"回风","key":"G","duration":5.0,"cost":"12 蓝量","source_kind":"equipment","source":"装备：布履","stamina":false},
+	{"kind":"charge","title":"蓄势","key":"T","duration":10.0,"cost":"16 蓝量","source_kind":"synergy","source":"羁绊：训练弓＋布履","stamina":false},
+	{"kind":"wind","title":"引风","key":"C","duration":8.0,"cost":"16 蓝量","source_kind":"beast","source":"随行：青龙","stamina":false},
+	{"kind":"dodge","title":"闪避","key":"空格","duration":1.0,"cost":"25 精力","source_kind":"base","source":"人物基础","stamina":true}
+]
+const ICON_PATHS: Dictionary = {
+	"attack":"res://assets/ui/attack.tres",
+	"pierce":"res://assets/ui/pierce.tres",
+	"rain":"res://assets/ui/rain.tres",
+	"backwind":"res://assets/ui/skill-candidates-v2/backwind.png",
+	"charge":"res://assets/ui/attack.tres",
+	"wind":"res://assets/ui/skill-candidates-v2/wind.png",
+	"dodge":"res://assets/ui/skill-candidates-v2/dodge.png"
+}
+const SOURCE_TAGS: Dictionary = {"base":"基","equipment":"装","synergy":"羁","beast":"兽"}
+const SOURCE_COLORS: Dictionary = {
+	"base":Color("d9d3b6"),
+	"equipment":Color("e6b66d"),
+	"synergy":Color("d6a9e0"),
+	"beast":Color("78d6e2")
+}
 const SKILL_DESCRIPTIONS: Dictionary = {
 	"attack":"基础射箭。左键按下后按当前射击间隔发射普通箭。",
 	"pierce":"发射一支穿透箭，可穿过目标并造成穿透伤害。",
 	"rain":"向目标区域降下箭雨，对范围内敌人造成多段伤害。",
-	"dodge":"向当前输入方向闪避，消耗精力并提供短暂保护。",
-	"backwind":"沿移动方向回风冲刺，改变玩家位置并避开危险。",
+	"dodge":"向当前输入方向闪避，消耗精力并提供短暂无敌。",
+	"backwind":"布履回身并在起点释放回风打击，先脱离再反击。",
 	"charge":"蓄势强化接下来的两发普通箭，消耗蓝量并记录蓄势层。",
-	"wind":"引风冲刺并留下风道；风道内可追加一次不耗蓝的引风。"
+	"wind":"青龙引导风道；风道内追加一次回息，恢复精力并保留风爆机会。"
+}
+const SKILL_CONTRACTS: Dictionary = {
+	"attack":{"category":"人物基础操作","direction":"鼠标瞄准","motion":"原地射击；无位移","damage":"普通箭伤害","invulnerable":"否","blocked":"受出箭点阻挡","interrupt":"会被闪避、回风、引风打断待发"},
+	"pierce":{"category":"装备技能","direction":"鼠标瞄准","motion":"原地施放；前摇 0.18 秒","damage":"穿透伤害","invulnerable":"否","blocked":"出箭点被阻挡时按现有规则处理","interrupt":"会被闪避、回风、引风打断前摇"},
+	"rain":{"category":"装备技能","direction":"鼠标指向合法落点","motion":"原地施放；前摇 0.45 秒","damage":"落点多段范围伤害","invulnerable":"否","blocked":"落点不可行走时失败","interrupt":"会被闪避、回风、引风打断前摇；已生效箭雨保留"},
+	"backwind":{"category":"装备攻击技能","direction":"移动输入；无输入时沿瞄准反方向","motion":"冲刺约 120；持续 0.20 秒；起点回风半径约 120","damage":"起点回风打击 30 基础伤害","invulnerable":"否","blocked":"受可行走区域和实体阻挡","interrupt":"会取消当前待发攻击／技能；已发射箭和已生效箭雨保留"},
+	"charge":{"category":"装备羁绊技能","direction":"无方向","motion":"原地蓄势","damage":"不直接造成伤害","invulnerable":"否","blocked":"受技能前摇与已有蓄势限制","interrupt":"会被闪避、回风、引风打断待发"},
+	"wind":{"category":"神兽恢复技能","direction":"移动输入；无输入时沿瞄准方向","motion":"首次铺设约 120 的风道；持续约 3 秒","damage":"箭穿风道可触发现有风爆；追加本身不造成伤害","invulnerable":"否","blocked":"首次路径受可行走区域和实体阻挡","interrupt":"会取消当前待发攻击／技能；已发射箭和已生效箭雨保留"},
+	"dodge":{"category":"人物基础操作","direction":"移动输入；无输入时沿当前瞄准方向","motion":"冲刺约 120；持续 0.20 秒","damage":"不造成伤害","invulnerable":"是；约 0.12 秒","blocked":"受可行走区域和实体阻挡","interrupt":"优先级最高；会取消当前待发攻击／技能"}
 }
 var health: ProgressBar
 var health_value: Label
@@ -37,6 +71,7 @@ const DEFAULT_INSCRIPTION: String = "汤谷 · 碑林遗字\n\n风过残碑\n\n�
 var inscription: Label
 var loadout_actions: HBoxContainer
 var source_summary: Label
+var source_legend: Label
 var last_health: int = -1
 var last_health_max: int = -1
 var last_mana: int = -1
@@ -94,15 +129,17 @@ func _ready() -> void:
 	actions.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	actions.position=Vector2(24,-96); actions.add_theme_constant_override("separation",ACTION_SEPARATION)
 	actions.mouse_filter=Control.MOUSE_FILTER_PASS; add_child(actions)
-	for definition in [["attack","普攻","左键",1.0],["pierce","穿透箭","Q",4.0],["rain","箭雨","E",8.0],["dodge","闪避","空格",1.0]]:
-		var cost_text: String = "" if definition[0]=="attack" else "25 精力" if definition[0]=="dodge" else "12 蓝量" if definition[0]=="pierce" else "28 蓝量"
-		add_action_slot(definition[0],definition[1],definition[2],definition[3],cost_text,definition[0]=="dodge")
-	for definition in [["backwind","G"],["charge","T"],["wind","C"]]:
-		add_action_slot(definition[0],"未启用",definition[1],5.0,"",false)
+	for definition in ACTION_ORDER:
+		add_action_slot(definition.kind,definition.title,definition.key,definition.duration,definition.cost,definition.stamina,definition.source_kind)
 	loadout_actions=actions
 	source_summary=label("Q/E 来源 训练弓 · G 来源 布履\nT 来源 弓＋履羁绊 · C 来源 青龙",11)
 	source_summary.visible=false
 	add_child(source_summary)
+	source_legend=label("人物基础：普攻／闪避    ·    来源技能：训练弓／布履／羁绊／青龙",11)
+	source_legend.add_theme_color_override("font_color",Color("c3b995"))
+	source_legend.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+	source_legend.offset_left=24; source_legend.offset_top=-119; source_legend.offset_right=610; source_legend.offset_bottom=-101
+	add_child(source_legend)
 	for kind in LOADOUT_KINDS:
 		slots[kind].visible=false
 	bag_button=Button.new(); bag_button.name="BagButton"
@@ -146,7 +183,7 @@ func _ready() -> void:
 	resized.connect(layout_edges)
 	layout_edges()
 
-func add_action_slot(kind: String,title: String,key_text: String,duration: float,cost_text: String,is_stamina: bool) -> void:
+func add_action_slot(kind: String,title: String,key_text: String,duration: float,cost_text: String,is_stamina: bool,source_kind: String) -> void:
 	var slot: Control = Slot.new()
 	slot.name=kind.capitalize()
 	slot.set_slot_size(SLOT_ICON_SIZE)
@@ -154,7 +191,8 @@ func add_action_slot(kind: String,title: String,key_text: String,duration: float
 	slot.mouse_filter=Control.MOUSE_FILTER_STOP
 	slot.mouse_default_cursor_shape=Control.CURSOR_HELP
 	slot.duration=duration
-	slot.icon=load("res://assets/ui/%s.tres" % ("attack" if kind=="charge" else "dodge" if kind in ["backwind","wind"] else kind))
+	slot.icon=load(ICON_PATHS[kind])
+	slot.source_kind=source_kind
 	var key: Label = label(key_text,11)
 	key.position=Vector2(1,-4)
 	key.size=Vector2(SLOT_SIZE.x-2,16)
@@ -162,6 +200,14 @@ func add_action_slot(kind: String,title: String,key_text: String,duration: float
 	key.add_theme_color_override("font_outline_color",Color("141812"))
 	key.add_theme_constant_override("outline_size",4)
 	slot.add_child(key)
+	var source_tag: Label = label(SOURCE_TAGS.get(source_kind,""),9)
+	source_tag.position=Vector2(SLOT_SIZE.x-17,-4)
+	source_tag.size=Vector2(16,14)
+	source_tag.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
+	source_tag.add_theme_color_override("font_color",SOURCE_COLORS.get(source_kind,TEXT))
+	source_tag.add_theme_color_override("font_outline_color",Color("141812"))
+	source_tag.add_theme_constant_override("outline_size",3)
+	slot.add_child(source_tag)
 	slot.counter=label("",17); slot.counter.name="Cooldown"
 	slot.counter.position=Vector2(0,14); slot.counter.size=Vector2(SLOT_SIZE.x,20)
 	slot.counter.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER; slot.add_child(slot.counter)
@@ -184,6 +230,7 @@ func layout_edges() -> void:
 	encounter.position=Vector2((size.x-330)/2,24 if size.x>=1280 else 148)
 	toolbar.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	toolbar.offset_left=-214; toolbar.offset_top=24; toolbar.offset_right=-24
+	source_legend.position=Vector2(24,size.y-119)
 	if bag_button!=null:
 		bag_button.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
 		bag_button.offset_left=-140; bag_button.offset_top=-68; bag_button.offset_right=-24; bag_button.offset_bottom=-24
@@ -232,6 +279,7 @@ func update_state(snapshot: Dictionary) -> void:
 		var required: int = 25 if action=="dodge" else int(costs_snapshot.get(action,0))
 		slots[action].insufficient=resources.is_empty() or (resources.stamina+0.000001<required if action=="dodge" else resources.mana<required)
 		slots[action].update_cooldown(snapshot.cooldowns.get(action,0.0))
+		slots[action].set_availability(availability_for(action,snapshot,required,false,true))
 		slots[action].tooltip_text=tooltip_for(action,snapshot,{},required,false)
 	var loadout: bool = snapshot.get("alpha",{}).has("skills")
 	for kind in LOADOUT_KINDS:
@@ -245,34 +293,75 @@ func update_state(snapshot: Dictionary) -> void:
 			var cost: int = int(costs_snapshot.get(kind,0))
 			var extra: bool = kind=="wind" and snapshot.get("windExtraReady",false)
 			var active: bool = bool(skill.get("active",false))
-			captions[kind].text="引风追加" if extra else str(skill.get("name",kind))
+			captions[kind].text="引风回息" if extra else str(skill.get("name",kind))
 			var missing_hint: String = {"backwind":"需布履","charge":"需弓＋履","wind":"需"+beast_name}.get(kind,"需穿戴")
-			costs[kind].text=("追加0蓝" if extra else "%d 蓝量" % cost) if active else missing_hint
+			costs[kind].text=("精力+20" if extra else "%d 蓝量" % cost) if active else missing_hint
 			slots[kind].duration={"backwind":5.0,"charge":10.0,"wind":8.0}.get(kind,5.0)
 			slots[kind].insufficient=not active or not extra and resources.mana<cost
 			slots[kind].update_cooldown(0 if extra else snapshot.cooldowns.get(kind,0.0))
+			slots[kind].set_availability(availability_for(kind,snapshot,cost,extra,active))
 			slots[kind].tooltip_text=tooltip_for(kind,snapshot,skill,cost,extra)
 
 func tooltip_for(kind: String,snapshot: Dictionary,skill: Dictionary,required: int,extra: bool) -> String:
 	var title: String = str(captions[kind].text)
 	var key_text: String = {"attack":"左键","pierce":"Q","rain":"E","dodge":"空格","backwind":"G","charge":"T","wind":"C"}.get(kind,"")
-	var lines: Array[String] = [title+"  ·  "+key_text,SKILL_DESCRIPTIONS.get(kind,"")]
+	var contract: Dictionary = SKILL_CONTRACTS.get(kind,{})
+	var lines: Array[String] = [
+		title+"  ·  "+key_text,
+		"类别："+str(contract.get("category","")),
+		"作用："+SKILL_DESCRIPTIONS.get(kind,""),
+		"来源："+(str(skill.get("source","未接入")) if kind in LOADOUT_KINDS else str(contract.get("category","人物基础操作"))),
+		"方向："+str(contract.get("direction",""))+"；"+str(contract.get("motion","")),
+		"伤害："+str(contract.get("damage",""))+"；无敌："+str(contract.get("invulnerable","")),
+		"阻挡："+str(contract.get("blocked","")),
+		"打断："+str(contract.get("interrupt",""))
+	]
 	if kind in LOADOUT_KINDS:
-		lines.append("来源："+str(skill.get("source","未接入")))
 		if not bool(skill.get("active",false)):
-			lines.append("状态："+str(skill.get("reason","来源未满足")))
+			lines.append("当前：来源缺失 · "+str(skill.get("reason","来源未满足")))
 		else:
-			lines.append("消耗："+("追加 0 蓝" if extra else "%d 蓝量" % required))
+			lines.append("消耗："+("追加 0 蓝；恢复 20 精力" if extra else "%d 蓝量" % required)+"；冷却："+("不重置" if extra else "%.1f 秒" % slots[kind].duration))
+			if kind=="wind":
+				lines.append("追加：首次成功后留下约 3 秒风道；站在风道内可追加 1 次，恢复 20 精力，不重建风道")
 	else:
-		lines.append("消耗："+("25 精力" if kind=="dodge" else "无"))
+		lines.append("消耗："+("25 精力" if kind=="dodge" else "无")+"；冷却："+("1.0 秒" if kind=="dodge" else "按当前射击间隔"))
+	var state_text: String = status_text(kind,snapshot,required,extra)
+	lines.append("状态："+state_text)
+	return "\n".join(lines)
+
+func availability_for(kind: String,snapshot: Dictionary,required: int,extra: bool,active: bool) -> String:
+	if kind in LOADOUT_KINDS and not active:
+		return "missing"
+	if extra:
+		return "extra_ready"
+	if snapshot.cooldowns.get(kind,0.0)>0.001:
+		return "cooldown"
+	var resources: Dictionary = snapshot.get("resources",{})
+	if kind=="dodge" and float(resources.get("stamina",0))<required:
+		return "resource"
+	if kind!="attack" and kind!="dodge" and int(resources.get("mana",0))<required:
+		return "resource"
+	var feedback: Dictionary = snapshot.get("feedback",{}) if snapshot.get("feedback",{}) is Dictionary else {}
+	if str(feedback.get("text","")).contains("无合法位移") and kind in ["backwind","wind","dodge"]:
+		return "blocked"
+	return "ready"
+
+func status_text(kind: String,snapshot: Dictionary,required: int,extra: bool) -> String:
+	var skill: Dictionary = snapshot.get("alpha",{}).get("skills",{}).get(kind,{})
+	if kind in LOADOUT_KINDS and not bool(skill.get("active",false)):
+		return "来源缺失 · "+str(skill.get("reason","来源未满足"))
+	if extra:
+		return "回息可用 · 0 蓝 · 精力+20 · 风道内"
 	var remaining: float = slots[kind].remaining
 	if remaining>0.001:
-		lines.append("状态：冷却中 · %.1f 秒" % remaining)
-	elif slots[kind].insufficient:
-		lines.append("状态："+("精力不足" if kind=="dodge" else "蓝量不足"))
-	else:
-		lines.append("状态：可用")
-	return "\n".join(lines)
+		return "冷却中 · %.1f 秒" % remaining
+	var feedback: Dictionary = snapshot.get("feedback",{}) if snapshot.get("feedback",{}) is Dictionary else {}
+	var feedback_text: String = str(feedback.get("text",""))
+	if feedback_text.contains("无合法位移") and kind in ["backwind","wind","dodge"]:
+		return "被实体或边界阻挡 · 本次未支付"
+	if slots[kind].insufficient:
+		return "精力不足" if kind=="dodge" else "蓝量不足"
+	return "可用"
 
 func set_backpack_open(open: bool) -> void:
 	if bag_button!=null:

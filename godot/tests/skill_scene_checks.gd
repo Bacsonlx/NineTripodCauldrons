@@ -26,6 +26,11 @@ func run() -> void:
 	game.camp_panel.send({"action":"depart"}); game.present(game.room.snapshot(),0)
 	check(game.hud.captions.rain.text=="箭雨" and game.hud.costs.rain.text=="28 蓝量" and game.hud.captions.backwind.text=="回风" and game.hud.captions.charge.text=="蓄势","E/G/T自动显示对应技能和原费用")
 	check(game.hud.loadout_actions==game.hud.actions and game.hud.loadout_actions.visible and not game.hud.source_summary.visible and game.hud.actions.get_child_count()==7 and game.hud.captions.wind.text=="引风","HUD将G/T/C与普攻、Q/E、闪避合并为一行，来源改由悬停说明提供")
+	var expected_order: Array[String] = ["Attack","Pierce","Rain","Backwind","Charge","Wind","Dodge"]
+	for index in expected_order.size():
+		check(game.hud.actions.get_child(index).name==expected_order[index],"技能栏第%d槽为%s" % [index+1,expected_order[index]])
+	check(game.hud.source_legend.visible and game.hud.source_legend.text.contains("人物基础") and game.hud.source_legend.text.contains("青龙"),"技能栏直接显示基础操作与来源技能分层")
+	check(game.hud.slots.backwind.icon.resource_path.ends_with("skill-candidates-v2/backwind.png") and game.hud.slots.wind.icon.resource_path.ends_with("skill-candidates-v2/wind.png") and game.hud.slots.dodge.icon.resource_path.ends_with("skill-candidates-v2/dodge.png"),"回风、引风、闪避使用独立候选图标")
 	var missing: String = ""
 	var font: Font = game.hud.theme.default_font
 	for text in [game.camp_panel.skills_ui.summary.text,game.hud.source_summary.text]:
@@ -33,13 +38,18 @@ func run() -> void:
 			if character.unicode_at(0)>32 and not font.has_char(character.unicode_at(0)) and not missing.contains(character): missing+=character
 	check(missing.is_empty(),"随包字体覆盖新技能来源与羁绊文案，缺字："+missing)
 	check(game.hud.slots.backwind.tooltip_text.contains("来源：装备：布履") and game.hud.slots.charge.tooltip_text.contains("来源：羁绊：训练弓＋布履"),"G/T悬停说明读取真实技能来源")
+	check(game.hud.slots.backwind.tooltip_text.contains("方向：") and game.hud.slots.backwind.tooltip_text.contains("阻挡：") and game.hud.slots.backwind.tooltip_text.contains("无敌：否"),"回风说明包含方向、阻挡和无敌状态")
+	check(game.hud.slots.wind.tooltip_text.contains("追加：") and game.hud.slots.wind.tooltip_text.contains("风道"),"引风说明包含风道追加合同")
+	check(game.hud.slots.dodge.tooltip_text.contains("无敌：是") and game.hud.slots.dodge.tooltip_text.contains("25 精力"),"闪避说明明确基础来源、精力消耗和短暂无敌")
 	game.controls.key_down(KEY_T); game.controls.key_up(KEY_T)
 	game.present(game.controls.update(Vector2(800,608),true,0.01),0)
 	check(game.hud.slots.charge.counter.text=="10.0" and game.hud.mana.value==84 and game.skill_view.state.charge.layers==2,"T短按只支付16蓝，HUD冷却与手部层数跟真实状态一致")
 	game.controls.key_down(KEY_D); game.controls.key_down(KEY_C)
 	game.present(game.controls.update(Vector2(800,608),true,0.2),0)
 	game.controls.key_up(KEY_D)
-	check(not game.skill_view.state.windPath.is_empty() and game.hud.captions.wind.text=="引风追加" and game.hud.costs.wind.text=="追加0蓝","首次引风显示风道，HUD区分预付追加与首次技能")
+	check(not game.skill_view.has_active_dash({"skillDash":{"kind":"wind","remaining":0.0}}),"冲刺结束后不再绘制残留轨迹")
+	check(not game.skill_view.state.windPath.is_empty() and game.hud.captions.wind.text=="引风回息" and game.hud.costs.wind.text=="精力+20","首次引风显示风道，HUD区分恢复性追加")
+	check(game.hud.slots.wind.availability=="extra_ready","合法风道内将引风槽标为追加可用")
 	var before: Dictionary = game.room.snapshot()
 	game.skill_view.update(before); game.hud.update_state(before)
 	check(game.room.snapshot()==before,"技能表现与HUD不重新结算费用或消耗追加机会")

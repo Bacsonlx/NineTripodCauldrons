@@ -31,6 +31,7 @@ func run() -> void:
 	check(covered,"新字体包含HUD中文与数值所需字形")
 	check(hud.get_node("StatusBacking").visible and hud.get_node("StatusBacking").mouse_filter==Control.MOUSE_FILTER_IGNORE,"状态底衬可见且不阻断射击")
 	check(hud.actions.get_child_count()==7 and hud.actions.size.x<=380 and hud.actions.size.y<=72,"七个动作合并为一行并缩小槽位")
+	check(hud.actions.get_child(0).name=="Attack" and hud.actions.get_child(3).name=="Backwind" and hud.actions.get_child(5).name=="Wind" and hud.actions.get_child(6).name=="Dodge","技能栏固定为普攻、Q、E、G、T、C、闪避")
 	check(hud.actions.position.x==24 and absf(hud.actions.position.y-(hud.size.y-96))<1,"单行动作栏锚定左下安全边距")
 	check(hud.mouse_filter==Control.MOUSE_FILTER_IGNORE and hud.actions.mouse_filter==Control.MOUSE_FILTER_PASS,"HUD保留动作栏鼠标悬停，同时不截获其他战斗输入")
 	check(hud.slots.attack.tooltip_text.contains("基础射箭") and hud.slots.pierce.tooltip_text.contains("穿透箭"),"基础动作和Q技能提供对应悬停说明")

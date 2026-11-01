@@ -13,7 +13,14 @@ func run(check: Callable) -> void:
 	check.call(absf(state.player.x-520)<0.01 and state.resources.mana==84 and state.resources.stamina==100 and state.dodgeInvulnerability==0,"引风冲120支付16蓝，不耗精力、不提供无敌")
 	check.call(state.windPath.extra==1 and state.cooldowns.wind>7.7 and state.windPath.from==Vector2(400,600) and state.windPath.to.distance_to(Vector2(520,600))<0.01,"首次实际路径建立风道并开始8秒冷却")
 	model.update({},0); model.update({"beast":true,"moveX":1},0.2)
-	check.call(absf(model.snapshot().player.x-640)<0.01 and model.snapshot().resources.mana==84 and model.snapshot().windPath.extra==0 and model.snapshot().windPath.to.distance_to(Vector2(520,600))<0.01,"第二冲使用一次预付机会，不重建风道、不再次扣蓝")
+	check.call(absf(model.snapshot().player.x-640)<0.01 and model.snapshot().resources.mana==84 and model.snapshot().windPath.extra==0 and model.snapshot().resources.stamina==100 and model.snapshot().windPath.to.distance_to(Vector2(520,600))<0.01,"引风追加使用回息，不扣蓝且精力已满")
+	var recovery: TrainingRoom = room()
+	recovery.stamina=40
+	recovery.stamina_delay=1.2
+	recovery.update({"beast":true,"moveX":1},0.2)
+	recovery.update({},0)
+	recovery.update({"beast":true,"moveX":1},0.2)
+	check.call(recovery.snapshot().resources.stamina==60 and recovery.snapshot().feedback.text=="精力 +20","引风追加恢复20精力并显示反馈")
 	var remaining: float = model.snapshot().cooldowns.wind
 	model.update({},0); model.update({"beast":true},0)
 	check.call(model.snapshot().cooldowns.wind==remaining and model.snapshot().resources.mana==84 and model.snapshot().skillDash.remaining==0,"第三次C拒绝，不刷新冷却或免费续冲")

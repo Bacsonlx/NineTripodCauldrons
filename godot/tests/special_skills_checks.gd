@@ -15,6 +15,10 @@ func run(check: Callable) -> void:
 	act(mobility,{"action":"depart"})
 	mobility.update({"backwind":true,"aim":Vector2(1000,548)},0.2)
 	check.call(abs(mobility.snapshot().player.x-280)<0.01 and mobility.snapshot().dodgeInvulnerability==0 and mobility.snapshot().cooldowns.backwind>4.7,"无移动回风背向瞄准冲120，无无敌且记录5秒冷却")
+	var strike: TrainingRoom = prepare({"enemy":{"x":450,"y":600,"appearance":"wood"},"encounter":Vector2(450,600)})
+	act(strike,{"action":"depart"})
+	strike.update({"backwind":true,"moveX":-1},0.01)
+	check.call(strike.snapshot().enemies[0].health==120 and strike.snapshot().backwindStrike.remaining>0,"回风在起点释放攻击性回风打击")
 
 	var charge: TrainingRoom = prepare({"enemy":{"x":500,"y":600,"appearance":"wood"},"encounter":Vector2(400,600)})
 	act(charge,{"action":"depart"})

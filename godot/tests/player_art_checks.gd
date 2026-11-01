@@ -27,9 +27,9 @@ func run(game: Node2D, check: Callable) -> void:
 	var back_state: Dictionary = game.room.snapshot()
 	back_state.player.facing=3; back_state.player.moving=false; back_state.attack="idle"
 	game.present(back_state,0)
-	check.call(game.frame_actor.upper.visible and game.frame_actor.head.visible, "背面转身启用独立头部校准层")
-	check.call(is_equal_approx(game.frame_actor.head.scale.x/game.frame_actor.upper.scale.x,0.86), "背面头部按原始头部矩形独立缩小，不改变身体与弓的比例")
-	check.call(game.visual_connection_delta(game.frame_actor.upper,game.legs).length()<=0.5, "背面联绘上身与旧下身按可见像素腰线相接")
+	check.call(game.frame_actor.body.visible and game.frame_actor.body.clip=="hero-back-full", "背面待机使用完整身图集")
+	check.call(not game.frame_actor.upper.visible and not game.frame_actor.head.visible and not game.frame_actor.lower.visible, "背面完整身显示时不叠加旧上下身")
+	check.call(game.frame_actor.body.position==Vector2.ZERO, "背面完整身沿共享脚点注册，不产生局部位移")
 	var unchanged: Dictionary = game.room.snapshot().duplicate(true)
 	game.present(unchanged,0)
 	check.call(game.room.snapshot()==unchanged, "人物视觉校准不修改规则快照")
@@ -42,7 +42,10 @@ func run(game: Node2D, check: Callable) -> void:
 			game.present(test_state, 0)
 			var test_up: Sprite2D = game.frame_actor.upper if game.frame_actor.upper.visible else game.torso
 			var test_low: Sprite2D = game.frame_actor.lower if game.frame_actor.lower.visible else game.legs
-			check.call(game.visual_connection_delta(test_up, test_low).length() <= 0.5, "四向及射击阶段上下身腰线相接：朝向%d/%s" % [test_facing, test_atk])
+			if test_facing==3:
+				check.call(game.frame_actor.body.visible and game.frame_actor.body.clip=="hero-back-full", "背面完整身覆盖四个普通射击阶段：%s" % test_atk)
+			else:
+				check.call(game.visual_connection_delta(test_up, test_low).length() <= 0.5, "四向及射击阶段上下身腰线相接：朝向%d/%s" % [test_facing, test_atk])
 	var vp_rect: Rect2 = game.get_viewport_rect()
 	check.call(vp_rect.size.x >= 640 and vp_rect.size.y >= 360, "视口几何规格支持人物正常渲染不越界")
 	var phases: Dictionary = {}
@@ -78,7 +81,7 @@ func run(game: Node2D, check: Callable) -> void:
 		game.controls.key_up(code)
 	for facing in [0,2,3]:
 		var other: Dictionary = snapshot.duplicate(true)
-		other.player.facing=facing; other.player.angle=facing*PI/2; other.attack="draw"
+		other.player.facing=facing; other.player.angle=facing*PI/2; other.attack="draw"; other.player.moving=false
 		other.grip=Vector2(other.player.x,other.player.y)+Room.GRIPS[facing]
 		game.present(other,0)
 		if facing==0:
@@ -86,6 +89,8 @@ func run(game: Node2D, check: Callable) -> void:
 			other.windup=0.04
 			game.present(other,0)
 			check.call(game.frame_actor.upper.visible and game.frame_actor.upper.clip=="hero-archery-upper" and not game.bow.visible and not game.nocked_arrow.visible,"向右原地射箭使用新上身帧，不重复叠弓")
+		elif facing==3:
+			check.call(game.frame_actor.body.visible and game.frame_actor.body.clip=="hero-back-full" and not game.frame_actor.upper.visible and not game.bow.visible and not game.nocked_arrow.visible,"背向普通射箭使用完整身图，不重复叠加旧层")
 		else:
 			check.call(game.frame_actor.upper.visible and game.frame_actor.upper.clip==("hero-archery-left" if facing==2 else "hero-archery-up") and not game.torso.visible and not game.bow.visible and not game.nocked_arrow.visible, "左／上使用统一身份上身且不叠旧武器")
 	game.controls.interrupt(); game.room.reset()

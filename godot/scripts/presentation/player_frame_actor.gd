@@ -16,7 +16,7 @@ var generation: int = -1
 func _ready() -> void:
 	lower=Frames.new(); lower.name="Lower"; add_child(lower)
 	upper=Frames.new(); upper.name="Upper"; upper.z_index=1; add_child(upper)
-	body=Frames.new(); body.name="Body"; add_child(body)
+	body=Frames.new(); body.name="Body"; body.z_index=1; add_child(body)
 	head=Sprite2D.new(); head.name="HeadRepair"; head.centered=false
 	head.region_enabled=true; head.region_filter_clip_enabled=true
 	head.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR; head.z_index=2
@@ -51,6 +51,8 @@ func update_state(state: Dictionary,movement: Vector2,attack_remaining: float,bo
 		lower.hide(); upper.hide(); body.hide(); head.hide(); return
 	if state.paused: return
 	lower.hide(); upper.hide(); body.hide(); head.hide()
+	lower.modulate=Color.WHITE; upper.modulate=Color.WHITE; body.modulate=Color.WHITE; head.modulate=Color.WHITE
+	body.position=Vector2.ZERO; body.scale=Vector2.ONE; body.rotation=0.0
 	upper.position=Vector2(0,-30)
 	if state.hurt>0:
 		sample_skill(p.facing,3); upper.show()
@@ -59,6 +61,19 @@ func update_state(state: Dictionary,movement: Vector2,attack_remaining: float,bo
 	var dashing: bool = state.dodge>0 or state.get("skillDash",{}).get("remaining",0)>0
 	if dashing:
 		var dash_direction: Vector2 = state.dodgeDirection if state.dodge>0 else state.skillDash.direction
+		var dash_kind: String = "dodge" if state.dodge>0 else str(state.skillDash.get("kind",""))
+		var dash_tint: Color = Color("f3dc93") if dash_kind=="dodge" else Color("d7b77a") if dash_kind=="backwind" else Color("75d6e6")
+		body.modulate=dash_tint; upper.modulate=dash_tint
+		if dash_kind=="backwind":
+			body.scale=Vector2(1.10,0.92)
+			body.position=-dash_direction*4.0
+			body.rotation=-0.08
+		elif dash_kind=="wind" or dash_kind=="wind_extra":
+			body.scale=Vector2(0.94,1.08)
+			body.position=dash_direction*4.0
+			body.rotation=0.08
+		else:
+			body.scale=Vector2(1.0,1.04)
 		if absf(dash_direction.angle())>PI/4:
 			sample_skill(p.facing,2); upper.show()
 			refresh_head_repair()
@@ -70,6 +85,12 @@ func update_state(state: Dictionary,movement: Vector2,attack_remaining: float,bo
 	if p.moving and move_facing==0:
 		lower.sample("hero-run-lower",int(distance/22.0)%8)
 		lower.position=Vector2(0,-30); lower.show()
+	if p.facing==3 and not p.moving and state.skill==null:
+		var back_phase: int = {"idle":0,"draw":1,"release":2,"recover":3}[state.attack]
+		body.sample("hero-back-full",back_phase)
+		body.position=Vector2.ZERO
+		body.show()
+		return
 	if p.facing!=0:
 		if state.skill!=null and state.skill.phase=="windup":
 			sample_skill(p.facing,1 if state.skill.kind=="rain" else 0)
