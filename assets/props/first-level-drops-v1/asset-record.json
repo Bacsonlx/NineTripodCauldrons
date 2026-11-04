@@ -1,0 +1,56 @@
+{
+  "task": "FIRST-LEVEL-DROPS",
+  "version": "v1",
+  "art_source": "existing",
+  "route": "reused-current-runtime-assets",
+  "files": [
+    {
+      "name": "血囊",
+      "path": "godot/assets/loot/health.png",
+      "width": 1254,
+      "height": 1254,
+      "format": "RGBA PNG",
+      "sha256": "b7c3d50de5ed7d5b07772467d8d09631b9e919307dfbbb0a8d15a7e9bee8d041"
+    },
+    {
+      "name": "蓝囊",
+      "path": "godot/assets/loot/mana.png",
+      "width": 1254,
+      "height": 1254,
+      "format": "RGBA PNG",
+      "sha256": "2ed1feeff6bd8c09fcff7efb821bd54924b799edebededca3ba0e40afa6aabed"
+    },
+    {
+      "name": "羊角",
+      "path": "godot/assets/items/first-level-v1/ram-horn.png",
+      "width": 1254,
+      "height": 1254,
+      "format": "RGBA PNG",
+      "sha256": "25fdaf89550906561e31a177667851d3d195954a28fd14f3631d81563e115cac"
+    },
+    {
+      "name": "虎牙",
+      "path": "godot/assets/items/first-level-v1/tiger-fang.png",
+      "width": 1254,
+      "height": 1254,
+      "format": "RGBA PNG",
+      "sha256": "6905ee65ad89aff67b02eb1fa9af54483ddfa93b848c407d602fac31c1c44696"
+    },
+    {
+      "name": "鼠毫",
+      "path": "godot/assets/items/first-level-v1/rat-whisker.png",
+      "width": 1254,
+      "height": 1254,
+      "format": "RGBA PNG",
+      "sha256": "068efbf174af6c7ece7c416b1f34eaca7ea1b00b6b8eefe4dd48f0f299acb4e1"
+    },
+    {
+      "name": "燧火",
+      "path": "godot/assets/items/first-level-v1/flint-fire.png",
+      "width": 1254,
+      "height": 1254,
+      "format": "RGBA PNG",
+      "sha256": "fcfca79aacb6d7e5412d398fada83b4c5f09daca5b8ef57b4b6130ef3f0af20c"
+    }
+  ]
+}

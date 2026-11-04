@@ -1,0 +1,92 @@
+{
+  "task": "FIRST-LEVEL-DROPS",
+  "version": "v1",
+  "source_of_truth": [
+    "godot/scripts/combat/training_room.gd",
+    "godot/scripts/alpha/alpha_state.gd",
+    "godot/scripts/journey/room_journey.gd"
+  ],
+  "runtime_drop_assets": [
+    {
+      "id": "LOOT-HEALTH",
+      "name": "血囊",
+      "kind": "consumable",
+      "source": "普通敌人击杀随机掉落",
+      "condition": "roll >= 0.30 && roll < 0.42，且本次击杀不是蓝囊保底",
+      "runtime_source": "godot/assets/loot/health.png",
+      "atlas_source": "godot/assets/loot/health.tres",
+      "states": ["ground", "pickup_fade"],
+      "gameplay_effect": "F键恢复生命；满生命时留地"
+    },
+    {
+      "id": "LOOT-MANA",
+      "name": "蓝囊",
+      "kind": "consumable",
+      "source": "普通敌人击杀掉落",
+      "condition": "每个普通遭遇首个蓝囊保底；其他击杀 roll < 0.30",
+      "runtime_source": "godot/assets/loot/mana.png",
+      "atlas_source": "godot/assets/loot/mana.tres",
+      "states": ["ground", "pickup_fade"],
+      "gameplay_effect": "F键恢复蓝量；满蓝时留地"
+    },
+    {
+      "id": "GLYPH-RAM-HORN",
+      "name": "羊角",
+      "kind": "glyph",
+      "source": "构筑奖励循环",
+      "condition": "奖励位 1、7",
+      "runtime_source": "godot/assets/items/first-level-v1/ram-horn.png",
+      "atlas_source": "godot/assets/items/first-level-v1/ram-horn.tres",
+      "states": ["ground", "warehouse", "altar", "burning_tint", "ash_tint"],
+      "gameplay_effect": "装备区生命上限 +30"
+    },
+    {
+      "id": "GLYPH-TIGER-FANG",
+      "name": "虎牙",
+      "kind": "glyph",
+      "source": "构筑奖励循环",
+      "condition": "奖励位 2、8",
+      "runtime_source": "godot/assets/items/first-level-v1/tiger-fang.png",
+      "atlas_source": "godot/assets/items/first-level-v1/tiger-fang.tres",
+      "states": ["ground", "warehouse", "altar", "burning_tint", "ash_tint"],
+      "gameplay_effect": "普通箭／穿透箭暴击率 +6 个百分点"
+    },
+    {
+      "id": "GLYPH-RAT-WHISKER",
+      "name": "鼠毫",
+      "kind": "glyph",
+      "source": "构筑奖励循环",
+      "condition": "奖励位 3、5",
+      "runtime_source": "godot/assets/items/first-level-v1/rat-whisker.png",
+      "atlas_source": "godot/assets/items/first-level-v1/rat-whisker.tres",
+      "states": ["ground", "warehouse", "altar", "burning_tint", "ash_tint"],
+      "gameplay_effect": "拾取半径 80 → 84"
+    },
+    {
+      "id": "GLYPH-FLINT-FIRE",
+      "name": "燧火",
+      "kind": "glyph",
+      "source": "构筑奖励循环",
+      "condition": "奖励位 4、6",
+      "runtime_source": "godot/assets/items/first-level-v1/flint-fire.png",
+      "atlas_source": "godot/assets/items/first-level-v1/flint-fire.tres",
+      "states": ["ground", "warehouse", "altar", "burning_tint", "ash_tint"],
+      "gameplay_effect": "普通箭／穿透箭命中施加 3 秒燃烧"
+    }
+  ],
+  "excluded_from_formal_drop_assets": [
+    {"name": "训练弓", "reason": "初始装备"},
+    {"name": "布履", "reason": "初始装备"},
+    {"name": "青龙", "reason": "初始随行神兽"},
+    {"name": "快马", "reason": "入口原型套件"},
+    {"name": "司晨", "reason": "入口原型套件"},
+    {"name": "豕涉", "reason": "入口原型套件"},
+    {"name": "守冢", "reason": "入口原型套件"},
+    {"name": "囤积", "reason": "入口原型套件"},
+    {"name": "素食", "reason": "入口原型套件"},
+    {"name": "涂炭", "reason": "入口原型套件"},
+    {"name": "焚书", "reason": "入口原型套件"},
+    {"name": "Boss装备", "reason": "正式奖励合同尚未入库"},
+    {"name": "技能书", "reason": "当前规则已退役"}
+  ]
+}
