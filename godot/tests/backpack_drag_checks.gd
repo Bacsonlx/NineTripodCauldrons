@@ -72,6 +72,7 @@ func run() -> void:
 	game.camp_panel.finish_drag(target_point)
 	var moved_bow: Dictionary = alpha.find_item(bow.id)
 	check(moved_bow.cell == Vector2i(6, 0) and moved_bow.region == "altar", "松开鼠标后应提交物品的新位置")
+	check(moved_bow.order > 0, "拖拽进入祭坛应分配新的入坛顺序")
 
 	# 真实输入链路：物品按下、移动、松开，不依赖测试直接调用 begin/finish。
 	var empty_button: Button = game.camp_panel.grid_cells[3 * 10 + 0]

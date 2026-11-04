@@ -190,7 +190,10 @@ func mount_map() -> void:
 	if previous!=null:
 		remove_child(previous); previous.queue_free()
 	var map: Node2D = load("res://scenes/rooms/%s.tscn" % journey.current_id).instantiate()
-	map.name="TangguMap"; add_child(map)
+	map.name="TangguMap"
+	if journey!=null and journey.active!=null and map.has_method("configure_doors"):
+		map.configure_doors(journey.active.layout.doors)
+	add_child(map)
 
 func create_room(_layout: Dictionary) -> TrainingRoom:
 	return journey.active

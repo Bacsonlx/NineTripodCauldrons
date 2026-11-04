@@ -277,10 +277,11 @@ func update_state(snapshot: Dictionary) -> void:
 	slots.attack.tooltip_text=tooltip_for("attack",snapshot,{},0,false)
 	for action in ["pierce","rain","dodge"]:
 		var required: int = 25 if action=="dodge" else int(costs_snapshot.get(action,0))
+		var skill: Dictionary = snapshot.get("alpha",{}).get("skills",{}).get(action,{})
 		slots[action].insufficient=resources.is_empty() or (resources.stamina+0.000001<required if action=="dodge" else resources.mana<required)
 		slots[action].update_cooldown(snapshot.cooldowns.get(action,0.0))
 		slots[action].set_availability(availability_for(action,snapshot,required,false,true))
-		slots[action].tooltip_text=tooltip_for(action,snapshot,{},required,false)
+		slots[action].tooltip_text=tooltip_for(action,snapshot,skill,required,false)
 	var loadout: bool = snapshot.get("alpha",{}).has("skills")
 	for kind in LOADOUT_KINDS:
 		slots[kind].visible=loadout
@@ -306,18 +307,20 @@ func tooltip_for(kind: String,snapshot: Dictionary,skill: Dictionary,required: i
 	var title: String = str(captions[kind].text)
 	var key_text: String = {"attack":"左键","pierce":"Q","rain":"E","dodge":"空格","backwind":"G","charge":"T","wind":"C"}.get(kind,"")
 	var contract: Dictionary = SKILL_CONTRACTS.get(kind,{})
+	var source_skill: bool = kind in LOADOUT_KINDS or kind in ["pierce","rain"]
 	var lines: Array[String] = [
 		title+"  ·  "+key_text,
 		"类别："+str(contract.get("category","")),
 		"作用："+SKILL_DESCRIPTIONS.get(kind,""),
-		"来源："+(str(skill.get("source","未接入")) if kind in LOADOUT_KINDS else str(contract.get("category","人物基础操作"))),
+		"来源："+(str(skill.get("source","未接入")) if source_skill else str(contract.get("category","人物基础操作"))),
 		"方向："+str(contract.get("direction",""))+"；"+str(contract.get("motion","")),
 		"伤害："+str(contract.get("damage",""))+"；无敌："+str(contract.get("invulnerable","")),
 		"阻挡："+str(contract.get("blocked","")),
 		"打断："+str(contract.get("interrupt",""))
 	]
-	if kind in LOADOUT_KINDS:
-		if not bool(skill.get("active",false)):
+	if source_skill:
+		var active: bool = kind in ["pierce","rain"] or bool(skill.get("active",false))
+		if not active:
 			lines.append("当前：来源缺失 · "+str(skill.get("reason","来源未满足")))
 		else:
 			lines.append("消耗："+("追加 0 蓝；恢复 20 精力" if extra else "%d 蓝量" % required)+"；冷却："+("不重置" if extra else "%.1f 秒" % slots[kind].duration))

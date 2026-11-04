@@ -25,6 +25,8 @@ func run() -> void:
 	game.camp_panel.send({"action":"place","id":id(game,"布履"),"cell":Vector2i(3,0)})
 	game.camp_panel.send({"action":"depart"}); game.present(game.room.snapshot(),0)
 	check(game.hud.captions.rain.text=="箭雨" and game.hud.costs.rain.text=="28 蓝量" and game.hud.captions.backwind.text=="回风" and game.hud.captions.charge.text=="蓄势","E/G/T自动显示对应技能和原费用")
+	check(game.hud.slots.pierce.tooltip_text.contains("消耗：12 蓝量") and game.hud.slots.pierce.tooltip_text.contains("冷却：4.0 秒"),"Q悬停说明显示真实蓝量消耗和冷却")
+	check(game.hud.slots.rain.tooltip_text.contains("消耗：28 蓝量") and game.hud.slots.rain.tooltip_text.contains("冷却：8.0 秒"),"E悬停说明显示真实蓝量消耗和冷却")
 	check(game.hud.loadout_actions==game.hud.actions and game.hud.loadout_actions.visible and not game.hud.source_summary.visible and game.hud.actions.get_child_count()==7 and game.hud.captions.wind.text=="引风","HUD将G/T/C与普攻、Q/E、闪避合并为一行，来源改由悬停说明提供")
 	var expected_order: Array[String] = ["Attack","Pierce","Rain","Backwind","Charge","Wind","Dodge"]
 	for index in expected_order.size():

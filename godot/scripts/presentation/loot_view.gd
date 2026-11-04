@@ -50,21 +50,23 @@ func make_item(item: Dictionary) -> Node2D:
 	var reward: bool = item.kind in ["equipment","item"]
 	var shadow: Polygon2D = Polygon2D.new()
 	shadow.name="Shadow"
-	shadow.polygon=PackedVector2Array([Vector2(-13,0),Vector2(0,-4),Vector2(13,0),Vector2(0,4)])
+	shadow.polygon=PackedVector2Array([Vector2(-9,0),Vector2(0,-3),Vector2(9,0),Vector2(0,3)]) if reward else PackedVector2Array([Vector2(-13,0),Vector2(0,-4),Vector2(13,0),Vector2(0,4)])
 	shadow.color=Color(0.02,0.03,0.02,0.45); node.add_child(shadow)
 	if reward:
 		var body: Polygon2D = Polygon2D.new()
-		body.polygon=PackedVector2Array([Vector2(-10,-12),Vector2(0,-24),Vector2(10,-12),Vector2(0,-2)])
+		body.name="Body"
+		body.polygon=PackedVector2Array([Vector2(-7,-10),Vector2(0,-20),Vector2(7,-10),Vector2(0,-2)])
 		body.color=Color("c6ae77"); node.add_child(body)
 		var outline: Line2D = Line2D.new()
-		outline.points=body.polygon; outline.closed=true; outline.width=2; outline.default_color=Color("3c3025"); node.add_child(outline)
+		outline.points=body.polygon; outline.closed=true; outline.width=1.5; outline.default_color=Color("3c3025"); node.add_child(outline)
 		var label: Label = Label.new()
+		label.name="Label"
 		label.text=item.label
-		label.position=Vector2(-152,-60) if item.kind=="equipment" else Vector2(-12,-40)
-		label.add_theme_font_size_override("font_size",12)
+		label.position=Vector2(-112,-44) if item.kind=="equipment" else Vector2(-10,-32)
+		label.add_theme_font_size_override("font_size",11)
 		label.add_theme_color_override("font_color",Color("f1dfb6"))
 		label.add_theme_color_override("font_shadow_color",Color.BLACK)
-		label.add_theme_constant_override("shadow_offset_y",2)
+		label.add_theme_constant_override("shadow_offset_y",1)
 		label.mouse_filter=Control.MOUSE_FILTER_IGNORE; node.add_child(label)
 	else:
 		var bottle: Sprite2D = Sprite2D.new()

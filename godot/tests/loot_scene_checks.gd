@@ -82,6 +82,11 @@ func run() -> void:
 	reward.rewardPlaceholders=[{"id":"reward","kind":"equipment","x":500,"y":600,"label":"装备 · 未入库"}]
 	game.loot_view.update_state(reward)
 	check(not game.loot_view.items.reward.has_node("Bottle") and game.loot_view.items.reward.get_children().any(func(child: Node): return child is Label and child.text=="装备 · 未入库"),"Boss未入库奖励保持原占位和文字，不套用药瓶纹理")
+	var reward_body: Polygon2D = game.loot_view.items.reward.get_node_or_null("Body")
+	check(reward_body!=null and reward_body.polygon[2].x-reward_body.polygon[0].x<=16.0 and reward_body.polygon[3].y-reward_body.polygon[1].y<=20.0,"奖励占位菱形尺寸收敛至与28px药囊协调")
+	var world_items_script = load("res://scripts/gameplay/world_items.gd")
+	var icon_box: Rect2 = world_items_script.icon_box(Vector2(400,600))
+	check(icon_box.size==Vector2(28,28) and world_items_script.RING_RADIUS==7.0 and world_items_script.LABEL_FONT_SIZE==13,"地面构筑道具贴图框收敛至28×28且同步缩小底环与字号")
 	var old_seed: int = game.journey.drop_seed
 	game.journey.restart(); game.present_new_room()
 	check(game.journey.drop_seed!=old_seed and game.room.snapshot().drops.is_empty(),"灰盒R重开使用新种子并清空药瓶")

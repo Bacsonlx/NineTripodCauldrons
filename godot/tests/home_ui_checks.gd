@@ -59,6 +59,12 @@ func run() -> void:
 			compact_cells=false
 			break
 	check(compact_cells,"首页背包格子保持紧凑尺寸，不被物品贴图原始尺寸撑大")
+	var hovered: Button=null
+	for cell in home.get("backpack_cells"):
+		if str(cell.tooltip_text).contains("素食"): hovered=cell; break
+	check(hovered!=null,"首页背包格悬停显示物品名称")
+	if hovered!=null:
+		check(hovered.tooltip_text.split("\n").size()<=2 and hovered.tooltip_text.length()<80,"首页背包悬停说明压缩为摘要，不铺满屏幕")
 	home.call("choose_item","talis_goat")
 	home.call("home_grid_cell",Vector2i(6,0))
 	var goat: Dictionary={}

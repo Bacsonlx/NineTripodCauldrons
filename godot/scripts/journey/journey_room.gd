@@ -42,7 +42,10 @@ func nearest_interaction() -> Dictionary:
 		var gap: float = origin.distance_to(location)
 		if gap>80 or gap>=distance or not clear_path(origin,location): continue
 		var reason: Variant = "影散后无法过门" if status=="failed" else "暂停中无法过门" if paused or reading else "完成本房间任务后开门" if not completed else null
-		closest={"id":"door:"+door.id,"doorId":door.id,"point":location,"label":door.get("routeLabel","前往")+" · "+door.title,"reason":reason}
+		var label_text: String = door.get("routeLabel","前往")+" · "+door.title
+		if not str(door.get("choiceLabel","")).is_empty():
+			label_text+=" · "+str(door.choiceLabel)
+		closest={"id":"door:"+door.id,"doorId":door.id,"point":location,"label":label_text,"reason":reason}
 		distance=gap
 	for camp in layout.get("camps",[]):
 		var location: Vector2 = point(camp)

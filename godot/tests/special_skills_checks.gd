@@ -19,6 +19,10 @@ func run(check: Callable) -> void:
 	act(strike,{"action":"depart"})
 	strike.update({"backwind":true,"moveX":-1},0.01)
 	check.call(strike.snapshot().enemies[0].health==120 and strike.snapshot().backwindStrike.remaining>0,"回风在起点释放攻击性回风打击")
+	var inactive: TrainingRoom = prepare({"width":1280,"height":900,"encounters":[{"x":400,"y":600,"enemies":[Vector2(450,600)]},{"x":400,"y":600,"enemies":[Vector2(450,600)]}]})
+	act(inactive,{"action":"depart"})
+	inactive.update({"backwind":true,"moveX":-1},0.01)
+	check.call(inactive.snapshot().enemies[1].phase=="inactive" and inactive.snapshot().enemies[1].health==60,"回风不伤害尚未激活的后续波次敌人")
 
 	var charge: TrainingRoom = prepare({"enemy":{"x":500,"y":600,"appearance":"wood"},"encounter":Vector2(400,600)})
 	act(charge,{"action":"depart"})

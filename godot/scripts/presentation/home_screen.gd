@@ -102,7 +102,20 @@ func build_theme() -> void:
 	theme.set_color("font_color","OptionButton",PAPER)
 	theme.set_stylebox("panel","PopupMenu",box(Color("0c110e"),GOLD))
 	theme.set_color("font_color","PopupMenu",PAPER)
+	var tooltip_box: StyleBoxFlat = box(Color("0c110ef2"),GOLD)
+	tooltip_box.set_content_margin_all(10)
+	theme.set_stylebox("panel","TooltipPanel",tooltip_box)
+	theme.set_color("font_color","TooltipLabel",PAPER)
 	texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+
+func tooltip_summary(item: Dictionary) -> String:
+	var name: String = str(item.get("name",""))
+	var kind: String = str(item.get("kind",""))
+	var quality: String = str(item.get("quality",""))
+	var header: String = name+" · "+kind if not kind.is_empty() else name
+	if not quality.is_empty(): header+=" · "+quality
+	var rule: String = str(item.get("description","")).split("；")[0].get_slice("\n",0)
+	return header+"\n"+rule
 
 func text(value: String,font_size: int=15,color: Color=PAPER) -> Label:
 	var label: Label = Label.new()
@@ -699,7 +712,7 @@ func refresh_backpack_grid() -> void:
 		for item in prepared_alpha.items:
 			if item.region in Alpha.REGIONS and Rect2i(item.cell,Alpha.shape(item,item.rotated)).has_point(cell):
 				tile.modulate=Art.tint(item)
-				tile.tooltip_text=item.name+"\n"+item.description
+				tile.tooltip_text=tooltip_summary(item)
 				break
 	if grid_art!=null:
 		grid_art.items=prepared_alpha.items

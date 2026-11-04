@@ -8,6 +8,38 @@ extends "res://scripts/world/map_definition.gd"
 @export var stele_title: String = ""
 @export_multiline var stele_text: String = ""
 
+func configure_doors(definitions: Array) -> void:
+	var existing_by_id: Dictionary = {}
+	for child in $Doors.get_children():
+		existing_by_id[str(child.get("portal_id"))]=child
+	var kept: Dictionary = {}
+	for definition in definitions:
+		var portal: Node2D = existing_by_id.get(str(definition.id),null)
+		if portal==null:
+			portal=load("res://scenes/world/room_portal.tscn").instantiate()
+			portal.runtime_generated=true
+			var approach: Vector2 = Vector2(100,-25)
+			portal.position=TrainingRoom.point(definition.point)-approach
+			portal.get_node("Arrival").position=TrainingRoom.point(definition.arrival)-portal.position
+			for post_name in ["LeftPost","RightPost"]:
+				var post: Node = portal.get_node_or_null(post_name)
+				if post!=null:
+					portal.remove_child(post)
+					post.queue_free()
+			$Doors.add_child(portal)
+		kept[str(definition.id)]=true
+		portal.portal_id=definition.id
+		portal.target_room=definition.target
+		portal.target_portal=definition.targetDoor
+		portal.target_title=definition.title
+		portal.blessing_beast=definition.get("blessingBeast","")
+		portal.blessing_tier=int(definition.get("blessingTier",0))
+	for id in existing_by_id:
+		if not kept.has(id):
+			var orphan: Node = existing_by_id[id]
+			$Doors.remove_child(orphan)
+			orphan.queue_free()
+
 func build_layout() -> Dictionary:
 	var data: Dictionary = super.build_layout()
 	data.roomId=room_id; data.roomTitle=room_title; data.objective=objective

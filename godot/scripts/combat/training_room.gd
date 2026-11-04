@@ -595,7 +595,9 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 			if energy_enabled and not potion_drops: restore_mana(12)
 			encounter+=1
 			invalidate_obstacles()
-			if encounter==groups.size(): status="complete"
+			if encounter==groups.size():
+				status="complete"
+				if alpha!=null and alpha.gameplay: alpha.settle_room_rewards(self)
 
 func encounter_ready(group: Dictionary) -> bool:
 	return point(group).distance_to(Vector2(player.x,player.y))<=170
@@ -611,7 +613,7 @@ func trigger_backwind_strike(origin: Vector2, angle: float) -> void:
 	effects.append({"id":next_effect,"kind":"wind_burst","remaining":0.22,"age":0.0,"damage":0,"angle":angle,"x":origin.x,"y":origin.y,"enemy":null,"damagePosition":origin})
 	next_effect+=1
 	for enemy in enemies:
-		if enemy.group!=encounter or enemy.phase=="dead": continue
+		if enemy.group!=encounter or enemy.phase in ["inactive","dead"]: continue
 		var delta: Vector2 = point(enemy)-origin
 		if delta.length()>120.0: continue
 		impact({"x":enemy.x,"y":enemy.y-35,"target":null,"enemy":enemy.id},"wind_burst",angle,{"critical":false})

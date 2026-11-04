@@ -53,12 +53,91 @@ func reward_checks() -> void:
 	check(run.snapshot().roomComplete and rewards(run).size()==1 and rewards(run)[0].name=="羊角","A末波首杀只发首枚羊角")
 	var original: Dictionary = rewards(run)[0].duplicate(true)
 	check(pass_to(run,"court1"),"真实过门继续使用同一局")
+	fight_until_wave(run,1)
+	check(not run.snapshot().roomComplete and rewards(run).size()==1,"主线首波达成但未清庭时，构筑战利品暂入本房待发队列，战中0构筑物落地")
 	fight_until_wave(run,2)
-	check(rewards(run).size()==2 and rewards(run)[1].name=="鼠毫","主线仅首波发符，按实际第二次发放鼠毫")
+	check(run.snapshot().roomComplete and rewards(run).size()==2 and rewards(run)[1].name=="鼠毫","主线清庭瞬间全额发放待发奖励，按实际第二次发放鼠毫")
 	check(rewards(run)[0].id==original.id and rewards(run)[0].roomId=="moss_side","跨房共享背包且地面奖励仍属原房")
 	check(pass_to(run,"moss_side") and rewards(run).size()==2 and run.snapshot().roomComplete,"回溯不刷新敌人与构筑奖励")
 	run.update({"restart":true},0)
 	check(run.snapshot().roomId=="moss_side" and rewards(run).is_empty() and run.snapshot().visitedRooms==1,"快速测试R新建所选起点并清空发放记录")
+
+func settlement_timing_checks() -> void:
+	var data: Dictionary = combat_fixture("court1",2,[0,1])
+	data.encounters=[
+		{"x":300,"y":520,"enemies":[Vector2(520,520),Vector2(760,520)]},
+		{"x":300,"y":520,"enemies":[Vector2(520,520),Vector2(760,520)]}
+	]
+	var run: RefCounted = Journey.new({"court1":data},{"startRoom":"court1","isTest":true,"potionDrops":true,"dropSeed":1,"health":10000})
+	var hoard_item: Dictionary = run.inventory.add_item("囤积","altar",Vector2i(7,1))
+	var m1: Dictionary = run.inventory.find_item_by_name("鼠毫")
+	run.inventory.place(m1,Vector2i(6,1),false)
+	var m2: Dictionary = run.inventory.add_item("鼠毫","altar",Vector2i(6,2))
+	# 填满4格收纳区，使清庭落地时若进入拾取范围会触发pickupCard与转坛流程。
+	run.inventory.add_item("虎牙","warehouse",Vector2i(7,4))
+	run.inventory.recount()
+	check(run.active.has_spatial_synergy("拾取牵引"),"双鼠毫点亮拾取牵引")
+	var pact_id: int = -1
+	for it in run.snapshot().alpha.items:
+		if it.name=="素食": pact_id=it.id
+	# 击杀首波第一只近身怪（但首波尚未清完）
+	var pulled_recall: bool = false
+	for frame in 300:
+		var state: Dictionary = run.snapshot()
+		if not state.recalls.is_empty(): pulled_recall=true
+		if state.enemies[0].phase=="dead": break
+		run.active.hurt=0.0
+		var move_x: float = -1.0 if state.player.x>340 else 0.0
+		run.update({"moveX":move_x,"fire":true,"aim":Vector2(state.enemies[0].x,state.enemies[0].y-52)},0.01)
+	check(run.snapshot().enemies[0].phase=="dead" and not run.snapshot().roomComplete,"首波首杀达成但房间未清庭")
+	check(pulled_recall,"拾取牵引在命中时正常触发牵引与视觉记录")
+	check(rewards(run).is_empty() and run.snapshot().alpha.pickupCard.is_empty(),"战中首杀0构筑物落地，不触发自动拾取或弹出pickupCard")
+	# 战斗中主动从背包丢弃物品到脚边不受延迟影响
+	run.update({"alpha":{"action":"drop","id":pact_id}},0)
+	check(run.snapshot().alpha.items.filter(func(i: Dictionary): return i.id==pact_id)[0].region=="ground","玩家战中主动drop放到脚边的物品立即落地不受延迟影响")
+	# 清完首波，进入第二波战斗中
+	for frame in 1000:
+		var state: Dictionary = run.snapshot()
+		if state.encounter>=1: break
+		run.active.hurt=0.0
+		var aim: Vector2 = Vector2(760,468)
+		for enemy in state.enemies:
+			if enemy.health>0 and enemy.phase!="inactive": aim=Vector2(enemy.x,enemy.y-52); break
+		var move_x: float = -1.0 if state.player.x>340 else 0.0
+		run.update({"moveX":move_x,"fire":true,"aim":aim},0.01)
+	check(not run.snapshot().roomComplete and not run.snapshot().drops.is_empty() and rewards(run).is_empty(),"首波清完即时掉落蓝囊保底，但构筑奖励仍保持待发不落地")
+	# 清完第二波（房间完成），两波待发构筑物在清庭瞬间全额落地且防叠排布
+	for frame in 1500:
+		var state: Dictionary = run.snapshot()
+		if state.roomComplete: break
+		run.active.hurt=0.0
+		var aim: Vector2 = Vector2(760,468)
+		for enemy in state.enemies:
+			if enemy.health>0 and enemy.phase!="inactive": aim=Vector2(enemy.x,enemy.y-52); break
+		var move_x: float = -1.0 if state.player.x>340 else 0.0
+		run.update({"moveX":move_x,"fire":true,"aim":aim},0.01)
+	var settled: Array = rewards(run)
+	check(run.snapshot().roomComplete and settled.size()==2,"清庭瞬间全额发放本房2件待发构筑战利品")
+	if settled.size()==2:
+		var p0: Vector2 = TrainingRoom.point(settled[0].world)
+		var p1: Vector2 = TrainingRoom.point(settled[1].world)
+		check(p0.distance_to(p1)>=20.0 and run.active.can_walk(p0) and run.active.can_walk(p1),"同房间多件清庭奖励經potion_location合法采样并环形错位防叠")
+	# 重新填满收纳区后走近清庭落地的构筑物，验证满仓弹出pickupCard、Tab转坛与【囤积】契约计数正常生效
+	run.inventory.add_item("燧火","warehouse",Vector2i(8,4))
+	run.inventory.add_item("燧火","warehouse",Vector2i(9,4))
+	run.inventory.pickup_blocked[pact_id]=true
+	run.inventory.pickup_card={}
+	var stacks_before: int = run.snapshot().alpha.items.filter(func(i: Dictionary): return i.id==hoard_item.id)[0].get("stacks",0)
+	if not settled.is_empty():
+		var ground_rewards: Array = rewards(run).filter(func(i: Dictionary): return i.region=="ground")
+		check(not ground_rewards.is_empty() and walk(run,TrainingRoom.point(ground_rewards[0].world)),"清庭后走近第一件落地构筑物")
+	check(not run.snapshot().alpha.pickupCard.is_empty(),"清庭后走近构筑物正常触发满仓pickupCard")
+	var card_item_id: int = int(run.snapshot().alpha.pickupCard.get("id",-1))
+	run.active.hurt=0.0
+	run.update({"alpha":{"action":"quick_altar"}},0)
+	var updated_hoard: Dictionary = run.snapshot().alpha.items.filter(func(i: Dictionary): return i.id==hoard_item.id)[0]
+	var transferred: Array = run.snapshot().alpha.items.filter(func(i: Dictionary): return i.id==card_item_id and i.region=="altar")
+	check(not transferred.is_empty() and updated_hoard.get("stacks",0)>=stacks_before+1,"清庭奖励经Tab快捷转坛正常入坛并累计【囤积】层数")
 
 func budget_checks() -> void:
 	var ids: Array[String] = ["court1","dry_creek","root_fork","court2","ash_cloister","gate_forecourt","court3","moss_side","ember_side"]
@@ -167,6 +246,63 @@ func completion_checks() -> void:
 	var trial: RefCounted = Journey.new(maps,{"isTest":true,"startRoom":"end"})
 	check(trial.snapshot().segmentComplete and not trial.snapshot().journeyComplete and trial.snapshot().visitedRooms==1,"出口测试不伪造前序或正式通关")
 
+func choice_door_blessing_checks() -> void:
+	var maps: Dictionary = Journey.read_maps()
+	var custom: Dictionary = {}
+	for id in ["entry","court1","moss_side","dry_creek","root_fork","stele","stele_side","court2","altar","ash_cloister","ember_side","gate_forecourt","court3","thunder_approach"]:
+		var room_check: RefCounted = Journey.new(maps,{"isTest":true,"startRoom":id})
+		var choices: Array = room_check.snapshot().get("roomChoices",[])
+		check(choices.size()==2,id+"关卡通关后提供两个前进选择门")
+		if choices.size()==2:
+			check(choices[0].target!=choices[1].target,id+"两个选择门分别通向两个不同房间")
+			check(choices[0].get("blessingBeast","") in ["青龙","白虎","朱雀"] and choices[1].get("blessingBeast","") in ["青龙","白虎","朱雀"],id+"每个选择门绑定神兽祝福")
+			for choice in choices:
+				check_portal_visual_theme(choice,id)
+				var p: Vector2 = TrainingRoom.point(choice.point)
+				check(room_check.active.can_walk(p) and not room_check.active.find_route(TrainingRoom.point(room_check.snapshot().player),p).is_empty(),id+"选择门可达："+str(choice.target))
+	for id in maps:
+		custom[id]=combat_fixture(id,1,[0]) if maps[id].objective=="combat" else fixture(id,maps[id].objective)
+		custom[id].roomTitle=maps[id].roomTitle
+		if maps[id].has("choiceDoors"): custom[id].choiceDoors=maps[id].choiceDoors.duplicate(true)
+		if maps[id].objective=="explore": custom[id].exploration=[{"id":"stele","x":480,"y":520}]
+	var run: RefCounted = Journey.new(custom,{"isTest":true,"startRoom":"entry","health":10000,"mana":100,"stamina":100})
+	run.update({"alpha":{"action":"depart"}},0)
+	# 路径A：从入口选第二扇门（白虎初念 -> dry_creek），随后一路选择任意门直至Boss
+	check(pass_to(run,"dry_creek"),"入口第二扇选择门真实进入落叶溪床")
+	check(run.snapshot().alpha.blessingBeast=="白虎" and run.snapshot().alpha.blessingTier==1 and run.snapshot().alpha.skills.has("tiger"),"穿过白虎选择门获得白虎初念祝福并切换C技能")
+	fight_until_wave(run,1)
+	check(pass_to(run,"stele"),"落叶溪床第二扇选择门进入碑林遗径")
+	check(run.snapshot().alpha.blessingBeast=="白虎" and run.snapshot().alpha.blessingTier==2,"同神兽选择门将白虎祝福升至再念")
+	check(walk(run,TrainingRoom.point(run.active.layout.exploration[0])),"走近碑林残碑")
+	run.update({"interact":false},0); run.update({"interact":true},0)
+	run.update({"interact":false},0); run.update({"interact":true},0)
+	check(pass_to(run,"stele_side"),"碑林第一扇选择门进入残碑幽径")
+	check(run.snapshot().alpha.blessingBeast=="白虎" and run.snapshot().alpha.blessingTier==3,"白虎祝福通过选择门升至三念")
+	# 无论每房选哪扇门，从任意房间按左门或右门推进都必定抵达Boss
+	for branch_index in [0,1]:
+		var cursor: String = "entry"
+		var steps: int = 0
+		var reached_boss: bool = false
+		while steps<20:
+			var options: Array = maps[cursor].choiceDoors
+			var chosen: Dictionary = options[mini(branch_index,options.size()-1)]
+			cursor=chosen.target
+			steps+=1
+			if cursor=="boss":
+				reached_boss=true; break
+		check(reached_boss,"全选第%d扇门最终汇入索尔Boss房" % (branch_index+1))
+
+func check_portal_visual_theme(choice: Dictionary,room_id: String) -> void:
+	var portal: Node2D = preload("res://scenes/world/room_portal.tscn").instantiate()
+	portal.blessing_beast=str(choice.get("blessingBeast",""))
+	portal.blessing_tier=int(choice.get("blessingTier",0))
+	check(portal.visual_theme_matches(portal.blessing_beast,portal.blessing_tier),room_id+"选择门兽种／念级同步到两层视觉主题："+str(choice.target))
+	var key: Dictionary = portal.visual_theme_key()
+	check(key.get("beast","")==portal.blessing_beast and key.get("tier",0)==portal.blessing_tier and key.get("layer","")=="beast",room_id+"兽种纹样层读取祝福数据："+str(choice.target))
+	var overlay_key: Dictionary = portal.get_node("TierOverlay").theme_key()
+	check(overlay_key.get("beast","")==portal.blessing_beast and overlay_key.get("tier",0)==portal.blessing_tier and overlay_key.get("layer","")=="tier",room_id+"念级叠加层读取祝福数据："+str(choice.target))
+	portal.free()
+
 func pass_to(run: RefCounted,target: String) -> bool:
 	for door in run.active.layout.doors:
 		if door.target!=target: continue
@@ -198,10 +334,12 @@ func _initialize() -> void:
 	check(pass_to(run,"end"),"入口测试可使用真实F推进到出口")
 	check(run.snapshot().get("segmentComplete")==true and not run.snapshot().journeyComplete,"测试到出口只完成测试段")
 	reward_checks()
+	settlement_timing_checks()
 	budget_checks()
 	route_checks()
 	time_checks()
 	completion_checks()
+	choice_door_blessing_checks()
 	finish()
 
 func finish() -> void:

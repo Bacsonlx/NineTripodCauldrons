@@ -139,6 +139,7 @@ var pickup_card: Dictionary = {}
 var pickup_blocked: Dictionary = {}
 var quick_item_id: int = -1
 var rewarded_waves: Dictionary = {}
+var pending_room_rewards: Array[Dictionary] = []
 var runtime: RefCounted
 var prototype_claimed: bool = false
 var prototype_burn: bool = false
@@ -198,7 +199,7 @@ func _init(seed_number: int = 1, gameplay_mode: bool = false, starting_items: Ar
 func reset(spawn: Vector2) -> void:
 	adventure_complete=false
 	runtime=ItemEffects.new(seed_value); prototype_claimed=false; prototype_burn=false; acquired.clear()
-	pickup_card={}; pickup_blocked.clear(); quick_item_id=-1; rewarded_waves.clear()
+	pickup_card={}; pickup_blocked.clear(); quick_item_id=-1; rewarded_waves.clear(); pending_room_rewards.clear()
 	items.clear(); camp=true; elapsed=0; next_id=0; next_order=0; ranking={}; burn={}; last_burn={}; burn_held=false; departed=false; shadow_id=-1; lost_shadows.clear()
 	blessing_beast="青龙"; blessing_tier=1; blessing_evolves_left=1 if pacts.has("重念限制") else 2; altar_analysis={}; stele_inscription.clear()
 	message="先摆好背包；羊角可提高生命上限，鼠毫可扩大拾取范围。确认出发后进入汤谷。" if gameplay else "专项空间验证状态。"
@@ -310,10 +311,14 @@ func swap_items(first: Dictionary, second: Dictionary) -> bool:
 	var second_cell: Vector2i = second.cell
 	var first_rotated: bool = first.rotated
 	var second_rotated: bool = second.rotated
+	var first_region: String = region_for(first,second_cell,first_rotated)
+	var second_region: String = region_for(second,first_cell,second_rotated)
+	if first_region=="altar" and first.region!="altar": next_order+=1; first.order=next_order
+	if second_region=="altar" and second.region!="altar": next_order+=1; second.order=next_order
 	first.cell=second_cell
-	first.region=region_for(first,first.cell,first_rotated)
+	first.region=first_region
 	second.cell=first_cell
-	second.region=region_for(second,second.cell,second_rotated)
+	second.region=second_region
 	message="已交换 "+first.name+" 与 "+second.name
 	return true
 
@@ -438,7 +443,7 @@ func command(action: Dictionary, room: RefCounted) -> void:
 func recount() -> void:
 	if gameplay:
 		normalize_references()
-		skills=Skills.resolve(items)
+		skills=Skills.resolve(items,blessing_beast)
 	ranking=Votes.calculate(items,ranking)
 	altar_analysis=Geometry.evaluate(items)
 
@@ -572,16 +577,26 @@ func select_beast(beast_name: String) -> bool:
 	if beast_name not in ["青龙","白虎","朱雀"]:
 		message="未知的神兽："+beast_name
 		return false
-	blessing_beast=beast_name
-	blessing_tier=1
-	blessing_evolves_left=1 if pacts.has("重念限制") else 2
-	for i in range(items.size()-1,-1,-1):
-		if items[i].get("kind","")=="神兽":
-			items.remove_at(i)
-	add_item(beast_name,"equipment",Vector2i(4,1))
-	recount()
+	blessing_beast=""
+	apply_blessing(beast_name,1)
 	message="已立下神兽承诺：【%s】初念已锚定本局底色" % beast_name
 	return true
+
+func apply_door_blessing(beast_name: String,tier: int) -> bool:
+	if beast_name not in ["青龙","白虎","朱雀"]:
+		message="未知的神兽："+beast_name
+		return false
+	var next_tier: int = clampi(tier,1,3)
+	apply_blessing(beast_name,next_tier)
+	message="已获得门后神兽祝福：【%s】%s" % [beast_name,BEAST_TIER_NAMES[beast_name][blessing_tier-1]]
+	return true
+
+func apply_blessing(beast_name: String,tier: int) -> void:
+	var changed_beast: bool = blessing_beast!=beast_name
+	blessing_beast=beast_name
+	blessing_tier=clampi(tier,1,3) if changed_beast else maxi(blessing_tier,clampi(tier,1,3))
+	blessing_evolves_left=1 if pacts.has("重念限制") else maxi(0,2-(blessing_tier-1))
+	recount()
 
 func toggle_pact(pact_name: String) -> bool:
 	if not camp or departed:
@@ -684,9 +699,43 @@ func enemy_defeated(enemy: Dictionary, room: RefCounted) -> void:
 	rewarded_waves[wave_key]=true
 	var reward_cycle: Array[String] = ["羊角","虎牙","鼠毫","燧火","鼠毫","燧火","羊角","虎牙"]
 	var reward_name: String = reward_cycle[(rewarded_waves.size()-1) % reward_cycle.size()] if room.layout.get("commercialDepthRewards",false) else ("羊角" if rewarded_waves.size()%2==1 else "鼠毫")
-	var item: Dictionary = add_item(reward_name,"ground",Vector2i.ZERO)
-	item.world=room.potion_location(Vector2(enemy.x,enemy.y))
-	item.roomId=room.layout.get("roomId","")
+	pending_room_rewards.append({"name":reward_name,"roomId":room.layout.get("roomId",""),"origin":Vector2(enemy.x,enemy.y),"wave":enemy.group})
+
+func settle_room_rewards(room: RefCounted) -> void:
+	if pending_room_rewards.is_empty(): return
+	var room_id: String = room.layout.get("roomId","")
+	var due: Array[Dictionary] = []
+	var remaining: Array[Dictionary] = []
+	for entry in pending_room_rewards:
+		if entry.roomId==room_id: due.append(entry)
+		else: remaining.append(entry)
+	if due.is_empty(): return
+	pending_room_rewards=remaining
+	var placed_points: Array[Vector2] = []
+	var count: int = due.size()
+	for index in count:
+		var entry: Dictionary = due[index]
+		var base: Vector2 = entry.origin
+		var target: Vector2 = base
+		if count>1:
+			var ring: int = index/6
+			var radius: float = 28.0+ring*24.0
+			var angle: float = TAU*float(index%6)/float(mini(6,count-ring*6))+ring*0.45
+			target=base+Vector2.from_angle(angle)*radius
+		var location: Vector2 = room.potion_location(target)
+		for point in placed_points:
+			if location.distance_to(point)<20.0:
+				for step in 12:
+					var angle: float = TAU*float(step+index*3)/12.0
+					var candidate: Vector2 = room.potion_location(base+Vector2.from_angle(angle)*(28.0+step*6.0))
+					if placed_points.all(func(existing: Vector2): return candidate.distance_to(existing)>=20.0):
+						location=candidate
+						break
+				break
+		placed_points.append(location)
+		var item: Dictionary = add_item(entry.name,"ground",Vector2i.ZERO)
+		item.world=location
+		item.roomId=room_id
 
 func skill_active(kind: String) -> bool:
 	return skills.get(kind,{}).get("active",false)
