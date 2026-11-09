@@ -301,6 +301,19 @@ func check_portal_visual_theme(choice: Dictionary,room_id: String) -> void:
 	check(key.get("beast","")==portal.blessing_beast and key.get("tier",0)==portal.blessing_tier and key.get("layer","")=="beast",room_id+"兽种纹样层读取祝福数据："+str(choice.target))
 	var overlay_key: Dictionary = portal.get_node("TierOverlay").theme_key()
 	check(overlay_key.get("beast","")==portal.blessing_beast and overlay_key.get("tier",0)==portal.blessing_tier and overlay_key.get("layer","")=="tier",room_id+"念级叠加层读取祝福数据："+str(choice.target))
+	var filenames: Dictionary = {"青龙":"azure-dragon","白虎":"white-tiger","朱雀":"vermilion-bird"}
+	check(key.texture.ends_with("beast-"+filenames[portal.blessing_beast]+".png") and overlay_key.texture.ends_with("tier-overlay-%d.png" % portal.blessing_tier),room_id+"选择门实际加载对应兽种／念级纹理")
+	portal.get_node("Frame").refresh()
+	portal._sync_blessing_visual()
+	var body: Sprite2D = portal.get_node("Frame/Sprite")
+	for layer_name in ["BlessingPattern","TierOverlay"]:
+		var layer: Sprite2D = portal.get_node(layer_name)
+		check(layer.transform.is_equal_approx(portal.get_node("Frame").transform*body.transform) and layer.get_rect()==body.get_rect(),room_id+layer_name+"与门框共享尺寸、变换和脚点")
+		var sealed_alpha: float = layer.modulate.a
+		layer.configure(portal.blessing_beast,portal.blessing_tier,false,false,false)
+		var open_alpha: float = layer.modulate.a
+		layer.configure(portal.blessing_beast,portal.blessing_tier,false,true,true)
+		check(sealed_alpha>0.0 and sealed_alpha<open_alpha and open_alpha<layer.modulate.a,room_id+layer_name+"封印、开放和悬停逐级可读且保留纹理")
 	portal.free()
 
 func pass_to(run: RefCounted,target: String) -> bool:

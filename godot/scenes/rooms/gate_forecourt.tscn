@@ -487,7 +487,7 @@ obstacle_kind = "wall"
 flat = true
 [node name="Doors" type="Node2D" parent="."]
 [node name="ash_cloister" parent="Doors" instance=ExtResource("portal")]
-position = Vector2(150,585)
+position = Vector2(150,465)
 portal_id = "ash_cloister"
 target_room = "ash_cloister"
 target_portal = "gate_forecourt"

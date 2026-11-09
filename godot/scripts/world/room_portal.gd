@@ -80,7 +80,14 @@ func visual_theme_key() -> Dictionary:
 	return pattern.theme_key() if pattern!=null else {}
 
 func _sync_blessing_visual(is_sealed: bool = true,is_hovered: bool = false,is_usable: bool = false) -> void:
+	var body: Sprite2D = get_node_or_null("Frame/Sprite")
 	for node_name in ["BlessingPattern","TierOverlay"]:
-		var visual: Node = get_node_or_null(node_name)
+		var visual: Sprite2D = get_node_or_null(node_name)
 		if visual!=null:
+			if body!=null:
+				visual.transform=$Frame.transform*body.transform
+				visual.offset=body.offset
+				visual.centered=body.centered
+				visual.flip_h=body.flip_h
+				visual.self_modulate=body.self_modulate*Color(1,1,1,body.modulate.a)
 			visual.configure(_blessing_beast,_blessing_tier,is_sealed,is_hovered,is_usable)

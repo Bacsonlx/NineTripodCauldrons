@@ -15,3 +15,4 @@ tools/asset_forge/.venv/
 .env.*
 !.env.example
 __pycache__/
+.alma-snapshots

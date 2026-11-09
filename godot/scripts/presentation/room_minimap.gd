@@ -1,8 +1,8 @@
 extends Control
 
-const GRID: Dictionary = {"entry":Vector2(0,0),"court1":Vector2(1,0),"dry_creek":Vector2(2,0),"root_fork":Vector2(3,0),"stele":Vector2(4,0),"court2":Vector2(5,0),"altar":Vector2(6,0),"ash_cloister":Vector2(6,2),"gate_forecourt":Vector2(5,2),"court3":Vector2(4,2),"thunder_approach":Vector2(3,2),"boss":Vector2(2,2),"end":Vector2(1,2),"moss_side":Vector2(2.5,1),"stele_side":Vector2(4.5,1),"ember_side":Vector2(5.5,3)}
-const MARKS: Dictionary = {"entry":"入","court1":"一","dry_creek":"溪","root_fork":"根","stele":"碑","court2":"二","altar":"+","ash_cloister":"廊","gate_forecourt":"门","court3":"三","thunder_approach":"前","boss":"首","end":"出","moss_side":"A","stele_side":"B","ember_side":"C"}
-var graph: Dictionary = {}
+var layout: Dictionary = {}
+var player: Vector2 = Vector2.ZERO
+var locked: bool = false
 
 func _ready() -> void:
 	name="RoomMinimap"
@@ -16,59 +16,46 @@ func layout_edges() -> void:
 	offset_top=72 if get_parent().size.x>=1280 else 224
 	offset_bottom=offset_top+136
 
-func update_state(value: Dictionary) -> void:
-	if graph==value: return
-	graph=value.duplicate(true)
+func update_state(room_layout: Dictionary,position: Vector2,is_locked: bool) -> void:
+	if layout==room_layout and player==position and locked==is_locked: return
+	layout=room_layout
+	player=position
+	locked=is_locked
 	queue_redraw()
 
-func room_rect(id: String) -> Rect2:
-	return Rect2(Vector2(12,26)+GRID[id]*Vector2(30,19),Vector2(22,16))
+func map_point(point: Vector2) -> Vector2:
+	var world_size: Vector2 = Vector2(layout.width,layout.height)
+	var area: Rect2 = Rect2(12,27,size.x-24,size.y-37)
+	var scale_factor: float = minf(area.size.x/world_size.x,area.size.y/world_size.y)
+	return area.get_center()-world_size*scale_factor/2+point*scale_factor
 
 func _draw() -> void:
-	if graph.is_empty(): return
+	if layout.is_empty(): return
 	var font: Font = get_theme_default_font()
 	draw_style_box(panel_style(),Rect2(Vector2.ZERO,size))
-	draw_string(font,Vector2(10,16),"汤谷 · 13主线 / 3支路",HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color("c8b78e"))
-	var nodes: Dictionary = {}
-	for room in graph.rooms: nodes[room.id]=room
-	for edge in graph.connections:
-		if not GRID.has(edge.from) or not GRID.has(edge.to): continue
-		var left_id: String = edge.from if GRID[edge.from].x<GRID[edge.to].x else edge.to
-		var right_id: String = edge.to if left_id==edge.from else edge.from
-		var left: Rect2 = room_rect(left_id)
-		var right: Rect2 = room_rect(right_id)
-		var a: Vector2 = Vector2(left.end.x,left.get_center().y)
-		var b: Vector2 = Vector2(right.position.x,right.get_center().y)
-		var mid: float = (a.x+b.x)/2
-		var color: Color = Color("9c9e76") if nodes[left_id].visited and nodes[right_id].visited else Color("596558")
-		if GRID[left_id].x==GRID[right_id].x:
-			a=Vector2(left.get_center().x,left.position.y if left.position.y>right.position.y else left.end.y)
-			b=Vector2(right.get_center().x,right.end.y if left.position.y>right.position.y else right.position.y)
-			draw_line(a,b,color,2)
-		else: draw_polyline(PackedVector2Array([a,Vector2(mid,a.y),Vector2(mid,b.y),b]),color,2)
-		for pair in [[left_id,a],[right_id,b]]:
-			if nodes[pair[0]].current and nodes[pair[0]].locked:
-				draw_rect(Rect2(pair[1]-Vector2(2,3),Vector2(4,6)),Color("d77b60"))
-	var current: Dictionary = {}
-	for room in graph.rooms:
-		if not GRID.has(room.id): continue
-		var rect: Rect2 = room_rect(room.id)
-		var color: Color = Color("526747") if room.complete else Color("345a53") if room.visited else Color("252e29")
-		draw_rect(rect,color)
-		draw_rect(rect,Color("e6c877") if room.current else Color("9ca98b") if room.visited else Color("687168"),false,2 if room.current else 1)
-		draw_string(font,rect.position+Vector2(5,13),MARKS[room.id],HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("ede5c8") if room.visited else Color("899386"))
-		if room.complete:
-			var p: Vector2 = rect.end-Vector2(7,4)
-			draw_polyline(PackedVector2Array([p-Vector2(3,1),p,p+Vector2(4,-5)]),Color("d5dfaa"),1.5)
-		if room.current: current=room
-	if not current.is_empty():
-		draw_string(font,Vector2(10,115),current.title,HORIZONTAL_ALIGNMENT_LEFT,140,11,Color("e6c877"))
-		draw_string(font,Vector2(157,115),"封门" if current.locked else "可通行",HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("d77b60") if current.locked else Color("a6bc8b"))
-	draw_string(font,Vector2(10,129),"金框·当前  暗·未访  A/B/C·支路",HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("a5b09d"))
+	draw_string(font,Vector2(11,17),str(layout.roomTitle),HORIZONTAL_ALIGNMENT_LEFT,150,12,Color("e6c877"))
+	draw_string(font,Vector2(size.x-55,17),"封门" if locked else "可通行",HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("d77b60") if locked else Color("a6bc8b"))
+	draw_line(Vector2(10,22),Vector2(size.x-10,22),Color("827e59"),1)
+	for polygon in layout.walkablePolygons:
+		var points: PackedVector2Array = PackedVector2Array()
+		for point in polygon: points.append(map_point(point))
+		if points.size()<3: continue
+		draw_colored_polygon(points,Color("42584a"))
+		points.append(points[0])
+		draw_polyline(points,Color("9eaf89"),1.2,true)
+	for door in layout.doors:
+		var p: Vector2 = map_point(TrainingRoom.point(door.point))
+		var color: Color = Color("d77b60") if locked else Color("e6c877")
+		draw_circle(p,4.0,Color("17231d"))
+		draw_rect(Rect2(p-Vector2(2.5,2.5),Vector2(5,5)),color)
+	var marker: Vector2 = map_point(player)
+	draw_circle(marker,6,Color("17231d"))
+	draw_circle(marker,3.5,Color("fff3c5"))
+	draw_arc(marker,5,0,TAU,16,Color("e6c877"),1.0,true)
 
 func panel_style() -> StyleBoxFlat:
 	var style: StyleBoxFlat = StyleBoxFlat.new()
-	style.bg_color=Color(0.04,0.07,0.05,0.76)
-	style.border_color=Color(0.48,0.49,0.34,0.7)
+	style.bg_color=Color(0.04,0.07,0.05,0.88)
+	style.border_color=Color(0.48,0.49,0.34,0.8)
 	style.set_border_width_all(1)
 	return style

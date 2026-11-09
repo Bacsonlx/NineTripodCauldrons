@@ -46,7 +46,9 @@ func update_state(state: Dictionary,movement: Vector2,attack_remaining: float,bo
 		distance=0; generation=state.runId; previous_point=point
 	if not state.paused and state.status!="failed": distance+=point.distance_to(previous_point)
 	previous_point=point
-	position=point+Vector2(0,bob); z_index=int(point.y)
+	var move_facing: int = posmod(floori(movement.angle()/(PI/2)+0.5),4)
+	var back_facing: bool = p.facing==3 and state.skill==null and state.hurt<=0 and state.dodge<=0 and state.get("skillDash",{}).get("remaining",0)<=0
+	position=point+Vector2(0,0.0 if back_facing else bob); z_index=int(point.y)
 	if state.status=="failed":
 		lower.hide(); upper.hide(); body.hide(); head.hide(); return
 	if state.paused: return
@@ -81,16 +83,19 @@ func update_state(state: Dictionary,movement: Vector2,attack_remaining: float,bo
 		var remaining: float = state.dodge if state.dodge>0 else state.skillDash.remaining
 		body.sample("hero-dodge",clampi(int((0.2-remaining)/0.2*8),0,7)); body.show()
 		return
-	var move_facing: int = posmod(floori(movement.angle()/(PI/2)+0.5),4)
-	if p.moving and move_facing==0:
-		lower.sample("hero-run-lower",int(distance/22.0)%8)
-		lower.position=Vector2(0,-30); lower.show()
-	if p.facing==3 and not p.moving and state.skill==null:
+	if back_facing:
 		var back_phase: int = {"idle":0,"draw":1,"release":2,"recover":3}[state.attack]
-		body.sample("hero-back-full",back_phase)
+		if p.moving and state.attack=="idle":
+			var stride: int = int(distance/22.0)
+			body.sample("hero-back-walk",posmod(-stride if movement.y>0 else stride,8))
+		else:
+			body.sample("hero-back-full",back_phase)
 		body.position=Vector2.ZERO
 		body.show()
 		return
+	if p.moving and move_facing==0:
+		lower.sample("hero-run-lower",int(distance/22.0)%8)
+		lower.position=Vector2(0,-30); lower.show()
 	if p.facing!=0:
 		if state.skill!=null and state.skill.phase=="windup":
 			sample_skill(p.facing,1 if state.skill.kind=="rain" else 0)

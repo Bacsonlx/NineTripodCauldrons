@@ -184,36 +184,36 @@ func create_room(data: Dictionary,return_from: String = "",entered_door: String 
 	room.alpha=inventory
 	return room
 
-static func place_extra_door(data: Dictionary,base: Dictionary,used_points: Array,order: int) -> Dictionary:
+static func door_visual_bounds(door: Dictionary) -> Rect2:
+	# 220宽门框及上方三行目的地／祝福／F提示，另留轮廓与呼吸空间。
+	return Rect2(Vector2(float(door.x)-120,float(door.y)-282),Vector2(340,320))
+
+static func place_extra_door(data: Dictionary,base: Dictionary,used_doors: Array) -> Dictionary:
 	var door: Dictionary = base.duplicate(true)
 	door.halfWidth=0; door.halfHeight=0; door.blocksProjectiles=false
-	var base_point: Vector2 = TrainingRoom.point(base.point)
-	var base_arrival: Vector2 = TrainingRoom.point(base.arrival)
-	var delta_arrival: Vector2 = base_arrival-base_point
-	var delta_center: Vector2 = Vector2(float(base.x),float(base.y))-base_point
-	var candidate_point: Vector2 = base_point
-	var candidate_arrival: Vector2 = base_arrival
-	for offset in [Vector2(0,72*order),Vector2(0,-72*order),Vector2(-72*order,0),Vector2(72*order,0)]:
-		var trial: Vector2 = base_point+offset
-		if used_points.any(func(p: Vector2): return p.distance_to(trial)<48.0): continue
-		if data.has("walkablePolygons"):
-			var inside: bool = false
-			for poly in data.walkablePolygons:
-				if Geometry2D.is_point_in_polygon(trial,poly):
-					inside=true; break
-			if not inside: continue
-		candidate_point=trial
-		candidate_arrival=trial
-		break
-	door.point=candidate_point
-	door.arrival=candidate_arrival
-	door.x=candidate_point.x+delta_center.x
-	door.y=candidate_point.y+delta_center.y
-	return door
+	door.choice=false; door.blessingBeast=""; door.blessingTier=0
+	var candidates: Array[Vector2] = []
+	for y in range(0,ceili(float(data.height)/48)):
+		for x in range(0,ceili(float(data.width)/48)):
+			candidates.append(Vector2(24+x*48,24+y*48))
+	var model: TrainingRoom = Stage.new(data)
+	var world: Rect2 = Rect2(Vector2.ZERO,Vector2(data.width,data.height))
+	# 从上到下顺序填入合法空位，避免先占房间正中后挤掉后续返回门。
+	for trial in candidates:
+		# 与运行时共用门的默认 Approach(100,-25)，不继承镜像门的局部偏移。
+		door.point=trial; door.arrival=trial+Vector2(40,0)
+		door.x=trial.x-100; door.y=trial.y; door.facing=0
+		var bounds: Rect2 = door_visual_bounds(door)
+		if not world.encloses(bounds): continue
+		if used_doors.any(func(other: Dictionary): return bounds.grow(12).intersects(door_visual_bounds(other)) or trial.distance_to(TrainingRoom.point(other.point))<=160): continue
+		if not model.can_walk(trial) or not model.can_walk(door.arrival): continue
+		if not model.clear_path(trial,door.arrival) or model.find_route(TrainingRoom.point(data.spawn),trial).is_empty(): continue
+		return door
+	push_error(str(data.roomId)+"：找不到保留门框、提示及互动间隔的可达门位")
+	return {}
 
 static func compose_choice_doors(data: Dictionary,return_from: String,entered_door: String) -> Array:
 	var result: Array = data.get("doors",[]).duplicate(true)
-	var used_points: Array = result.map(func(d: Dictionary): return TrainingRoom.point(d.point))
 	for index in data.choiceDoors.size():
 		var choice: Dictionary = data.choiceDoors[index].duplicate(true)
 		var matched: bool = false
@@ -226,8 +226,8 @@ static func compose_choice_doors(data: Dictionary,return_from: String,entered_do
 				break
 		if not matched:
 			var fallback: Dictionary = result.back() if not result.is_empty() else {"point":Vector2(400,520),"arrival":Vector2(440,520),"x":400,"y":495,"halfWidth":24,"halfHeight":76,"height":140,"kind":"wall"}
-			var door: Dictionary = place_extra_door(data,fallback,used_points,index+1)
-			used_points.append(TrainingRoom.point(door.point))
+			var door: Dictionary = place_extra_door(data,fallback,result)
+			if door.is_empty(): return []
 			door.id=choice.id
 			door.target=choice.target
 			door.targetDoor=data.roomId
@@ -238,7 +238,8 @@ static func compose_choice_doors(data: Dictionary,return_from: String,entered_do
 			result.append(door)
 	if not return_from.is_empty() and not result.any(func(d: Dictionary): return d.target==return_from):
 		var fallback: Dictionary = result[0] if not result.is_empty() else {"point":Vector2(240,520),"arrival":Vector2(280,520),"x":240,"y":495,"halfWidth":24,"halfHeight":76,"height":140,"kind":"wall"}
-		var return_door: Dictionary = place_extra_door(data,fallback,used_points,1)
+		var return_door: Dictionary = place_extra_door(data,fallback,result)
+		if return_door.is_empty(): return []
 		return_door.id=return_from
 		return_door.target=return_from
 		return_door.targetDoor=entered_door if not entered_door.is_empty() else data.roomId
@@ -252,10 +253,13 @@ func ensure_return_door(room: TrainingRoom,source_id: String,entered_door: Strin
 		if existing.target==source_id:
 			return
 	var templates: Array = room.layout.doors
-	var used_points: Array = templates.map(func(d: Dictionary): return TrainingRoom.point(d.point))
 	var fallback: Dictionary = templates[0] if not templates.is_empty() else {"point":Vector2(240,520),"arrival":Vector2(280,520),"x":240,"y":495,"halfWidth":24,"halfHeight":76,"height":140,"kind":"wall"}
-	var return_door: Dictionary = place_extra_door(room.layout,fallback,used_points,1)
+	var return_door: Dictionary = place_extra_door(room.layout,fallback,templates)
+	if return_door.is_empty(): return
 	return_door.id=source_id
 	return_door.target=source_id
 	return_door.targetDoor=entered_door if not entered_door.is_empty() else room.layout.roomId
+	return_door.title=layouts[source_id].roomTitle
 	return_door.routeLabel="返回"
+	room.layout.doors.append(return_door)
+	room.invalidate_obstacles()

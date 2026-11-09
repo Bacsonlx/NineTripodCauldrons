@@ -37,6 +37,9 @@ func player_checks() -> void:
 		var aim: Vector2 = Vector2(room.player.x,room.player.y-52)+Vector2.from_angle(angle)*250
 		game.controls.update(aim,true,0.001); game.controls.key_down(KEY_D)
 		game.present(game.controls.update(aim,true,0.02),0.02)
+		if game.state.player.facing==3:
+			check(game.frame_actor.body.visible and game.frame_actor.body.clip=="hero-back-walk" and not game.frame_actor.lower.visible and not game.legs.visible,"背面横移保持同一整身行走造型，不叠加分层腿")
+			continue
 		check(game.frame_actor.lower.visible and not game.legs.visible and (game.torso.visible if game.state.player.facing==1 else game.frame_actor.upper.visible and not game.torso.visible),"右向移动独立搭配各瞄准方向的统一上身")
 		var top: Sprite2D = game.torso if game.state.player.facing==1 else game.frame_actor.upper
 		check(game.state.player.facing!=0 and game.visual_connection_delta(top,game.frame_actor.lower).length()<=0.5,"四向上身与新下肢的可见腰线相接，鼠标朝向保持独立")
@@ -110,8 +113,8 @@ func direction_size_checks() -> void:
 					state.player.x+=step*22; state.attack=pose[0]; state.windup=pose[1]
 					game.room.cooldown=pose[2]; game.walk_time=step/12.0
 					game.present(state,0)
-					var upper: Sprite2D = game.frame_actor.upper if game.frame_actor.upper.visible else game.torso
-					var height: float = crown_height(upper)
+					var upper: Sprite2D = game.frame_actor.body if game.frame_actor.body.visible else game.frame_actor.upper if game.frame_actor.upper.visible else game.torso
+					var height: float = crown_height(upper)-(20.0 if upper==game.frame_actor.body else 0.0)
 					check(height>=29.0 and height<=38.0,"转向及跑射保持缩小后的上身身体尺度，朝向%d/%s：%.2f" % [facing,pose[0],height])
 					smallest=minf(smallest,height+20); largest=maxf(largest,height+20)
 		check(largest/smallest<=1.16,"同一射箭阶段各移动与瞄准方向的冠顶至脚点高度差不超过16%")
@@ -133,7 +136,7 @@ func identity_family_checks() -> void:
 		neutral.append(height)
 		# 已确认向下源图的冠顶到腰线55.56；本轮视觉缩放为三分之二。
 		if facing==3:
-			check(height>=40.0 and height<=49.0,"背面完整身保持注册后的总高度，朝向%d：%.2f" % [facing,height])
+			check(absf(height-(55.56*2.0/3.0+20.0))<=2.0,"背面完整身冠顶到脚点与其他三向同尺度，朝向%d：%.2f" % [facing,height])
 			check(game.frame_actor.body.visible and game.frame_actor.body.clip=="hero-back-full" and not game.frame_actor.upper.visible and not game.frame_actor.head.visible,"背向中立使用完整身背面资产，避免上下身切割")
 		elif facing==2:
 			check(absf(height-55.56*2.0/3.0)<=2.0,"四向中立身体保持缩小后的母图比例，朝向%d：%.2f" % [facing,height])
@@ -193,6 +196,48 @@ func identity_family_checks() -> void:
 				check(game.frame_actor.upper.clip=="hero-archery-up" and game.frame_actor.upper.frame_index==1,"背向Q复用真正朝上的拉满姿态，拒绝朝右的候选")
 	game.free()
 
+func back_walk_checks() -> void:
+	var game: Node2D = load("res://scenes/sample.tscn").instantiate()
+	root.add_child(game); game.set_physics_process(false)
+	var state: Dictionary = game.room.snapshot()
+	state.player.facing=3; state.player.moving=false; state.attack="idle"
+	game.present(state,0)
+	var idle_height: float = crown_height(game.frame_actor.body)
+	var idle_data: Dictionary = game.frame_actor.body.clips["hero-back-full"]
+	var idle_belt_from_root: float = (float(idle_data.root[1])-float(idle_data.waist_y[0]))*float(idle_data.scale)*2.0/3.0
+	check(absf(idle_height-idle_belt_from_root-37.0)<1.0,"背面待机冠顶到腰带对齐其他三向的37单位上身")
+	var seen: Dictionary = {}
+	for step in 9:
+		state.player.moving=true; state.player.y-=22.0
+		var before: Dictionary = state.duplicate(true)
+		game.present(state,0)
+		var actor: Node2D = game.frame_actor
+		check(actor.body.visible and actor.body.clip=="hero-back-walk" and not actor.upper.visible and not actor.lower.visible and not actor.head.visible and not game.legs.visible and not game.torso.visible,"背面行走只绘制一套完整造型")
+		seen[actor.body.frame_index]=true
+		check(absf(crown_height(actor.body)-idle_height)<1.0,"行走与待机冠顶到共享脚点高度差小于1世界单位")
+		var walk_data: Dictionary = actor.body.clips["hero-back-walk"]
+		var belt_from_root: float = (float(walk_data.root[1])-float(walk_data.waist_y[actor.body.frame_index]))*float(walk_data.scale)*2.0/3.0
+		check(absf(crown_height(actor.body)-belt_from_root-37.0)<1.0,"每个行走帧上身高度与其他三向同尺度，不能只和背面旧图比较")
+		check(actor.position.is_equal_approx(Vector2(state.player.x,state.player.y)),"行走注册保持规则地面点，不额外叠加摆幅")
+		check(state==before,"行走呈现不改写规则快照")
+		var frame_index: int = actor.body.frame_index
+		game.present(state,1)
+		check(actor.body.frame_index==frame_index,"重复快照不空转步态")
+	check(seen.size()==8,"实际位移采样覆盖八个不同迈步帧")
+	var frozen: int = game.frame_actor.body.frame_index
+	state.paused=true; game.present(state,1)
+	check(game.frame_actor.body.frame_index==frozen and game.frame_actor.body.clip=="hero-back-walk","暂停保留当前迈步姿态")
+	state.paused=false; state.player.moving=false
+	game.present(state,0)
+	check(game.frame_actor.body.clip=="hero-back-full" and game.frame_actor.body.frame_index==0,"停步返回同一身份待机图")
+	state.player.moving=true; state.attack="draw"
+	game.present(state,0)
+	check(game.frame_actor.body.clip=="hero-back-full" and game.frame_actor.body.frame_index==1,"行走不抢占普通射箭阶段")
+	state.attack="idle"; game.frame_actor.reset_pose()
+	game.present(state,0)
+	check(game.frame_actor.body.clip=="hero-back-walk" and game.frame_actor.body.frame_index==0 and game.frame_actor.distance==0,"重试或切房归零行走步态")
+	game.free()
+
 func boss_checks() -> void:
 	var actor: Node2D = load("res://scripts/presentation/thor_frame_actor.gd").new()
 	root.add_child(actor)
@@ -230,6 +275,7 @@ func run() -> void:
 	player_checks()
 	direction_size_checks()
 	identity_family_checks()
+	back_walk_checks()
 	boss_checks()
 	print(JSON.stringify({"action_frame_checks":checks,"failures":failures}))
 	quit(0 if failures.is_empty() else 1)

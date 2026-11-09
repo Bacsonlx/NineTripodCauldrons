@@ -1,0 +1,125 @@
+{
+  "hero-back-full": {
+    "size": [
+      768,
+      1024
+    ],
+    "columns": 4,
+    "root": [
+      384,
+      960
+    ],
+    "scale": 0.12,
+    "waist_y": [
+      720.0,
+      720.0,
+      720.0,
+      720.0
+    ],
+    "head_rects": [
+      [
+        252,
+        247,
+        292,
+        292
+      ],
+      [
+        241,
+        285,
+        292,
+        292
+      ],
+      [
+        244,
+        277,
+        292,
+        292
+      ],
+      [
+        246,
+        261,
+        292,
+        292
+      ]
+    ],
+    "frame_count": 4,
+    "source": "assets/characters/action-redraw-v1/back-proportion-v1/hero-back-full.png",
+    "anchor_kind": "shared unchanged rule foot origin; original lower-body world scale retained"
+  },
+  "hero-back-walk": {
+    "size": [
+      768,
+      1024
+    ],
+    "columns": 4,
+    "root": [
+      384,
+      960
+    ],
+    "scale": 0.12,
+    "waist_y": [
+      713.3625,
+      713.3625,
+      713.3625,
+      713.3625,
+      713.3625,
+      713.3625,
+      713.3625,
+      713.3625
+    ],
+    "head_rects": [
+      [
+        252,
+        241,
+        292,
+        292
+      ],
+      [
+        252,
+        241,
+        292,
+        292
+      ],
+      [
+        252,
+        241,
+        292,
+        292
+      ],
+      [
+        252,
+        241,
+        292,
+        292
+      ],
+      [
+        252,
+        241,
+        292,
+        292
+      ],
+      [
+        252,
+        241,
+        292,
+        292
+      ],
+      [
+        252,
+        241,
+        292,
+        292
+      ],
+      [
+        252,
+        241,
+        292,
+        292
+      ]
+    ],
+    "frame_count": 8,
+    "source": "assets/characters/action-redraw-v1/back-proportion-v1/hero-back-walk.png",
+    "anchor_kind": "shared unchanged rule foot origin; original lower-body world scale retained",
+    "distance_per_frame": 22.0
+  }
+}

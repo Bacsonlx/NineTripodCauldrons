@@ -1,6 +1,6 @@
 # MVP-01 实现与验收记录
 
-2026-10-16。依据 [Spec #1](https://github.com/Bacsonlx/NineTripodCauldrons/issues/1)。实现范围为汤谷单房间跑动、独立瞄准和射箭，不包含 Boss、剧情与存档。
+2026-10-16。依据 [Spec #1](https://github.com/Bacsonlx/NineTripodCauldrons/issues/1)。实现范围为汤谷单房间跑动、独立瞄准和射箭，不包含 Boss、剧情与存档。（**历史阶段说明**：本记录对应 Electron／Phaser 阶段 MVP-01；现役 Godot 工程状态见[架构选型结论](../architecture/九鼎_架构选型结论.md)与[候选验收记录](../migration/Godot候选_验收记录.md)。）
 
 用户确认先生成 Windows x64 ZIP，随后在 Windows 实机验收。因此 Spec #1 保持未完成，不以 macOS 结果或 Windows 构建成功代替 Windows 实测。
 

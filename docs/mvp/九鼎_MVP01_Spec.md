@@ -1,5 +1,7 @@
 # MVP-01：汤谷单房间跑动、瞄准与射箭（macOS／Windows）
 
+> **历史阶段说明**：本文件为 2026-10-16 Electron／Phaser 阶段 MVP-01（[GitHub #1](https://github.com/Bacsonlx/NineTripodCauldrons/issues/1)）的冻结规格合同。现役工程已迁移至 Godot 原生 2D（见[架构选型结论](../architecture/九鼎_架构选型结论.md)、[Godot 迁移 Spec](九鼎_Godot迁移_Spec.md)及[玩法与运行规则](../product/十日_玩法与运行规则.md)），本规格及其历史验收记录独立保留，不代表当前 Godot 首关范围。
+
 ## Problem Statement
 
 《九鼎》（副IP《十日》）已确定固定等距2.5D、民俗皮影与木刻轮廓、像素质感，以及移动与瞄准分离的弓箭操作，但目前只有Electron／Phaser初始化入口。现有概念图不能证明人物动起来是否自然、空间关系是否清晰、箭是否正确命中，或两个桌面平台是否能稳定运行。

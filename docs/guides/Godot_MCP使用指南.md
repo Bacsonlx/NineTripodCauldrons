@@ -55,7 +55,7 @@ Codex 仅加载可信项目的项目级配置；本机已查询到该仓库为 t
 ## 4. 项目开发流程
 
 1. 用版本和工程查询确认目标为 `godot/`。读取相关场景／脚本；需要修改的场景先在编辑器中保存用户改动。
-2. 局部新建场景、添加节点和绑定纹理可以使用 MCP；GDScript 编辑继续用代码工具。正式地图 `godot/scenes/tanggu_map.tscn` 包含项目自定义布局脚本，保持用户的节点和属性调整，避免为使用 MCP 重建整张地图。
+2. 局部新建场景、添加节点和绑定纹理可以使用 MCP；GDScript 编辑继续用代码工具。当前默认房间场景 `godot/scenes/rooms/*.tscn` 与历史连续地图 `godot/scenes/tanggu_first_level_map.tscn`、`godot/scenes/tanggu_map.tscn` 包含项目自定义布局脚本，保持用户的节点和属性调整，避免为使用 MCP 重建整张地图。
 3. 场景工具通过后台 Godot 批处理读写磁盘；没有实时编辑器事务。每次修改后检查 diff，确认脚本、资源引用、owner 和节点没有丢失。
 4. 修改代码或场景后，仍运行项目检查：
 

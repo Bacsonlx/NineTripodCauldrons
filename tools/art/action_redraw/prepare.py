@@ -58,6 +58,18 @@ def main():
         sources = [item for item in sources if item["runtime"] != runtime]
         sources.append({"source": str(atlas.relative_to(ROOT)), "runtime": runtime,
                         "sha256": hashlib.sha256(atlas.read_bytes()).hexdigest()})
+    for folder in ["back-full-body-v2", "back-walk-v1", "back-proportion-v1"]:
+        bundle = ROOT / "assets/characters/action-redraw-v1" / folder
+        metadata = json.loads((bundle / "clips.json").read_text())
+        entries = {"hero-back-full": metadata} if folder == "back-full-body-v2" else metadata
+        for name, data in entries.items():
+            atlas = bundle / f"{name}.png"
+            target = DEST / f"{name}.png"
+            shutil.copyfile(atlas, target)
+            clips[name] = {key: value for key, value in data.items() if key != "frames"}
+            sources = [entry for entry in sources if entry["runtime"] != str(target.relative_to(ROOT))]
+            sources.append({"source": str(atlas.relative_to(ROOT)), "runtime": str(target.relative_to(ROOT)),
+                            "sha256": hashlib.sha256(atlas.read_bytes()).hexdigest()})
     # 本工具上一版生成的整身图已由独立上下身替代；原型源图仍保留。
     for name in ["hero-run", "hero-archery", "hero-skills"]:
         for suffix in [".png", ".png.import"]:

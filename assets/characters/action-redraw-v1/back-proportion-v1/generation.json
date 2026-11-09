@@ -1,0 +1,177 @@
+{
+  "date": "2026-11-05",
+  "art_source": "host_image + existing lower-body frames",
+  "tool": "image_gen.imagegen",
+  "model": "not returned",
+  "cost": "not returned",
+  "upper_scale": 0.106,
+  "upper_roots": [
+    [
+      270,
+      610
+    ],
+    [
+      282,
+      613
+    ],
+    [
+      278,
+      612
+    ],
+    [
+      276,
+      610
+    ]
+  ],
+  "composition": "New generated upper layer; existing lower bodies at unchanged world scale. Idle/recover reuse existing draw standing lower body to avoid old low-bow overlap. Walking upper overlaps waist by 12 canonical pixels (0.96 world units). Old bow/scarf ownership masks are defined above.",
+  "references": {
+    "back_idle": {
+      "path": "assets/characters/action-redraw-v1/back-full-body-v2/hero-back-full.png",
+      "sha256": "8c44c49b30aabd679bdeb6d9f9a4e4a88e8e16d793dcdd7d3e6703b94093dd63"
+    },
+    "back_walk": {
+      "path": "assets/characters/action-redraw-v1/back-walk-v1/hero-back-walk.png",
+      "sha256": "0dbd6abd4843ae3db011ea5c66a6db45d0fd8a108c3a6a121e42df4c5795096e"
+    },
+    "front_reference": {
+      "path": "godot/assets/generated/upperDown.png",
+      "sha256": "3c3f596f09252a6035b8e7f103f0421cccdf4b58f2db5f8a405d9db6a75ee288"
+    },
+    "selected_upper": {
+      "path": "assets/characters/action-redraw-v1/back-proportion-v1/upper-source.png",
+      "sha256": "f50ecdedd280c6650e9482548f82d601887ac99503dc87fae45063ab1e58e51c"
+    }
+  },
+  "outputs": {
+    "hero-back-full": {
+      "sha256": "df867bbabbce2f47387b9fc52a9eeec641b82bc621da9041739ca49943ab043f",
+      "geometry": {
+        "size": [
+          768,
+          1024
+        ],
+        "columns": 4,
+        "root": [
+          384,
+          960
+        ],
+        "scale": 0.12,
+        "waist_y": [
+          720.0,
+          720.0,
+          720.0,
+          720.0
+        ],
+        "head_rects": [
+          [
+            252,
+            247,
+            292,
+            292
+          ],
+          [
+            241,
+            285,
+            292,
+            292
+          ],
+          [
+            244,
+            277,
+            292,
+            292
+          ],
+          [
+            246,
+            261,
+            292,
+            292
+          ]
+        ],
+        "frame_count": 4,
+        "source": "assets/characters/action-redraw-v1/back-proportion-v1/hero-back-full.png",
+        "anchor_kind": "shared unchanged rule foot origin; original lower-body world scale retained"
+      }
+    },
+    "hero-back-walk": {
+      "sha256": "d3711d86a8cb127b200f7b7bb4b47dd55a3d3f42f7c980f0b12eeaf412851547",
+      "geometry": {
+        "size": [
+          768,
+          1024
+        ],
+        "columns": 4,
+        "root": [
+          384,
+          960
+        ],
+        "scale": 0.12,
+        "waist_y": [
+          713.3625,
+          713.3625,
+          713.3625,
+          713.3625,
+          713.3625,
+          713.3625,
+          713.3625,
+          713.3625
+        ],
+        "head_rects": [
+          [
+            252,
+            241,
+            292,
+            292
+          ],
+          [
+            252,
+            241,
+            292,
+            292
+          ],
+          [
+            252,
+            241,
+            292,
+            292
+          ],
+          [
+            252,
+            241,
+            292,
+            292
+          ],
+          [
+            252,
+            241,
+            292,
+            292
+          ],
+          [
+            252,
+            241,
+            292,
+            292
+          ],
+          [
+            252,
+            241,
+            292,
+            292
+          ],
+          [
+            252,
+            241,
+            292,
+            292
+          ]
+        ],
+        "frame_count": 8,
+        "source": "assets/characters/action-redraw-v1/back-proportion-v1/hero-back-walk.png",
+        "anchor_kind": "shared unchanged rule foot origin; original lower-body world scale retained",
+        "distance_per_frame": 22.0
+      }
+    }
+  },
+  "user_confirmation": "User authorized proportion calibration; generated revision visual approval pending"
+}

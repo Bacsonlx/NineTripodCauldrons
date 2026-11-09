@@ -1,0 +1,18 @@
+{
+  "hero-back-walk": {
+    "size": [
+      384,
+      512
+    ],
+    "columns": 4,
+    "root": [
+      180,
+      450
+    ],
+    "scale": 0.1485,
+    "frame_count": 8,
+    "distance_per_frame": 22.0,
+    "anchor_kind": "shared virtual ground origin under hip; not each frame alpha bottom",
+    "source": "assets/characters/action-redraw-v1/back-walk-v1/hero-back-walk.png"
+  }
+}

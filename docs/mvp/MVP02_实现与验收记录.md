@@ -1,6 +1,6 @@
 # MVP-02 实现与验收记录
 
-2026-10-17。实现范围为 [Spec #2](https://github.com/Bacsonlx/NineTripodCauldrons/issues/2) 的 T01—T14，用户确认连续实现完整切片；审查基线 `ea51f257fdf483789d62f45a68402606084cbf26`。版本 0.2.0。**代码／资产接入与平台验收分别记录；本文件不代表 Spec #2 已通过，不关闭旧 MVP-01 #1。**
+2026-10-17。实现范围为 [Spec #2](https://github.com/Bacsonlx/NineTripodCauldrons/issues/2) 的 T01—T14，用户确认连续实现完整切片；审查基线 `ea51f257fdf483789d62f45a68402606084cbf26`。版本 0.2.0。**代码／资产接入与平台验收分别记录；本文件不代表 Spec #2 已通过，不关闭旧 MVP-01 #1。**（**历史阶段说明**：本记录对应 Electron／Phaser 阶段 MVP-02；现役 Godot 工程状态见[架构选型结论](../architecture/九鼎_架构选型结论.md)与[候选验收记录](../migration/Godot候选_验收记录.md)。）
 
 ## 当前实现
 

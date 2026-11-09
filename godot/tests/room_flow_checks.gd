@@ -100,7 +100,9 @@ func pass_to(target: String) -> bool:
 				check(after.health==before.health and after.healthMax==before.healthMax and after.resources==before.resources and after.cooldowns==before.cooldowns and after.alpha.items==before.alpha.items,"真实过门保持生命、资源、冷却及共享背包："+before.roomId+" → "+target)
 				break
 		if journey.snapshot().roomId==target:
-			game.present_new_room(); return true
+			game.present_new_room()
+			check(game.minimap.layout.roomId==target and game.minimap.player==TrainingRoom.point(journey.snapshot().player) and game.minimap.locked==(not journey.snapshot().roomComplete),"真实过门后小地图更新："+target)
+			return true
 		return false
 	return false
 func fight() -> bool:

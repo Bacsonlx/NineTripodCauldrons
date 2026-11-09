@@ -291,7 +291,7 @@ func present(snapshot: Dictionary,seconds: float) -> void:
 	pickup_label.text=("%s · %.1f秒\n%s" % [card.name,card.remaining,card.reason]+("\nTab 转入祭坛" if not card.attempted else "")) if not card.is_empty() else "B 背包查看（完成房间并靠近整理点可整理）\n"+data.alpha.message
 	if data.alpha.camp and not room.paused: status_label.visible=false
 
-	minimap.update_state(data.roomGraph)
+	minimap.update_state(room.layout,TrainingRoom.point(data.player),not data.roomComplete)
 	boss_view.visible=data.has("boss")
 	boss_bar.visible=data.has("boss")
 	if data.has("boss"):

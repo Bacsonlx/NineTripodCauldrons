@@ -1,0 +1,110 @@
+{
+  "art_source": "host_image",
+  "tool": "image_gen.imagegen",
+  "model": "not returned by tool",
+  "cost": "not returned by tool",
+  "date": "2026-11-05",
+  "reference": "godot/assets/characters/action-redraw-v1/hero-back-full.png",
+  "reference_sha256": "8c44c49b30aabd679bdeb6d9f9a4e4a88e8e16d793dcdd7d3e6703b94093dd63",
+  "selected_source_sha256": "0dbd6abd4843ae3db011ea5c66a6db45d0fd8a108c3a6a121e42df4c5795096e",
+  "processing": "uniform 4x2 crop only; source alpha unchanged; one fixed scale and root across all frames",
+  "frames": [
+    {
+      "frame": 0,
+      "alpha_bbox_128": [
+        51,
+        24,
+        358,
+        478
+      ],
+      "sha256": "22ea20d4983aebcb3cb77cfd64c7d3ae8b58f87a07acdb3314c4caff1b4db9d9"
+    },
+    {
+      "frame": 1,
+      "alpha_bbox_128": [
+        51,
+        25,
+        358,
+        451
+      ],
+      "sha256": "3a924fde4f04c479f65ca92397e19ffefc112805faa7f4e9131b5e2700df4c4d"
+    },
+    {
+      "frame": 2,
+      "alpha_bbox_128": [
+        52,
+        25,
+        358,
+        459
+      ],
+      "sha256": "0b5ef1ab9f236971a0604d1c87815fc0313438691758214f1e301a4bf43a9168"
+    },
+    {
+      "frame": 3,
+      "alpha_bbox_128": [
+        52,
+        25,
+        358,
+        457
+      ],
+      "sha256": "ac3cfcaf1a89e0253a9b64a5bc0f29154e83c91f62a53e0500d544574175930c"
+    },
+    {
+      "frame": 4,
+      "alpha_bbox_128": [
+        51,
+        25,
+        358,
+        473
+      ],
+      "sha256": "22487e6e13f836461af27bcbcfe08ab51c8391248bcfe969aa3628f69695e7ab"
+    },
+    {
+      "frame": 5,
+      "alpha_bbox_128": [
+        51,
+        25,
+        358,
+        454
+      ],
+      "sha256": "1cd6632bde50158a2fbcbe2e4f3251b2c68af3f70f61147393fdab760369b74f"
+    },
+    {
+      "frame": 6,
+      "alpha_bbox_128": [
+        51,
+        26,
+        358,
+        460
+      ],
+      "sha256": "bad2d9fc54efe2f162f2db81cd3f8108f2f68edafaca29418787010881e7c648"
+    },
+    {
+      "frame": 7,
+      "alpha_bbox_128": [
+        51,
+        25,
+        358,
+        453
+      ],
+      "sha256": "80961b95f2958c42402c8d1df30597d4d9f6d74e36a93ead2077d3358bc62b41"
+    }
+  ],
+  "clip": {
+    "size": [
+      384,
+      512
+    ],
+    "columns": 4,
+    "root": [
+      180,
+      450
+    ],
+    "scale": 0.1485,
+    "frame_count": 8,
+    "distance_per_frame": 22.0,
+    "anchor_kind": "shared virtual ground origin under hip; not each frame alpha bottom",
+    "source": "assets/characters/action-redraw-v1/back-walk-v1/hero-back-walk.png"
+  },
+  "visual_review": "AI selected revision for clearer left-right leg alternation; native playback and user approval pending"
+}

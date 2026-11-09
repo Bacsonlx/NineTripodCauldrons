@@ -18,12 +18,17 @@ func run() -> void:
 	var hud: Control = game.find_child("CombatHUD",true,false)
 	check(hud!=null,"正式首关显示头像、状态与左下动作栏")
 	if hud==null: finish(game); return
-	check(hud.get_node_or_null("RoomMinimap")!=null,"正式首关右上角显示房间关系小地图")
+	check(hud.get_node_or_null("RoomMinimap")!=null,"正式首关右上角显示当前房间小地图")
 	check(hud.get_node("PlayerStatus/Portrait").texture!=null and hud.health.value==100,"已接入头像素材并展示真实初始生命")
 	var font: Font = hud.health_value.get_theme_font("font")
 	var minimap: Control = hud.get_node("RoomMinimap")
 	check(minimap.mouse_filter==Control.MOUSE_FILTER_IGNORE and minimap.get_index()<hud.reading.get_index(),"小地图不截获射击，且阅读遮罩绘在其上方")
-	check(minimap.graph.rooms.size()==16 and minimap.graph.connections.size()==18,"小地图显示十六房与十八条双向连接")
+	check(minimap.layout.roomId==game.room.layout.roomId and minimap.layout.walkablePolygons==game.room.layout.walkablePolygons and minimap.layout.doors==game.room.layout.doors,"小地图读取当前房间的可行走边界与门")
+	check(minimap.player==TrainingRoom.point(game.room.snapshot().player),"小地图读取玩家实时坐标")
+	var next_layout: Dictionary = game.journey.layouts.court1
+	minimap.update_state(next_layout,Vector2(500,600),true)
+	check(minimap.layout.roomId=="court1" and minimap.player==Vector2(500,600) and minimap.locked,"切换房间时更新地图、位置与封门状态")
+	game.present(game.room.snapshot(),0)
 	check(font.resource_path=="res://assets/fonts/NineTripodsHudSong.ttf" and not font.allow_system_fallback,"HUD使用随包宋体，不依赖系统字体")
 	var covered: bool = true
 	for character in "无名之子生命蓝量精力未启用穿透箭箭雨闪避第波剩余0123456789 /":

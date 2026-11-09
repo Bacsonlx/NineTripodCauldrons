@@ -195,7 +195,7 @@ position = Vector2(-100,-25)
 position = Vector2(-140,-25)
 [editable path="Doors/court2"]
 [node name="stele_side" parent="Doors" instance=ExtResource("portal")]
-position = Vector2(1070,385)
+position = Vector2(1070,345)
 portal_id = "stele_side"
 target_room = "stele_side"
 target_portal = "stele"
