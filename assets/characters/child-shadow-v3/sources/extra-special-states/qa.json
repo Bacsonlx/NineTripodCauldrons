@@ -1,0 +1,42 @@
+{
+  "visual_status": "partial-pass-source-only",
+  "reviewed": [
+    "raw source returned inline",
+    "preview-light.jpg",
+    "preview-dark.jpg"
+  ],
+  "alpha": {
+    "minimum": 0,
+    "maximum": 255,
+    "fully_transparent_pixels": 848529,
+    "alpha_1_pixels": 294062,
+    "nonzero_alpha_pixels": 723906,
+    "warning": "native alpha includes low-alpha background noise; original preserved, no cleanup applied"
+  },
+  "warnings": [
+    {
+      "id": "nonuniform-grid",
+      "detail": "Generated output does not obey perfectly equal grid; use explicit ownership source rectangles in metadata.json, never uniform slicing."
+    },
+    {
+      "id": "dead-direction-similarity",
+      "detail": "right/down/left dead poses share a head-left, feet-right silhouette; direction distinction is weak and does not prove strict four-direction final approval."
+    },
+    {
+      "id": "source-only",
+      "detail": "No weapon is included. Hands appear coherent at source scale, but no engine rendering, blending, frame timing or state transitions validated."
+    },
+    {
+      "id": "anchor-estimates",
+      "detail": "Waist and ground/root coordinates are manual placement estimates, not measured engine attachment guarantees."
+    }
+  ],
+  "checks": {
+    "character_identity": "pass-source-review: same ponytail/scarf/tunic/trousers/leg wraps",
+    "complete_limbs": "pass-source-review: all 16 figures fit ownership rectangles, no obvious amputations",
+    "alpha_on_light_dark": "partial-pass: clean visible cutout on both, low alpha noise remains",
+    "continuous_motion": "not verified: independent poses",
+    "runtime": "not verified: no code edits",
+    "performance": "not applicable: static source production"
+  }
+}

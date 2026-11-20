@@ -45,16 +45,20 @@ func run() -> void:
 		state=game.journey.snapshot()
 		check(state.roomId==initial.room and state.health==initial.health and state.resources.mana==initial.mana,"R保留本次启动房间和资源条件")
 	if "--test=boss" in arguments:
+		var profile_path: String = "/private/tmp/jiuding-launch-scene-%d.save" % Time.get_ticks_usec()
+		OS.set_environment("JIUDING_PROFILE_PATH",profile_path)
 		game.controls.key_down(KEY_ESCAPE)
 		game.present(game.journey.snapshot(),0)
-		button_with_text(game,"返回首页").pressed.emit()
-		button_with_text(game,"确认返回首页").pressed.emit()
+		button_with_text(game,"结束测试").pressed.emit()
+		button_with_text(game,"确认结束测试").pressed.emit()
 		await scene_changed
-		button_with_text(current_scene,"踏入汤谷").pressed.emit()
-		button_with_text(current_scene,"确认入局").pressed.emit()
+		check(current_scene.scene_file_path=="res://scenes/safehouse.tscn","开发测试结束进入安全屋")
+		current_scene.depart()
 		await scene_changed
 		var fresh: Dictionary = current_scene.journey.snapshot()
-		check(fresh.roomId=="entry" and fresh.health==100 and fresh.resources.mana==100 and fresh.resources.stamina==100,"命令行低资源Boss返回首页后，完整征程不继承旧参数")
+		check(fresh.roomId=="entry" and fresh.health==100 and fresh.resources.mana==100 and fresh.resources.stamina==100,"命令行低资源 Boss 回到安全屋后，完整征程不继承测试参数")
+		for suffix in ["",".bak",".tmp"]:
+			if FileAccess.file_exists(profile_path+suffix): DirAccess.remove_absolute(profile_path+suffix)
 	current_scene.queue_free(); current_scene=null
 	await process_frame
 	print(JSON.stringify({"launch_scene_checks":checks,"failures":failures}))

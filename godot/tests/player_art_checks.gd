@@ -1,136 +1,143 @@
 extends RefCounted
-
-const Room = preload("res://scripts/combat/training_room.gd")
+## 真实正式场景的角色合同；检查身份来源、移动/瞄准组合、接缝和真实发箭。
 
 func depart(game: Node2D) -> void:
-	if game.room.alpha!=null and game.room.alpha.gameplay: game.room.update({"alpha":{"action":"depart"}},0)
+	if game.room.alpha!=null and game.room.alpha.gameplay:
+		game.room.update({"alpha":{"action":"depart"}},0)
 
 func run(game: Node2D, check: Callable) -> void:
 	depart(game)
-	check.call(game.frame_actor.scale.is_equal_approx(Vector2.ONE*2.0/3.0), "玩家人物视觉缩放到原来的三分之二，规则脚点仍由父节点保持")
-	check.call(game.atlas.has("upperDown"), "正式场景加载已确认的 v3 向下射箭资源")
-	game.present(game.room.snapshot(),0)
-	for enemy in game.room.snapshot().enemies:
-		var key: String = {"bird":"enemy","paper":"enemyPaper","wood":"enemyWood"}[enemy.appearance]
-		var body: Sprite2D = game.enemy_bodies[enemy.id]
-		check.call(body.scale.is_equal_approx(Vector2.ONE*float(game.atlas[key].scale)*2.0/3.0), "野怪视觉缩放到原来的三分之二，规则实体位置保持不变")
-	var point: Vector2 = Vector2(game.state.player.x, game.state.player.y)
-	var snapshot: Dictionary = game.controls.update(point+Vector2(0,200),true,0)
-	game.present(snapshot,0)
-	var side_state: Dictionary = game.room.snapshot()
-	side_state.player.facing=2; side_state.player.moving=false; side_state.attack="idle"
-	game.present(side_state,0)
-	check.call(game.frame_actor.upper.visible and game.visual_connection_delta(game.frame_actor.upper,game.legs).length()<=0.5, "正面侧向联绘上身与旧下身按可见像素腰线相接")
-	game.present(snapshot,0)
-	check.call(game.torso.texture==game.textures.get("upperDown"), "向下待机使用新上身")
-	check.call(not game.bow.visible and not game.nocked_arrow.visible, "联绘上身不重复叠加旧弓和搭弦箭")
-	var back_state: Dictionary = game.room.snapshot()
-	back_state.player.facing=3; back_state.player.moving=false; back_state.attack="idle"
-	game.present(back_state,0)
-	check.call(game.frame_actor.body.visible and game.frame_actor.body.clip=="hero-back-full", "背面待机使用完整身图集")
-	check.call(not game.frame_actor.upper.visible and not game.frame_actor.head.visible and not game.frame_actor.lower.visible, "背面完整身显示时不叠加旧上下身")
-	check.call(game.frame_actor.body.position==Vector2.ZERO, "背面完整身沿共享脚点注册，不产生局部位移")
-	var unchanged: Dictionary = game.room.snapshot().duplicate(true)
-	game.present(unchanged,0)
-	check.call(game.room.snapshot()==unchanged, "人物视觉校准不修改规则快照")
-	check.call(game.legs.global_position.is_equal_approx(point) and game.frame_actor.global_position.is_equal_approx(point), "缩放后脚点与规则实体位置完全一致，无漂移")
-	for test_atk in ["idle", "draw", "release", "recover"]:
-		for test_facing in 4:
-			var test_state: Dictionary = game.room.snapshot()
-			test_state.player.facing = test_facing
-			test_state.attack = test_atk
-			game.present(test_state, 0)
-			var test_up: Sprite2D = game.frame_actor.upper if game.frame_actor.upper.visible else game.torso
-			var test_low: Sprite2D = game.frame_actor.lower if game.frame_actor.lower.visible else game.legs
-			if test_facing==3:
-				check.call(game.frame_actor.body.visible and game.frame_actor.body.clip=="hero-back-full", "背面完整身覆盖四个普通射击阶段：%s" % test_atk)
-			else:
-				check.call(game.visual_connection_delta(test_up, test_low).length() <= 0.5, "四向及射击阶段上下身腰线相接：朝向%d/%s" % [test_facing, test_atk])
-	var vp_rect: Rect2 = game.get_viewport_rect()
-	check.call(vp_rect.size.x >= 640 and vp_rect.size.y >= 360, "视口几何规格支持人物正常渲染不越界")
-	var phases: Dictionary = {}
-	var launch_checked: bool = false
-	game.controls.pointer_down(true); game.controls.pointer_up()
-	for tick in 36:
-		snapshot=game.controls.update(point+Vector2(0,200),true,1.0/60)
-		game.present(snapshot,0)
-		var phase: int = {"idle":0,"draw":1,"release":2,"recover":3}[snapshot.attack]
-		phases[snapshot.attack]=true
-		check.call(game.torso.texture==game.textures.get("upperDown") and is_equal_approx(game.torso.region_rect.position.x,phase*543.0), "普通攻击实际时钟映射到新版四阶段")
-		check.call(not game.bow.visible and not game.nocked_arrow.visible, "射箭全过程不叠加旧弓箭")
-		if snapshot.attack=="draw":
-			var visual_tip: Vector2 = game.torso.position+(Vector2(272,650)+game.torso.offset)*game.torso.scale
-			var expected_rule_grip: Vector2 = point+Vector2(game.atlas.upperDown.grip.x,game.atlas.upperDown.grip.y)
-			var expected_visual_grip: Vector2 = point+Vector2(game.atlas.upperDown.grip.x,game.atlas.upperDown.grip.y)*2.0/3.0
-			check.call(snapshot.grip.is_equal_approx(expected_rule_grip), "规则出箭点保持既有坐标与稳定性")
-			check.call(visual_tip.distance_to(expected_visual_grip)<0.5, "拉满箭尖随向下射箭按三分之二比例稳定呈现")
-		if not snapshot.arrows.is_empty() and not launch_checked:
-			launch_checked=true
-			var arrow: Dictionary = snapshot.arrows[0]
-			var launch: Vector2 = Vector2(arrow.x,arrow.y)-Vector2.from_angle(arrow.angle)*700*arrow.age
-			check.call(launch.distance_to(snapshot.grip)<0.001, "普通箭确实从新标定点生成，而非仅移动显示")
-			check.call(game.arrows[arrow.id].position.is_equal_approx(Vector2(arrow.x,arrow.y)) and is_equal_approx(game.arrows[arrow.id].rotation,arrow.angle), "飞行箭显示与真实弹道相同")
-			check.call(absf(game.arrows[arrow.id].texture.get_width()*game.arrows[arrow.id].scale.x-35.52)<2.0, "离弦后的箭长与搭弦箭一致，避免释放瞬间突然放大")
-	check.call(phases.size()==4 and launch_checked, "真实点按完整经过预备、拉满、释放、收势并发箭")
-	for code in [KEY_S,KEY_W]:
-		game.controls.key_down(code)
-		snapshot=game.controls.update(point+Vector2(0,200),true,0.02)
-		game.present(snapshot,0)
-		var expected: Dictionary = game.atlas.lower.frames[5 if code==KEY_S else 7]
-		check.call(snapshot.player.moving and game.legs.region_rect==Rect2(expected.x,expected.y,expected.width,expected.height) and game.torso.texture==game.textures.upperDown, "移动与向下瞄准独立，正向与反向移动选择各自下肢")
-		game.controls.key_up(code)
-	for facing in [0,2,3]:
-		var other: Dictionary = snapshot.duplicate(true)
-		other.player.facing=facing; other.player.angle=facing*PI/2; other.attack="draw"; other.player.moving=false
-		other.grip=Vector2(other.player.x,other.player.y)+Room.GRIPS[facing]
-		game.present(other,0)
-		if facing==0:
-			other.player.moving=false
-			other.windup=0.04
-			game.present(other,0)
-			check.call(game.frame_actor.upper.visible and game.frame_actor.upper.clip=="hero-archery-upper" and not game.bow.visible and not game.nocked_arrow.visible,"向右原地射箭使用新上身帧，不重复叠弓")
-		elif facing==3:
-			check.call(game.frame_actor.body.visible and game.frame_actor.body.clip=="hero-back-full" and not game.frame_actor.upper.visible and not game.bow.visible and not game.nocked_arrow.visible,"背向普通射箭使用完整身图，不重复叠加旧层")
+	var actor: Node2D = game.frame_actor
+	check.call(actor.scale.is_equal_approx(Vector2.ONE*(2.0/3.0)),"同一皮影身份保持演员缩放与规则脚点分离")
+	var poses: Array = [["idle",0.0,0.0],["draw",0.08,0.3],["draw",0.04,0.3],["draw",0.0,0.3],["release",0.0,0.26],["release",0.0,0.20],["recover",0.0,0.18],["recover",0.0,0.10]]
+	var point: Vector2 = Vector2(game.room.player.x,game.room.player.y)
+	var keys: Array[int] = [KEY_D,KEY_S,KEY_A,KEY_W]
+	var run_data: Dictionary = actor.lower.clips["shadow-run-lower"]
+	var run_count: int = int(run_data.perDirection)
+	check.call(run_count==8 and int(run_data.movementRows)==1,"新版跑动使用四向各八帧并按移动方向选行")
+	var attack_data: Dictionary = actor.upper.clips["shadow-attack-upper"]
+	check.call(int(attack_data.perDirection)==8 and not attack_data.semantics.arrowVisible[3*8+3] and String(attack_data.projectileAnnotation[3]).contains("occluded"),"背向箭被遮挡，发射点注明估算")
+	check.call(actor.upper.clips["shadow-rain-upper"].reusesAuthoredClip=="shadow-attack-upper","箭雨明确复用普通射箭动作")
+	for facing in 4:
+		for move in 4:
+			game.controls.keys.clear(); game.controls.keys[keys[move]]=true
+			for stride in run_count:
+				for pose in poses:
+					var state: Dictionary = game.room.snapshot()
+					state.player.facing=facing; state.player.moving=true
+					state.attack=pose[0]; state.windup=pose[1]
+					actor.generation=state.runId; actor.previous_point=point
+					actor.distance=(stride+0.1)/run_count*actor.STRIDE_WORLD
+					game.room.cooldown=pose[2]
+					var before: Dictionary = state.duplicate(true)
+					game.present(state,0)
+					check.call(actor.lower.visible and actor.upper.visible and not game.legs.visible and not game.torso.visible and not game.bow.visible and not game.nocked_arrow.visible,"四向跑射只显示同一新版上下身，不混旧身体或武器")
+					var row: int = facing*4+move if int(run_data.get("movementRows",1))==4 else facing if posmod(move-facing,4)==2 else move
+					check.call(actor.lower.frame_index/run_count==row and actor.upper.frame_index/int(actor.upper.clips[actor.upper.clip].perDirection)==facing,"移动独立推进步态，反向与侧移保持身体朝向连续")
+					check.call(game.visual_connection_delta(actor.upper,actor.lower).length()<0.01,"全部移动方向和攻击阶段的腰点XY连续")
+					check.call(state==before,"动画采样不改写规则状态")
+	# 四行步态素材由移动方向选行，独立于瞄准；恢复元数据后继续实际素材检查。
+	var old_rows: int = int(run_data.get("movementRows",1))
+	run_data.movementRows=1
+	for facing in 4:
+		for move in 4:
+			var state: Dictionary = game.room.snapshot()
+			state.player.facing=facing; state.player.moving=true
+			actor.generation=state.runId; actor.previous_point=point; actor.distance=0.0
+			actor.update_state(state,Vector2.from_angle(move*PI/2),0.0)
+			var expected_row: int = facing if posmod(move-facing,4)==2 else move
+			check.call(actor.lower.frame_index/run_count==expected_row,"反向近似退步，其他方向按移动方向选行")
+	run_data.movementRows=old_rows
+	for facing in 4:
+		var state: Dictionary = game.room.snapshot()
+		state.player.facing=facing; state.player.moving=true
+		var before: Dictionary = state.duplicate(true)
+		for phase in run_count:
+			actor.generation=state.runId; actor.previous_point=point
+			actor.distance=(phase+0.1)/run_count*actor.STRIDE_WORLD
+			actor.update_state(state,Vector2.from_angle(((facing+2)%4)*PI/2),0.0)
+			check.call(actor.lower.frame_index==facing*run_count+posmod(-phase,run_count),"四向反向移动完整倒放八帧")
+			check.call(actor.lower.waist_world_point().distance_to(actor.upper.waist_world_point())<0.01,"退步近似保持腰点 XY 对接")
+			check.call(state==before,"退步采样不改写规则快照")
+		var frame_before_pause: int = actor.lower.frame_index
+		var distance_before_pause: float = actor.distance
+		state.paused=true
+		actor.update_state(state,Vector2.from_angle(((facing+2)%4)*PI/2),0.0,0.0,1.0)
+		check.call(actor.lower.frame_index==frame_before_pause and actor.distance==distance_before_pause,"反向移动暂停时冻结采样和距离")
+	game.controls.interrupt(); game.room.reset(); depart(game)
+	for facing in 4:
+		var state: Dictionary = game.room.snapshot()
+		state.player.facing=facing; state.player.moving=false
+		game.present(state,0)
+		check.call(actor.upper.clip=="shadow-idle-upper" and actor.lower.clip=="shadow-idle-lower","四向待机均使用确认后的皮影身份")
+		check.call(actor.upper.texture.resource_path.begins_with(actor.DIRECTORY) and actor.lower.texture.resource_path.begins_with(actor.DIRECTORY),"人物真实纹理来自新版正式目录")
+		state.attack="idle"
+		for kind in ["pierce","rain"]:
+			for phase in ["windup","active"]:
+				state.skill={"kind":kind,"phase":phase,"remaining":0.1}
+				game.present(state,0)
+				check.call(actor.upper.clip=="shadow-"+kind+"-upper" and actor.upper.frame_index/int(actor.upper.clips[actor.upper.clip].perDirection)==facing,"四向Q/E分别映射自己的前摇与释放，不固定在向下待机帧")
+		state.skill=null
+		state.hurt=0.1; game.present(state,0)
+		if actor.body.clips.has("shadow-hurt-body"):
+			check.call(actor.body.visible and actor.body.clip=="shadow-hurt-body" and not actor.upper.visible and not actor.lower.visible,"受击优先使用新绘全身")
 		else:
-			check.call(game.frame_actor.upper.visible and game.frame_actor.upper.clip==("hero-archery-left" if facing==2 else "hero-archery-up") and not game.torso.visible and not game.bow.visible and not game.nocked_arrow.visible, "左／上使用统一身份上身且不叠旧武器")
-	game.controls.interrupt(); game.room.reset()
-	depart(game)
-	point=Vector2(game.room.player.x,game.room.player.y)
-	game.controls.update(point+Vector2(0,200),true,0)
-	for code in [KEY_Q,KEY_E,KEY_SPACE]:
-		game.controls.key_down(code)
-		snapshot=game.controls.update(point+Vector2(0,40),true,0.01)
-		game.present(snapshot,0)
-		check.call(game.frame_actor.upper.visible and game.frame_actor.upper.clip=="hero-skills-direction-1" and not game.bow.visible and not game.nocked_arrow.visible, "Q／E／闪避使用统一身份联绘上身且没有悬空武器")
-		var expected_grip: Vector2 = Vector2(snapshot.player.x,snapshot.player.y)+Room.SKILL_GRIPS[{KEY_Q:"pierce",KEY_E:"rain",KEY_SPACE:"dodge"}[code]][1]
-		check.call(snapshot.grip.is_equal_approx(expected_grip), "技能不使用新的普通箭出箭点")
-		game.controls.interrupt(); game.room.reset()
-		depart(game)
-		game.controls.update(point+Vector2(0,200),true,0)
-	game.room.hurt=0.1
+			check.call(actor.upper.clip=="shadow-hurt-upper" and actor.lower.visible,"受击保留同一身体与连接")
+		state.hurt=0.0; state.dodge=0.1; game.present(state,0)
+		if actor.body.clips.has("shadow-dodge-body"):
+			check.call(actor.body.visible and actor.body.clip=="shadow-dodge-body" and not actor.upper.visible and not actor.lower.visible,"闪避优先使用新绘全身")
+			state.dodgeDirection=Vector2.from_angle(((facing+1)%4)*PI/2); game.present(state,0)
+			check.call(actor.body.frame_index==((facing+1)%4),"闪避全身朝锁定的位移方向")
+		else:
+			check.call(actor.upper.clip=="shadow-dodge-upper" and actor.lower.clip=="shadow-dodge-lower","四向闪避均有新版上下身，不回退单向整身图")
+	game.controls.interrupt(); game.room.reset(); depart(game)
+	for facing in 4:
+		game.room.reset(); depart(game)
+		point=Vector2(game.room.player.x,game.room.player.y)
+		var aim: Vector2 = point+Vector2.from_angle(facing*PI/2)*300
+		game.controls.update(aim,true,0)
+		game.controls.pointer_down(true); game.controls.pointer_up()
+		var phases: Dictionary = {}
+		var launched: bool = false
+		for tick in 36:
+			var state: Dictionary = game.controls.update(aim,true,0.01)
+			game.present(state,0.01)
+			phases[state.attack]=true
+			if not state.arrows.is_empty() and not launched:
+				var arrow: Dictionary = state.arrows[0]
+				var origin: Vector2 = Vector2(arrow.x,arrow.y)-Vector2.from_angle(arrow.angle)*700.0*arrow.age
+				check.call(origin.distance_to(state.grip)<0.01,"四向真实箭从规则发射点生成")
+				var visible_arrow: Sprite2D = game.arrows[arrow.id]
+				check.call(is_equal_approx(visible_arrow.scale.x*visible_arrow.texture.get_width(),actor.projectile_length(arrow.kind,facing)),"飞行箭长使用对应方向的显示尺寸")
+				launched=true
+		check.call(game.room.shots==1 and phases.size()==4 and launched,"四向真实单次输入均经过四阶段并仅发一箭")
+		var grip: Vector2 = point+TrainingRoom.point(game.room.layout.grips[facing])
+		var shoulder: Vector2 = point+Vector2(0,-game.room.layout.shoulderHeight)
+		var middle: Vector2 = (grip+shoulder)*0.5
+		var wall: TrainingRoom = TrainingRoom.new({"spawn":point,"obstacle":Rect2(middle-Vector2(1,1),Vector2(2,2))})
+		wall.layout.grips=game.room.layout.grips.duplicate(true)
+		wall.layout.shoulderHeight=game.room.layout.shoulderHeight
+		wall.update({"aim":aim,"fire":true},0.1)
+		check.call(wall.snapshot().arrows.is_empty(),"四向规则发射点仍受肩点到发射点的障碍阻挡")
+	game.controls.interrupt(); game.room.reset(); depart(game)
+	game.controls.key_down(KEY_D)
+	game.present(game.controls.update(point+Vector2(300,-40),true,0.05),0.05)
+	var frame: int = actor.lower.frame_index
+	var distance: float = actor.distance
+	game.present(game.room.snapshot(),0.5)
+	check.call(actor.lower.frame_index==frame and actor.distance==distance,"重复快照不会因呈现时间推进步态")
+	game.controls.interrupt(true)
+	game.present(game.room.snapshot(),1)
+	check.call(actor.lower.frame_index==frame and actor.distance==distance,"暂停及失焦冻结角色动作")
+	game.room.set_paused(false)
+	game.room.status="failed"; game.present(game.room.snapshot(),0)
+	check.call(actor.body.visible and actor.body.clip=="shadow-failed" and not actor.upper.visible and not actor.lower.visible and not game.failed.visible and not actor.gear.visible,"失败只显示新版倒地，身体与装备同步切换")
+	game.present(game.room.snapshot(),0.4)
+	var failed_count: int = int(actor.body.clips["shadow-failed"].perDirection)
+	check.call(actor.body.frame_index%failed_count==failed_count-1,"倒地播放至终态，保留同一角色身份")
+	game.room.reset(); game.controls.interrupt(); depart(game)
 	game.present(game.room.snapshot(),0)
-	check.call(game.frame_actor.upper.visible and game.frame_actor.upper.clip=="hero-skills-direction-1" and not game.bow.visible and not game.nocked_arrow.visible, "受击弓与持弓手联绘，不残留独立武器")
-	game.room.hurt=0
-	game.present(game.room.snapshot(),0)
-	game.controls.key_down(KEY_ESCAPE)
-	snapshot=game.room.snapshot(); game.present(snapshot,0)
-	check.call(snapshot.paused and game.torso.texture==game.textures.upperDown and not game.bow.visible, "暂停后保留新版且无重复武器")
-	game.controls.key_down(KEY_ESCAPE)
-	game.room.status="failed"
-	game.present(game.room.snapshot(),0)
-	check.call(game.failed.visible and not game.torso.visible and not game.legs.visible and not game.bow.visible and not game.nocked_arrow.visible, "失败时正常隐藏新版身体与武器")
-	game.room.reset(); game.controls.interrupt()
-	depart(game)
-	check.call(game.room.snapshot().arrows.is_empty(), "重试清理箭实例的规则状态")
-	for angle in [PI/3,PI*2/3]:
-		var aim: Vector2 = point+Vector2(0,-52)+Vector2.from_angle(angle)*300
-		snapshot=game.controls.update(aim,true,0)
-		game.present(snapshot,0)
-		check.call(snapshot.player.facing==1 and game.torso.texture==game.textures.upperDown and absf(angle_difference(snapshot.player.angle,(aim-snapshot.grip).angle()))<0.001, "向下扇区内鼠标斜向瞄准保持真实角度，角色使用四向姿态")
-	var muzzle_wall: RefCounted = Room.new({"obstacle":Rect2(390,575,20,3)})
-	muzzle_wall.layout.grips=game.room.layout.grips.duplicate()
-	muzzle_wall.update({"aim":Vector2(400,800),"fire":true},0.1)
-	check.call(muzzle_wall.snapshot().arrows.is_empty() and muzzle_wall.snapshot().effects.size()==1, "新出箭点仍受肩部到箭尖的实体阻挡检查约束")
-	var reference: RefCounted = Room.new()
-	reference.player.facing=1
-	check.call(reference.grip().is_equal_approx(Vector2(reference.player.x,reference.player.y)+Vector2(24,-48)), "素材标定不污染共享常量和冻结规则参照")
+	check.call(actor.distance==0 and actor.upper.visible and not actor.body.visible,"重试清空旧步态与倒地状态")
+	for slot in actor.gear.slots:
+		if slot in ["feet","weapon"]:
+			check.call(not actor.gear.slots[slot].visible,"已联绘的布履与弓不再重复叠加")

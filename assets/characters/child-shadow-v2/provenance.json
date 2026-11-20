@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-14",
+  "user_instruction": "不使用 runaway 直接接入",
+  "identity_user_approval": "采用新版皮影母版",
+  "motion_user_approval": false,
+  "route": "host image generation for static source parts; offline joint articulation into raster frames",
+  "calls": [
+    {
+      "file": "parts/torsos.png",
+      "tool": "image_gen.imagegen",
+      "art_source": "host_image",
+      "model": null,
+      "estimateUsd": null,
+      "referenced_image": "output/art/CHR-001/2026-11-13-archery-rebuild-v2/sources/neutral-four-views.png",
+      "prompt_key": "torsos",
+      "sha256": "e19999a27a30d052643f5cf44249eeb41b2ba939f78144443a8bd8439a6a9aa1",
+      "role": "four-direction static head/torso parts"
+    },
+    {
+      "file": "parts/arms.png",
+      "tool": "image_gen.imagegen",
+      "art_source": "host_image",
+      "model": null,
+      "estimateUsd": null,
+      "referenced_image": "output/art/CHR-001/2026-11-13-archery-rebuild-v2/sources/neutral-four-views.png",
+      "prompt_key": "limbs",
+      "sha256": "ca36bf580b75422cc66f50cef1970092a7fe9a23c5fb142278564f3990242638",
+      "role": "static upperarm and grip/draw/relaxed forearms"
+    }
+  ],
+  "prompt_file": "parts/prompts.json",
+  "processing_script": "tools/art/action_redraw/bake_shadow_player_v2.py",
+  "runtime_directory": "godot/assets/characters/child-shadow-v2/"
+}

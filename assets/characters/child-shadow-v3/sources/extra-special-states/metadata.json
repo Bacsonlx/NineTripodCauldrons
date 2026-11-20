@@ -1,0 +1,477 @@
+{
+  "schema": "jiuding.extra-special-states.source.v1",
+  "art_source": "host_image",
+  "tool": "image_gen.imagegen",
+  "actual_model": null,
+  "actual_model_reason": "built-in image tool does not disclose model ID",
+  "cost_usd": null,
+  "cost_reason": "not returned by built-in image tool",
+  "created_date": "2026-11-17",
+  "reference": {
+    "path": "output/art/CHR-001/2026-11-17-multistate-v3/art/neutral-four-views.png",
+    "role": "actual attached identity/style reference",
+    "sha256": "b695e2f1b8e04d8d2ab14cb1dfae70f342338777c0c9dbd9fc52660f3f57066b"
+  },
+  "source": {
+    "path": "sheet.png",
+    "sha256": "4c0a0f8ea9be4e047512e0accb85ba9b86d071386388a63ab6611ccf84c3680b",
+    "width": 1263,
+    "height": 1245,
+    "mode": "RGBA"
+  },
+  "prompt_file": "prompt.txt",
+  "frames": [
+    {
+      "id": "hurt_right",
+      "direction": "right",
+      "state": "hurt",
+      "source_rect_xyxy_exclusive": [
+        0,
+        0,
+        270,
+        310
+      ],
+      "visible_bbox_local_alpha64": [
+        60,
+        20,
+        195,
+        300
+      ],
+      "waist_source_px_estimate": [
+        143,
+        177
+      ],
+      "ground_root_source_px_estimate": [
+        150,
+        300
+      ],
+      "ground_line_source_y_estimate": 300,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "dodge_right",
+      "direction": "right",
+      "state": "dodge",
+      "source_rect_xyxy_exclusive": [
+        270,
+        0,
+        570,
+        310
+      ],
+      "visible_bbox_local_alpha64": [
+        31,
+        76,
+        267,
+        295
+      ],
+      "waist_source_px_estimate": [
+        404,
+        217
+      ],
+      "ground_root_source_px_estimate": [
+        420,
+        300
+      ],
+      "ground_line_source_y_estimate": 300,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "fall_right",
+      "direction": "right",
+      "state": "fall",
+      "source_rect_xyxy_exclusive": [
+        570,
+        0,
+        900,
+        310
+      ],
+      "visible_bbox_local_alpha64": [
+        46,
+        73,
+        307,
+        293
+      ],
+      "waist_source_px_estimate": [
+        724,
+        221
+      ],
+      "ground_root_source_px_estimate": [
+        730,
+        300
+      ],
+      "ground_line_source_y_estimate": 300,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "dead_right",
+      "direction": "right",
+      "state": "dead",
+      "source_rect_xyxy_exclusive": [
+        900,
+        0,
+        1263,
+        310
+      ],
+      "visible_bbox_local_alpha64": [
+        23,
+        166,
+        335,
+        287
+      ],
+      "waist_source_px_estimate": [
+        1080,
+        244
+      ],
+      "ground_root_source_px_estimate": [
+        1080,
+        300
+      ],
+      "ground_line_source_y_estimate": 300,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "hurt_down",
+      "direction": "down",
+      "state": "hurt",
+      "source_rect_xyxy_exclusive": [
+        0,
+        310,
+        270,
+        610
+      ],
+      "visible_bbox_local_alpha64": [
+        91,
+        20,
+        204,
+        284
+      ],
+      "waist_source_px_estimate": [
+        150,
+        470
+      ],
+      "ground_root_source_px_estimate": [
+        150,
+        595
+      ],
+      "ground_line_source_y_estimate": 595,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "dodge_down",
+      "direction": "down",
+      "state": "dodge",
+      "source_rect_xyxy_exclusive": [
+        270,
+        310,
+        570,
+        610
+      ],
+      "visible_bbox_local_alpha64": [
+        63,
+        73,
+        243,
+        284
+      ],
+      "waist_source_px_estimate": [
+        421,
+        519
+      ],
+      "ground_root_source_px_estimate": [
+        420,
+        595
+      ],
+      "ground_line_source_y_estimate": 595,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "fall_down",
+      "direction": "down",
+      "state": "fall",
+      "source_rect_xyxy_exclusive": [
+        570,
+        310,
+        900,
+        610
+      ],
+      "visible_bbox_local_alpha64": [
+        47,
+        67,
+        307,
+        279
+      ],
+      "waist_source_px_estimate": [
+        724,
+        515
+      ],
+      "ground_root_source_px_estimate": [
+        730,
+        595
+      ],
+      "ground_line_source_y_estimate": 595,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "dead_down",
+      "direction": "down",
+      "state": "dead",
+      "source_rect_xyxy_exclusive": [
+        900,
+        310,
+        1263,
+        610
+      ],
+      "visible_bbox_local_alpha64": [
+        26,
+        154,
+        330,
+        277
+      ],
+      "waist_source_px_estimate": [
+        1082,
+        544
+      ],
+      "ground_root_source_px_estimate": [
+        1080,
+        595
+      ],
+      "ground_line_source_y_estimate": 595,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "hurt_left",
+      "direction": "left",
+      "state": "hurt",
+      "source_rect_xyxy_exclusive": [
+        0,
+        610,
+        270,
+        915
+      ],
+      "visible_bbox_local_alpha64": [
+        71,
+        12,
+        231,
+        292
+      ],
+      "waist_source_px_estimate": [
+        146,
+        776
+      ],
+      "ground_root_source_px_estimate": [
+        150,
+        902
+      ],
+      "ground_line_source_y_estimate": 902,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "dodge_left",
+      "direction": "left",
+      "state": "dodge",
+      "source_rect_xyxy_exclusive": [
+        270,
+        610,
+        570,
+        915
+      ],
+      "visible_bbox_local_alpha64": [
+        25,
+        61,
+        257,
+        285
+      ],
+      "waist_source_px_estimate": [
+        405,
+        821
+      ],
+      "ground_root_source_px_estimate": [
+        420,
+        902
+      ],
+      "ground_line_source_y_estimate": 902,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "fall_left",
+      "direction": "left",
+      "state": "fall",
+      "source_rect_xyxy_exclusive": [
+        570,
+        610,
+        900,
+        915
+      ],
+      "visible_bbox_local_alpha64": [
+        36,
+        67,
+        309,
+        283
+      ],
+      "waist_source_px_estimate": [
+        722,
+        823
+      ],
+      "ground_root_source_px_estimate": [
+        730,
+        902
+      ],
+      "ground_line_source_y_estimate": 902,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "dead_left",
+      "direction": "left",
+      "state": "dead",
+      "source_rect_xyxy_exclusive": [
+        900,
+        610,
+        1263,
+        915
+      ],
+      "visible_bbox_local_alpha64": [
+        18,
+        162,
+        338,
+        278
+      ],
+      "waist_source_px_estimate": [
+        1082,
+        843
+      ],
+      "ground_root_source_px_estimate": [
+        1080,
+        902
+      ],
+      "ground_line_source_y_estimate": 902,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "hurt_up",
+      "direction": "up",
+      "state": "hurt",
+      "source_rect_xyxy_exclusive": [
+        0,
+        915,
+        270,
+        1245
+      ],
+      "visible_bbox_local_alpha64": [
+        75,
+        10,
+        198,
+        285
+      ],
+      "waist_source_px_estimate": [
+        142,
+        1081
+      ],
+      "ground_root_source_px_estimate": [
+        150,
+        1200
+      ],
+      "ground_line_source_y_estimate": 1200,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "dodge_up",
+      "direction": "up",
+      "state": "dodge",
+      "source_rect_xyxy_exclusive": [
+        270,
+        915,
+        570,
+        1245
+      ],
+      "visible_bbox_local_alpha64": [
+        51,
+        65,
+        257,
+        282
+      ],
+      "waist_source_px_estimate": [
+        430,
+        1126
+      ],
+      "ground_root_source_px_estimate": [
+        420,
+        1200
+      ],
+      "ground_line_source_y_estimate": 1200,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "fall_up",
+      "direction": "up",
+      "state": "fall",
+      "source_rect_xyxy_exclusive": [
+        570,
+        915,
+        900,
+        1245
+      ],
+      "visible_bbox_local_alpha64": [
+        45,
+        65,
+        301,
+        274
+      ],
+      "waist_source_px_estimate": [
+        736,
+        1127
+      ],
+      "ground_root_source_px_estimate": [
+        730,
+        1200
+      ],
+      "ground_line_source_y_estimate": 1200,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    },
+    {
+      "id": "dead_up",
+      "direction": "up",
+      "state": "dead",
+      "source_rect_xyxy_exclusive": [
+        900,
+        915,
+        1263,
+        1245
+      ],
+      "visible_bbox_local_alpha64": [
+        23,
+        162,
+        337,
+        269
+      ],
+      "waist_source_px_estimate": [
+        1085,
+        1137
+      ],
+      "ground_root_source_px_estimate": [
+        1080,
+        1200
+      ],
+      "ground_line_source_y_estimate": 1200,
+      "anchor_status": "AI manual estimate only; runtime waist/foot contact validation required",
+      "bow": "absent by design"
+    }
+  ],
+  "uniform_grid": false,
+  "runtime_integration": "not performed by this asset task; root and sol_art own runtime processing",
+  "user_decision": "user authorized production and integration, no final visual acceptance recorded",
+  "ai_review": "usable special-state pose source with warnings; not a continuous animation or final direction acceptance"
+}

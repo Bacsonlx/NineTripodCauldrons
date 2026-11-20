@@ -16,3 +16,6 @@ tools/asset_forge/.venv/
 !.env.example
 __pycache__/
 .alma-snapshots
+
+# 本地素材生成工具的运行台账与缓存（输出目录已忽略，不入库）
+.forge/

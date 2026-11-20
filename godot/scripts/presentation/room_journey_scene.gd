@@ -2,6 +2,8 @@ extends "res://scripts/presentation/first_level_scene.gd"
 
 const Journey = preload("res://scripts/journey/room_journey.gd")
 const PlayOptions = preload("res://scripts/input/play_options.gd")
+const HubProfile = preload("res://scripts/hub/profile.gd")
+const JourneySave = preload("res://scripts/hub/journey_save.gd")
 @export var potion_drop_seed: int = -1 # 非负值仅用于固定种子重演夹具。
 var journey: RefCounted
 var minimap: Control
@@ -23,6 +25,13 @@ var confirmation_paused: bool = false
 var confirmation_focus: Control
 var confirming_action: bool = false
 var run_label: Label
+var hub_profile: RefCounted
+var diagnostic_entry: bool = false
+var save_notice: Label
+var checkpoint_signature: String = ""
+var checkpoint_retry_msec: int = 0
+var terminal_result: String = ""
+var settlement_button: Button
 
 func build_hud() -> void:
 	super.build_hud()
@@ -62,13 +71,22 @@ func build_hud() -> void:
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var menu: VBoxContainer = VBoxContainer.new(); menu.add_theme_constant_override("separation",16); center.add_child(menu)
 	menu.add_child(make_label("已暂停",26))
-	menu.add_child(make_label("返回首页将清空本次未保存进度。",16))
+	menu.add_child(make_label("退出后从最近检查点继续。" if hub_profile!=null else "本次测试的状态仅在此行程有效。" if diagnostic_entry else "返回首页将清空本次未保存进度。",16))
+	save_notice=make_label("",16)
+	menu.add_child(save_notice)
 	resume_button=Button.new(); resume_button.text="继续行程 · Esc"; menu.add_child(resume_button)
 	resume_button.custom_minimum_size.y=48; resume_button.pressed.connect(resume_test)
-	var back: Button = Button.new(); back.text="返回首页"; menu.add_child(back)
+	var back: Button = Button.new(); back.text="放弃征程并返回安全屋" if hub_profile!=null else "结束测试" if diagnostic_entry else "返回首页"; menu.add_child(back)
 	back.custom_minimum_size.y=48; back.pressed.connect(return_home)
 	resume_button.focus_next=resume_button.get_path_to(back); resume_button.focus_previous=resume_button.get_path_to(back)
 	back.focus_next=back.get_path_to(resume_button); back.focus_previous=back.get_path_to(resume_button)
+	if hub_profile!=null:
+		var exit_button: Button = Button.new(); exit_button.text="退出游戏 · 保留检查点"
+		exit_button.custom_minimum_size.y=48; menu.add_child(exit_button)
+		exit_button.pressed.connect(func(): get_tree().quit())
+		resume_button.focus_previous=resume_button.get_path_to(exit_button)
+		back.focus_next=back.get_path_to(exit_button)
+		exit_button.focus_next=exit_button.get_path_to(resume_button); exit_button.focus_previous=exit_button.get_path_to(back)
 
 func resume_test() -> void:
 	if confirmation!=null or returning_home: return
@@ -96,12 +114,20 @@ func open_confirmation(action: String) -> void:
 	panel.custom_minimum_size.x=minf(500,get_viewport_rect().size.x-48)
 	var menu: VBoxContainer = VBoxContainer.new(); panel.add_child(menu)
 	menu.add_theme_constant_override("separation",16)
-	menu.add_child(make_label("返回首页？" if action=="home" else "重新开启完整征程？",24))
-	var description: Label = make_label("本次未保存的进度、资源变化与临时构筑将清空。"+("返回首页后可重新选择行程。" if action=="home" else "将从汤谷入口开始新局。"),16)
+	menu.add_child(make_label("放弃本次征程？" if hub_profile!=null else "结束测试？" if diagnostic_entry and action=="home" else "返回首页？" if action=="home" else "重新开启完整征程？",24))
+	var details: String = "本次未保存的进度、资源变化与临时构筑将清空。"+("返回首页后可重新选择行程。" if action=="home" else "将从汤谷入口开始新局。")
+	if hub_profile!=null:
+		var shadows: PackedStringArray = []
+		for item in journey.departure_inventory_snapshot:
+			if item.get("shadow",false): shadows.append(item.name)
+		details="已投入的出征物品不会返还。本局不发放筹备资源、香火、配方或新传承。"
+		if not shadows.is_empty(): details+="\n携带的残影将失去："+"、".join(shadows)
+	elif diagnostic_entry and action=="home": details="结束本次测试，返回安全屋或继续已保存的正式征程。"
+	var description: Label = make_label(details,16)
 	description.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; menu.add_child(description)
 	var cancel: Button = Button.new(); cancel.text="取消 · Esc"; menu.add_child(cancel)
 	cancel.custom_minimum_size.y=44; cancel.pressed.connect(cancel_confirmation)
-	var confirm: Button = Button.new(); confirm.text="确认返回首页" if action=="home" else "确认重开"
+	var confirm: Button = Button.new(); confirm.text="确认放弃 · 返回安全屋" if hub_profile!=null else "确认结束测试" if diagnostic_entry and action=="home" else "确认返回首页" if action=="home" else "确认重开"
 	menu.add_child(confirm); confirm.custom_minimum_size.y=44; confirm.pressed.connect(confirm_action)
 	for pair in [[cancel,confirm],[confirm,cancel]]:
 		var other: NodePath = pair[0].get_path_to(pair[1])
@@ -133,7 +159,11 @@ func finish_confirmation() -> void:
 	journey.restart(); present_new_room()
 
 func enter_home() -> void:
-	var error: Error = get_tree().change_scene_to_file("res://scenes/home.tscn")
+	if hub_profile!=null and not hub_profile.abandon():
+		returning_home=false; confirming_action=false; cancel_confirmation()
+		save_notice.text="保存失败，征程仍保留。请重试。"
+		return
+	var error: Error = get_tree().change_scene_to_file("res://scenes/safehouse.tscn" if hub_profile!=null or diagnostic_entry else "res://scenes/home.tscn")
 	if error!=OK:
 		returning_home=false; confirming_action=false; cancel_confirmation(); push_error("首页加载失败："+str(error))
 
@@ -143,6 +173,12 @@ func layout_boss_bar() -> void:
 
 func _ready() -> void:
 	var arguments: Array = Array(OS.get_cmdline_user_args())
+	diagnostic_entry=get_tree().has_meta("diagnostic_journey_entry")
+	if diagnostic_entry: get_tree().remove_meta("diagnostic_journey_entry")
+	if get_tree().has_meta("resume_safehouse_journey"):
+		get_tree().remove_meta("resume_safehouse_journey")
+		hub_profile=HubProfile.new()
+		arguments=[]
 	# 首页选择只消费一次；命令行启动继续使用原参数。
 	if get_tree().has_meta("home_test_arguments"):
 		arguments=get_tree().get_meta("home_test_arguments")
@@ -159,7 +195,15 @@ func _ready() -> void:
 	var maps: Dictionary = Journey.read_maps()
 	if maps.is_empty(): get_tree().quit(1); return
 	if potion_drop_seed>=0 and not options.has("dropSeed"): options.dropSeed=potion_drop_seed
+	if hub_profile!=null:
+		if not hub_profile.error.is_empty() or hub_profile.data.active.is_empty():
+			get_tree().change_scene_to_file.bind("res://scenes/safehouse.tscn").call_deferred()
+			return
+		options=hub_profile.data.active.checkpoint.options
 	journey=Journey.new(maps,options)
+	if hub_profile!=null:
+		JourneySave.unpack(journey,hub_profile.data.active.checkpoint)
+		checkpoint_signature=checkpoint_key()
 	mount_map()
 	boss_view=load("res://scripts/presentation/boss_art_view.gd").new()
 	boss_view.standalone_environment=false
@@ -199,11 +243,53 @@ func create_room(_layout: Dictionary) -> TrainingRoom:
 	return journey.active
 
 func _physics_process(seconds: float) -> void:
+	if returning_home or not terminal_result.is_empty(): return
 	super._physics_process(seconds)
 	if journey!=null and journey.active!=null and ("requested_camp" in journey.active and journey.active.requested_camp):
 		journey.active.requested_camp=false
 		if camp_panel!=null and not camp_panel.backpack_open: camp_panel.open_backpack()
 	if journey!=null and journey.consume_transition(): present_new_room()
+	if hub_profile!=null and journey!=null: update_saved_journey()
+
+func checkpoint_key() -> String:
+	var finished: PackedStringArray = []
+	for id in journey.rooms:
+		if journey.rooms[id].completed: finished.append(id)
+	return journey.current_id+":"+"/".join(finished)
+
+func update_saved_journey() -> void:
+	var ending: String = "death" if room.status=="failed" or room.health<=0 else ""
+	if ending.is_empty() and journey.current_id=="end" and journey.complete(): ending="victory"
+	if not ending.is_empty():
+		terminal_result=ending
+		controls.interrupt(); room.set_paused(true)
+		if camp_panel!=null: camp_panel.close_backpack()
+		if confirmation!=null: cancel_confirmation()
+		finish_journey()
+		return
+	var signature: String = checkpoint_key()
+	if signature==checkpoint_signature or Time.get_ticks_msec()<checkpoint_retry_msec: return
+	if hub_profile.checkpoint(journey):
+		checkpoint_signature=signature
+		save_notice.text=""
+	else:
+		checkpoint_retry_msec=Time.get_ticks_msec()+1000
+		save_notice.text="检查点保存失败，退出会回到上一个已保存位置。"
+
+func finish_journey() -> void:
+	if returning_home or terminal_result.is_empty(): return
+	if hub_profile.prepare_settlement(journey,terminal_result):
+		returning_home=true
+		if get_tree().change_scene_to_file("res://scenes/settlement.tscn")==OK: return
+		returning_home=false
+	if settlement_button==null:
+		var menu: VBoxContainer = resume_button.get_parent()
+		for child in menu.get_children(): child.hide()
+		save_notice.show()
+		settlement_button=Button.new(); settlement_button.text="重试保存结算"
+		menu.add_child(settlement_button); settlement_button.pressed.connect(finish_journey)
+	pause_menu.show(); settlement_button.grab_focus()
+	save_notice.text="结算保存或加载失败。重试前不会发放收益。"
 
 func present_new_room() -> void:
 	controls.interrupt()
@@ -231,6 +317,7 @@ func present_new_room() -> void:
 
 func _input(event: InputEvent) -> void:
 	if room==null or returning_home: return
+	if not terminal_result.is_empty(): return
 	if camp_panel!=null and camp_panel.backpack_open:
 		if event is InputEventKey and event.pressed and not event.echo:
 			if event.physical_keycode==KEY_ESCAPE or event.physical_keycode==KEY_B:
@@ -244,6 +331,8 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		return
 	if event is InputEventKey and event.physical_keycode==KEY_R:
+		if hub_profile!=null:
+			get_viewport().set_input_as_handled(); return
 		if event.pressed and not event.echo:
 			var data: Dictionary = journey.snapshot()
 			if not data.paused:
@@ -254,7 +343,7 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if confirmation!=null or returning_home:
+	if confirmation!=null or returning_home or not terminal_result.is_empty():
 		get_viewport().set_input_as_handled(); return
 	if event is InputEventKey and event.physical_keycode==KEY_B and event.pressed and not event.echo:
 		if camp_panel!=null:

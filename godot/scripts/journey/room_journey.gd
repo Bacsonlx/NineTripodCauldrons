@@ -148,10 +148,7 @@ func snapshot(base: Dictionary = {}) -> Dictionary:
 	data.visitedRooms=rooms.size()
 	data.isTest=initial_options.isTest
 	data.segmentComplete=data.isTest and rooms.has("end")
-	var completed_rooms: int = rooms.values().filter(func(room: TrainingRoom): return room.completed).size()
-	var required_rooms: int = 8 if layouts.get("entry",{}).has("choiceDoors") else MAIN_ROOM_IDS.size()
-	var all_main_complete: bool = MAIN_ROOM_IDS.all(func(id: String): return rooms.has(id) and rooms[id].completed)
-	data.journeyComplete=not data.isTest and initial_options.get("startRoom","entry")=="entry" and rooms.has("boss") and rooms.boss.completed and rooms.has("end") and rooms.end.completed and (all_main_complete or (layouts.get("entry",{}).has("choiceDoors") and completed_rooms>=required_rooms))
+	data.journeyComplete=complete()
 	var nodes: Array = []
 	var connections: Array = []
 	for id in layouts:
@@ -164,6 +161,12 @@ func snapshot(base: Dictionary = {}) -> Dictionary:
 	data.roomChoices=active.layout.doors.filter(func(door: Dictionary): return door.get("choice",false)).duplicate(true)
 	if initial_options.get("potionDrops",false): data.dropSeed=drop_seed
 	return data
+
+func complete() -> bool:
+	if initial_options.isTest or initial_options.get("startRoom","entry")!="entry": return false
+	if not rooms.has("boss") or not rooms.boss.completed or not rooms.has("end") or not rooms.end.completed: return false
+	if MAIN_ROOM_IDS.all(func(id: String): return rooms.has(id) and rooms[id].completed): return true
+	return layouts.get("entry",{}).has("choiceDoors") and rooms.values().filter(func(room: TrainingRoom): return room.completed).size()>=8
 
 func create_room(data: Dictionary,return_from: String = "",entered_door: String = "") -> TrainingRoom:
 	data=data.duplicate(true)

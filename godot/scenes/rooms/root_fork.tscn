@@ -60,7 +60,7 @@ size = Vector2(40,30)
 [node name="LowForkRoot" parent="." instance=ExtResource("prop")]
 position = Vector2(740,540)
 category = "obstacle"
-size = Vector2(260,65)
+size = Vector2(220,50)
 texture_asset = ExtResource("root")
 render_width = 340.0
 obstacle_kind = "root"

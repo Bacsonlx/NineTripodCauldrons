@@ -1,0 +1,100 @@
+{
+  "hero-archery-left": {
+    "waist_px": [
+      423,
+      423,
+      423,
+      443
+    ]
+  },
+  "hero-archery-up": {
+    "waist_px": [
+      355,
+      352,
+      360,
+      362
+    ]
+  },
+  "hero-archery-upper": {
+    "waist_px": [
+      465,
+      437,
+      444,
+      436,
+      395,
+      385,
+      383,
+      415
+    ]
+  },
+  "hero-back-full": {
+    "waist_px": [
+      956
+    ]
+  },
+  "hero-back-walk": {
+    "waist_px": [
+      995
+    ]
+  },
+  "hero-dodge": {
+    "waist_px": [
+      441
+    ]
+  },
+  "hero-run-lower": {
+    "waist_px": [
+      136,
+      135,
+      139,
+      134,
+      98,
+      96,
+      99,
+      97
+    ]
+  },
+  "hero-skills-direction-0": {
+    "waist_px": [
+      339,
+      374,
+      302,
+      257
+    ]
+  },
+  "hero-skills-direction-1": {
+    "waist_px": [
+      340,
+      366,
+      308,
+      257
+    ]
+  },
+  "hero-skills-direction-2": {
+    "waist_px": [
+      336,
+      377,
+      306,
+      256
+    ]
+  },
+  "hero-skills-direction-3": {
+    "waist_px": [
+      384,
+      332,
+      273
+    ]
+  },
+  "hero-skills-upper": {
+    "waist_px": [
+      456,
+      463,
+      461,
+      461,
+      384,
+      383,
+      384,
+      391
+    ]
+  }
+}

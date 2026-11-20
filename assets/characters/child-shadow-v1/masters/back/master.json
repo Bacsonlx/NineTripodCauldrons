@@ -1,0 +1,170 @@
+{
+  "schema": "generate2dsprite.master.v1",
+  "tool": {
+    "name": "master_still",
+    "version": "0.4.0"
+  },
+  "created": "2026-11-13T13:20:53.937Z",
+  "name": "child-shadow-back",
+  "subject": "a compact Chinese child hero, full body",
+  "identity_recap": "compact Chinese child hero in the approved leather shadow-puppet style, black swept hair in a red-tied high ponytail, short red shoulder scarf, ivory elbow-sleeve tunic with dark forearm cuffs and continuous hip hem, one dark brown belt with a small round brass buckle, indigo loose trousers, cream crisscross ankle wraps and small dark thin-soled cloth shoes",
+  "facing": "back",
+  "view": "fixed elevated 2D game camera",
+  "finish": "hd",
+  "class": "hero",
+  "framing": {
+    "canvas": [
+      1024,
+      1024
+    ],
+    "subject_height_px": 560,
+    "top_margin_px": 232,
+    "lead_px": 0,
+    "preset": "custom",
+    "subject_bbox": [
+      405,
+      232,
+      619,
+      792
+    ],
+    "anchor": [
+      512.5,
+      792.0
+    ],
+    "opaque_area_px": 76195,
+    "width_limited": false
+  },
+  "key": "#FF00FF",
+  "files": {
+    "master": {
+      "path": "master.png",
+      "sha256": "9ce88ea39ba13dee98f3a0c01617673006261ff495e410d230f447287a38dcb1",
+      "bytes": 188766,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    "cutout": {
+      "path": "master_rgba.png",
+      "sha256": "1119ba66d0f50052d7a8597e34ca92a53c5fa9238ff9b30ade09489763094cd9",
+      "bytes": 228291,
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    "source": {
+      "path": "source.png",
+      "sha256": "1d6cb02fb8b29ee84c5db7bdc47130351041b1a1ea90ff04551e8dfa291b508f",
+      "bytes": 267082,
+      "size": [
+        444,
+        887
+      ]
+    },
+    "spec": {
+      "path": "spec.json",
+      "sha256": "9a889ccd12dae4ba25b2c3df92924fdf89a36b8447aed6a3675fa4b4b429f660",
+      "bytes": 1327
+    },
+    "prompt": null
+  },
+  "references": [],
+  "transform": {
+    "mapping": "master = scale * source + offset (continuous pixel coordinates: pixel i spans [i, i + 1))",
+    "source_size": [
+      444,
+      887
+    ],
+    "source_subject_bbox": [
+      72,
+      127,
+      310,
+      750
+    ],
+    "crop_box": [
+      66,
+      121,
+      316,
+      756
+    ],
+    "crop_margin_px": 6,
+    "scale": 0.898876404494382,
+    "offset": [
+      340.314606741573,
+      117.84269662921349
+    ],
+    "canvas": [
+      1024,
+      1024
+    ],
+    "resampler": "lanczos",
+    "premultiplied": true,
+    "alpha_floor_px": 4806,
+    "subject_parts": 1,
+    "ignored_parts": 1,
+    "ignored_px": 7,
+    "source_touches": [],
+    "key_rgb": [
+      255,
+      0,
+      255
+    ]
+  },
+  "route": "host-image_gen",
+  "provenance": {
+    "command": "external",
+    "run": null,
+    "take": null,
+    "source_name": "back.png",
+    "source_sha256": "1d6cb02fb8b29ee84c5db7bdc47130351041b1a1ea90ff04551e8dfa291b508f",
+    "media": null,
+    "media_cli_source": null,
+    "edit": null
+  },
+  "matte": {
+    "requested": "soft",
+    "key_estimate": {
+      "key": [
+        255.0,
+        0.0,
+        255.0
+      ],
+      "source": "native_alpha",
+      "valid": false,
+      "ring_share": 0.0,
+      "coverage": 0.0,
+      "distance_from_declared": 0.0
+    },
+    "quality": "native_alpha",
+    "qa": {
+      "key": [
+        255.0,
+        0.0,
+        255.0
+      ],
+      "opaque_key_px": 0,
+      "outer_ring_spill_fraction": 0.004572853876532945,
+      "semitransparent_fraction": 0.9984519827998088,
+      "enclosed_key_pockets": 0,
+      "key_hued_px": 0,
+      "visible_px": 104650,
+      "outer_ring_px": 4811,
+      "thresholds": {
+        "key_tolerance": 48.0,
+        "spill_threshold": 20.0,
+        "min_pocket_area": 16,
+        "opaque_alpha": 128,
+        "spill_hue_balance": 0.5
+      },
+      "method": "forge_matte.matte_qa v1: straight-colour key distance and dominance on the keyed image; two-channel keys count spill only where the key channels are balanced"
+    },
+    "key_choice": {
+      "status": "ok",
+      "overlap_share": 0.0,
+      "rule": "reject a key when more than 0.5% of subject pixels have key dominance >= 40; first acceptable candidate wins"
+    }
+  },
+  "warnings": []
+}

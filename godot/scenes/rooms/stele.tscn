@@ -38,13 +38,13 @@ texture = ExtResource("forest")
 texture_repeat = 2
 [node name="RoomFloor" type="Polygon2D" parent="Ground"]
 z_index = -50
-polygon = PackedVector2Array(160, 650, 160, 420, 600, 420, 600, 200, 1070, 200, 1070, 510, 1280, 510, 1280, 800, 810, 800, 810, 640, 370, 640, 370, 720)
+polygon = PackedVector2Array(160, 640, 160, 435, 200, 420, 540, 420, 600, 360, 600, 225, 640, 200, 1040, 200, 1070, 235, 1070, 455, 1130, 510, 1255, 510, 1280, 545, 1280, 770, 1245, 800, 840, 800, 810, 765, 810, 680, 765, 640, 420, 640, 370, 680, 355, 720, 200, 700)
 texture = ExtResource("path")
 texture_repeat = 2
 [node name="Walkable" type="Node2D" parent="."]
 visible = false
 [node name="Floor" type="Polygon2D" parent="Walkable"]
-polygon = PackedVector2Array(160, 650, 160, 420, 600, 420, 600, 200, 1070, 200, 1070, 510, 1280, 510, 1280, 800, 810, 800, 810, 640, 370, 640, 370, 720)
+polygon = PackedVector2Array(160, 640, 160, 435, 200, 420, 540, 420, 600, 360, 600, 225, 640, 200, 1040, 200, 1070, 235, 1070, 455, 1130, 510, 1255, 510, 1280, 545, 1280, 770, 1245, 800, 840, 800, 810, 765, 810, 680, 765, 640, 420, 640, 370, 680, 355, 720, 200, 700)
 [node name="Metrics" type="Node2D" parent="."]
 position = Vector2(720,535)
 script = ExtResource("item")
@@ -85,7 +85,7 @@ texture_asset = ExtResource("stele")
 render_width = 100.0
 obstacle_kind = "wall"
 [node name="SilentStele3" parent="." instance=ExtResource("prop")]
-position = Vector2(1040,505)
+position = Vector2(1065,495)
 category = "obstacle"
 size = Vector2(42,26)
 texture_asset = ExtResource("stele")
@@ -165,6 +165,182 @@ texture_asset = ExtResource("grass")
 render_width = 130.0
 obstacle_kind = "wall"
 flat = true
+[node name="FallenSlab0" parent="." instance=ExtResource("prop")]
+position = Vector2(520,470)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ruin_stone")
+render_width = 110.0
+obstacle_kind = "wall"
+flat = true
+[node name="FallenSlab1" parent="." instance=ExtResource("prop")]
+position = Vector2(750,380)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ruin_stone")
+render_width = 95.0
+obstacle_kind = "wall"
+flat = true
+[node name="FallenSlab2" parent="." instance=ExtResource("prop")]
+position = Vector2(940,420)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ruin_stone")
+render_width = 105.0
+obstacle_kind = "wall"
+flat = true
+[node name="SteleBaseStone0" parent="." instance=ExtResource("prop")]
+flat = true
+position = Vector2(790,300)
+category = "ground"
+size = Vector2(40,26)
+texture_asset = ExtResource("rocks")
+render_width = 105.0
+obstacle_kind = "wall"
+[node name="SteleBaseStone1" parent="." instance=ExtResource("prop")]
+flat = true
+position = Vector2(920,290)
+category = "ground"
+size = Vector2(40,26)
+texture_asset = ExtResource("rocks")
+render_width = 90.0
+obstacle_kind = "wall"
+[node name="SteleBaseStone2" parent="." instance=ExtResource("prop")]
+position = Vector2(400,450)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("rocks")
+render_width = 75.0
+obstacle_kind = "wall"
+flat = true
+[node name="SteleBaseStone3" parent="." instance=ExtResource("prop")]
+position = Vector2(690,360)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("rocks")
+render_width = 70.0
+obstacle_kind = "wall"
+flat = true
+[node name="SteleBaseStone4" parent="." instance=ExtResource("prop")]
+position = Vector2(1080,540)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("rocks")
+render_width = 85.0
+obstacle_kind = "wall"
+flat = true
+[node name="EastEdgeStone0" parent="." instance=ExtResource("prop")]
+position = Vector2(1180,600)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("rocks")
+render_width = 90.0
+obstacle_kind = "wall"
+flat = true
+[node name="EastEdgeStone1" parent="." instance=ExtResource("prop")]
+position = Vector2(1150,720)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("rocks")
+render_width = 80.0
+obstacle_kind = "wall"
+flat = true
+[node name="SouthMarker" parent="." instance=ExtResource("prop")]
+position = Vector2(1010,390)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("stele")
+render_width = 80.0
+obstacle_kind = "wall"
+flat = true
+[node name="SteleFern0" parent="." instance=ExtResource("prop")]
+position = Vector2(280,300)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 105.0
+obstacle_kind = "wall"
+flat = true
+[node name="SteleFern1" parent="." instance=ExtResource("prop")]
+position = Vector2(460,260)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 95.0
+obstacle_kind = "wall"
+flat = true
+[node name="SteleFern2" parent="." instance=ExtResource("prop")]
+position = Vector2(880,560)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 100.0
+obstacle_kind = "wall"
+flat = true
+[node name="SteleFern3" parent="." instance=ExtResource("prop")]
+position = Vector2(500,590)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 90.0
+obstacle_kind = "wall"
+flat = true
+[node name="SteleFern4" parent="." instance=ExtResource("prop")]
+position = Vector2(1150,780)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 110.0
+obstacle_kind = "wall"
+flat = true
+[node name="SteleGrass0" parent="." instance=ExtResource("prop")]
+position = Vector2(240,600)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 100.0
+obstacle_kind = "wall"
+flat = true
+[node name="SteleGrass1" parent="." instance=ExtResource("prop")]
+position = Vector2(760,720)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 115.0
+obstacle_kind = "wall"
+flat = true
+[node name="SteleGrass2" parent="." instance=ExtResource("prop")]
+position = Vector2(980,660)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 85.0
+obstacle_kind = "wall"
+flat = true
+[node name="SteleGrass3" parent="." instance=ExtResource("prop")]
+position = Vector2(890,120)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 105.0
+obstacle_kind = "wall"
+flat = true
+[node name="SteleSapling0" parent="." instance=ExtResource("prop")]
+flat = true
+position = Vector2(1300,420)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("tree_red")
+render_width = 180.0
+obstacle_kind = "tree"
+[node name="SteleSapling1" parent="." instance=ExtResource("prop")]
+flat = true
+position = Vector2(180,780)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("tree_green")
+render_width = 175.0
+obstacle_kind = "tree"
 [node name="Doors" type="Node2D" parent="."]
 [node name="root_fork" parent="Doors" instance=ExtResource("portal")]
 position = Vector2(150,565)

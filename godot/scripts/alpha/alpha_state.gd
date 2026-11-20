@@ -3,6 +3,7 @@ extends RefCounted
 const ItemEffects = preload("res://scripts/gameplay/item_effects.gd")
 const Skills = preload("res://scripts/alpha/equipment_skills.gd")
 const Equipment = preload("res://scripts/alpha/equipment_rules.gd")
+const Appearance = preload("res://scripts/alpha/equipment_appearance.gd")
 const Votes = preload("res://scripts/alpha/altar_votes.gd")
 const Geometry = preload("res://scripts/alpha/altar_geometry.gd")
 
@@ -208,6 +209,9 @@ func reset(spawn: Vector2) -> void:
 			var restored: Dictionary = initial.duplicate(true)
 			items.append(restored)
 			next_id = maxi(next_id, int(restored.get("id", 0)) + 1)
+			next_order = maxi(next_order,int(restored.get("order",0)))
+			for glyph in restored.get("glyphs",[]): next_id=maxi(next_id,int(glyph.id)+1)
+			if restored.get("shadow",false): shadow_id=int(restored.id)
 	else:
 		add_item("训练弓","equipment",Vector2i(0,0))
 		add_item("布履","equipment",Vector2i(3,0))
@@ -270,7 +274,7 @@ func placement_error(item: Dictionary, cell: Vector2i, rotated: bool, ignore_id:
 	var region: String = region_for(item,cell,rotated)
 	if region.is_empty(): return "目标位置越界、跨区或不可用"
 	if item.get("shadow",false) and region!="altar": return "残影只能放入祭坛"
-	if item.get("kind","")=="神兽" and region!="equipment": return "神兽只能放入装备区"
+	if item.get("kind","")=="神兽" and not item.get("shadow",false) and region!="equipment": return "神兽只能放入装备区"
 	for other in items:
 		if other.id==ignore_id or other.id==item.get("id",-1): continue
 		if gameplay and region=="equipment" and other.region=="equipment" and not Equipment.slot(item).is_empty() and Equipment.slot(item)==Equipment.slot(other):
@@ -476,6 +480,8 @@ func snapshot() -> Dictionary:
 		result.equipment=Equipment.preview(items)
 		result.equipment.healthMax+=max_health()-int(applied_equipment.healthMax)
 		result.appliedEquipment=applied_equipment.duplicate(true)
+	# 人物外观：只描述装备区里真实穿戴的装备与嵌入的符，供表现层挂件使用。
+	result.appearance=Appearance.describe(items)
 	result.altarAnalysis=altar_analysis.duplicate(true)
 	result.blessingBeast=blessing_beast
 	result.blessingTier=blessing_tier

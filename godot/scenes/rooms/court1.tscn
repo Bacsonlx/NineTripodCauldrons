@@ -219,6 +219,150 @@ texture_asset = ExtResource("grass")
 render_width = 130.0
 obstacle_kind = "wall"
 flat = true
+[node name="CourtEmberStone0" parent="." instance=ExtResource("prop")]
+flat = true
+position = Vector2(930,300)
+category = "ground"
+size = Vector2(40,28)
+texture_asset = ExtResource("rocks")
+render_width = 120.0
+obstacle_kind = "wall"
+[node name="CourtEmberStone1" parent="." instance=ExtResource("prop")]
+flat = true
+position = Vector2(1000,270)
+category = "ground"
+size = Vector2(40,28)
+texture_asset = ExtResource("rocks")
+render_width = 100.0
+obstacle_kind = "wall"
+[node name="CourtWestRuin0" parent="." instance=ExtResource("prop")]
+flat = true
+position = Vector2(310,320)
+category = "ground"
+size = Vector2(48,26)
+texture_asset = ExtResource("ruin_stone")
+render_width = 110.0
+obstacle_kind = "wall"
+[node name="CourtWestRuin1" parent="." instance=ExtResource("prop")]
+position = Vector2(280,390)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ruin_stone")
+render_width = 85.0
+obstacle_kind = "wall"
+flat = true
+[node name="CourtNorthPebble0" parent="." instance=ExtResource("prop")]
+position = Vector2(700,260)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("rocks")
+render_width = 70.0
+obstacle_kind = "wall"
+flat = true
+[node name="CourtNorthPebble1" parent="." instance=ExtResource("prop")]
+position = Vector2(1100,340)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("rocks")
+render_width = 80.0
+obstacle_kind = "wall"
+flat = true
+[node name="CourtCourtFern0" parent="." instance=ExtResource("prop")]
+position = Vector2(660,870)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 105.0
+obstacle_kind = "wall"
+flat = true
+[node name="CourtCourtFern1" parent="." instance=ExtResource("prop")]
+position = Vector2(950,850)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 95.0
+obstacle_kind = "wall"
+flat = true
+[node name="CourtFern0" parent="." instance=ExtResource("prop")]
+position = Vector2(430,600)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 100.0
+obstacle_kind = "wall"
+flat = true
+[node name="CourtFern1" parent="." instance=ExtResource("prop")]
+position = Vector2(540,430)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 90.0
+obstacle_kind = "wall"
+flat = true
+[node name="CourtFern2" parent="." instance=ExtResource("prop")]
+position = Vector2(1180,560)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("ferns")
+render_width = 110.0
+obstacle_kind = "wall"
+flat = true
+[node name="CourtFern3" parent="." instance=ExtResource("prop")]
+position = Vector2(870,650)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 85.0
+obstacle_kind = "wall"
+flat = true
+[node name="CourtGrass0" parent="." instance=ExtResource("prop")]
+position = Vector2(330,720)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 105.0
+obstacle_kind = "wall"
+flat = true
+[node name="CourtGrass1" parent="." instance=ExtResource("prop")]
+position = Vector2(760,380)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 115.0
+obstacle_kind = "wall"
+flat = true
+[node name="CourtGrass2" parent="." instance=ExtResource("prop")]
+position = Vector2(1230,720)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("grass")
+render_width = 95.0
+obstacle_kind = "wall"
+flat = true
+[node name="CourtWayMarker" parent="." instance=ExtResource("prop")]
+flat = true
+position = Vector2(1180,470)
+category = "ground"
+size = Vector2(36,26)
+texture_asset = ExtResource("ruin_stone")
+render_width = 90.0
+obstacle_kind = "waystone"
+[node name="CourtSapling0" parent="." instance=ExtResource("prop")]
+flat = true
+position = Vector2(160,560)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("tree_green")
+render_width = 185.0
+obstacle_kind = "tree"
+[node name="CourtSapling1" parent="." instance=ExtResource("prop")]
+flat = true
+position = Vector2(1250,240)
+category = "ground"
+size = Vector2(40,30)
+texture_asset = ExtResource("tree_red")
+render_width = 175.0
+obstacle_kind = "tree"
 [node name="Doors" type="Node2D" parent="."]
 [node name="entry" parent="Doors" instance=ExtResource("portal")]
 position = Vector2(150,575)

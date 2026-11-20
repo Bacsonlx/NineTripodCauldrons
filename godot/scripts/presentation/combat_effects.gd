@@ -23,26 +23,61 @@ var last_used: int = 0
 var stamp_frame: Array[String] = []
 var stamp_depth: Array[int] = []
 var stamp_angle: Array[float] = []
+# 特效按层分预算：地面预兆、角色附着、投射物、命中、世界高位。
+# 每层独立计数，避免某一层刷满后把其它层的关键反馈挤掉。
+const LAYER_GROUND: int = 0
+const LAYER_BODY: int = 1
+const LAYER_PROJECTILE: int = 2
+const LAYER_IMPACT: int = 3
+const LAYER_WORLD: int = 4
+const LAYER_COUNT: int = 5
+const LAYER_LIMITS: Array[int] = [64,48,96,192,32]
+var layer_used: Array[int] = [0,0,0,0,0]
+# 优先级：雨与天雷最高，其次命中、暴击、冲刺、蓄力、地面预兆。
+const PRIORITY_WORLD: int = 5
+const PRIORITY_CRITICAL: int = 4
+const PRIORITY_IMPACT: int = 3
+const PRIORITY_DASH: int = 2
+const PRIORITY_CHARGE: int = 1
+const PRIORITY_GROUND: int = 0
+var stamp_priority: Array[int] = []
+var stamp_layer: Array[int] = []
 var pierce_text: Color = Color("ffe5a0")
 var normal_text: Color = Color("f6e8cd")
 const ANGLE_SENTINEL: float = -1.0e9
 
 func setup(frames: Dictionary,image: Texture2D,legs: Sprite2D,torso: Sprite2D) -> void:
 	atlas=frames; texture=image; lower=legs; upper=torso
-	for index in 4:
+	for index in 8:
 		var pair: Dictionary = {"age":1.0,"lower":Sprite2D.new(),"upper":Sprite2D.new()}
 		for key in ["lower","upper"]: add_child(pair[key]); pair[key].visible=false
 		ghosts.append(pair)
 
-func stamp(frame_name: String,position: Vector2,size: Vector2,alpha: float,angle: float = 0.0,depth: int = 4000) -> void:
+func stamp(frame_name: String,position: Vector2,size: Vector2,alpha: float,angle: float = 0.0,depth: int = 4000,layer: int = LAYER_IMPACT,priority: int = PRIORITY_IMPACT) -> void:
 	if used>=vfx_budget: return
+	var limit: int = LAYER_LIMITS[layer] if layer>=0 and layer<LAYER_COUNT else vfx_budget
+	# 该层已满时，若新特效优先级更高则抢占本层最弱的一个存活特效。
+	if layer_used[layer]>=limit:
+		var victim: int = -1
+		for index in range(mini(last_used,stamps.size())):
+			if not stamps[index].visible: continue
+			if stamp_layer[index]!=layer: continue
+			if victim<0 or stamp_priority[index]<stamp_priority[victim]: victim=index
+		if victim<0 or stamp_priority[victim]>=priority: return
+		stamps[victim].visible=false
+		layer_used[layer]-=1
+		used-=1
 	if used==stamps.size():
 		var created: Sprite2D = Sprite2D.new()
 		created.texture=texture; created.region_enabled=true; add_child(created); stamps.append(created)
 		stamp_frame.append(""); stamp_depth.append(-1); stamp_angle.append(ANGLE_SENTINEL)
+		stamp_priority.append(0); stamp_layer.append(layer)
 	var slot: int = used
 	var body: Sprite2D = stamps[slot]
 	used+=1
+	layer_used[layer]+=1
+	stamp_priority[slot]=priority
+	stamp_layer[slot]=layer
 	var frame: Dictionary = atlas[frame_name]
 	if stamp_frame[slot]!=frame_name:
 		body.region_rect=Rect2(frame.x,frame.y,frame.width,frame.height)
@@ -65,6 +100,7 @@ func falling(position: Vector2,progress: float) -> void:
 func update(state: Dictionary,seconds: float,clock: float) -> void:
 	var dt: float = 0.0 if state.paused or state.status=="failed" else seconds
 	used=0
+	for layer in LAYER_COUNT: layer_used[layer]=0
 	if run_id!=state.runId:
 		run_id=state.runId; last_impact=-1; bursts.clear(); damage.clear(); trails.clear(); was_dodging=false; ghost_timer=0
 		for ghost in ghosts: ghost.age=1; ghost.lower.visible=false; ghost.upper.visible=false
@@ -82,7 +118,7 @@ func update(state: Dictionary,seconds: float,clock: float) -> void:
 		if hit.get("enemy")!=null:
 			for enemy in state.enemies:
 				if enemy.id==hit.enemy and enemy.health==0: killed=true
-		bursts.append({"x":hit.x,"y":hit.y,"kind":hit.kind,"age":0.0,"enemy":hit.get("enemy"),"angle":hit.angle,"killed":killed})
+		bursts.append({"x":hit.x,"y":hit.y,"kind":hit.kind,"age":0.0,"enemy":hit.get("enemy"),"angle":hit.angle,"killed":killed,"critical":hit.get("critical",false),"burn":hit.get("burn",false),"pierce":hit.get("pierce",false)})
 		if bursts.size()>64: bursts.pop_front()
 		if hit.has("enemy") and hit.damage>0 and hit.damagePosition!=null:
 			var stack: int = 0
@@ -127,11 +163,11 @@ func update(state: Dictionary,seconds: float,clock: float) -> void:
 	# 范围与波次提示优先占用预算，命中装饰只能使用剩余名额。
 	if state.rainPreview!=null:
 		var charge: float = clampf(1-state.skill.remaining/0.45,0,1)
-		stamp("ring",state.rainPreview,Vector2.ONE*220,0.22+charge*0.2,clock*0.3,2)
-		stamp("halo",state.rainPreview,Vector2.ONE*(280-charge*60),0.12+charge*0.12,-clock*0.6,2)
+		stamp("ring",state.rainPreview,Vector2.ONE*220,0.22+charge*0.2,clock*0.3,2,LAYER_GROUND,PRIORITY_GROUND)
+		stamp("halo",state.rainPreview,Vector2.ONE*(280-charge*60),0.12+charge*0.12,-clock*0.6,2,LAYER_GROUND,PRIORITY_GROUND)
 		for index in 6:
 			var angle: float = index*TAU/6+clock*0.8
-			stamp("embers",state.rainPreview+Vector2.from_angle(angle)*(140-charge*42),Vector2(18,8),0.45,angle)
+			stamp("embers",state.rainPreview+Vector2.from_angle(angle)*(140-charge*42),Vector2(18,8),0.45,angle,2,LAYER_GROUND,PRIORITY_GROUND)
 		if state.skill.remaining<=0.16: falling(state.rainPreview,1-state.skill.remaining/0.16)
 	for rain in state.rains:
 		var position: Vector2 = Vector2(rain.x,rain.y)
@@ -142,17 +178,41 @@ func update(state: Dictionary,seconds: float,clock: float) -> void:
 			if age>=0 and age<0.18:
 				var progress: float = age/0.18
 				var spread: float = 1-pow(1-progress,3)
-				stamp("ring",position,Vector2.ONE*(90+spread*130),(1-progress)*0.65,0,2)
-				stamp("halo",position,Vector2.ONE*(160+spread*120),pow(1-progress,2)*0.2,0,2)
+				# 俯视角下地面水洼应是压扁的椭圆，正圆会读作悬浮的球。
+				var ripple_size: float = 90.0+spread*130.0
+				stamp("ring",position,Vector2(ripple_size,ripple_size*0.45),(1-progress)*0.65,0,2,LAYER_GROUND,PRIORITY_GROUND)
+				var halo_size: float = 160.0+spread*120.0
+				stamp("halo",position,Vector2(halo_size,halo_size*0.45),pow(1-progress,2)*0.2,0,2,LAYER_GROUND,PRIORITY_GROUND)
 				for index in 10:
-					stamp("spark",position+Vector2.from_angle(index*2.39996)*(20+sqrt(index/10.0)*75),Vector2.ONE*(34-14*progress),(1-progress)*0.65,index*2.39996)
+					stamp("spark",position+Vector2.from_angle(index*2.39996)*(20+sqrt(index/10.0)*75),Vector2.ONE*(34-14*progress),(1-progress)*0.65,index*2.39996,4000,LAYER_PROJECTILE,PRIORITY_IMPACT)
+	# 羊角提供生命上限：头顶常驻纹章，亮度随当前生命变化。
+	var effects: Array = state.get("alpha",{}).get("appearance",{}).get("effects",[]) as Array
+	if effects.has("羊角"):
+		var health: float = float(state.get("health",100))
+		var health_max: float = maxf(1.0,float(state.get("healthMax",100)))
+		var vitality: float = clampf(health/health_max,0.0,1.0)
+		var sigil: Vector2 = Vector2(state.player.x,state.player.y-64)
+		stamp("halo",sigil,Vector2.ONE*(30+vitality*10),0.16+vitality*0.2,clock*0.8,4001,LAYER_BODY,PRIORITY_WORLD)
+		for index in 3:
+			var sigil_angle: float = index*TAU/3+clock*1.6
+			stamp("embers",sigil+Vector2.from_angle(sigil_angle)*13.0,Vector2(8,6),0.3+vitality*0.25,sigil_angle,4001,LAYER_BODY,PRIORITY_WORLD)
+	# 燧火点燃的敌人持续带火，直到燃烧结束或死亡。
+	for enemy in state.enemies:
+		if enemy.get("burnRemaining",0.0)<=0.0: continue
+		if enemy.get("phase","")=="dead": continue
+		var fire_position: Vector2 = Vector2(enemy.x,enemy.y-30)
+		var flicker: float = clock*9.0+float(enemy.get("id",0))
+		for index in 3:
+			var flame_angle: float = index*TAU/3+flicker
+			stamp("embers",fire_position+Vector2.from_angle(flame_angle)*6.0+Vector2(0,-index*5),Vector2(11-index*2,14-index*3),0.5+0.2*sin(flicker+index),flame_angle,4001,LAYER_IMPACT,PRIORITY_IMPACT)
+		stamp("halo",fire_position,Vector2.ONE*44,0.28,flicker*0.4,4001,LAYER_IMPACT,PRIORITY_IMPACT)
 	# 下一波的地面预告不代表已激活敌人，也不参与碰撞。
 	if state.get("waveDelay",0)>0:
 		for enemy in state.enemies:
 			if enemy.group==state.encounter and enemy.phase=="inactive":
 				var progress: float = 1-state.waveDelay/1.2
-				stamp("ring",Vector2(enemy.x,enemy.y),Vector2(64,32)*(1.2-progress*0.2),0.3+progress*0.3,0,2)
-				stamp("embers",Vector2(enemy.x,enemy.y-16),Vector2(16,24)*(0.7+progress*0.3),0.4+progress*0.3,0,2)
+				stamp("ring",Vector2(enemy.x,enemy.y),Vector2(64,32)*(1.2-progress*0.2),0.3+progress*0.3,0,2,LAYER_GROUND,PRIORITY_GROUND)
+				stamp("embers",Vector2(enemy.x,enemy.y-16),Vector2(16,24)*(0.7+progress*0.3),0.4+progress*0.3,0,2,LAYER_GROUND,PRIORITY_GROUND)
 	for burst in bursts:
 		var progress: float = burst.age/(0.3 if burst.kind=="dust" else 0.32)
 		var spread: float = 1-pow(1-progress,3)
@@ -164,11 +224,23 @@ func update(state: Dictionary,seconds: float,clock: float) -> void:
 			stamp("streak",position+Vector2.from_angle(burst.angle)*spread*24,Vector2(100+spread*40,20*alpha),alpha*0.75,burst.angle)
 			continue
 		var strong: bool = burst.kind=="pierce"
+		var critical: bool = burst.get("critical",false)
+		var burning: bool = burst.get("burn",false)
 		var size: float = 1.6 if burst.enemy!=null else 1.0
-		stamp("spark",position,Vector2.ONE*((52 if strong else 40)+spread*28)*size,alpha*alpha*0.9,burst.age*2)
+		var impact_priority: int = PRIORITY_CRITICAL if critical else PRIORITY_IMPACT
+		if critical:
+			# 暴击金闪替换普通命中表现，不与普通命中叠加。
+			stamp("spark",position,Vector2.ONE*(70+spread*40)*size,alpha*alpha*0.95,burst.age*2,4001,LAYER_IMPACT,impact_priority)
+			stamp("halo",position,Vector2.ONE*(52+spread*88)*size,alpha*alpha*0.5,burst.age*3,4001,LAYER_IMPACT,impact_priority)
+			for index in 6:
+				var angle: float = burst.angle+(index-2.5)*0.62
+				stamp("embers",position+Vector2.from_angle(angle)*(10+spread*74)+Vector2(0,progress*16),Vector2.ONE*(15-index*0.8)*alpha,alpha*0.95,angle+progress,4001,LAYER_IMPACT,impact_priority)
+			stamp("ring",position,Vector2.ONE*(40+spread*120),alpha*alpha*0.6,progress*0.8,4001,LAYER_IMPACT,impact_priority)
+		else:
+			stamp("spark",position,Vector2.ONE*((52 if strong else 40)+spread*28)*size,alpha*alpha*0.9,burst.age*2,4000,LAYER_IMPACT,impact_priority)
 		for index in 5:
 			var angle: float = burst.angle+(index-2)*0.9
-			stamp("shards",position+Vector2.from_angle(angle)*(8+spread*(52 if strong else 36))+Vector2(0,progress*16),Vector2(15,10)*alpha,alpha*0.8,angle+progress)
+			stamp("shards",position+Vector2.from_angle(angle)*(8+spread*(52 if strong else 36))+Vector2(0,progress*16),Vector2(15,10)*alpha,alpha*0.8,angle+progress,4000,LAYER_IMPACT,impact_priority)
 		if burst.enemy!=null:
 			stamp("halo",position,Vector2.ONE*(38+spread*(96 if strong else 68)),alpha*alpha*0.55)
 			stamp("streak",position,Vector2((120 if strong else 78)+spread*30,14*alpha),alpha*0.9,burst.angle)
@@ -195,17 +267,28 @@ func update(state: Dictionary,seconds: float,clock: float) -> void:
 	if charging:
 		var strong: bool = state.skill!=null and state.skill.kind=="pierce"
 		var progress: float = 1-(state.skill.remaining/0.18 if strong else state.windup/0.08)
-		stamp("halo",state.grip,Vector2.ONE*((58 if strong else 16)+progress*(64 if strong else 16)),0.25+progress*0.4,clock*0.6)
+		stamp("halo",state.grip,Vector2.ONE*((58 if strong else 16)+progress*(64 if strong else 16)),0.25+progress*0.4,clock*0.6,4000,LAYER_BODY,PRIORITY_CHARGE)
+		# 普通箭蓄力原本只有一个微弱光晕，提示远弱于穿透箭；这里补上蓄力环与余烬。
+		stamp("ring",state.grip,Vector2.ONE*(26+progress*54),0.18+progress*0.34,clock*1.4,4000,LAYER_BODY,PRIORITY_CHARGE)
+		for index in 4:
+			var charge_angle: float = index*TAU/4+clock*3.0
+			stamp("embers",state.grip+Vector2.from_angle(charge_angle)*(30*(1-progress)+8),Vector2(9,6),0.35+progress*0.3,charge_angle,4000,LAYER_BODY,PRIORITY_CHARGE)
 		if strong:
 			for index in 6:
-				stamp("embers",state.grip+Vector2.from_angle(index*TAU/6+clock*2.5)*(48*(1-progress)+12),Vector2(14,9),0.7,index*TAU/6+clock*2.5)
-	if state.attack=="release": stamp("spark",state.grip,Vector2(17,17),0.45,state.player.angle)
+				stamp("embers",state.grip+Vector2.from_angle(index*TAU/6+clock*2.5)*(48*(1-progress)+12),Vector2(14,9),0.7,index*TAU/6+clock*2.5,4000,LAYER_BODY,PRIORITY_CHARGE)
+	if state.attack=="release": stamp("spark",state.grip,Vector2(17,17),0.45,state.player.angle,4000,LAYER_BODY,PRIORITY_CHARGE)
 	var dodging: bool = state.dodge>0
+	# 技能冲刺也要有残影，否则回风／引风的位移反馈弱于基础闪避。
+	var dash_info: Dictionary = state.get("skillDash",{})
+	var skill_dashing: bool = dash_info.get("remaining",0)>0
+	var dashing_any: bool = dodging or skill_dashing
+	var dash_kind: String = "dodge" if dodging else str(dash_info.get("kind",""))
+	var dash_tint: Color = Color("f3dc93") if dash_kind=="dodge" else Color("d7b77a") if dash_kind=="backwind" else Color("75d6e6") if dash_kind=="wind" or dash_kind=="wind_extra" else Color("f3dc93")
 	if dt>0:
 		ghost_timer+=dt
-		if dodging!=was_dodging: bursts.append({"x":state.player.x,"y":state.player.y,"kind":"dust","age":0.0,"enemy":null,"angle":0.0})
+		if dashing_any!=was_dodging: bursts.append({"x":state.player.x,"y":state.player.y,"kind":"dust","age":0.0,"enemy":null,"angle":0.0})
 		for ghost in ghosts: ghost.age+=dt
-		if dodging and ghost_timer>=0.035:
+		if dashing_any and ghost_timer>=0.035:
 			var oldest: Dictionary = ghosts[0]
 			for ghost in ghosts:
 				if ghost.age>oldest.age: oldest=ghost
@@ -216,11 +299,13 @@ func update(state: Dictionary,seconds: float,clock: float) -> void:
 				copy.texture=body.texture; copy.region_enabled=true; copy.region_rect=body.region_rect; copy.centered=body.centered; copy.offset=body.offset; copy.position=body.position; copy.scale=body.scale; copy.z_index=int(state.player.y)-1
 				copy.set_meta("source_visible",body.visible)
 				copy.global_position=body.global_position
-		was_dodging=dodging
+		was_dodging=dashing_any
 	for ghost in ghosts:
 		for key in ["lower","upper"]:
 			ghost[key].visible=ghost.age<0.22 and ghost[key].get_meta("source_visible",true)
-			ghost[key].modulate=Color(0.8,0.65,0.32,pow(maxf(0,1-ghost.age/0.22),2)*0.5)
+			# 残影颜色跟随冲刺类型，与角色本体的冲刺染色保持一致。
+			var tint: Color = dash_tint
+			ghost[key].modulate=Color(tint.r,tint.g,tint.b,pow(maxf(0,1-ghost.age/0.22),2)*0.5)
 	for index in range(used,mini(last_used,stamps.size())):
 		if stamps[index].visible: stamps[index].visible=false
 	last_used=used

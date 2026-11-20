@@ -521,6 +521,7 @@ func setup(model: TrainingRoom, adapter: PlayerControls) -> void:
 	discard_button.visible = false
 	kit_button = Button.new()
 	kit_button.visible = false
+	action_buttons_host.add_child(kit_button)
 
 	detail_warning = Label.new()
 	detail_warning.text = "关闭背包即可应用合法构筑并继续；不会自动恢复生命或冷却。"

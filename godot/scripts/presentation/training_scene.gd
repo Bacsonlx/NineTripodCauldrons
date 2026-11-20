@@ -8,7 +8,13 @@ const Overlay = preload("res://scripts/presentation/combat_overlay.gd")
 const Effects = preload("res://scripts/presentation/combat_effects.gd")
 const Controls = preload("res://scripts/input/player_controls.gd")
 const QualityPolicy = preload("res://scripts/presentation/quality_policy.gd")
+const ActionFrameSprite = preload("res://scripts/presentation/action_frame_sprite.gd")
 const ACTOR_VISUAL_SCALE: float = 2.0/3.0
+# 旧素材的腰线偏移（源图像素，相对 originY；originY 是脚点）。
+# 旧 lower 的腰线在脚点上方约 145px，旧 upper 的腰线在脚点下方约 15px。
+# 这两套与新素材的 root 语义不同，统一换算成「相对脚点的位置」后再对齐。
+const LEGACY_LOWER_WAIST: float = -147.0
+const LEGACY_UPPER_WAIST: float = 14.0
 var room: TrainingRoom = Room.new()
 var controls: PlayerControls = Controls.new(room)
 var state: Dictionary = {}
@@ -101,8 +107,6 @@ func _ready() -> void:
 	get_window().mouse_exited.connect(func(): pointer_inside = false; controls.pointer_leave())
 	get_window().mouse_entered.connect(func(): pointer_inside = true)
 	get_viewport().size_changed.connect(func(): controls.interrupt(); update_camera())
-	if get_window().mode not in [Window.MODE_FULLSCREEN,Window.MODE_EXCLUSIVE_FULLSCREEN]:
-		get_window().mode = Window.MODE_MAXIMIZED
 	update_camera()
 	present(state,0.0)
 	var arguments: PackedStringArray = OS.get_cmdline_user_args()
@@ -123,12 +127,15 @@ func create_room(layout: Dictionary) -> TrainingRoom:
 	return Room.new(layout)
 
 func register_player_grips() -> void:
-	# 联绘普通箭取正式拉满帧箭尖；复制布局，不改共享常量或技能握点。
+	# 使用新图标定的发射点；背向箭被遮挡时为估算点，复制布局不改共享默认常量。
 	room.layout.grips=room.layout.grips.duplicate()
-	var sources: Array = [frame_actor.upper.clips["hero-archery-upper"],atlas.upperDown,frame_actor.upper.clips["hero-archery-left"],frame_actor.upper.clips["hero-archery-up"]]
+	var sources: Array = frame_actor.projectile_grips()
 	for facing in 4:
-		var grip: Dictionary = sources[facing].grip
+		var grip: Dictionary = sources[facing]
 		room.layout.grips[facing]=grip.duplicate() if room.layout.grips[facing] is Dictionary else Vector2(grip.x,grip.y)
+	room.layout.skillGrips=frame_actor.skill_grips()
+	# 新母版中立身高64，肩点来自烘焙坐标(128,152)相对脚点(128,224)。
+	room.layout.shoulderHeight=36.0
 
 func pose(node: Sprite2D, key: String, index: int, point: Vector2, scale_multiplier: float = 1.0) -> void:
 	# 帧未变时只有位置变化：纹理／区域／锚点／缩放保持原值，
@@ -148,15 +155,25 @@ func pose(node: Sprite2D, key: String, index: int, point: Vector2, scale_multipl
 	node.scale = Vector2.ONE * float(frame.get("scale", atlas[key].scale)) * scale_multiplier
 	node.position = point
 
-func waist_point(node: Sprite2D) -> Vector2:
-	if node==null: return Vector2.ZERO
-	if node==legs: return node.global_position+Vector2(0,-30.0*ACTOR_VISUAL_SCALE)
-	return node.global_position
+func waist_world_y(node: Sprite2D) -> float:
+	if node is ActionFrameSprite: return node.waist_world_y()
+	var waist_px: float = LEGACY_LOWER_WAIST if node==legs else LEGACY_UPPER_WAIST
+	return node.to_global(Vector2(0,waist_px)).y
+
+## 旧素材的上下身腰线偏移（世界像素，向上为正）。
+## 旧素材的 originY 是脚点，腰线取该剪辑的固定腰高，让新旧两套走同一套对齐。
+func legacy_waist_offset(key: String) -> float:
+	if not atlas.has(key): return 0.0
+	var scale: float = float(atlas[key].get("scale",1.0))
+	if key=="lower": return LEGACY_LOWER_WAIST*scale
+	return LEGACY_UPPER_WAIST*scale
 
 func visual_connection_delta(upper: Sprite2D, lower: Sprite2D) -> Vector2:
 	if upper==null or lower==null or not upper.visible or not lower.visible:
 		return Vector2.ZERO
-	return waist_point(lower)-waist_point(upper)
+	if upper is ActionFrameSprite and lower is ActionFrameSprite:
+		return lower.waist_world_point()-upper.waist_world_point()
+	return Vector2(0,waist_world_y(lower)-waist_world_y(upper))
 
 func align_visual_connection(upper: Sprite2D, lower: Sprite2D) -> void:
 	if upper==null or lower==null or not upper.visible or not lower.visible:
@@ -263,19 +280,18 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 	nocked_arrow.rotation = p.angle
 	nocked_arrow.z_index = int(p.y) + 3
 	nocked_arrow.visible=(state.attack=="draw" or (state.skill!=null and state.skill.kind=="pierce" and state.skill.phase=="windup")) and state.status!="failed" and not down_pose
-	frame_actor.update_state(state,movement,room.cooldown,bob)
+	frame_actor.update_state(state,movement,room.cooldown,bob,_seconds)
 	frame_actor.modulate.a=alpha
 	if frame_actor.body.visible:
 		legs.hide(); torso.hide(); bow.hide(); nocked_arrow.hide()
 	else:
 		if frame_actor.lower.visible: legs.hide()
 		if frame_actor.upper.visible: torso.hide(); bow.hide(); nocked_arrow.hide()
-	var lower_visual: Sprite2D = frame_actor.lower if frame_actor.lower.visible else legs
-	var upper_visual: Sprite2D = frame_actor.upper if frame_actor.upper.visible else torso
-	if not frame_actor.body.visible:
-		align_visual_connection(upper_visual,lower_visual)
-		if upper_visual==frame_actor.upper:
-			frame_actor.refresh_head_repair()
+	if frame_actor.body.visible: failed.hide()
+	# 挂件跟随接合完成后的姿态。
+	frame_actor.apply_appearance(state.get("alpha",{}).get("appearance",{}) as Dictionary)
+	frame_actor.sync_gear_context()
+	frame_actor.update_gear(_seconds)
 	combat_effects.lower=frame_actor.body if frame_actor.body.visible else frame_actor.lower if frame_actor.lower.visible else legs
 	combat_effects.upper=frame_actor.upper if frame_actor.upper.visible else torso
 	if is_instance_valid(obstacle_body): obstacle_body.modulate.a=0.3 if p.y<room.obstacle.get_center().y and p.y>room.obstacle.get_center().y-126 and absf(p.x-room.obstacle.get_center().x)<100 else 1.0
@@ -306,7 +322,7 @@ func present(snapshot: Dictionary,_seconds: float) -> void:
 		if not arrows.has(arrow.id):
 			arrows[arrow.id] = arrow_sprite()
 		var arrow_body: Sprite2D = arrows[arrow.id]
-		var arrow_scale: float = 0.037 if arrow.kind=="pierce" else atlas.upperDown.arrowScale if direction(arrow.angle)==1 else 0.029
+		var arrow_scale: float = frame_actor.projectile_length(arrow.kind,direction(arrow.angle))/arrow_body.texture.get_width()
 		if not is_equal_approx(arrow_body.scale.x,arrow_scale): arrow_body.scale=Vector2.ONE*arrow_scale
 		var arrow_tint: Color = pierce_tint if arrow.kind=="pierce" else Color.WHITE
 		if arrow_body.modulate!=arrow_tint: arrow_body.modulate=arrow_tint
@@ -457,7 +473,8 @@ func build_hud() -> void:
 
 func toggle_fullscreen() -> void:
 	controls.interrupt()
-	get_window().mode = Window.MODE_MAXIMIZED if get_window().mode == Window.MODE_FULLSCREEN else Window.MODE_FULLSCREEN
+	var window: Window = get_window()
+	window.mode=Window.MODE_MAXIMIZED if window.mode in [Window.MODE_FULLSCREEN,Window.MODE_EXCLUSIVE_FULLSCREEN] else Window.MODE_FULLSCREEN
 
 func cooldown_text(value: float) -> String:
 	return "就绪" if value<=0 else "%.1fs" % value

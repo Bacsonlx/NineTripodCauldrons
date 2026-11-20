@@ -13,6 +13,7 @@ func check(condition: bool, message: String) -> void:
 		push_error(message)
 
 func _initialize() -> void:
+	load("res://tests/hub_profile_checks.gd").new().run(Callable(self,"check"))
 	if "--launch-only" in OS.get_cmdline_user_args():
 		load("res://tests/launch_options_checks.gd").new().run(Callable(self,"check"))
 		print(JSON.stringify({"checks":count,"failures":failures}))
@@ -197,5 +198,8 @@ func _initialize() -> void:
 	load("res://tests/loot_checks.gd").new().run(Callable(self,"check"))
 	load("res://tests/launch_options_checks.gd").new().run(Callable(self,"check"))
 	load("res://tests/alpha_checks.gd").new().run(Callable(self,"check"))
+	load("res://tests/equipment_appearance_checks.gd").new().run(Callable(self,"check"))
+	load("res://tests/vfx_layering_checks.gd").new().run(Callable(self,"check"))
+	load("res://tests/gear_rig_checks.gd").new().run(Callable(self,"check"))
 	print(JSON.stringify({"checks":count,"failures":failures,"rule_traces":report}))
 	quit(0 if failures.is_empty() else 1)

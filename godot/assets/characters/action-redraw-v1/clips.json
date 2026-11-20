@@ -1,534 +1,603 @@
 {
-  "hero-dodge": {
-    "size": [
-      452,
-      448
-    ],
-    "columns": 3,
-    "root": [
-      228,
-      425
-    ],
-    "scale": 0.2
-  },
-  "thor-walk": {
-    "size": [
-      444,
-      446
-    ],
-    "columns": 3,
-    "root": [
-      270,
-      425
-    ],
-    "scale": 0.45
-  },
-  "thor-swing-v2": {
-    "size": [
-      496,
-      444
-    ],
-    "columns": 3,
-    "root": [
-      255,
-      385
-    ],
-    "scale": 0.59
-  },
-  "thor-throw": {
-    "size": [
-      518,
-      470
-    ],
-    "columns": 3,
-    "root": [
-      303,
-      440
-    ],
-    "scale": 0.52
-  },
-  "thor-lightning": {
-    "size": [
-      444,
-      480
-    ],
-    "columns": 3,
-    "root": [
-      255,
-      440
-    ],
-    "scale": 0.5
-  },
-  "hero-run-lower": {
-    "size": [
-      442,
-      445
-    ],
-    "columns": 4,
-    "roots": [
-      [
-        235,
-        128
-      ],
-      [
-        245,
-        124
-      ],
-      [
-        220,
-        130
-      ],
-      [
-        230,
-        126
-      ],
-      [
-        235,
-        85
-      ],
-      [
-        245,
-        84
-      ],
-      [
-        220,
-        87
-      ],
-      [
-        230,
-        84
-      ]
-    ],
-    "scale": 0.11,
-    "anchor_kind": "reviewed lower belt edge / matching waist seam",
-    "identity_reference": "assets/characters/child/down-archery-v3.png"
-  },
-  "hero-archery-upper": {
-    "size": [
-      470,
-      468
-    ],
-    "columns": 4,
-    "roots": [
-      [
-        272,
-        409
-      ],
-      [
-        248,
-        409
-      ],
-      [
-        236,
-        409
-      ],
-      [
-        206,
-        409
-      ],
-      [
-        256,
-        352
-      ],
-      [
-        248,
-        352
-      ],
-      [
-        237,
-        353
-      ],
-      [
-        249,
-        351
-      ]
-    ],
-    "scale": 0.172,
-    "anchor_kind": "reviewed lower belt edge / matching waist seam",
-    "identity_reference": "assets/characters/child/down-archery-v3.png",
-    "muzzle_frame": 3,
-    "muzzle_px": [
-      451,
-      277
-    ],
-    "grip": {
-      "x": 42.14,
-      "y": -52.704
-    }
-  },
-  "hero-skills-upper": {
-    "size": [
-      470,
-      469
-    ],
-    "columns": 4,
-    "roots": [
-      [
-        255,
-        437
-      ],
-      [
-        211,
-        437
-      ],
-      [
-        226,
-        437
-      ],
-      [
-        226,
-        437
-      ],
-      [
-        260,
-        381
-      ],
-      [
-        249,
-        383
-      ],
-      [
-        248,
-        382
-      ],
-      [
-        255,
-        384
-      ]
-    ],
-    "scale": 0.178,
-    "anchor_kind": "reviewed lower belt edge / matching waist seam",
-    "identity_reference": "assets/characters/child/down-archery-v3.png"
-  },
   "hero-archery-left": {
-    "size": [
-      456,
-      450
-    ],
-    "columns": 4,
-    "roots": [
-      [
-        250,
-        406
-      ],
-      [
-        250,
-        407
-      ],
-      [
-        232,
-        408
-      ],
-      [
-        226,
-        405
-      ]
-    ],
-    "scale": 0.204,
-    "anchor_kind": "reviewed lower belt edge / matching waist seam",
-    "identity_reference": "assets/characters/child/down-archery-v3.png",
-    "muzzle_frame": 1,
-    "muzzle_px": [
-      27,
-      281
-    ],
+    "anchor_kind": "waist line measured from alpha bounds",
+    "columns": 4.0,
     "grip": {
       "x": -45.492,
       "y": -55.704
-    }
-  },
-  "hero-archery-up": {
-    "size": [
-      459,
-      453
+    },
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "muzzle_frame": 1.0,
+    "muzzle_px": [
+      27.0,
+      281.0
     ],
-    "columns": 4,
     "roots": [
       [
-        245,
-        339
+        250.0,
+        406.0
       ],
       [
-        244,
-        339
+        250.0,
+        407.0
       ],
       [
-        243,
-        350
+        232.0,
+        408.0
       ],
       [
-        245,
-        350
+        226.0,
+        405.0
       ]
     ],
-    "scale": 0.24,
-    "anchor_kind": "reviewed lower belt edge / matching waist seam",
-    "identity_reference": "assets/characters/child/down-archery-v3.png",
-    "head_rects": [
-      [
-        145,
-        105,
-        195,
-        181
-      ],
-      [
-        140,
-        105,
-        198,
-        181
-      ],
-      [
-        145,
-        118,
-        193,
-        172
-      ],
-      [
-        145,
-        118,
-        193,
-        172
-      ]
+    "scale": 0.204,
+    "size": [
+      456.0,
+      450.0
     ],
-    "muzzle_frame": 1,
-    "muzzle_px": [
-      228,
-      77
-    ],
+    "waistLine": [
+      423.0,
+      423.0,
+      423.0,
+      443.0
+    ]
+  },
+  "hero-archery-up": {
+    "anchor_kind": "waist line measured from alpha bounds",
+    "columns": 4.0,
     "grip": {
       "x": -3.84,
       "y": -92.88
-    }
-  },
-  "hero-skills-direction-0": {
-    "size": [
-      367,
-      388
+    },
+    "head_rects": [
+      [
+        145.0,
+        105.0,
+        195.0,
+        181.0
+      ],
+      [
+        140.0,
+        105.0,
+        198.0,
+        181.0
+      ],
+      [
+        145.0,
+        118.0,
+        193.0,
+        172.0
+      ],
+      [
+        145.0,
+        118.0,
+        193.0,
+        172.0
+      ]
     ],
-    "columns": 4,
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "muzzle_frame": 1.0,
+    "muzzle_px": [
+      228.0,
+      77.0
+    ],
     "roots": [
       [
-        170,
-        323
+        245.0,
+        339.0
       ],
       [
-        232,
-        356
+        244.0,
+        339.0
       ],
       [
-        213,
-        303
+        243.0,
+        350.0
       ],
       [
-        202,
-        252
+        245.0,
+        350.0
+      ]
+    ],
+    "scale": 0.24,
+    "size": [
+      459.0,
+      453.0
+    ],
+    "waistLine": [
+      355.0,
+      352.0,
+      360.0,
+      362.0
+    ]
+  },
+  "hero-archery-upper": {
+    "anchor_kind": "waist line measured from alpha bounds",
+    "columns": 4.0,
+    "grip": {
+      "x": 42.14,
+      "y": -52.704
+    },
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "muzzle_frame": 3.0,
+    "muzzle_px": [
+      451.0,
+      277.0
+    ],
+    "roots": [
+      [
+        272.0,
+        409.0
+      ],
+      [
+        248.0,
+        409.0
+      ],
+      [
+        236.0,
+        409.0
+      ],
+      [
+        206.0,
+        409.0
+      ],
+      [
+        256.0,
+        352.0
+      ],
+      [
+        248.0,
+        352.0
+      ],
+      [
+        237.0,
+        353.0
+      ],
+      [
+        249.0,
+        351.0
+      ]
+    ],
+    "scale": 0.172,
+    "size": [
+      470.0,
+      468.0
+    ],
+    "waistLine": [
+      465.0,
+      437.0,
+      444.0,
+      436.0,
+      395.0,
+      385.0,
+      383.0,
+      415.0
+    ]
+  },
+  "hero-back-full": {
+    "anchor_kind": "waist line measured from alpha bounds",
+    "columns": 4.0,
+    "frame_count": 4.0,
+    "head_rects": [
+      [
+        252.0,
+        247.0,
+        292.0,
+        292.0
+      ],
+      [
+        241.0,
+        285.0,
+        292.0,
+        292.0
+      ],
+      [
+        244.0,
+        277.0,
+        292.0,
+        292.0
+      ],
+      [
+        246.0,
+        261.0,
+        292.0,
+        292.0
+      ]
+    ],
+    "root": [
+      384.0,
+      960.0
+    ],
+    "scale": 0.12,
+    "size": [
+      768.0,
+      1024.0
+    ],
+    "source": "assets/characters/action-redraw-v1/back-proportion-v1/hero-back-full.png",
+    "waistLine": [
+      956.0
+    ]
+  },
+  "hero-back-walk": {
+    "anchor_kind": "waist line measured from alpha bounds",
+    "columns": 4.0,
+    "distance_per_frame": 22.0,
+    "frame_count": 8.0,
+    "head_rects": [
+      [
+        252.0,
+        241.0,
+        292.0,
+        292.0
+      ],
+      [
+        252.0,
+        241.0,
+        292.0,
+        292.0
+      ],
+      [
+        252.0,
+        241.0,
+        292.0,
+        292.0
+      ],
+      [
+        252.0,
+        241.0,
+        292.0,
+        292.0
+      ],
+      [
+        252.0,
+        241.0,
+        292.0,
+        292.0
+      ],
+      [
+        252.0,
+        241.0,
+        292.0,
+        292.0
+      ],
+      [
+        252.0,
+        241.0,
+        292.0,
+        292.0
+      ],
+      [
+        252.0,
+        241.0,
+        292.0,
+        292.0
+      ]
+    ],
+    "root": [
+      384.0,
+      960.0
+    ],
+    "scale": 0.12,
+    "size": [
+      768.0,
+      1024.0
+    ],
+    "source": "assets/characters/action-redraw-v1/back-proportion-v1/hero-back-walk.png",
+    "waistLine": [
+      995.0
+    ]
+  },
+  "hero-dodge": {
+    "anchor_kind": "waist line measured from alpha bounds",
+    "columns": 3.0,
+    "root": [
+      228.0,
+      425.0
+    ],
+    "scale": 0.2,
+    "size": [
+      452.0,
+      448.0
+    ],
+    "waistLine": [
+      441.0
+    ]
+  },
+  "hero-run-lower": {
+    "anchor_kind": "waist line measured from alpha bounds",
+    "columns": 4.0,
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "roots": [
+      [
+        235.0,
+        128.0
+      ],
+      [
+        245.0,
+        124.0
+      ],
+      [
+        220.0,
+        130.0
+      ],
+      [
+        230.0,
+        126.0
+      ],
+      [
+        235.0,
+        85.0
+      ],
+      [
+        245.0,
+        84.0
+      ],
+      [
+        220.0,
+        87.0
+      ],
+      [
+        230.0,
+        84.0
+      ]
+    ],
+    "scale": 0.11,
+    "size": [
+      442.0,
+      445.0
+    ],
+    "waistLine": [
+      136.0,
+      135.0,
+      139.0,
+      134.0,
+      98.0,
+      96.0,
+      99.0,
+      97.0
+    ],
+    "waist_px": [
+      136.0,
+      135.0,
+      139.0,
+      134.0,
+      98.0,
+      96.0,
+      99.0,
+      97.0
+    ]
+  },
+  "hero-skills-direction-0": {
+    "anchor_kind": "waist line measured from alpha bounds",
+    "columns": 4.0,
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "roots": [
+      [
+        170.0,
+        323.0
+      ],
+      [
+        232.0,
+        356.0
+      ],
+      [
+        213.0,
+        303.0
+      ],
+      [
+        202.0,
+        252.0
       ]
     ],
     "scale": 0.213,
-    "anchor_kind": "reviewed lower belt edge / matching waist seam",
-    "identity_reference": "assets/characters/child/down-archery-v3.png"
+    "size": [
+      367.0,
+      388.0
+    ],
+    "waistLine": [
+      339.0,
+      374.0,
+      302.0,
+      257.0
+    ]
   },
   "hero-skills-direction-1": {
-    "size": [
-      367,
-      388
-    ],
-    "columns": 4,
+    "anchor_kind": "waist line measured from alpha bounds",
+    "columns": 4.0,
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
     "roots": [
       [
-        170,
-        323
+        170.0,
+        323.0
       ],
       [
-        182,
-        358
+        182.0,
+        358.0
       ],
       [
-        187,
-        305
+        187.0,
+        305.0
       ],
       [
-        180,
-        252
+        180.0,
+        252.0
       ]
     ],
     "scale": 0.2,
-    "anchor_kind": "reviewed lower belt edge / matching waist seam",
-    "identity_reference": "assets/characters/child/down-archery-v3.png"
+    "size": [
+      367.0,
+      388.0
+    ],
+    "waistLine": [
+      340.0,
+      366.0,
+      308.0,
+      257.0
+    ]
   },
   "hero-skills-direction-2": {
-    "size": [
-      367,
-      388
-    ],
-    "columns": 4,
+    "anchor_kind": "waist line measured from alpha bounds",
+    "columns": 4.0,
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
     "roots": [
       [
-        158,
-        323
+        158.0,
+        323.0
       ],
       [
-        138,
-        358
+        138.0,
+        358.0
       ],
       [
-        149,
-        306
+        149.0,
+        306.0
       ],
       [
-        152,
-        252
+        152.0,
+        252.0
       ]
     ],
     "scale": 0.21,
-    "anchor_kind": "reviewed lower belt edge / matching waist seam",
-    "identity_reference": "assets/characters/child/down-archery-v3.png"
+    "size": [
+      367.0,
+      388.0
+    ],
+    "waistLine": [
+      336.0,
+      377.0,
+      306.0,
+      256.0
+    ]
   },
   "hero-skills-direction-3": {
-    "size": [
-      367,
-      388
-    ],
-    "columns": 3,
+    "anchor_kind": "waist line measured from alpha bounds",
+    "columns": 3.0,
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
     "roots": [
       [
-        152,
-        358
+        152.0,
+        358.0
       ],
       [
-        153,
-        311
+        153.0,
+        311.0
       ],
       [
-        156,
-        252
+        156.0,
+        252.0
       ]
     ],
     "scale": 0.21,
-    "anchor_kind": "reviewed lower belt edge / matching waist seam",
-    "identity_reference": "assets/characters/child/down-archery-v3.png"
-  },
-  "hero-back-full": {
     "size": [
-      768,
-      1024
+      367.0,
+      388.0
     ],
-    "columns": 4,
-    "root": [
-      384,
-      960
-    ],
-    "scale": 0.12,
-    "waist_y": [
-      720.0,
-      720.0,
-      720.0,
-      720.0
-    ],
-    "head_rects": [
+    "waistLine": [
+      384.0,
+      332.0,
+      273.0
+    ]
+  },
+  "hero-skills-upper": {
+    "anchor_kind": "waist line measured from alpha bounds",
+    "columns": 4.0,
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "roots": [
       [
-        252,
-        247,
-        292,
-        292
+        255.0,
+        437.0
       ],
       [
-        241,
-        285,
-        292,
-        292
+        211.0,
+        437.0
       ],
       [
-        244,
-        277,
-        292,
-        292
+        226.0,
+        437.0
       ],
       [
-        246,
-        261,
-        292,
-        292
+        226.0,
+        437.0
+      ],
+      [
+        260.0,
+        381.0
+      ],
+      [
+        249.0,
+        383.0
+      ],
+      [
+        248.0,
+        382.0
+      ],
+      [
+        255.0,
+        384.0
       ]
     ],
-    "frame_count": 4,
-    "source": "assets/characters/action-redraw-v1/back-proportion-v1/hero-back-full.png",
-    "anchor_kind": "shared unchanged rule foot origin; original lower-body world scale retained"
-  },
-  "hero-back-walk": {
+    "scale": 0.178,
     "size": [
-      768,
-      1024
+      470.0,
+      469.0
     ],
-    "columns": 4,
+    "waistLine": [
+      456.0,
+      463.0,
+      461.0,
+      461.0,
+      384.0,
+      383.0,
+      384.0,
+      391.0
+    ]
+  },
+  "thor-lightning": {
+    "columns": 3.0,
     "root": [
-      384,
-      960
+      255.0,
+      440.0
     ],
-    "scale": 0.12,
-    "waist_y": [
-      713.3625,
-      713.3625,
-      713.3625,
-      713.3625,
-      713.3625,
-      713.3625,
-      713.3625,
-      713.3625
+    "scale": 0.5,
+    "size": [
+      444.0,
+      480.0
+    ]
+  },
+  "thor-swing-v2": {
+    "columns": 3.0,
+    "root": [
+      255.0,
+      385.0
     ],
-    "head_rects": [
-      [
-        252,
-        241,
-        292,
-        292
-      ],
-      [
-        252,
-        241,
-        292,
-        292
-      ],
-      [
-        252,
-        241,
-        292,
-        292
-      ],
-      [
-        252,
-        241,
-        292,
-        292
-      ],
-      [
-        252,
-        241,
-        292,
-        292
-      ],
-      [
-        252,
-        241,
-        292,
-        292
-      ],
-      [
-        252,
-        241,
-        292,
-        292
-      ],
-      [
-        252,
-        241,
-        292,
-        292
-      ]
+    "scale": 0.59,
+    "size": [
+      496.0,
+      444.0
+    ]
+  },
+  "thor-throw": {
+    "columns": 3.0,
+    "root": [
+      303.0,
+      440.0
     ],
-    "frame_count": 8,
-    "source": "assets/characters/action-redraw-v1/back-proportion-v1/hero-back-walk.png",
-    "anchor_kind": "shared unchanged rule foot origin; original lower-body world scale retained",
-    "distance_per_frame": 22.0
+    "scale": 0.52,
+    "size": [
+      518.0,
+      470.0
+    ]
+  },
+  "thor-walk": {
+    "columns": 3.0,
+    "root": [
+      270.0,
+      425.0
+    ],
+    "scale": 0.45,
+    "size": [
+      444.0,
+      446.0
+    ]
   }
 }

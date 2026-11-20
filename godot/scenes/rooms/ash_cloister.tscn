@@ -39,13 +39,13 @@ texture = ExtResource("forest")
 texture_repeat = 2
 [node name="RoomFloor" type="Polygon2D" parent="Ground"]
 z_index = -50
-polygon = PackedVector2Array(140, 860, 140, 540, 710, 540, 710, 210, 1050, 180, 1310, 210, 1310, 860, 980, 900, 760, 860)
+polygon = PackedVector2Array(140, 845, 140, 560, 175, 540, 625, 540, 710, 455, 710, 235, 745, 210, 1050, 180, 1280, 210, 1310, 245, 1310, 840, 1275, 865, 980, 900, 760, 860)
 texture = ExtResource("path")
 texture_repeat = 2
 [node name="Walkable" type="Node2D" parent="."]
 visible = false
 [node name="Floor" type="Polygon2D" parent="Walkable"]
-polygon = PackedVector2Array(140, 860, 140, 540, 710, 540, 710, 210, 1050, 180, 1310, 210, 1310, 860, 980, 900, 760, 860)
+polygon = PackedVector2Array(140, 845, 140, 560, 175, 540, 625, 540, 710, 455, 710, 235, 745, 210, 1050, 180, 1280, 210, 1310, 245, 1310, 840, 1275, 865, 980, 900, 760, 860)
 [node name="Metrics" type="Node2D" parent="."]
 position = Vector2(720,520)
 script = ExtResource("item")
@@ -58,9 +58,9 @@ script = ExtResource("item")
 category = "spawn"
 size = Vector2(40,30)
 [node name="InnerCornerWall" parent="." instance=ExtResource("prop")]
-position = Vector2(690,475)
+position = Vector2(645,445)
 category = "obstacle"
-size = Vector2(130,30)
+size = Vector2(115,26)
 texture_asset = ExtResource("wall_east")
 render_width = 210.0
 obstacle_kind = "wall"

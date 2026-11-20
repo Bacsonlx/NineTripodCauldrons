@@ -71,18 +71,22 @@ func textured_polygon(points: PackedVector2Array,colors: PackedColorArray) -> vo
 
 func _draw() -> void:
 	if path_texture==null: return
-	# 在可走范围外扩出有细碎轮廓的透明带，不改变规则碰撞边界。
+	var is_room: bool = get_parent()!=null and get_parent().get("room_id")!=null
+	var effective_blend: float = minf(blend_width,10.0) if is_room else blend_width
+	# 正式房间缩小外扩过渡宽度，避免视觉路面大幅超出真实可行走边界形成空气墙错觉。
 	for edge in edges:
 		var divisions: int = maxi(1,ceili(edge[0].distance_to(edge[1])/18.0))
 		for index in divisions:
 			var a: Vector2 = edge[0].lerp(edge[1],float(index)/divisions)
 			var b: Vector2 = edge[0].lerp(edge[1],float(index+1)/divisions)
-			var wa: float = blend_width*(0.8+0.2*sin(a.x*0.19+a.y*0.27))
-			var wb: float = blend_width*(0.8+0.2*sin(b.x*0.19+b.y*0.27))
+			var wa: float = effective_blend*(0.8+0.2*sin(a.x*0.19+a.y*0.27))
+			var wb: float = effective_blend*(0.8+0.2*sin(b.x*0.19+b.y*0.27))
 			textured_polygon(PackedVector2Array([a,b,b+edge[2]*wb,a+edge[2]*wa]),PackedColorArray([Color.WHITE,Color.WHITE,Color(1,1,1,0),Color(1,1,1,0)]))
+			if is_room:
+				draw_polygon(PackedVector2Array([a-edge[2]*4.0,b-edge[2]*4.0,b+edge[2]*(wb+4.0),a+edge[2]*(wa+4.0)]),PackedColorArray([Color(0.06,0.08,0.04,0.0),Color(0.06,0.08,0.04,0.0),Color(0.06,0.08,0.04,0.38),Color(0.06,0.08,0.04,0.38)]))
 		var fan: int = 16
 		for index in fan:
-			var a: Vector2 = edge[0]+Vector2.from_angle(TAU*index/fan)*blend_width*0.8
-			var b: Vector2 = edge[0]+Vector2.from_angle(TAU*(index+1)/fan)*blend_width*0.8
+			var a: Vector2 = edge[0]+Vector2.from_angle(TAU*index/fan)*effective_blend*0.8
+			var b: Vector2 = edge[0]+Vector2.from_angle(TAU*(index+1)/fan)*effective_blend*0.8
 			textured_polygon(PackedVector2Array([edge[0],a,b]),PackedColorArray([Color.WHITE,Color(1,1,1,0),Color(1,1,1,0)]))
 	for polygon in roads: textured_polygon(polygon,PackedColorArray([Color.WHITE]))

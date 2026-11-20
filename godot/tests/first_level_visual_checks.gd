@@ -76,6 +76,8 @@ func run() -> void:
 	game.toggle_overview()
 	check(not game.overview and game.view_zoom>=1.0,"可从全图回到角色跟随")
 	load("res://tests/player_art_checks.gd").new().run(game,Callable(self,"check"))
+	load("res://tests/run_detail_probe.gd").new().run(game,Callable(self,"check"))
+	load("res://tests/waist_alignment_checks.gd").new().run(game,Callable(self,"check"))
 	game.free()
 	print(JSON.stringify({"first_level_visual_checks":checks,"environment_instances":assets,"failures":failures}))
 	quit(0 if failures.is_empty() else 1)

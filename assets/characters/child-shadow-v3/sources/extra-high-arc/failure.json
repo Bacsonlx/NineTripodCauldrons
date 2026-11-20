@@ -1,0 +1,17 @@
+{
+  "schema": "jiuding.imagegen.failure.v1",
+  "date": "2026-11-17",
+  "tool": "image_gen.imagegen",
+  "actual_model": null,
+  "cost_usd": null,
+  "status": "failed-no-image",
+  "http_status": 400,
+  "safety_violations": [
+    "violence"
+  ],
+  "request_id": "6b94889e-7576-4e7a-b6e9-a3591f3d3b0a",
+  "prompt_file": "prompt.txt",
+  "actual_attached_reference": "output/art/CHR-001/2026-11-17-multistate-v3/art/neutral-four-views.png",
+  "response": "Your request was rejected by the safety system.",
+  "followup": "No retry to bypass refusal. Root may reuse same-version normal archery pose for E; no independent high-arc art was produced."
+}

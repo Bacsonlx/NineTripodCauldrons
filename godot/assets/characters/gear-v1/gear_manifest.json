@@ -1,0 +1,94 @@
+{
+  "pieces": [
+    {
+      "file": "training-bow-hand.png",
+      "source": "training-bow.png",
+      "source_content": [
+        393,
+        1138
+      ],
+      "output": [
+        73,
+        210
+      ],
+      "world_h": 42.0,
+      "world_w": 14.6,
+      "mirrored": false
+    },
+    {
+      "file": "cloth-shoes-foot.png",
+      "source": "cloth-shoes.png",
+      "source_content": [
+        924,
+        826
+      ],
+      "output": [
+        163,
+        145
+      ],
+      "world_h": 15.95,
+      "world_w": 17.93,
+      "mirrored": false
+    },
+    {
+      "file": "ram-horn-head.png",
+      "source": "ram-horn.png",
+      "source_content": [
+        719,
+        1037
+      ],
+      "output": [
+        113,
+        164
+      ],
+      "world_h": 18.04,
+      "world_w": 12.43,
+      "mirrored": false
+    },
+    {
+      "file": "tiger-fang-body.png",
+      "source": "tiger-fang.png",
+      "source_content": [
+        429,
+        1056
+      ],
+      "output": [
+        44,
+        109
+      ],
+      "world_h": 11.99,
+      "world_w": 4.84,
+      "mirrored": false
+    },
+    {
+      "file": "flint-fire-hand.png",
+      "source": "flint-fire.png",
+      "source_content": [
+        793,
+        993
+      ],
+      "output": [
+        80,
+        100
+      ],
+      "world_h": 11.0,
+      "world_w": 8.8,
+      "mirrored": false
+    },
+    {
+      "file": "rat-whisker-back.png",
+      "source": "rat-whisker.png",
+      "source_content": [
+        958,
+        817
+      ],
+      "output": [
+        149,
+        127
+      ],
+      "world_h": 13.97,
+      "world_w": 16.39,
+      "mirrored": false
+    }
+  ]
+}

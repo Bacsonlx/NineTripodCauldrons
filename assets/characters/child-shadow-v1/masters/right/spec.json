@@ -1,0 +1,22 @@
+{
+  "schema": "generate2dsprite.master_spec.v1",
+  "name": "child-shadow-right",
+  "subject": "a compact Chinese child hero, full body",
+  "identity": "compact Chinese child hero in the approved leather shadow-puppet style, black swept hair in a red-tied high ponytail, short red shoulder scarf, ivory elbow-sleeve tunic with dark forearm cuffs and continuous hip hem, one dark brown belt with a small round brass buckle, indigo loose trousers, cream crisscross ankle wraps and small dark thin-soled cloth shoes",
+  "pose": "relaxed balanced neutral stance; hands at sides",
+  "recap": "compact Chinese child hero in the approved leather shadow-puppet style, black swept hair in a red-tied high ponytail, short red shoulder scarf, ivory elbow-sleeve tunic with dark forearm cuffs and continuous hip hem, one dark brown belt with a small round brass buckle, indigo loose trousers, cream crisscross ankle wraps and small dark thin-soled cloth shoes",
+  "facing": "right",
+  "facing_parts": null,
+  "view": "fixed elevated 2D game camera",
+  "class": "hero",
+  "finish": "hd",
+  "key": "#FF00FF",
+  "genre": null,
+  "pronoun": "they",
+  "identity_ref": null,
+  "style_ref": null,
+  "allowed_text": null,
+  "extra_bans": [],
+  "opaque_parts": null,
+  "extra": "Approved static view of one shared identity; not an animation frame."
+}

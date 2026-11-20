@@ -1,0 +1,1977 @@
+{
+  "schema": "jiuding.manual-source-registration.v1",
+  "author": "GPT-6.1 Sol orchestration; manual estimates",
+  "precision": "Approximate, typically +-8 source px; hand/bow estimates +-12px; not anatomically validated. Belt midline, not buckle.",
+  "coordinateSystem": "cell-local pixels, box uses [left,top,right,bottom] with exclusive right/bottom",
+  "sheets": {
+    "right": {
+      "file": "right-actions-v1.png",
+      "imageSize": [
+        1254,
+        1254
+      ],
+      "sha256": "2781a663d87a0ba218448e73b8d6fec82ad2a48d750adb2e16c2ccf8130c900b",
+      "grid": [
+        4,
+        4
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "phase": "contact_near",
+          "box": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "waist": [
+            150,
+            159
+          ],
+          "groundY": 301,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 1,
+          "phase": "down_near",
+          "box": [
+            314,
+            0,
+            627,
+            314
+          ],
+          "waist": [
+            151,
+            160
+          ],
+          "groundY": 301,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 2,
+          "phase": "passing_near",
+          "box": [
+            627,
+            0,
+            940,
+            314
+          ],
+          "waist": [
+            155,
+            161
+          ],
+          "groundY": 301,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 3,
+          "phase": "flight_near",
+          "box": [
+            940,
+            0,
+            1254,
+            314
+          ],
+          "waist": [
+            156,
+            159
+          ],
+          "groundY": 301,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 4,
+          "phase": "contact_far",
+          "box": [
+            0,
+            314,
+            314,
+            627
+          ],
+          "waist": [
+            149,
+            160
+          ],
+          "groundY": 300,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 5,
+          "phase": "down_far",
+          "box": [
+            314,
+            314,
+            627,
+            627
+          ],
+          "waist": [
+            153,
+            158
+          ],
+          "groundY": 300,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 6,
+          "phase": "passing_far",
+          "box": [
+            627,
+            314,
+            940,
+            627
+          ],
+          "waist": [
+            153,
+            158
+          ],
+          "groundY": 300,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 7,
+          "phase": "flight_far",
+          "box": [
+            940,
+            314,
+            1254,
+            627
+          ],
+          "waist": [
+            155,
+            158
+          ],
+          "groundY": 300,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 8,
+          "phase": "ready",
+          "box": [
+            0,
+            627,
+            314,
+            940
+          ],
+          "waist": [
+            158,
+            160
+          ],
+          "groundY": 295,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            214,
+            186
+          ],
+          "drawHand": [
+            150,
+            193
+          ],
+          "bowTop": [
+            227,
+            98
+          ],
+          "bowBottom": [
+            188,
+            254
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 9,
+          "phase": "nock",
+          "box": [
+            314,
+            627,
+            627,
+            940
+          ],
+          "waist": [
+            159,
+            160
+          ],
+          "groundY": 295,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            229,
+            160
+          ],
+          "drawHand": [
+            179,
+            151
+          ],
+          "bowTop": [
+            224,
+            67
+          ],
+          "bowBottom": [
+            191,
+            235
+          ],
+          "arrowTip": [
+            251,
+            147
+          ],
+          "arrowVisible": true,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 10,
+          "phase": "half_draw",
+          "box": [
+            627,
+            627,
+            940,
+            940
+          ],
+          "waist": [
+            163,
+            158
+          ],
+          "groundY": 295,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            240,
+            124
+          ],
+          "drawHand": [
+            165,
+            124
+          ],
+          "bowTop": [
+            219,
+            37
+          ],
+          "bowBottom": [
+            204,
+            212
+          ],
+          "arrowTip": [
+            272,
+            117
+          ],
+          "arrowVisible": true,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 11,
+          "phase": "full_draw",
+          "box": [
+            940,
+            627,
+            1254,
+            940
+          ],
+          "waist": [
+            158,
+            158
+          ],
+          "groundY": 295,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            246,
+            116
+          ],
+          "drawHand": [
+            149,
+            103
+          ],
+          "bowTop": [
+            226,
+            23
+          ],
+          "bowBottom": [
+            219,
+            205
+          ],
+          "arrowTip": [
+            282,
+            105
+          ],
+          "arrowVisible": true,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 12,
+          "phase": "release",
+          "box": [
+            0,
+            940,
+            314,
+            1254
+          ],
+          "waist": [
+            158,
+            158
+          ],
+          "groundY": 302,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            247,
+            121
+          ],
+          "drawHand": [
+            115,
+            99
+          ],
+          "bowTop": [
+            227,
+            30
+          ],
+          "bowBottom": [
+            219,
+            217
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 13,
+          "phase": "follow_through",
+          "box": [
+            314,
+            940,
+            627,
+            1254
+          ],
+          "waist": [
+            157,
+            158
+          ],
+          "groundY": 302,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            246,
+            123
+          ],
+          "drawHand": [
+            107,
+            99
+          ],
+          "bowTop": [
+            225,
+            31
+          ],
+          "bowBottom": [
+            222,
+            217
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 14,
+          "phase": "lower_bow",
+          "box": [
+            627,
+            940,
+            940,
+            1254
+          ],
+          "waist": [
+            157,
+            158
+          ],
+          "groundY": 302,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            225,
+            151
+          ],
+          "drawHand": [
+            122,
+            150
+          ],
+          "bowTop": [
+            227,
+            64
+          ],
+          "bowBottom": [
+            211,
+            236
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 15,
+          "phase": "recover",
+          "box": [
+            940,
+            940,
+            1254,
+            1254
+          ],
+          "waist": [
+            158,
+            160
+          ],
+          "groundY": 302,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            203,
+            192
+          ],
+          "drawHand": [
+            130,
+            192
+          ],
+          "bowTop": [
+            232,
+            108
+          ],
+          "bowBottom": [
+            175,
+            272
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        }
+      ],
+      "warnings": [
+        "Run cycle near/far alternation not verified.",
+        "Weapons extend below waist: horizontal upper-body cut alone WILL amputate bow; retain weapon via hand/bow polygon or whole-body source.",
+        "Anatomy and grip markers are estimates, not engine acceptance.",
+        "Top-row hair touches image top: reject these run frames, use extra-run-right instead."
+      ]
+    },
+    "down": {
+      "file": "down-actions-v1.png",
+      "imageSize": [
+        1263,
+        1246
+      ],
+      "sha256": "4401c65835ad32dd81d1bd07e9779b7dea78f820aacdc3f27051083d236c29f8",
+      "grid": [
+        4,
+        4
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "phase": "contact_near",
+          "box": [
+            0,
+            0,
+            316,
+            312
+          ],
+          "waist": [
+            170,
+            170
+          ],
+          "groundY": 300,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 1,
+          "phase": "down_near",
+          "box": [
+            316,
+            0,
+            632,
+            312
+          ],
+          "waist": [
+            171,
+            174
+          ],
+          "groundY": 300,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 2,
+          "phase": "passing_near",
+          "box": [
+            632,
+            0,
+            947,
+            312
+          ],
+          "waist": [
+            172,
+            171
+          ],
+          "groundY": 300,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 3,
+          "phase": "flight_near",
+          "box": [
+            947,
+            0,
+            1263,
+            312
+          ],
+          "waist": [
+            172,
+            164
+          ],
+          "groundY": 300,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 4,
+          "phase": "contact_far",
+          "box": [
+            0,
+            312,
+            316,
+            623
+          ],
+          "waist": [
+            168,
+            172
+          ],
+          "groundY": 299,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 5,
+          "phase": "down_far",
+          "box": [
+            316,
+            312,
+            632,
+            623
+          ],
+          "waist": [
+            169,
+            176
+          ],
+          "groundY": 299,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 6,
+          "phase": "passing_far",
+          "box": [
+            632,
+            312,
+            947,
+            623
+          ],
+          "waist": [
+            170,
+            174
+          ],
+          "groundY": 299,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 7,
+          "phase": "flight_far",
+          "box": [
+            947,
+            312,
+            1263,
+            623
+          ],
+          "waist": [
+            172,
+            164
+          ],
+          "groundY": 299,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 8,
+          "phase": "ready",
+          "box": [
+            0,
+            623,
+            316,
+            934
+          ],
+          "waist": [
+            172,
+            162
+          ],
+          "groundY": 276,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            214,
+            191
+          ],
+          "drawHand": [
+            133,
+            187
+          ],
+          "bowTop": [
+            233,
+            85
+          ],
+          "bowBottom": [
+            185,
+            266
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 9,
+          "phase": "nock",
+          "box": [
+            316,
+            623,
+            632,
+            934
+          ],
+          "waist": [
+            172,
+            161
+          ],
+          "groundY": 276,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            212,
+            174
+          ],
+          "drawHand": [
+            153,
+            159
+          ],
+          "bowTop": [
+            232,
+            73
+          ],
+          "bowBottom": [
+            187,
+            266
+          ],
+          "arrowTip": [
+            186,
+            268
+          ],
+          "arrowVisible": true,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 10,
+          "phase": "half_draw",
+          "box": [
+            632,
+            623,
+            947,
+            934
+          ],
+          "waist": [
+            171,
+            161
+          ],
+          "groundY": 276,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            209,
+            160
+          ],
+          "drawHand": [
+            154,
+            131
+          ],
+          "bowTop": [
+            225,
+            59
+          ],
+          "bowBottom": [
+            201,
+            244
+          ],
+          "arrowTip": [
+            200,
+            217
+          ],
+          "arrowVisible": true,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 11,
+          "phase": "full_draw",
+          "box": [
+            947,
+            623,
+            1263,
+            934
+          ],
+          "waist": [
+            172,
+            162
+          ],
+          "groundY": 276,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            218,
+            136
+          ],
+          "drawHand": [
+            146,
+            106
+          ],
+          "bowTop": [
+            202,
+            27
+          ],
+          "bowBottom": [
+            204,
+            232
+          ],
+          "arrowTip": [
+            190,
+            195
+          ],
+          "arrowVisible": true,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 12,
+          "phase": "release",
+          "box": [
+            0,
+            934,
+            316,
+            1246
+          ],
+          "waist": [
+            172,
+            160
+          ],
+          "groundY": 279,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            215,
+            139
+          ],
+          "drawHand": [
+            133,
+            113
+          ],
+          "bowTop": [
+            209,
+            25
+          ],
+          "bowBottom": [
+            206,
+            225
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 13,
+          "phase": "follow_through",
+          "box": [
+            316,
+            934,
+            632,
+            1246
+          ],
+          "waist": [
+            172,
+            160
+          ],
+          "groundY": 279,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            217,
+            142
+          ],
+          "drawHand": [
+            140,
+            110
+          ],
+          "bowTop": [
+            211,
+            41
+          ],
+          "bowBottom": [
+            205,
+            232
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 14,
+          "phase": "lower_bow",
+          "box": [
+            632,
+            934,
+            947,
+            1246
+          ],
+          "waist": [
+            171,
+            160
+          ],
+          "groundY": 279,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            225,
+            166
+          ],
+          "drawHand": [
+            133,
+            165
+          ],
+          "bowTop": [
+            216,
+            64
+          ],
+          "bowBottom": [
+            202,
+            249
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 15,
+          "phase": "recover",
+          "box": [
+            947,
+            934,
+            1263,
+            1246
+          ],
+          "waist": [
+            172,
+            160
+          ],
+          "groundY": 279,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            219,
+            195
+          ],
+          "drawHand": [
+            134,
+            176
+          ],
+          "bowTop": [
+            246,
+            83
+          ],
+          "bowBottom": [
+            188,
+            268
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        }
+      ],
+      "warnings": [
+        "Run cycle near/far alternation not verified.",
+        "Weapons extend below waist: horizontal upper-body cut alone WILL amputate bow; retain weapon via hand/bow polygon or whole-body source.",
+        "Anatomy and grip markers are estimates, not engine acceptance."
+      ]
+    },
+    "left": {
+      "file": "left-actions-v1.png",
+      "imageSize": [
+        1246,
+        1263
+      ],
+      "sha256": "8363f0c22b6c10cba10442fc80b41d983b5c1e383786dde172f518d81af5f975",
+      "grid": [
+        4,
+        4
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "phase": "contact_near",
+          "box": [
+            0,
+            0,
+            312,
+            316
+          ],
+          "waist": [
+            166,
+            173
+          ],
+          "groundY": 303,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 1,
+          "phase": "down_near",
+          "box": [
+            312,
+            0,
+            623,
+            316
+          ],
+          "waist": [
+            167,
+            172
+          ],
+          "groundY": 303,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 2,
+          "phase": "passing_near",
+          "box": [
+            623,
+            0,
+            934,
+            316
+          ],
+          "waist": [
+            168,
+            166
+          ],
+          "groundY": 303,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 3,
+          "phase": "flight_near",
+          "box": [
+            934,
+            0,
+            1246,
+            316
+          ],
+          "waist": [
+            170,
+            166
+          ],
+          "groundY": 303,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 4,
+          "phase": "contact_far",
+          "box": [
+            0,
+            316,
+            312,
+            632
+          ],
+          "waist": [
+            167,
+            176
+          ],
+          "groundY": 303,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 5,
+          "phase": "down_far",
+          "box": [
+            312,
+            316,
+            623,
+            632
+          ],
+          "waist": [
+            168,
+            176
+          ],
+          "groundY": 303,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 6,
+          "phase": "passing_far",
+          "box": [
+            623,
+            316,
+            934,
+            632
+          ],
+          "waist": [
+            168,
+            171
+          ],
+          "groundY": 303,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 7,
+          "phase": "flight_far",
+          "box": [
+            934,
+            316,
+            1246,
+            632
+          ],
+          "waist": [
+            169,
+            168
+          ],
+          "groundY": 303,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 8,
+          "phase": "ready",
+          "box": [
+            0,
+            632,
+            312,
+            947
+          ],
+          "waist": [
+            169,
+            165
+          ],
+          "groundY": 289,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            121,
+            183
+          ],
+          "drawHand": [
+            194,
+            196
+          ],
+          "bowTop": [
+            106,
+            102
+          ],
+          "bowBottom": [
+            138,
+            249
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 9,
+          "phase": "nock",
+          "box": [
+            312,
+            632,
+            623,
+            947
+          ],
+          "waist": [
+            169,
+            165
+          ],
+          "groundY": 289,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            94,
+            165
+          ],
+          "drawHand": [
+            158,
+            148
+          ],
+          "bowTop": [
+            86,
+            85
+          ],
+          "bowBottom": [
+            116,
+            241
+          ],
+          "arrowTip": [
+            77,
+            166
+          ],
+          "arrowVisible": true,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 10,
+          "phase": "half_draw",
+          "box": [
+            623,
+            632,
+            934,
+            947
+          ],
+          "waist": [
+            169,
+            164
+          ],
+          "groundY": 289,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            71,
+            133
+          ],
+          "drawHand": [
+            171,
+            122
+          ],
+          "bowTop": [
+            93,
+            50
+          ],
+          "bowBottom": [
+            118,
+            225
+          ],
+          "arrowTip": [
+            39,
+            127
+          ],
+          "arrowVisible": true,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 11,
+          "phase": "full_draw",
+          "box": [
+            934,
+            632,
+            1246,
+            947
+          ],
+          "waist": [
+            169,
+            164
+          ],
+          "groundY": 289,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            66,
+            119
+          ],
+          "drawHand": [
+            176,
+            105
+          ],
+          "bowTop": [
+            105,
+            25
+          ],
+          "bowBottom": [
+            108,
+            215
+          ],
+          "arrowTip": [
+            22,
+            104
+          ],
+          "arrowVisible": true,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 12,
+          "phase": "release",
+          "box": [
+            0,
+            947,
+            312,
+            1263
+          ],
+          "waist": [
+            169,
+            168
+          ],
+          "groundY": 294,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            75,
+            129
+          ],
+          "drawHand": [
+            219,
+            113
+          ],
+          "bowTop": [
+            106,
+            38
+          ],
+          "bowBottom": [
+            99,
+            232
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 13,
+          "phase": "follow_through",
+          "box": [
+            312,
+            947,
+            623,
+            1263
+          ],
+          "waist": [
+            169,
+            168
+          ],
+          "groundY": 294,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            75,
+            130
+          ],
+          "drawHand": [
+            213,
+            113
+          ],
+          "bowTop": [
+            105,
+            47
+          ],
+          "bowBottom": [
+            92,
+            239
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 14,
+          "phase": "lower_bow",
+          "box": [
+            623,
+            947,
+            934,
+            1263
+          ],
+          "waist": [
+            169,
+            168
+          ],
+          "groundY": 294,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            83,
+            179
+          ],
+          "drawHand": [
+            184,
+            194
+          ],
+          "bowTop": [
+            78,
+            88
+          ],
+          "bowBottom": [
+            98,
+            251
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        },
+        {
+          "index": 15,
+          "phase": "recover",
+          "box": [
+            934,
+            947,
+            1246,
+            1263
+          ],
+          "waist": [
+            169,
+            167
+          ],
+          "groundY": 294,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            113,
+            203
+          ],
+          "drawHand": [
+            205,
+            213
+          ],
+          "bowTop": [
+            96,
+            131
+          ],
+          "bowBottom": [
+            125,
+            269
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true
+        }
+      ],
+      "warnings": [
+        "Run cycle near/far alternation not verified.",
+        "Weapons extend below waist: horizontal upper-body cut alone WILL amputate bow; retain weapon via hand/bow polygon or whole-body source.",
+        "Anatomy and grip markers are estimates, not engine acceptance."
+      ]
+    },
+    "up": {
+      "file": "up-actions-v1.png",
+      "imageSize": [
+        1254,
+        1254
+      ],
+      "sha256": "e0aab31e544b2c1870611aa87d23ec43094cfee92ac14dea51d98beaefb069ae",
+      "grid": [
+        4,
+        4
+      ],
+      "frames": [
+        {
+          "index": 0,
+          "phase": "contact_near",
+          "box": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "waist": [
+            159,
+            168
+          ],
+          "groundY": 299,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 1,
+          "phase": "down_near",
+          "box": [
+            314,
+            0,
+            627,
+            314
+          ],
+          "waist": [
+            158,
+            171
+          ],
+          "groundY": 299,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 2,
+          "phase": "passing_near",
+          "box": [
+            627,
+            0,
+            940,
+            314
+          ],
+          "waist": [
+            160,
+            166
+          ],
+          "groundY": 299,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 3,
+          "phase": "flight_near",
+          "box": [
+            940,
+            0,
+            1254,
+            314
+          ],
+          "waist": [
+            159,
+            160
+          ],
+          "groundY": 299,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 4,
+          "phase": "contact_far",
+          "box": [
+            0,
+            314,
+            314,
+            627
+          ],
+          "waist": [
+            161,
+            168
+          ],
+          "groundY": 298,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 5,
+          "phase": "down_far",
+          "box": [
+            314,
+            314,
+            627,
+            627
+          ],
+          "waist": [
+            160,
+            171
+          ],
+          "groundY": 298,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 6,
+          "phase": "passing_far",
+          "box": [
+            627,
+            314,
+            940,
+            627
+          ],
+          "waist": [
+            160,
+            166
+          ],
+          "groundY": 298,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 7,
+          "phase": "flight_far",
+          "box": [
+            940,
+            314,
+            1254,
+            627
+          ],
+          "waist": [
+            161,
+            160
+          ],
+          "groundY": 298,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": null,
+          "drawHand": null,
+          "bowTop": null,
+          "bowBottom": null,
+          "arrowTip": null,
+          "arrowVisible": false,
+          "gaitPhaseVerified": false
+        },
+        {
+          "index": 8,
+          "phase": "ready",
+          "box": [
+            0,
+            627,
+            314,
+            940
+          ],
+          "waist": [
+            159,
+            160
+          ],
+          "groundY": 290,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            111,
+            187
+          ],
+          "drawHand": [
+            206,
+            183
+          ],
+          "bowTop": [
+            115,
+            82
+          ],
+          "bowBottom": [
+            121,
+            255
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true,
+          "arrowNote": "Arrow/nock occluded or unreadable in rear view; visibility false is visual annotation, not intended phase."
+        },
+        {
+          "index": 9,
+          "phase": "nock",
+          "box": [
+            314,
+            627,
+            627,
+            940
+          ],
+          "waist": [
+            158,
+            160
+          ],
+          "groundY": 290,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            111,
+            126
+          ],
+          "drawHand": [
+            197,
+            140
+          ],
+          "bowTop": [
+            115,
+            31
+          ],
+          "bowBottom": [
+            126,
+            215
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true,
+          "arrowNote": "Arrow/nock occluded or unreadable in rear view; visibility false is visual annotation, not intended phase."
+        },
+        {
+          "index": 10,
+          "phase": "half_draw",
+          "box": [
+            627,
+            627,
+            940,
+            940
+          ],
+          "waist": [
+            158,
+            160
+          ],
+          "groundY": 290,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            97,
+            105
+          ],
+          "drawHand": [
+            202,
+            137
+          ],
+          "bowTop": [
+            122,
+            16
+          ],
+          "bowBottom": [
+            122,
+            185
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true,
+          "arrowNote": "Arrow/nock occluded or unreadable in rear view; visibility false is visual annotation, not intended phase."
+        },
+        {
+          "index": 11,
+          "phase": "full_draw",
+          "box": [
+            940,
+            627,
+            1254,
+            940
+          ],
+          "waist": [
+            159,
+            160
+          ],
+          "groundY": 290,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            87,
+            102
+          ],
+          "drawHand": [
+            218,
+            114
+          ],
+          "bowTop": [
+            110,
+            13
+          ],
+          "bowBottom": [
+            111,
+            183
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true,
+          "arrowNote": "Arrow/nock occluded or unreadable in rear view; visibility false is visual annotation, not intended phase."
+        },
+        {
+          "index": 12,
+          "phase": "release",
+          "box": [
+            0,
+            940,
+            314,
+            1254
+          ],
+          "waist": [
+            159,
+            161
+          ],
+          "groundY": 294,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            83,
+            112
+          ],
+          "drawHand": [
+            226,
+            107
+          ],
+          "bowTop": [
+            109,
+            19
+          ],
+          "bowBottom": [
+            101,
+            205
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true,
+          "arrowNote": "Arrow/nock occluded or unreadable in rear view; visibility false is visual annotation, not intended phase."
+        },
+        {
+          "index": 13,
+          "phase": "follow_through",
+          "box": [
+            314,
+            940,
+            627,
+            1254
+          ],
+          "waist": [
+            158,
+            161
+          ],
+          "groundY": 294,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            85,
+            115
+          ],
+          "drawHand": [
+            204,
+            101
+          ],
+          "bowTop": [
+            109,
+            24
+          ],
+          "bowBottom": [
+            101,
+            207
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true,
+          "arrowNote": "Arrow/nock occluded or unreadable in rear view; visibility false is visual annotation, not intended phase."
+        },
+        {
+          "index": 14,
+          "phase": "lower_bow",
+          "box": [
+            627,
+            940,
+            940,
+            1254
+          ],
+          "waist": [
+            158,
+            161
+          ],
+          "groundY": 294,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            101,
+            148
+          ],
+          "drawHand": [
+            219,
+            162
+          ],
+          "bowTop": [
+            106,
+            82
+          ],
+          "bowBottom": [
+            105,
+            238
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true,
+          "arrowNote": "Arrow/nock occluded or unreadable in rear view; visibility false is visual annotation, not intended phase."
+        },
+        {
+          "index": 15,
+          "phase": "recover",
+          "box": [
+            940,
+            940,
+            1254,
+            1254
+          ],
+          "waist": [
+            159,
+            161
+          ],
+          "groundY": 294,
+          "annotationConfidence": "manual-estimate",
+          "bowHand": [
+            111,
+            187
+          ],
+          "drawHand": [
+            211,
+            183
+          ],
+          "bowTop": [
+            109,
+            117
+          ],
+          "bowBottom": [
+            124,
+            252
+          ],
+          "arrowTip": null,
+          "arrowVisible": false,
+          "weaponBelowWaist": true,
+          "arrowNote": "Arrow/nock occluded or unreadable in rear view; visibility false is visual annotation, not intended phase."
+        }
+      ],
+      "warnings": [
+        "Run cycle near/far alternation not verified.",
+        "Weapons extend below waist: horizontal upper-body cut alone WILL amputate bow; retain weapon via hand/bow polygon or whole-body source.",
+        "Anatomy and grip markers are estimates, not engine acceptance.",
+        "Rear full-draw arrow direction does not read clearly; retain as candidate."
+      ]
+    }
+  }
+}

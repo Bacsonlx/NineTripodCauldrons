@@ -1,0 +1,87 @@
+{
+  "smith": {
+    "size": [
+      1199,
+      1312
+    ],
+    "bounds": [
+      33,
+      51,
+      1169,
+      1288
+    ],
+    "transparent_ratio": 0.7333073547061576,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  "child-turnaround": {
+    "size": [
+      2048,
+      768
+    ],
+    "bounds": [
+      0,
+      13,
+      2032,
+      748
+    ],
+    "transparent_ratio": 0.6277186075846354,
+    "alpha_extrema": [
+      0,
+      254
+    ]
+  },
+  "merchant": {
+    "size": [
+      1199,
+      1312
+    ],
+    "bounds": [
+      0,
+      17,
+      1183,
+      1312
+    ],
+    "transparent_ratio": 0.7201866647002584,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  "courtyard": {
+    "size": [
+      1586,
+      992
+    ],
+    "bounds": [
+      0,
+      0,
+      1586,
+      992
+    ],
+    "transparent_ratio": 0.0,
+    "alpha_extrema": [
+      255,
+      255
+    ]
+  },
+  "keeper": {
+    "size": [
+      1145,
+      1374
+    ],
+    "bounds": [
+      17,
+      16,
+      1125,
+      1359
+    ],
+    "transparent_ratio": 0.715079803970176,
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  }
+}

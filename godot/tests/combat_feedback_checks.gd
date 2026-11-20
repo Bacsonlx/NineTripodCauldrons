@@ -63,7 +63,9 @@ func run() -> void:
 	room.update({"aim":Vector2(400,800),"pierce":true},0.19)
 	var launched: Dictionary = room.snapshot()
 	game.present(launched,0)
-	var origin: Vector2 = Vector2(417,557)
+	check(not launched.arrows.is_empty(),"真实穿透技能确实生成投射物")
+	var arrow: Dictionary = launched.arrows[0]
+	var origin: Vector2 = Vector2(arrow.x,arrow.y)-Vector2.from_angle(arrow.angle)*900.0*arrow.age
 	check(effects.stamps.any(func(sprite: Sprite2D): return sprite.visible and sprite.position.distance_to(origin)<0.01 and sprite.region_rect.size.x*sprite.scale.x>=60),"向下穿透箭离弦当帧在技能真实发射点产生冲击")
 	var launch_count: int = effects.used
 	launched.paused=true

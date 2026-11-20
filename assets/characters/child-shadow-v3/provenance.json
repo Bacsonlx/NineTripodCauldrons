@@ -1,0 +1,226 @@
+{
+  "date": "2026-11-17",
+  "asset": "CHR-001 child-shadow-v3",
+  "purpose": "Finer full-body key poses; preserve approved shadow-puppet child identity; replace prior hinged-part motion art after integration review",
+  "orchestrator": "GPT-6.1 Sol",
+  "imageBackend": "Built-in image_gen; exact backend model and cost not returned",
+  "route": "host_image; no Runway, video or custom API",
+  "calls": [
+    {
+      "file": "sources/neutral-four-views.png",
+      "sha256": "b695e2f1b8e04d8d2ab14cb1dfae70f342338777c0c9dbd9fc52660f3f57066b",
+      "imageSize": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "tool": "image_gen.imagegen",
+      "art_source": "host_image",
+      "orchestrator": "GPT-6.1 Sol",
+      "image_backend_model": null,
+      "estimateUsd": null,
+      "prompt": "../../../output/art/CHR-001/2026-11-17-multistate-v3/art/neutral-prompt.txt",
+      "actualReferencedImages": [
+        "assets/characters/child-shadow-v1/approved-turnaround.png"
+      ],
+      "generatedOriginalPath": "/Users/linxin/.codex/generated_images/01a1e8f0-590b-7a70-be69-a110f99104ab/exec-03c7d4a7-8d53-444a-bd3d-2359f3218e2b.png",
+      "userVisualApproval": false
+    },
+    {
+      "file": "sources/right-actions-v1.png",
+      "sha256": "2781a663d87a0ba218448e73b8d6fec82ad2a48d750adb2e16c2ccf8130c900b",
+      "imageSize": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "tool": "image_gen.imagegen",
+      "art_source": "host_image",
+      "orchestrator": "GPT-6.1 Sol",
+      "image_backend_model": null,
+      "estimateUsd": null,
+      "prompt": "../../../output/art/CHR-001/2026-11-17-multistate-v3/art/right-prompt.txt",
+      "actualReferencedImages": [
+        "assets/characters/child-shadow-v3/sources/neutral-four-views.png"
+      ],
+      "generatedOriginalPath": "/Users/linxin/.codex/generated_images/01a1e8f0-590b-7a70-be69-a110f99104ab/exec-5a79a710-e9ea-4702-bb5d-751951ba9b52.png",
+      "userVisualApproval": false
+    },
+    {
+      "file": "sources/right-actions-v2.png",
+      "sha256": "a0ade991ce70cf72d1917fe3bc93c92e2fba8bb9285aa4dfcc905e98525e0f26",
+      "imageSize": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "tool": "image_gen.imagegen",
+      "art_source": "host_image",
+      "orchestrator": "GPT-6.1 Sol",
+      "image_backend_model": null,
+      "estimateUsd": null,
+      "prompt": "../../../output/art/CHR-001/2026-11-17-multistate-v3/art/right-revision-prompt.txt",
+      "actualReferencedImages": [
+        "output/art/CHR-001/2026-11-17-multistate-v3/art/right-actions-v1.png"
+      ],
+      "generatedOriginalPath": "/Users/linxin/.codex/generated_images/01a1e8f0-590b-7a70-be69-a110f99104ab/exec-fa699c5f-5386-40cb-9b48-f2af8473f7f3.png",
+      "userVisualApproval": false
+    },
+    {
+      "file": "sources/down-actions-v1.png",
+      "sha256": "4401c65835ad32dd81d1bd07e9779b7dea78f820aacdc3f27051083d236c29f8",
+      "imageSize": [
+        1263,
+        1246
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "tool": "image_gen.imagegen",
+      "art_source": "host_image",
+      "orchestrator": "GPT-6.1 Sol",
+      "image_backend_model": null,
+      "estimateUsd": null,
+      "prompt": "../../../output/art/CHR-001/2026-11-17-multistate-v3/art/down-prompt.txt",
+      "actualReferencedImages": [
+        "assets/characters/child-shadow-v3/sources/neutral-four-views.png"
+      ],
+      "generatedOriginalPath": "/Users/linxin/.codex/generated_images/01a1e8f0-590b-7a70-be69-a110f99104ab/exec-45c3fbf7-9521-47a6-97af-462222dfc9fe.png",
+      "userVisualApproval": false
+    },
+    {
+      "file": "sources/left-actions-v1.png",
+      "sha256": "8363f0c22b6c10cba10442fc80b41d983b5c1e383786dde172f518d81af5f975",
+      "imageSize": [
+        1246,
+        1263
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "tool": "image_gen.imagegen",
+      "art_source": "host_image",
+      "orchestrator": "GPT-6.1 Sol",
+      "image_backend_model": null,
+      "estimateUsd": null,
+      "prompt": "../../../output/art/CHR-001/2026-11-17-multistate-v3/art/left-prompt.txt",
+      "actualReferencedImages": [
+        "assets/characters/child-shadow-v3/sources/neutral-four-views.png"
+      ],
+      "generatedOriginalPath": "/Users/linxin/.codex/generated_images/01a1e8f0-590b-7a70-be69-a110f99104ab/exec-700b8cf8-d184-4d23-8707-e82c85e34c9c.png",
+      "userVisualApproval": false
+    },
+    {
+      "file": "sources/up-actions-v1.png",
+      "sha256": "e0aab31e544b2c1870611aa87d23ec43094cfee92ac14dea51d98beaefb069ae",
+      "imageSize": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "tool": "image_gen.imagegen",
+      "art_source": "host_image",
+      "orchestrator": "GPT-6.1 Sol",
+      "image_backend_model": null,
+      "estimateUsd": null,
+      "prompt": "../../../output/art/CHR-001/2026-11-17-multistate-v3/art/up-prompt.txt",
+      "actualReferencedImages": [
+        "assets/characters/child-shadow-v3/sources/neutral-four-views.png"
+      ],
+      "generatedOriginalPath": "/Users/linxin/.codex/generated_images/01a1e8f0-590b-7a70-be69-a110f99104ab/exec-aaa58b50-7c40-4f83-a1b5-2f65614f940e.png",
+      "userVisualApproval": false
+    }
+  ],
+  "failedCalls": [
+    {
+      "prompt": "neutral initial prompt; same as neutral-prompt.txt except two approved references and NO bow phrasing",
+      "actualReferencedImages": [
+        "assets/characters/child-shadow-v1/approved-turnaround.png",
+        "assets/characters/child-shadow-v1/approved-combat-design.png"
+      ],
+      "error": "Safety system violence rejection",
+      "requestId": "9a563c13-11b0-4a6d-8f62-6281ce6d0a8f",
+      "output": null,
+      "handling": "Removed irrelevant combat reference; regenerated empty-handed neutral request with approved turnaround only."
+    },
+    {
+      "prompt": "../../../output/art/CHR-001/2026-11-17-multistate-v3/art/up-revision-prompt.txt",
+      "actualReferencedImages": [
+        "assets/characters/child-shadow-v3/sources/up-actions-v1.png"
+      ],
+      "error": "Safety system violence rejection",
+      "requestId": "e45e897c-9bea-4a1a-9392-981a2ed70564",
+      "output": null,
+      "handling": "Stopped revision; original up sheet retained with explicit unreadable-arrow limitation."
+    }
+  ],
+  "registration": "sources/core-registration-sol.json",
+  "secondaryAssets": [
+    "sources/extra-special-states/metadata.json",
+    "sources/extra-run-right/metadata.json"
+  ],
+  "user_decisions": [
+    "Previously approved child-shadow-v1 identity; current request authorizes finer multiple-state drawing without Runway."
+  ],
+  "ai_selection": [
+    "Neutral suitable as identity candidate.",
+    "right-v1 shooting usable candidate; reject right-v1/v2 run cells at top edge.",
+    "right-v2 retained as failed targeted revision, not preferred over v1.",
+    "left/down/up sheets are individually drawn key-pose candidates, not validated final cycles."
+  ],
+  "runtimeStatus": "Integration owned by parent agent; consult current output main README and runtime registration for actual adoption. Source-only generation is not native gameplay acceptance.",
+  "runtime": {
+    "directory": "godot/assets/characters/child-shadow-v3",
+    "actor": "godot/scripts/presentation/player_frame_actor.gd",
+    "registration": "sources/registration.json",
+    "packer": "tools/art/action_redraw/pack_authored_player_v3.py",
+    "families": 15,
+    "packedSamples": 204,
+    "selectedSourcePoses": 84,
+    "sourceFrameArithmetic": "4 neutral + 32 run (right replacement8) + 32 ordinary archery + 16 specials",
+    "status": "integrated; visual acceptance pending; formal release gate not passed",
+    "limitations": [
+      "rear arrow unreadable; semantic projected emission point",
+      "rain reuses ordinary archery; separate high-arc generation refused",
+      "armed run uses drawn carried-bow upper pose plus authored eight-pose legs",
+      "hurt and dodge each use one whole-body pose per direction; failure uses two",
+      "runtime split crosses clothing/weapon; annotated pixel masks retain bow; minor hem/hand overlap needs native review",
+      "180-degree backpedal replays same-facing forward run poses in reverse; no dedicated backpedal drawings"
+    ]
+  },
+  "revisions": [
+    {
+      "date": "2026-11-17",
+      "request": "reduce left/right running leg stride",
+      "sourceFiles": [
+        "sources/stride-fix/right.png",
+        "sources/stride-fix/left.png"
+      ],
+      "artTrace": "../../../output/art/CHR-001/2026-11-17-stride-fix/art/README.md",
+      "runtimeChange": "shadow-run-lower rows0,2 only",
+      "verification": "../../../output/art/CHR-001/2026-11-17-stride-fix/README.md",
+      "worldScale": 0.5,
+      "movementLogicChanged": false
+    }
+  ]
+}

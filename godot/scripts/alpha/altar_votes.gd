@@ -32,12 +32,14 @@ static func calculate(items: Array[Dictionary], previous: Dictionary) -> Diction
 	var records: Array[Dictionary] = []
 	for item in items:
 		if item.region!="altar": continue
-		var eligible: bool = (item.kind!="装备" or item.get("mainGlyph",false)) and OPPOSITE.has(item.container) and item.kind!="神兽" and item.state=="normal" and item.get("eligible",true)
+		var shadow: bool = item.get("shadow",false)
+		var source: bool = shadow or (item.kind!="神兽" and (item.kind!="装备" or item.get("mainGlyph",false)))
+		var eligible: bool = source and OPPOSITE.has(item.container) and item.state=="normal" and item.get("eligible",true)
 		var weighted: bool = false
 		if eligible and item.container=="木":
 			for cell in cells(item):
 				if aura.has(cell): weighted=true; break
-		var base: int = 1 if item.get("shadow",false) else BASE.get(item.quality,0)
+		var base: int = 1 if shadow else BASE.get(item.quality,0)
 		var multiplier: float = (2.0 if weighted else 1.0)*item.get("fixture_multiplier",1.0)
 		var points: int = int(floor(base*multiplier)) if eligible else 0
 		records.append({"id":item.id,"container":item.container,"base":base,"multiplier":multiplier,"weighted":points,"opposition":0,"total":points,"eligible":eligible,"aura":weighted,"order":item.order,"cells":cells(item)})

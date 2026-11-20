@@ -51,8 +51,7 @@ func select_trial(index: int) -> void:
 	starting_stamina=0 if index==4 else 100
 	var generation: int = room.run_id+1
 	room=create_room({}); room.run_id=generation
-	room.layout.grips=room.layout.grips.duplicate()
-	room.layout.grips[1]=TrainingRoom.point(atlas.upperDown.grip)
+	register_player_grips()
 	controls=Controls.new(room)
 	present(room.snapshot(),0); mark_presented()
 

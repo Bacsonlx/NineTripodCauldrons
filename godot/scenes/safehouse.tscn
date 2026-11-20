@@ -1,0 +1,51 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/hub/safehouse.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/hub/courtyard.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/hub/smith.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/hub/merchant.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/hub/keeper.png" id="5"]
+
+[node name="Safehouse" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Courtyard" type="Sprite2D" parent="."]
+z_index = -1
+texture = ExtResource("2")
+centered = false
+
+[node name="Walkable" type="Polygon2D" parent="."]
+visible = false
+polygon = PackedVector2Array(84, 537, 260, 479, 491, 453, 682, 463, 704, 420, 914, 420, 932, 463, 1130, 449, 1438, 504, 1500, 547, 1510, 776, 1335, 889, 1190, 970, 396, 970, 215, 899, 84, 798)
+
+[node name="Spawn" type="Marker2D" parent="."]
+position = Vector2(795, 785)
+
+[node name="People" type="Node2D" parent="."]
+texture_filter = 4
+y_sort_enabled = true
+
+[node name="Smith" type="Sprite2D" parent="People"]
+position = Vector2(324, 500)
+scale = Vector2(0.095, 0.095)
+texture = ExtResource("3")
+offset = Vector2(0, -609)
+
+[node name="Keeper" type="Sprite2D" parent="People"]
+position = Vector2(795, 460)
+scale = Vector2(0.091, 0.091)
+texture = ExtResource("5")
+offset = Vector2(0, -660)
+
+[node name="Merchant" type="Sprite2D" parent="People"]
+position = Vector2(1275, 515)
+scale = Vector2(0.093, 0.093)
+texture = ExtResource("4")
+offset = Vector2(0, -642)
+
+[node name="Child" type="Node2D" parent="People"]
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2(793, 496)
+
+[node name="Interface" type="CanvasLayer" parent="."]

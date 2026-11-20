@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-13",
+  "calls": [
+    {
+      "asset": "parts/side.png",
+      "art_source": "host_image",
+      "tool": "image_gen.imagegen",
+      "model": null,
+      "estimateUsd": null,
+      "model_cost_status": "not returned by tool",
+      "prompt": "parts/side.prompt.txt",
+      "referenced_image_paths": [
+        "approved-turnaround.png"
+      ],
+      "transparent_background": true,
+      "sha256": "de7dfa5abcc97cb7811644e8d208225d85c6eff631caad1c2d1abeda85234379",
+      "role": "static painted puppet parts; not animation frames",
+      "selection": "AI chose for offline bake after user approved identity and requested game integration; user has not separately approved animation"
+    },
+    {
+      "asset": "parts/vertical.png",
+      "art_source": "host_image",
+      "tool": "image_gen.imagegen",
+      "model": null,
+      "estimateUsd": null,
+      "model_cost_status": "not returned by tool",
+      "prompt": "parts/vertical.prompt.txt",
+      "referenced_image_paths": [
+        "approved-turnaround.png"
+      ],
+      "transparent_background": true,
+      "sha256": "faba52084a70a0cc7ec92b37e5a923ceec1ca7f9138b1be9424d985ff3d374ed",
+      "role": "static painted puppet parts; not animation frames",
+      "selection": "AI chose for offline bake after user approved identity and requested game integration; user has not separately approved animation"
+    }
+  ],
+  "processing": "tools/art/action_redraw/bake_shadow_player.py; offline articulated transforms of raster parts with simple string/arrow geometry; no video generation"
+}

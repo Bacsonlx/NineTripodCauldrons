@@ -28,7 +28,7 @@ def nonnegative(text):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--test", choices=["level", "boss", "drops", "alpha", "rules"], help="专项内容；省略则先进入首页，level 可直达第一关")
+    parser.add_argument("--test", choices=["level", "boss", "drops", "alpha", "rules"], help="开发专项；省略则进入安全屋或继续已有征程，level 可直达第一关")
     parser.add_argument("--room", choices=ROOMS, help="从指定房间开始，R 仍从该房间重试")
     parser.add_argument("--health", type=resource, help="初始生命 1—100")
     parser.add_argument("--mana", type=resource, help="初始蓝量 0—100")

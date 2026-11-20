@@ -40,13 +40,13 @@ texture = ExtResource("forest")
 texture_repeat = 2
 [node name="RoomFloor" type="Polygon2D" parent="Ground"]
 z_index = -50
-polygon = PackedVector2Array(150, 700, 150, 450, 430, 450, 430, 240, 990, 240, 990, 440, 1280, 440, 1280, 800, 990, 800, 990, 650, 700, 650, 700, 800, 350, 850)
+polygon = PackedVector2Array(150, 685, 150, 465, 190, 450, 380, 450, 430, 400, 430, 270, 470, 240, 955, 240, 990, 275, 990, 395, 1040, 440, 1245, 440, 1280, 475, 1280, 770, 1245, 800, 1025, 800, 990, 765, 990, 690, 945, 650, 745, 650, 700, 695, 700, 770, 655, 805, 350, 850)
 texture = ExtResource("path")
 texture_repeat = 2
 [node name="Walkable" type="Node2D" parent="."]
 visible = false
 [node name="Floor" type="Polygon2D" parent="Walkable"]
-polygon = PackedVector2Array(150, 700, 150, 450, 430, 450, 430, 240, 990, 240, 990, 440, 1280, 440, 1280, 800, 990, 800, 990, 650, 700, 650, 700, 800, 350, 850)
+polygon = PackedVector2Array(150, 685, 150, 465, 190, 450, 380, 450, 430, 400, 430, 270, 470, 240, 955, 240, 990, 275, 990, 395, 1040, 440, 1245, 440, 1280, 475, 1280, 770, 1245, 800, 1025, 800, 990, 765, 990, 690, 945, 650, 745, 650, 700, 695, 700, 770, 655, 805, 350, 850)
 [node name="Metrics" type="Node2D" parent="."]
 position = Vector2(720,520)
 script = ExtResource("item")

@@ -10,5 +10,6 @@ func _ready() -> void:
 	if options.has("error"):
 		push_error(options.error); get_tree().quit(2); return
 	# 显式专项、初始条件与既有诊断参数继续直达旧首关入口。
-	var target: String = "res://scenes/home.tscn" if arguments.is_empty() else "res://scenes/tanggu_first_level.tscn"
+	var target: String = "res://scenes/safehouse.tscn" if arguments.is_empty() else "res://scenes/tanggu_first_level.tscn"
+	if not arguments.is_empty(): get_tree().set_meta("diagnostic_journey_entry",true)
 	get_tree().change_scene_to_file.bind(target).call_deferred()

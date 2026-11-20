@@ -1,0 +1,189 @@
+{
+  "schema": "jiuding.painted_puppet_landmarks.v2",
+  "annotation": "Manually selected anatomical centers in the 1280px painted sources; alpha bounds are not body pivots",
+  "torsos": [
+    {
+      "facing": 0,
+      "box": [
+        120,
+        0,
+        510,
+        620
+      ],
+      "waist": [
+        370,
+        465
+      ],
+      "shoulder": [
+        358,
+        355
+      ]
+    },
+    {
+      "facing": 1,
+      "box": [
+        780,
+        0,
+        1080,
+        620
+      ],
+      "waist": [
+        934,
+        466
+      ],
+      "shoulders": [
+        [
+          837,
+          358
+        ],
+        [
+          1025,
+          358
+        ]
+      ]
+    },
+    {
+      "facing": 2,
+      "box": [
+        160,
+        620,
+        550,
+        1240
+      ],
+      "waist": [
+        298,
+        1084
+      ],
+      "shoulder": [
+        312,
+        973
+      ]
+    },
+    {
+      "facing": 3,
+      "box": [
+        780,
+        620,
+        1080,
+        1240
+      ],
+      "waist": [
+        934,
+        1084
+      ],
+      "shoulders": [
+        [
+          848,
+          974
+        ],
+        [
+          1027,
+          974
+        ]
+      ]
+    }
+  ],
+  "arms": {
+    "upper": {
+      "box": [
+        70,
+        190,
+        560,
+        520
+      ],
+      "start": [
+        105,
+        354
+      ],
+      "end": [
+        517,
+        395
+      ]
+    },
+    "bow": {
+      "box": [
+        650,
+        250,
+        1200,
+        490
+      ],
+      "start": [
+        685,
+        360
+      ],
+      "end": [
+        1135,
+        359
+      ]
+    },
+    "draw": {
+      "box": [
+        50,
+        820,
+        600,
+        1040
+      ],
+      "start": [
+        85,
+        929
+      ],
+      "end": [
+        550,
+        900
+      ]
+    },
+    "relaxed": {
+      "box": [
+        640,
+        820,
+        1200,
+        1080
+      ],
+      "start": [
+        683,
+        926
+      ],
+      "end": [
+        1092,
+        991
+      ]
+    }
+  },
+  "body": {
+    "root": [
+      128,
+      224
+    ],
+    "waist": [
+      128,
+      174
+    ],
+    "scalp_to_waist": 80,
+    "arm_segment_lengths": [
+      22,
+      22
+    ]
+  },
+  "bow_source": "assets/characters/child-shadow-v1/parts/side.png cell3; actual center grip and tips annotated after crop",
+  "bow": {
+    "registered_size": [
+      13,
+      60
+    ],
+    "grip": [
+      9.5,
+      30
+    ],
+    "tips": [
+      [
+        2.5,
+        1.5
+      ],
+      [
+        2.5,
+        58.5
+      ]
+    ],
+    "annotation": "Marked from the existing painted bow, after its fixed 60px-height registration; no bbox center"
+  }
+}

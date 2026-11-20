@@ -2,6 +2,14 @@ class_name TrainingRoom
 extends RefCounted
 
 const WORLD_SIZE: Vector2 = Vector2(1280, 900)
+const FOOT_OFFSETS_8: Array[Vector2] = [
+	Vector2.ZERO, Vector2(12,0), Vector2(-12,0), Vector2(0,12), Vector2(0,-12),
+	Vector2(8.485,8.485), Vector2(-8.485,8.485), Vector2(8.485,-8.485), Vector2(-8.485,-8.485)
+]
+const FOOT_OFFSETS_5: Array[Vector2] = [
+	Vector2.ZERO, Vector2(12,0), Vector2(-12,0), Vector2(0,12), Vector2(0,-12)
+]
+const SLIDE_ANGLES: Array[float] = [0.35, -0.35, 0.70, -0.70, 1.05, -1.05]
 const GRIPS: Array[Vector2] = [Vector2(27, -51), Vector2(24, -48), Vector2(-21, -48), Vector2(-22, -53)]
 const SKILL_GRIPS: Dictionary = {
 	"pierce": [Vector2(31,-44), Vector2(17,-43), Vector2(-28,-45), Vector2(-24,-48)],
@@ -234,8 +242,12 @@ func step(input: Dictionary, seconds: float) -> void:
 	var movement: Vector2 = Vector2(input.get("moveX",0),input.get("moveY",0)).limit_length()
 	if has_loadout_skills(): movement*=alpha.runtime.movement_multiplier(self)
 	if input.get("dodge",false) and not dodge_held and dodge_cooldown==0 and hurt==0 and dodge_time==0 and skill_dash_remaining==0:
-		if spend_energy("dodge"):
-			dodge_direction=movement.normalized() if movement.length()>0 else Vector2.from_angle(player.angle)
+		var candidate_dir: Vector2 = movement.normalized() if movement.length()>0 else Vector2.from_angle(player.angle)
+		var dodge_blocked: bool = layout.has("walkablePolygons") and layout.has("roomId") and slide_step(Vector2(player.x,player.y),candidate_dir*4.0).distance_to(Vector2(player.x,player.y))<=0.5
+		if dodge_blocked:
+			feedback={"text":"前方受阻，未消耗精力","remaining":0.8,"healed":false}
+		elif spend_energy("dodge"):
+			dodge_direction=candidate_dir
 			dodge_time=0.20; dodge_invulnerability=0.12; dodge_cooldown=1.0; cancel_pending()
 	dodge_held=input.get("dodge",false)
 	var dashing: bool = dodge_time>0
@@ -268,8 +280,13 @@ func step(input: Dictionary, seconds: float) -> void:
 			var duration: float = maxf(0,minf(interval,skill_dash_remaining-index*interval))
 			dx=skill_dash_direction.x*600*duration+movement.x*base_speed*(interval-duration)
 			dy=skill_dash_direction.y*600*duration+movement.y*base_speed*(interval-duration)
-		if can_walk(Vector2(player.x+dx,player.y)): player.x+=dx
-		if can_walk(Vector2(player.x,player.y+dy)): player.y+=dy
+		if layout.has("walkablePolygons") and layout.has("roomId"):
+			var stepped: Vector2 = slide_step(Vector2(player.x,player.y),Vector2(dx,dy))
+			player.x=stepped.x; player.y=stepped.y
+		else:
+			# 旧参照保持双精度标量累加，避免 Vector2 单精度往返。
+			if can_walk(Vector2(player.x+dx,player.y)): player.x+=dx
+			if can_walk(Vector2(player.x,player.y+dy)): player.y+=dy
 	if skill_dashing and skill_dash_kind=="wind" and not wind_path.is_empty():
 		wind_path.to=point(player)
 		if point(player).distance_to(wind_path.points[-1])>0.000001: wind_path.points.append(point(player))
@@ -447,7 +464,10 @@ func impact(hit: Dictionary, kind: String, angle: float, attack: Dictionary = {}
 				elif energy_enabled: restore_mana(4)
 			break
 	var effect: Dictionary = hit.duplicate()
-	if has_loadout_skills(): effect.critical=attack.get("critical",false)
+	# 表现层需要区分普通／暴击／穿透与是否点燃，才能给出不同的命中反馈。
+	effect.critical=attack.get("critical",false)
+	effect.pierce=kind=="pierce"
+	effect.burn=attack.get("applyBurn",false) and alpha!=null and alpha.applied_equipment.effects.has("燧火")
 	effect.merge({"id":next_effect,"kind":kind,"remaining":0.15,"age":0.0,"damage":damage,"angle":angle,"damagePosition":damage_position})
 	effects.append(effect); next_effect+=1
 
@@ -462,10 +482,20 @@ func plant_mine(position: Vector2) -> void:
 	mines.append({"x":position.x,"y":position.y,"remaining":3.0,"armed":0.12,"radius":70.0})
 
 func pull_player_toward(position: Vector2, distance: float) -> void:
-	var direction: Vector2 = (position-point(player)).normalized()
+	var origin: Vector2 = point(player)
+	var direction: Vector2 = (position-origin).normalized()
 	if direction.length_squared()<0.0001: return
-	var target: Vector2 = point(player)+direction*minf(distance,point(player).distance_to(position))
-	if can_walk(target):
+	var total: float = minf(distance,origin.distance_to(position))
+	var target: Vector2 = origin+direction*total
+	if layout.has("walkablePolygons") and layout.has("roomId"):
+		var steps: int = maxi(1,ceili(total/4.0))
+		var step_delta: Vector2 = direction*(total/steps)
+		for _i in steps:
+			var prev: Vector2 = point(player)
+			var next_pos: Vector2 = slide_step(prev,step_delta)
+			if next_pos.distance_squared_to(prev)<0.0001: break
+			player.x=next_pos.x; player.y=next_pos.y
+	elif can_walk(target) and clear_path(origin,target):
 		player.x=target.x
 		player.y=target.y
 
@@ -521,10 +551,14 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 			var elapsed: float = minf(seconds,enemy.knockTime)
 			var divisions: int = maxi(1,ceili(Vector2(enemy.knockX,enemy.knockY).length()*elapsed/2))
 			for index in divisions:
-				var x: float = enemy.x+enemy.knockX*elapsed/divisions
-				var y: float = enemy.y+enemy.knockY*elapsed/divisions
-				if can_walk(Vector2(x,enemy.y)): enemy.x=x
-				if can_walk(Vector2(enemy.x,y)): enemy.y=y
+				if layout.has("walkablePolygons") and layout.has("roomId"):
+					var stepped_knock: Vector2 = slide_step(Vector2(enemy.x,enemy.y),Vector2(enemy.knockX*elapsed/divisions,enemy.knockY*elapsed/divisions))
+					enemy.x=stepped_knock.x; enemy.y=stepped_knock.y
+				else:
+					var x: float = enemy.x+enemy.knockX*elapsed/divisions
+					var y: float = enemy.y+enemy.knockY*elapsed/divisions
+					if can_walk(Vector2(x,enemy.y)): enemy.x=x
+					if can_walk(Vector2(enemy.x,y)): enemy.y=y
 			enemy.knockTime=maxf(0,enemy.knockTime-seconds)
 		if enemy.phase=="dead":
 			enemy.timer=maxf(0,enemy.timer-seconds); continue
@@ -559,10 +593,14 @@ func update_enemies(seconds: float, protection_at_start: float, dodge_at_start: 
 				var goal_y: float = destination.y
 				enemy.angle=atan2(goal_y-enemy.y,goal_x-enemy.x)
 				var travel: float = minf(sqrt(pow(goal_x-enemy.x,2)+pow(goal_y-enemy.y,2)),rules.speed*(alpha.runtime.enemy_speed(self,enemy) if has_loadout_skills() else 1.0)*seconds)
-				var x: float = enemy.x+cos(enemy.angle)*travel
-				var y: float = enemy.y+sin(enemy.angle)*travel
-				if can_walk(Vector2(x,enemy.y)): enemy.x=x
-				if can_walk(Vector2(enemy.x,y)): enemy.y=y
+				if layout.has("walkablePolygons") and layout.has("roomId"):
+					var stepped_chase: Vector2 = slide_step(Vector2(enemy.x,enemy.y),Vector2(cos(enemy.angle)*travel,sin(enemy.angle)*travel))
+					enemy.x=stepped_chase.x; enemy.y=stepped_chase.y
+				else:
+					var x: float = enemy.x+cos(enemy.angle)*travel
+					var y: float = enemy.y+sin(enemy.angle)*travel
+					if can_walk(Vector2(x,enemy.y)): enemy.x=x
+					if can_walk(Vector2(enemy.x,y)): enemy.y=y
 				for other in enemies:
 					if other.id==enemy.id or other.phase=="inactive" or other.phase=="dead": continue
 					var gap_x: float = enemy.x-other.x
@@ -692,7 +730,8 @@ func attack_phase() -> String:
 	if attack_released and cooldown>0.12: return "recover"
 	return "idle"
 func grip() -> Vector2:
-	var offsets: Array = SKILL_GRIPS.dodge if dodge_time>0 or skill_dash_remaining>0 else SKILL_GRIPS.rain if not raining.is_empty() else SKILL_GRIPS.pierce if piercing>=0 else layout.grips
+	var visual_skills: Dictionary = layout.get("skillGrips",{})
+	var offsets: Array = SKILL_GRIPS.dodge if dodge_time>0 or skill_dash_remaining>0 else visual_skills.get("rain",SKILL_GRIPS.rain) if not raining.is_empty() else visual_skills.get("pierce",SKILL_GRIPS.pierce) if piercing>=0 else layout.grips
 	return Vector2(player.x,player.y)+point(offsets[player.facing])
 
 # 只读的轻量状态查询：输入适配层与相机无需构造整份公开快照。
@@ -715,11 +754,82 @@ func obstacles() -> Array:
 	_obstacle_cache_dirty=false
 	if profile: diagnostics.obstacleRebuilds+=1
 	return _obstacle_cache
+func contact_normal(probe: Vector2) -> Vector2:
+	var best_normal: Vector2 = Vector2.ZERO
+	var best_dist_sq: float = INF
+	if layout.has("walkablePolygons"):
+		for polygon in layout.walkablePolygons:
+			for index in polygon.size():
+				var a: Vector2 = polygon[index]
+				var b: Vector2 = polygon[(index+1)%polygon.size()]
+				var closest: Vector2 = Geometry2D.get_closest_point_to_segment(probe,a,b)
+				var diff: Vector2 = probe-closest
+				var dist_sq: float = diff.length_squared()
+				if dist_sq<144.0+36.0 and dist_sq<best_dist_sq:
+					var edge: Vector2 = b-a
+					if edge.length_squared()>0.0001:
+						# 选择指向多边形内部的法线
+						var n: Vector2 = Vector2(-edge.y,edge.x).normalized()
+						if not Geometry2D.is_point_in_polygon(closest+n*2.0,polygon): n=-n
+						best_dist_sq=dist_sq
+						best_normal=n
+	for item in obstacles():
+		if item.halfWidth<=0 or item.halfHeight<=0: continue
+		var corner: float = minf(item.halfWidth,item.halfHeight)*(0.45 if item.get("kind","") in ["root","tree","stele","altar","brazier"] else 0.25)
+		var inner_x: float = item.halfWidth-corner
+		var inner_y: float = item.halfHeight-corner
+		var dx: float = probe.x-item.x
+		var dy: float = probe.y-item.y
+		var clamped: Vector2 = Vector2(clampf(dx,-inner_x,inner_x),clampf(dy,-inner_y,inner_y))
+		var diff: Vector2 = Vector2(dx,dy)-clamped
+		var rad: float = 12.0+corner
+		var dist_sq: float = diff.length_squared()
+		if dist_sq<rad*rad+36.0:
+			var signed_dist: float = sqrt(dist_sq)-rad
+			var penalty_sq: float = maxf(0.0,signed_dist)*maxf(0.0,signed_dist)
+			if penalty_sq<best_dist_sq and dist_sq>0.0001:
+				best_dist_sq=penalty_sq
+				best_normal=diff.normalized()
+	return best_normal
+
+func slide_step(origin: Vector2, delta: Vector2) -> Vector2:
+	var desired_sq: float = delta.length_squared()
+	if desired_sq<0.000001:
+		return origin
+	var direct: Vector2 = origin+delta
+	if can_walk_xy(direct.x,direct.y):
+		return direct
+	var next_x: float = origin.x
+	var next_y: float = origin.y
+	if can_walk_xy(next_x+delta.x,next_y): next_x+=delta.x
+	if can_walk_xy(next_x,next_y+delta.y): next_y+=delta.y
+	var moved_sq: float = (next_x-origin.x)*(next_x-origin.x)+(next_y-origin.y)*(next_y-origin.y)
+	if moved_sq>=desired_sq*0.25:
+		return Vector2(next_x,next_y)
+	var step_len: float = sqrt(desired_sq)
+	var normal: Vector2 = contact_normal(direct)
+	if normal.length_squared()>0.5:
+		var inward: float = delta.dot(normal)
+		if inward<0.0:
+			var tangent: Vector2 = delta-normal*inward
+			var t_len: float = tangent.length()
+			# 正面垂直撞墙（切向极小）时正常停住，不乱偏转
+			if t_len<step_len*0.08:
+				return Vector2(next_x,next_y)
+			var t_dir: Vector2 = tangent/t_len
+			for scale_try in [1.0, 0.75, 0.5]:
+				var cand: Vector2 = origin+t_dir*(t_len*scale_try)
+				if can_walk_xy(cand.x,cand.y): return cand
+				var nudged: Vector2 = cand+normal*0.25
+				if can_walk_xy(nudged.x,nudged.y): return nudged
+	return Vector2(next_x,next_y)
 func can_walk(position: Vector2) -> bool:
 	return can_walk_xy(position.x,position.y)
 func can_walk_xy(x: float,y: float) -> bool:
+	var is_room_poly: bool = layout.has("walkablePolygons") and layout.has("roomId")
 	if layout.has("walkablePolygons"):
-		for offset in [Vector2.ZERO,Vector2(12,0),Vector2(-12,0),Vector2(0,12),Vector2(0,-12)]:
+		var offsets: Array[Vector2] = FOOT_OFFSETS_8 if is_room_poly else FOOT_OFFSETS_5
+		for offset in offsets:
 			var inside: bool = false
 			for polygon in layout.walkablePolygons:
 				if Geometry2D.is_point_in_polygon(Vector2(x,y)+offset,polygon): inside=true; break
@@ -736,7 +846,14 @@ func can_walk_xy(x: float,y: float) -> bool:
 	for pillar in layout.pillars:
 		if absf(x-pillar.x)<40 and absf(y-pillar.y)<30: return false
 	for item in obstacles():
-		if absf(x-item.x)<item.halfWidth+12 and absf(y-item.y)<item.halfHeight+12: return false
+		if is_room_poly and item.halfWidth>0 and item.halfHeight>0:
+			var corner: float = minf(item.halfWidth,item.halfHeight)*(0.45 if item.get("kind","") in ["root","tree","stele","altar","brazier"] else 0.25)
+			var qx: float = maxf(0.0,absf(x-item.x)-(item.halfWidth-corner))
+			var qy: float = maxf(0.0,absf(y-item.y)-(item.halfHeight-corner))
+			var rad: float = 12.0+corner
+			if qx*qx+qy*qy<rad*rad: return false
+		else:
+			if absf(x-item.x)<item.halfWidth+12 and absf(y-item.y)<item.halfHeight+12: return false
 	return true
 func clear_path(from: Variant,to: Variant) -> bool:
 	if profile: diagnostics.clearPathCalls+=1
@@ -970,7 +1087,10 @@ func spend_instant(kind: String) -> bool:
 func start_skill_dash(kind: String, direction: Vector2, pay: bool = true) -> bool:
 	if skill_dash_remaining>0: return false
 	var origin: Vector2 = point(player)
-	if not ((absf(direction.x)>0.001 and can_walk(origin+Vector2(direction.x*2,0))) or (absf(direction.y)>0.001 and can_walk(origin+Vector2(0,direction.y*2)))):
+	var step_ok: bool = (absf(direction.x)>0.001 and can_walk(origin+Vector2(direction.x*2,0))) or (absf(direction.y)>0.001 and can_walk(origin+Vector2(0,direction.y*2)))
+	if not step_ok and layout.has("walkablePolygons"):
+		step_ok=slide_step(origin,direction*4.0).distance_to(origin)>0.5
+	if not step_ok:
 		feedback={"text":"无合法位移，不扣蓝或冷却","remaining":0.8,"healed":false}; return false
 	if pay:
 		if not spend_instant(kind): return false

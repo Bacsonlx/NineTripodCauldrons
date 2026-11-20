@@ -1,0 +1,41 @@
+{
+  "status": "partial-pass-source-only",
+  "reviewed": [
+    "tool returned original inline",
+    "preview-light.jpg",
+    "preview-dark.jpg"
+  ],
+  "warnings": [
+    {
+      "id": "headroom-shortfall",
+      "detail": "All hair is complete but measured top clearance is approximately 10.8–12.2 percent per cell, below requested 15 percent. Use one shared transparent expansion/scale for all frames if needed; do not clamp individual flight poses."
+    },
+    {
+      "id": "second-half-torso-turn",
+      "detail": "Second row is slightly turned away versus first-row right profile; arm swing reverses visibly but scarf/torso view changes. Not a strict fixed-camera anatomy pass."
+    },
+    {
+      "id": "leg-identity-not-proven",
+      "detail": "Leg silhouettes are similar across corresponding half-cycle phases; near/far overlap/lighting changes support alternation, but source static review cannot guarantee perceptually smooth leg identity in motion."
+    },
+    {
+      "id": "anchors-estimated",
+      "detail": "Waist and ground/root coordinates are manual estimates; runtime seam and attachment checks are required."
+    }
+  ],
+  "alpha": {
+    "minimum": 0,
+    "maximum": 255,
+    "alpha0": 1144330,
+    "alpha1": 54935
+  },
+  "checks": {
+    "identity_and_texture": "pass source review",
+    "whole_body": "pass source review: hair, hands and shoes complete",
+    "arms_halfcycle": "pass source review: second half foreground arm swings forwards",
+    "loop_continuity": "not verified",
+    "engine_rendering": "not verified",
+    "gameplay_timing": "not modified",
+    "performance": "not applicable to source production"
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "schema": "jiuding.character_identity.v1",
+  "asset": "CHR-001",
+  "date": "2026-11-13",
+  "status": "identity-approved; integrated into default game; native motion acceptance pending",
+  "user_decision": "采用新版皮影母版",
+  "approval_scope": [
+    "four-direction static identity",
+    "static combat design identity"
+  ],
+  "source_review": "../../../output/art/CHR-001/2026-11-13-production-rebuild-v1/README.md",
+  "source_body_height_px": 560,
+  "source_canvas": [
+    1024,
+    1024
+  ],
+  "runtime_neutral_body_height_world_target": 64,
+  "runtime_actor_visual_scale": 0.6666666666666666,
+  "runtime_clip_scale_target": 0.75,
+  "runtime_scale_status": "applied offline bake canvas scale 0.75 × actor 2/3; native visual acceptance pending",
+  "runtime_refs": [
+    "godot/assets/characters/child-shadow-v1/clips.json",
+    "godot/scripts/presentation/player_frame_actor.gd",
+    "godot/scripts/presentation/training_scene.gd",
+    "godot/scripts/hub/safehouse.gd"
+  ],
+  "directions": [
+    {
+      "facing": 0,
+      "view": "right",
+      "master": "masters/right/master.json",
+      "foot_anchor_px": [
+        544.5,
+        792.0
+      ],
+      "waist_anchor_status": "applied per-frame XY from baked waistPoints; clothes overlap checked offline",
+      "hand_anchor_status": "baked attachments and projectile grips in runtime clips.json"
+    },
+    {
+      "facing": 1,
+      "view": "front",
+      "master": "masters/front/master.json",
+      "foot_anchor_px": [
+        513.0,
+        792.0
+      ],
+      "waist_anchor_status": "applied per-frame XY from baked waistPoints; clothes overlap checked offline",
+      "hand_anchor_status": "baked attachments and projectile grips in runtime clips.json"
+    },
+    {
+      "facing": 2,
+      "view": "left",
+      "master": "masters/left/master.json",
+      "foot_anchor_px": [
+        485.5,
+        792.0
+      ],
+      "waist_anchor_status": "applied per-frame XY from baked waistPoints; clothes overlap checked offline",
+      "hand_anchor_status": "baked attachments and projectile grips in runtime clips.json"
+    },
+    {
+      "facing": 3,
+      "view": "back",
+      "master": "masters/back/master.json",
+      "foot_anchor_px": [
+        512.5,
+        792.0
+      ],
+      "waist_anchor_status": "applied per-frame XY from baked waistPoints; clothes overlap checked offline",
+      "hand_anchor_status": "baked attachments and projectile grips in runtime clips.json"
+    }
+  ],
+  "files": {
+    "approved-combat-design.png": "605bf77aa99c20adc2928ad378dc379a2501488ca97adffd97fb006584c7ff1d",
+    "approved-turnaround.png": "712370d1808dc37a2db3acd74e995c17da43a22264cb5861e09d124c392d71dd",
+    "masters/back/master.json": "69b0406de2c350aaeb87b8ff2df3fb5354abc47efabc97f2c741d7b8927969d6",
+    "masters/back/master.png": "9ce88ea39ba13dee98f3a0c01617673006261ff495e410d230f447287a38dcb1",
+    "masters/back/master_rgba.png": "1119ba66d0f50052d7a8597e34ca92a53c5fa9238ff9b30ade09489763094cd9",
+    "masters/back/source.png": "1d6cb02fb8b29ee84c5db7bdc47130351041b1a1ea90ff04551e8dfa291b508f",
+    "masters/back/spec.json": "9a889ccd12dae4ba25b2c3df92924fdf89a36b8447aed6a3675fa4b4b429f660",
+    "masters/front/master.json": "a1e61467af6a6b1dd9cec1bfdd855b21e015beca3122f6a5c7a0591e9c929179",
+    "masters/front/master.png": "0ba316d85de8fbf5afa8dfd617bfe1d1ec915d50c5f92faeb4de159d24ab03e3",
+    "masters/front/master_rgba.png": "d37d3c100afda8fcb79c3dcfc1cc453e7f13db30f902ba6ff1d81ef374d7a175",
+    "masters/front/source.png": "82fd0985d5a4d1bf51700b4ac2b9dc57eb3fc57b0263d174c30f394dad73e0db",
+    "masters/front/spec.json": "f168612dc545a50046ef63e1185df3c9ce7e13ab9203ed22bacfcbc3585cac87",
+    "masters/left/master.json": "09029982da2a2ae61564e8a59df0ea9ba1b08c868988fd81569692fb9016b5b1",
+    "masters/left/master.png": "d19eae3dc81bb7317c0c372b4c8d8ea3720726bff9250d376fc9141f435f58d9",
+    "masters/left/master_rgba.png": "937a3e03db5328c7e5f5557f0f7328a11e7797801dfe2ba31d445e93afcf6d34",
+    "masters/left/source.png": "17581fe3fcb2550f04151222c80d2dfc9d5a443f0b66af0ccf4626fb3f32571e",
+    "masters/left/spec.json": "6ececcc6226904ba9e82e9f34723da53d9459c013b2228eff41dcdda7c329b61",
+    "masters/right/master.json": "ab510c4a8b005d8dd4dd6290ee01eb3cc5500445a3237050148c91e2fa08f620",
+    "masters/right/master.png": "bea94d8f15f666bffab9fbc09b746d327bef81bcfd13c54a441834cce8d68757",
+    "masters/right/master_rgba.png": "f0810d38a6bd8ef31236c4a86f54963760c8e528352ff87e6a0d23293f7ce0c9",
+    "masters/right/source.png": "ec4ce6171402f8dcff251dac1ef21d0c8f1e971c4fd14b989b716a85280b63c2",
+    "masters/right/spec.json": "9821c92bf4b05f9ca6497f0581240c802401d087a54058914e43a874fa8bbd8d",
+    "parts/side.png": "de7dfa5abcc97cb7811644e8d208225d85c6eff631caad1c2d1abeda85234379",
+    "parts/side.prompt.txt": "a463d23eb922404474161b8588f79a7b39d635733d3b32ce591a84eb78468437",
+    "parts/vertical.png": "faba52084a70a0cc7ec92b37e5a923ceec1ca7f9138b1be9424d985ff3d374ed",
+    "parts/vertical.prompt.txt": "da40656186c9a7a4cff3d26accc0444649da443da98e2336ffdd9c132e4ea1e7"
+  },
+  "integration_authorization": "直接融入到正式游戏中实现",
+  "bake_contract": {
+    "canvas_px": [
+      256,
+      256
+    ],
+    "root_px": [
+      128,
+      224
+    ],
+    "waist_reference_px": [
+      128,
+      174
+    ],
+    "atlas_count": 13,
+    "directional_sample_count": 604,
+    "art_source": "existing painted parts, offline articulation",
+    "runtime_animation": "raster frame sampling, no runtime skeleton",
+    "source_to_world_scale": 0.5,
+    "per_frame_anchors": "godot/assets/characters/child-shadow-v1/clips.json",
+    "stride_world": 96
+  }
+}

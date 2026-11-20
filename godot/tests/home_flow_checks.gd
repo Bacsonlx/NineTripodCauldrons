@@ -21,13 +21,14 @@ func button_with_text(node: Node,text: String) -> Button:
 	return null
 
 func run() -> void:
-	var entry: PackedScene = load(ProjectSettings.get_setting("application/run/main_scene"))
+	# 旧首页保留为开发夹具，正式入口由安全屋流程检查覆盖。
+	var entry: PackedScene = load("res://scenes/home.tscn")
 	var initial: Node = entry.instantiate()
 	root.add_child(initial); current_scene=initial
 	await process_frame
 	await process_frame
 	var start: Button = button_with_text(current_scene,"踏入汤谷")
-	check(start!=null,"默认启动显示首页的真实征程入口")
+	check(start!=null,"开发夹具可从旧首页启动征程")
 	if start==null:
 		current_scene.queue_free(); current_scene=null
 		await process_frame

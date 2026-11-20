@@ -1,0 +1,244 @@
+{
+  "schema": "jiuding.extra-run-right.source.v1",
+  "created_date": "2026-11-17",
+  "art_source": "host_image",
+  "tool": "image_gen.imagegen",
+  "actual_model": null,
+  "actual_model_reason": "not disclosed by tool",
+  "cost_usd": null,
+  "cost_reason": "not returned",
+  "reference": {
+    "path": "output/art/CHR-001/2026-11-17-multistate-v3/art/neutral-four-views.png",
+    "actual_attached_image": true,
+    "sha256": "b695e2f1b8e04d8d2ab14cb1dfae70f342338777c0c9dbd9fc52660f3f57066b"
+  },
+  "source": {
+    "path": "sheet.png",
+    "sha256": "03616fe1db9dab304ae61769843775a00f25a51e0c6aa29173fd29c3ba917dd8",
+    "width": 1774,
+    "height": 887,
+    "mode": "RGBA"
+  },
+  "prompt_file": "prompt.txt",
+  "frames": [
+    {
+      "index": 0,
+      "id": "run_right_00",
+      "phase_requested": "near-contact",
+      "source_rect_xyxy_exclusive": [
+        0,
+        0,
+        444,
+        444
+      ],
+      "visible_bbox_local_alpha64": [
+        74,
+        49,
+        354,
+        415
+      ],
+      "waist_source_px_estimate": [
+        244,
+        265
+      ],
+      "ground_root_source_px_estimate": [
+        244,
+        416
+      ],
+      "headroom_fraction_alpha64": 0.1104,
+      "anchor_status": "manual estimate; preserve flight height and do not bbox-fit each frame"
+    },
+    {
+      "index": 1,
+      "id": "run_right_01",
+      "phase_requested": "near-down",
+      "source_rect_xyxy_exclusive": [
+        444,
+        0,
+        887,
+        444
+      ],
+      "visible_bbox_local_alpha64": [
+        103,
+        54,
+        330,
+        415
+      ],
+      "waist_source_px_estimate": [
+        678,
+        262
+      ],
+      "ground_root_source_px_estimate": [
+        678,
+        416
+      ],
+      "headroom_fraction_alpha64": 0.1216,
+      "anchor_status": "manual estimate; preserve flight height and do not bbox-fit each frame"
+    },
+    {
+      "index": 2,
+      "id": "run_right_02",
+      "phase_requested": "near-pass",
+      "source_rect_xyxy_exclusive": [
+        887,
+        0,
+        1330,
+        444
+      ],
+      "visible_bbox_local_alpha64": [
+        87,
+        55,
+        327,
+        416
+      ],
+      "waist_source_px_estimate": [
+        1123,
+        263
+      ],
+      "ground_root_source_px_estimate": [
+        1123,
+        416
+      ],
+      "headroom_fraction_alpha64": 0.1239,
+      "anchor_status": "manual estimate; preserve flight height and do not bbox-fit each frame"
+    },
+    {
+      "index": 3,
+      "id": "run_right_03",
+      "phase_requested": "near-back-flight",
+      "source_rect_xyxy_exclusive": [
+        1330,
+        0,
+        1774,
+        444
+      ],
+      "visible_bbox_local_alpha64": [
+        62,
+        48,
+        373,
+        373
+      ],
+      "waist_source_px_estimate": [
+        1578,
+        244
+      ],
+      "ground_root_source_px_estimate": [
+        1578,
+        416
+      ],
+      "headroom_fraction_alpha64": 0.1081,
+      "anchor_status": "manual estimate; preserve flight height and do not bbox-fit each frame"
+    },
+    {
+      "index": 4,
+      "id": "run_right_04",
+      "phase_requested": "far-contact",
+      "source_rect_xyxy_exclusive": [
+        0,
+        444,
+        444,
+        887
+      ],
+      "visible_bbox_local_alpha64": [
+        72,
+        48,
+        357,
+        408
+      ],
+      "waist_source_px_estimate": [
+        238,
+        700
+      ],
+      "ground_root_source_px_estimate": [
+        238,
+        855
+      ],
+      "headroom_fraction_alpha64": 0.1084,
+      "anchor_status": "manual estimate; preserve flight height and do not bbox-fit each frame"
+    },
+    {
+      "index": 5,
+      "id": "run_right_05",
+      "phase_requested": "far-down",
+      "source_rect_xyxy_exclusive": [
+        444,
+        444,
+        887,
+        887
+      ],
+      "visible_bbox_local_alpha64": [
+        98,
+        54,
+        335,
+        409
+      ],
+      "waist_source_px_estimate": [
+        678,
+        702
+      ],
+      "ground_root_source_px_estimate": [
+        678,
+        855
+      ],
+      "headroom_fraction_alpha64": 0.1219,
+      "anchor_status": "manual estimate; preserve flight height and do not bbox-fit each frame"
+    },
+    {
+      "index": 6,
+      "id": "run_right_06",
+      "phase_requested": "far-pass",
+      "source_rect_xyxy_exclusive": [
+        887,
+        444,
+        1330,
+        887
+      ],
+      "visible_bbox_local_alpha64": [
+        81,
+        54,
+        336,
+        411
+      ],
+      "waist_source_px_estimate": [
+        1119,
+        702
+      ],
+      "ground_root_source_px_estimate": [
+        1119,
+        855
+      ],
+      "headroom_fraction_alpha64": 0.1219,
+      "anchor_status": "manual estimate; preserve flight height and do not bbox-fit each frame"
+    },
+    {
+      "index": 7,
+      "id": "run_right_07",
+      "phase_requested": "far-back-flight",
+      "source_rect_xyxy_exclusive": [
+        1330,
+        444,
+        1774,
+        887
+      ],
+      "visible_bbox_local_alpha64": [
+        62,
+        51,
+        373,
+        372
+      ],
+      "waist_source_px_estimate": [
+        1574,
+        691
+      ],
+      "ground_root_source_px_estimate": [
+        1574,
+        855
+      ],
+      "headroom_fraction_alpha64": 0.1151,
+      "anchor_status": "manual estimate; preserve flight height and do not bbox-fit each frame"
+    }
+  ],
+  "loop": "requested eight-pose full stride; dynamic seam not tested",
+  "layering": "whole-body source; no weapon; processing/integration owned by root/sol_art",
+  "user_decision": "authorized production and integration, final visual approval not recorded"
+}
