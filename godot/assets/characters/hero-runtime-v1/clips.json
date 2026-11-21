@@ -1,0 +1,403 @@
+{
+  "hero-dodge": {
+    "size": [
+      137,
+      135
+    ],
+    "columns": 3,
+    "root": [
+      69.035,
+      120.891
+    ],
+    "scale": 0.747107,
+    "runtime_source": "godot/assets/characters/action-redraw-v1/hero-dodge.png"
+  },
+  "hero-run-lower": {
+    "size": [
+      81,
+      81
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        42.559,
+        26.697
+      ],
+      [
+        44.029,
+        26.112
+      ],
+      [
+        40.353,
+        26.989
+      ],
+      [
+        41.824,
+        26.404
+      ],
+      [
+        42.559,
+        20.416
+      ],
+      [
+        44.029,
+        20.27
+      ],
+      [
+        40.353,
+        20.708
+      ],
+      [
+        41.824,
+        20.27
+      ]
+    ],
+    "scale": 0.748,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "runtime_source": "godot/assets/characters/action-redraw-v1/hero-run-lower.png"
+  },
+  "hero-archery-upper": {
+    "size": [
+      124,
+      123
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        70.502,
+        101.511
+      ],
+      [
+        64.987,
+        101.511
+      ],
+      [
+        62.23,
+        101.511
+      ],
+      [
+        55.336,
+        101.511
+      ],
+      [
+        66.826,
+        88.479
+      ],
+      [
+        64.987,
+        88.479
+      ],
+      [
+        62.46,
+        88.707
+      ],
+      [
+        65.217,
+        88.25
+      ]
+    ],
+    "scale": 0.748519,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "muzzle_frame": 3,
+    "muzzle_px": [
+      111.634,
+      71.331
+    ],
+    "grip": {
+      "x": 42.14,
+      "y": -52.704
+    },
+    "runtime_source": "godot/assets/characters/action-redraw-v1/hero-archery-upper.png"
+  },
+  "hero-skills-upper": {
+    "size": [
+      128,
+      127
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        68.766,
+        111.426
+      ],
+      [
+        58.281,
+        111.426
+      ],
+      [
+        61.855,
+        111.426
+      ],
+      [
+        61.855,
+        111.426
+      ],
+      [
+        69.957,
+        98.173
+      ],
+      [
+        67.336,
+        98.646
+      ],
+      [
+        67.098,
+        98.409
+      ],
+      [
+        68.766,
+        98.883
+      ]
+    ],
+    "scale": 0.746964,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "runtime_source": "godot/assets/characters/action-redraw-v1/hero-skills-upper.png"
+  },
+  "hero-archery-left": {
+    "size": [
+      140,
+      138
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        75.982,
+        118.071
+      ],
+      [
+        75.982,
+        118.342
+      ],
+      [
+        71.088,
+        118.613
+      ],
+      [
+        69.456,
+        117.8
+      ]
+    ],
+    "scale": 0.750194,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "muzzle_frame": 1,
+    "muzzle_px": [
+      15.342,
+      84.182
+    ],
+    "grip": {
+      "x": -45.492,
+      "y": -55.704
+    },
+    "runtime_source": "godot/assets/characters/action-redraw-v1/hero-archery-left.png"
+  },
+  "hero-archery-up": {
+    "size": [
+      163,
+      161
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        86.464,
+        116.51
+      ],
+      [
+        86.144,
+        116.51
+      ],
+      [
+        85.824,
+        120.031
+      ],
+      [
+        86.464,
+        120.031
+      ]
+    ],
+    "scale": 0.749388,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "head_rects": [
+      [
+        54.438,
+        41.609,
+        62.451,
+        57.936
+      ],
+      [
+        52.837,
+        41.609,
+        63.412,
+        57.936
+      ],
+      [
+        54.438,
+        45.77,
+        61.81,
+        55.055
+      ],
+      [
+        54.438,
+        45.77,
+        61.81,
+        55.055
+      ]
+    ],
+    "muzzle_frame": 1,
+    "muzzle_px": [
+      81.02,
+      32.647
+    ],
+    "grip": {
+      "x": -3.84,
+      "y": -92.88
+    },
+    "runtime_source": "godot/assets/characters/action-redraw-v1/hero-archery-up.png"
+  },
+  "hero-skills-direction-0": {
+    "size": [
+      120,
+      126
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        56.174,
+        99.572
+      ],
+      [
+        73.744,
+        108.928
+      ],
+      [
+        68.36,
+        93.902
+      ],
+      [
+        65.243,
+        79.443
+      ]
+    ],
+    "scale": 0.751644,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "runtime_source": "godot/assets/characters/action-redraw-v1/hero-skills-direction-0.png"
+  },
+  "hero-skills-direction-1": {
+    "size": [
+      114,
+      119
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        53.395,
+        93.745
+      ],
+      [
+        56.599,
+        103.036
+      ],
+      [
+        57.935,
+        88.966
+      ],
+      [
+        56.065,
+        74.897
+      ]
+    ],
+    "scale": 0.74898,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "runtime_source": "godot/assets/characters/action-redraw-v1/hero-skills-direction-1.png"
+  },
+  "hero-skills-direction-2": {
+    "size": [
+      119,
+      125
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        52.343,
+        98.74
+      ],
+      [
+        46.73,
+        108.572
+      ],
+      [
+        49.817,
+        93.964
+      ],
+      [
+        50.659,
+        78.794
+      ]
+    ],
+    "scale": 0.748252,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "runtime_source": "godot/assets/characters/action-redraw-v1/hero-skills-direction-2.png"
+  },
+  "hero-skills-direction-3": {
+    "size": [
+      119,
+      125
+    ],
+    "columns": 3,
+    "roots": [
+      [
+        50.659,
+        108.572
+      ],
+      [
+        50.94,
+        95.369
+      ],
+      [
+        51.782,
+        78.794
+      ]
+    ],
+    "scale": 0.748252,
+    "anchor_kind": "reviewed lower belt edge / matching waist seam",
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "runtime_source": "godot/assets/characters/action-redraw-v1/hero-skills-direction-3.png"
+  },
+  "hero-back-full": {
+    "size": [
+      103,
+      132
+    ],
+    "columns": 4,
+    "roots": [
+      [
+        51.58,
+        120.155
+      ],
+      [
+        51.58,
+        120.155
+      ],
+      [
+        51.58,
+        120.155
+      ],
+      [
+        51.58,
+        120.155
+      ]
+    ],
+    "scale": 0.748966,
+    "anchor_kind": "semantic ground contact at the shared foot baseline",
+    "identity_reference": "assets/characters/child/down-archery-v3.png",
+    "source": "assets/characters/action-redraw-v1/back-full-body-v2/hero-back-full.png",
+    "runtime_source": "godot/assets/characters/action-redraw-v1/hero-back-full.png"
+  }
+}

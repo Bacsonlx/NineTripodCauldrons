@@ -9,6 +9,14 @@ func run(game: Node2D, check: Callable) -> void:
 	depart(game)
 	check.call(game.frame_actor.scale.is_equal_approx(Vector2.ONE*2.0/3.0), "玩家人物视觉缩放到原来的三分之二，规则脚点仍由父节点保持")
 	check.call(game.atlas.has("upperDown"), "正式场景加载已确认的 v3 向下射箭资源")
+	for key in ["upper","upperDown","bow","lower","skills","failed"]:
+		var legacy: Texture2D = game.textures[key]
+		check.call(legacy.resource_path.begins_with(game.HERO_RUNTIME_DIRECTORY) and legacy.get_image().has_mipmaps() and absf(float(game.atlas[key].scale)-0.75)<0.03, "旧主角图层改用带 mipmap 的统一纹素密度运行图集")
+	for layer in [game.legs,game.torso,game.failed,game.bow,game.frame_actor.upper,game.frame_actor.lower,game.frame_actor.body,game.frame_actor.head]:
+		check.call(layer.texture_filter==CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS, "主角各图层缩小时按 mipmap 采样")
+	for clip in game.frame_actor.upper.runtime_clips:
+		var runtime: Texture2D = load(game.frame_actor.upper.RUNTIME_DIRECTORY+clip+".png")
+		check.call(runtime.get_image().has_mipmaps() and absf(float(game.frame_actor.upper.clips[clip].scale)-0.75)<0.03, "新主角各动作共享同一纹素密度并生成 mipmap")
 	game.present(game.room.snapshot(),0)
 	for enemy in game.room.snapshot().enemies:
 		var key: String = {"bird":"enemy","paper":"enemyPaper","wood":"enemyWood"}[enemy.appearance]
@@ -56,10 +64,10 @@ func run(game: Node2D, check: Callable) -> void:
 		game.present(snapshot,0)
 		var phase: int = {"idle":0,"draw":1,"release":2,"recover":3}[snapshot.attack]
 		phases[snapshot.attack]=true
-		check.call(game.torso.texture==game.textures.get("upperDown") and is_equal_approx(game.torso.region_rect.position.x,phase*543.0), "普通攻击实际时钟映射到新版四阶段")
+		check.call(game.torso.texture==game.textures.get("upperDown") and is_equal_approx(game.torso.region_rect.position.x,float(game.atlas.upperDown.frames[phase].x)), "普通攻击实际时钟映射到新版四阶段")
 		check.call(not game.bow.visible and not game.nocked_arrow.visible, "射箭全过程不叠加旧弓箭")
 		if snapshot.attack=="draw":
-			var visual_tip: Vector2 = game.torso.position+(Vector2(272,650)+game.torso.offset)*game.torso.scale
+			var visual_tip: Vector2 = game.torso.position+(Vector2(game.atlas.upperDown.muzzle_px[0],game.atlas.upperDown.muzzle_px[1])+game.torso.offset)*game.torso.scale
 			var expected_rule_grip: Vector2 = point+Vector2(game.atlas.upperDown.grip.x,game.atlas.upperDown.grip.y)
 			var expected_visual_grip: Vector2 = point+Vector2(game.atlas.upperDown.grip.x,game.atlas.upperDown.grip.y)*2.0/3.0
 			check.call(snapshot.grip.is_equal_approx(expected_rule_grip), "规则出箭点保持既有坐标与稳定性")
