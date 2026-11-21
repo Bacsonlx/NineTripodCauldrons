@@ -1,0 +1,773 @@
+{
+  "upper": {
+    "scale": 0.753684,
+    "source": "assets/mvp/child-upper-refined-v3.png",
+    "sha256": "1b08ed48d6eb324a07d64babc20241854d6d12a55d0135a4167ed835b72d36f9",
+    "frames": [
+      {
+        "name": "upper-0-0",
+        "x": 0,
+        "y": 0,
+        "width": 111,
+        "height": 105,
+        "originX": 0.586063063063063,
+        "originY": 0.8449047619047619,
+        "scale": 0.753684
+      },
+      {
+        "name": "upper-0-1",
+        "x": 111,
+        "y": 0,
+        "width": 87,
+        "height": 105,
+        "originX": 0.4662528735632184,
+        "originY": 0.8449047619047619,
+        "scale": 0.749296
+      },
+      {
+        "name": "upper-0-2",
+        "x": 198,
+        "y": 0,
+        "width": 103,
+        "height": 105,
+        "originX": 0.3937669902912621,
+        "originY": 0.8449047619047619,
+        "scale": 0.749425
+      },
+      {
+        "name": "upper-0-3",
+        "x": 301,
+        "y": 0,
+        "width": 97,
+        "height": 105,
+        "originX": 0.4395670103092783,
+        "originY": 0.8449047619047619,
+        "scale": 0.750617
+      },
+      {
+        "name": "upper-1-0",
+        "x": 398,
+        "y": 0,
+        "width": 111,
+        "height": 96,
+        "originX": 0.5741081081081081,
+        "originY": 0.8302708333333334,
+        "scale": 0.753684
+      },
+      {
+        "name": "upper-1-1",
+        "x": 509,
+        "y": 0,
+        "width": 87,
+        "height": 96,
+        "originX": 0.4662528735632184,
+        "originY": 0.8246979166666667,
+        "scale": 0.749296
+      },
+      {
+        "name": "upper-1-2",
+        "x": 596,
+        "y": 0,
+        "width": 103,
+        "height": 96,
+        "originX": 0.3937669902912621,
+        "originY": 0.8274791666666667,
+        "scale": 0.749425
+      },
+      {
+        "name": "upper-1-3",
+        "x": 699,
+        "y": 0,
+        "width": 97,
+        "height": 96,
+        "originX": 0.4395670103092783,
+        "originY": 0.8274791666666667,
+        "scale": 0.750617
+      },
+      {
+        "name": "upper-2-0",
+        "x": 796,
+        "y": 0,
+        "width": 111,
+        "height": 96,
+        "originX": 0.5741081081081081,
+        "originY": 0.8055520833333333,
+        "scale": 0.753684
+      },
+      {
+        "name": "upper-2-1",
+        "x": 907,
+        "y": 0,
+        "width": 87,
+        "height": 96,
+        "originX": 0.4662528735632184,
+        "originY": 0.8083333333333332,
+        "scale": 0.749296
+      },
+      {
+        "name": "upper-2-2",
+        "x": 994,
+        "y": 0,
+        "width": 103,
+        "height": 96,
+        "originX": 0.3937669902912621,
+        "originY": 0.8055520833333333,
+        "scale": 0.749425
+      },
+      {
+        "name": "upper-2-3",
+        "x": 1097,
+        "y": 0,
+        "width": 97,
+        "height": 96,
+        "originX": 0.4395670103092783,
+        "originY": 0.8083333333333332,
+        "scale": 0.750617
+      },
+      {
+        "name": "upper-3-0",
+        "x": 1194,
+        "y": 0,
+        "width": 111,
+        "height": 102,
+        "originX": 0.5741081081081081,
+        "originY": 0.7461372549019607,
+        "scale": 0.753684
+      },
+      {
+        "name": "upper-3-1",
+        "x": 1305,
+        "y": 0,
+        "width": 87,
+        "height": 102,
+        "originX": 0.4662528735632184,
+        "originY": 0.7487549019607843,
+        "scale": 0.749296
+      },
+      {
+        "name": "upper-3-2",
+        "x": 1392,
+        "y": 0,
+        "width": 103,
+        "height": 102,
+        "originX": 0.3937669902912621,
+        "originY": 0.7461372549019607,
+        "scale": 0.749425
+      },
+      {
+        "name": "upper-3-3",
+        "x": 1495,
+        "y": 0,
+        "width": 97,
+        "height": 102,
+        "originX": 0.4395670103092783,
+        "originY": 0.7487549019607843,
+        "scale": 0.750617
+      }
+    ],
+    "runtime_source": "godot/assets/generated/upper.png"
+  },
+  "upperDown": {
+    "scale": 0.748966,
+    "source": "assets/characters/child/down-archery-v3.png",
+    "sha256": "3c3f596f09252a6035b8e7f103f0421cccdf4b58f2db5f8a405d9db6a75ee288",
+    "grip": {
+      "x": -0.12,
+      "y": -17.04
+    },
+    "arrowScale": 0.024,
+    "waist_px": [
+      51.74,
+      94.84
+    ],
+    "muzzle_px": [
+      51.58,
+      112.144
+    ],
+    "frames": [
+      {
+        "name": "idle_down",
+        "x": 0,
+        "y": 0,
+        "width": 103,
+        "height": 132,
+        "originX": 0.5023300970873786,
+        "originY": 0.7184848484848485,
+        "scale": 0.748966
+      },
+      {
+        "name": "draw_down",
+        "x": 103,
+        "y": 0,
+        "width": 103,
+        "height": 132,
+        "originX": 0.5023300970873786,
+        "originY": 0.7184848484848485,
+        "scale": 0.748966
+      },
+      {
+        "name": "release_down",
+        "x": 206,
+        "y": 0,
+        "width": 103,
+        "height": 132,
+        "originX": 0.5023300970873786,
+        "originY": 0.7184848484848485,
+        "scale": 0.748966
+      },
+      {
+        "name": "recover_down",
+        "x": 309,
+        "y": 0,
+        "width": 103,
+        "height": 132,
+        "originX": 0.5023300970873786,
+        "originY": 0.7184848484848485,
+        "scale": 0.748966
+      }
+    ],
+    "runtime_source": "godot/assets/generated/upperDown.png"
+  },
+  "bow": {
+    "scale": 0.738462,
+    "source": "assets/mvp/bow-states-v3.png",
+    "sha256": "92cee3343dd0c86cee01f4cddacc22af9a2bfc6e7ac0e62893a5d45407f330ca",
+    "frames": [
+      {
+        "name": "bow-0",
+        "x": 0,
+        "y": 0,
+        "width": 42,
+        "height": 74,
+        "originX": 0.668952380952381,
+        "originY": 0.49133783783783785,
+        "scale": 0.738462
+      },
+      {
+        "name": "bow-1",
+        "x": 42,
+        "y": 0,
+        "width": 43,
+        "height": 74,
+        "originX": 0.7246046511627907,
+        "originY": 0.49133783783783785,
+        "scale": 0.74963
+      },
+      {
+        "name": "bow-2",
+        "x": 85,
+        "y": 0,
+        "width": 41,
+        "height": 74,
+        "originX": 0.6887317073170731,
+        "originY": 0.49133783783783785,
+        "scale": 0.7392
+      }
+    ],
+    "runtime_source": "godot/assets/generated/bow.png"
+  },
+  "lower": {
+    "scale": 0.756579,
+    "source": "assets/mvp02/child-lower-unified-v2.png",
+    "sha256": "b5431c80309bebb1c10f03a35073916ebe26553f6c0643afe5d98befc260fa7f",
+    "frames": [
+      {
+        "name": "lower-0-0",
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 57,
+        "originX": 0.540765625,
+        "originY": 0.8459122807017544,
+        "scale": 0.756579
+      },
+      {
+        "name": "lower-0-1",
+        "x": 64,
+        "y": 0,
+        "width": 55,
+        "height": 57,
+        "originX": 0.5024000000000001,
+        "originY": 0.8458245614035088,
+        "scale": 0.753948
+      },
+      {
+        "name": "lower-0-2",
+        "x": 119,
+        "y": 0,
+        "width": 64,
+        "height": 57,
+        "originX": 0.5,
+        "originY": 0.8457192982456141,
+        "scale": 0.75
+      },
+      {
+        "name": "lower-0-3",
+        "x": 183,
+        "y": 0,
+        "width": 57,
+        "height": 57,
+        "originX": 0.4839649122807017,
+        "originY": 0.846,
+        "scale": 0.750837
+      },
+      {
+        "name": "lower-1-0",
+        "x": 240,
+        "y": 0,
+        "width": 82,
+        "height": 57,
+        "originX": 0.5294878048780488,
+        "originY": 0.8448771929824561,
+        "scale": 0.747905
+      },
+      {
+        "name": "lower-1-1",
+        "x": 322,
+        "y": 0,
+        "width": 69,
+        "height": 57,
+        "originX": 0.3987246376811594,
+        "originY": 0.846,
+        "scale": 0.743618
+      },
+      {
+        "name": "lower-1-2",
+        "x": 391,
+        "y": 0,
+        "width": 78,
+        "height": 57,
+        "originX": 0.4471282051282051,
+        "originY": 0.8458245614035088,
+        "scale": 0.746635
+      },
+      {
+        "name": "lower-1-3",
+        "x": 469,
+        "y": 0,
+        "width": 58,
+        "height": 57,
+        "originX": 0.49089655172413793,
+        "originY": 0.8459122807017544,
+        "scale": 0.74718
+      },
+      {
+        "name": "lower-2-0",
+        "x": 527,
+        "y": 0,
+        "width": 78,
+        "height": 57,
+        "originX": 0.5586923076923077,
+        "originY": 0.8460701754385965,
+        "scale": 0.744659
+      },
+      {
+        "name": "lower-2-1",
+        "x": 605,
+        "y": 0,
+        "width": 56,
+        "height": 57,
+        "originX": 0.5047678571428571,
+        "originY": 0.8458245614035088,
+        "scale": 0.745033
+      },
+      {
+        "name": "lower-2-2",
+        "x": 661,
+        "y": 0,
+        "width": 79,
+        "height": 57,
+        "originX": 0.44160759493670887,
+        "originY": 0.8459122807017544,
+        "scale": 0.748747
+      },
+      {
+        "name": "lower-2-3",
+        "x": 740,
+        "y": 0,
+        "width": 58,
+        "height": 57,
+        "originX": 0.49329310344827587,
+        "originY": 0.8460701754385965,
+        "scale": 0.751391
+      },
+      {
+        "name": "lower-3-0",
+        "x": 798,
+        "y": 0,
+        "width": 78,
+        "height": 57,
+        "originX": 0.5395769230769231,
+        "originY": 0.8462456140350877,
+        "scale": 0.747519
+      },
+      {
+        "name": "lower-3-1",
+        "x": 876,
+        "y": 0,
+        "width": 68,
+        "height": 57,
+        "originX": 0.40157352941176466,
+        "originY": 0.8461578947368421,
+        "scale": 0.751861
+      },
+      {
+        "name": "lower-3-2",
+        "x": 944,
+        "y": 0,
+        "width": 72,
+        "height": 57,
+        "originX": 0.4590694444444444,
+        "originY": 0.846719298245614,
+        "scale": 0.753968
+      },
+      {
+        "name": "lower-3-3",
+        "x": 1016,
+        "y": 0,
+        "width": 57,
+        "height": 57,
+        "originX": 0.491,
+        "originY": 0.8461578947368421,
+        "scale": 0.755311
+      },
+      {
+        "name": "lower-4-0",
+        "x": 1073,
+        "y": 0,
+        "width": 81,
+        "height": 57,
+        "originX": 0.5428148148148149,
+        "originY": 0.8461578947368421,
+        "scale": 0.75335
+      },
+      {
+        "name": "lower-4-1",
+        "x": 1154,
+        "y": 0,
+        "width": 66,
+        "height": 57,
+        "originX": 0.40669696969696967,
+        "originY": 0.8468070175438597,
+        "scale": 0.747239
+      },
+      {
+        "name": "lower-4-2",
+        "x": 1220,
+        "y": 0,
+        "width": 77,
+        "height": 57,
+        "originX": 0.42011688311688306,
+        "originY": 0.8463333333333334,
+        "scale": 0.745536
+      },
+      {
+        "name": "lower-4-3",
+        "x": 1297,
+        "y": 0,
+        "width": 58,
+        "height": 57,
+        "originX": 0.48736206896551726,
+        "originY": 0.8468070175438597,
+        "scale": 0.753725
+      },
+      {
+        "name": "lower-5-0",
+        "x": 1355,
+        "y": 0,
+        "width": 76,
+        "height": 57,
+        "originX": 0.5350131578947369,
+        "originY": 0.8469473684210527,
+        "scale": 0.751515
+      },
+      {
+        "name": "lower-5-1",
+        "x": 1431,
+        "y": 0,
+        "width": 65,
+        "height": 57,
+        "originX": 0.4071692307692308,
+        "originY": 0.8471052631578947,
+        "scale": 0.744226
+      },
+      {
+        "name": "lower-5-2",
+        "x": 1496,
+        "y": 0,
+        "width": 73,
+        "height": 57,
+        "originX": 0.4544520547945205,
+        "originY": 0.8471754385964912,
+        "scale": 0.75188
+      },
+      {
+        "name": "lower-5-3",
+        "x": 1569,
+        "y": 0,
+        "width": 55,
+        "height": 57,
+        "originX": 0.49787272727272724,
+        "originY": 0.8474561403508772,
+        "scale": 0.746869
+      },
+      {
+        "name": "lower-6-0",
+        "x": 1624,
+        "y": 0,
+        "width": 76,
+        "height": 57,
+        "originX": 0.526421052631579,
+        "originY": 0.8473157894736841,
+        "scale": 0.747059
+      },
+      {
+        "name": "lower-6-1",
+        "x": 1700,
+        "y": 0,
+        "width": 63,
+        "height": 57,
+        "originX": 0.41223809523809524,
+        "originY": 0.8475964912280702,
+        "scale": 0.748349
+      },
+      {
+        "name": "lower-6-2",
+        "x": 1763,
+        "y": 0,
+        "width": 71,
+        "height": 57,
+        "originX": 0.44091549295774646,
+        "originY": 0.8473859649122807,
+        "scale": 0.752791
+      },
+      {
+        "name": "lower-6-3",
+        "x": 1834,
+        "y": 0,
+        "width": 55,
+        "height": 57,
+        "originX": 0.4936727272727273,
+        "originY": 0.8473859649122807,
+        "scale": 0.755735
+      }
+    ],
+    "runtime_source": "godot/assets/generated/lower.png"
+  },
+  "skills": {
+    "scale": 0.751724,
+    "source": "assets/mvp02/child-skills-upper-v1.png",
+    "sha256": "400cea6ef879542e1dbbd27782109333bbee715232efbc6b0f4d5c6b448147e3",
+    "frames": [
+      {
+        "name": "skills-0-0",
+        "x": 0,
+        "y": 0,
+        "width": 103,
+        "height": 81,
+        "originX": 0.49870873786407766,
+        "originY": 0.8617654320987654,
+        "scale": 0.751724
+      },
+      {
+        "name": "skills-0-1",
+        "x": 103,
+        "y": 0,
+        "width": 90,
+        "height": 83,
+        "originX": 0.4539888888888889,
+        "originY": 0.8749036144578314,
+        "scale": 0.748649
+      },
+      {
+        "name": "skills-0-2",
+        "x": 193,
+        "y": 0,
+        "width": 99,
+        "height": 82,
+        "originX": 0.4582121212121212,
+        "originY": 0.8571829268292683,
+        "scale": 0.749398
+      },
+      {
+        "name": "skills-0-3",
+        "x": 292,
+        "y": 0,
+        "width": 88,
+        "height": 86,
+        "originX": 0.49696590909090904,
+        "originY": 0.8357906976744186,
+        "scale": 0.75
+      },
+      {
+        "name": "skills-1-0",
+        "x": 380,
+        "y": 0,
+        "width": 98,
+        "height": 82,
+        "originX": 0.664061224489796,
+        "originY": 0.8206463414634148,
+        "scale": 0.746341
+      },
+      {
+        "name": "skills-1-1",
+        "x": 478,
+        "y": 0,
+        "width": 88,
+        "height": 78,
+        "originX": 0.45622727272727276,
+        "originY": 0.8498846153846153,
+        "scale": 0.752778
+      },
+      {
+        "name": "skills-1-2",
+        "x": 566,
+        "y": 0,
+        "width": 91,
+        "height": 81,
+        "originX": 0.42108791208791213,
+        "originY": 0.8087654320987655,
+        "scale": 0.752
+      },
+      {
+        "name": "skills-1-3",
+        "x": 657,
+        "y": 0,
+        "width": 87,
+        "height": 85,
+        "originX": 0.4969310344827586,
+        "originY": 0.7872352941176471,
+        "scale": 0.749296
+      },
+      {
+        "name": "skills-2-0",
+        "x": 744,
+        "y": 0,
+        "width": 105,
+        "height": 69,
+        "originX": 0.579704761904762,
+        "originY": 0.8571739130434783,
+        "scale": 0.752809
+      },
+      {
+        "name": "skills-2-1",
+        "x": 849,
+        "y": 0,
+        "width": 89,
+        "height": 72,
+        "originX": 0.4624494382022472,
+        "originY": 0.8367916666666667,
+        "scale": 0.747945
+      },
+      {
+        "name": "skills-2-2",
+        "x": 938,
+        "y": 0,
+        "width": 100,
+        "height": 70,
+        "originX": 0.43045,
+        "originY": 0.8214285714285714,
+        "scale": 0.747619
+      },
+      {
+        "name": "skills-2-3",
+        "x": 1038,
+        "y": 0,
+        "width": 90,
+        "height": 81,
+        "originX": 0.5266222222222222,
+        "originY": 0.7790493827160494,
+        "scale": 0.751351
+      },
+      {
+        "name": "skills-3-0",
+        "x": 1128,
+        "y": 0,
+        "width": 102,
+        "height": 90,
+        "originX": 0.5774803921568628,
+        "originY": 0.7843888888888889,
+        "scale": 0.746512
+      },
+      {
+        "name": "skills-3-1",
+        "x": 1230,
+        "y": 0,
+        "width": 88,
+        "height": 77,
+        "originX": 0.46806818181818177,
+        "originY": 0.8683116883116883,
+        "scale": 0.747222
+      },
+      {
+        "name": "skills-3-2",
+        "x": 1318,
+        "y": 0,
+        "width": 95,
+        "height": 81,
+        "originX": 0.4174,
+        "originY": 0.8282839506172839,
+        "scale": 0.751899
+      },
+      {
+        "name": "skills-3-3",
+        "x": 1413,
+        "y": 0,
+        "width": 81,
+        "height": 86,
+        "originX": 0.4752345679012346,
+        "originY": 0.7367558139534883,
+        "scale": 0.747692
+      }
+    ],
+    "runtime_source": "godot/assets/generated/skills.png"
+  },
+  "failed": {
+    "scale": 0.75162,
+    "source": "assets/mvp02/child-failed-v1.png",
+    "sha256": "287c54106f20018a0df38fb47f0808056b0f7365dda328f07b6a4044d0e00dc1",
+    "frames": [
+      {
+        "name": "failed-0-0",
+        "x": 0,
+        "y": 0,
+        "width": 107,
+        "height": 91,
+        "originX": 0.5,
+        "originY": 0.9066043956043957,
+        "scale": 0.75162
+      },
+      {
+        "name": "failed-0-1",
+        "x": 107,
+        "y": 0,
+        "width": 101,
+        "height": 91,
+        "originX": 0.5,
+        "originY": 0.9065934065934066,
+        "scale": 0.75162
+      },
+      {
+        "name": "failed-0-2",
+        "x": 208,
+        "y": 0,
+        "width": 109,
+        "height": 91,
+        "originX": 0.5,
+        "originY": 0.9065824175824175,
+        "scale": 0.75162
+      },
+      {
+        "name": "failed-0-3",
+        "x": 317,
+        "y": 0,
+        "width": 92,
+        "height": 93,
+        "originX": 0.5,
+        "originY": 0.9086129032258065,
+        "scale": 0.748323
+      }
+    ],
+    "runtime_source": "godot/assets/generated/failed.png"
+  }
+}

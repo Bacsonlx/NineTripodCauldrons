@@ -1,0 +1,94 @@
+{
+  "art_source": "existing",
+  "process": "premultiplied Lanczos resample + transparent padding",
+  "texels_per_unit": 2.0,
+  "runtime_scale": 0.75,
+  "padding_px": 8,
+  "sources": [
+    {
+      "source": "godot/assets/characters/action-redraw-v1/hero-dodge.png",
+      "sha256": "6734ae47c83cd0574625e549d75a49c7a571568eb616592a11c32e6dcdf90f51",
+      "runtime": "godot/assets/characters/hero-runtime-v1/hero-dodge.png"
+    },
+    {
+      "source": "godot/assets/characters/action-redraw-v1/hero-run-lower.png",
+      "sha256": "0968f65dd61f70c6f251831a333e9ff09970012a5bd2b30fc7afd835ebd085dc",
+      "runtime": "godot/assets/characters/hero-runtime-v1/hero-run-lower.png"
+    },
+    {
+      "source": "godot/assets/characters/action-redraw-v1/hero-archery-upper.png",
+      "sha256": "86e74085b10b2bd30938455bd7c6c89d75cf3b68a068bebfca3ea62c5d127ec3",
+      "runtime": "godot/assets/characters/hero-runtime-v1/hero-archery-upper.png"
+    },
+    {
+      "source": "godot/assets/characters/action-redraw-v1/hero-skills-upper.png",
+      "sha256": "c064b0b34c857d4031466a5747369c4954551ebca33f11a49d8a1a4239a27b69",
+      "runtime": "godot/assets/characters/hero-runtime-v1/hero-skills-upper.png"
+    },
+    {
+      "source": "godot/assets/characters/action-redraw-v1/hero-archery-left.png",
+      "sha256": "489d2321158338928dd2c7f2876dd0d7b749a44eb37ee33b67d8f718ca2e56b3",
+      "runtime": "godot/assets/characters/hero-runtime-v1/hero-archery-left.png"
+    },
+    {
+      "source": "godot/assets/characters/action-redraw-v1/hero-archery-up.png",
+      "sha256": "b1417c905ec6d99b303a2c033b10633b64165f757092a7d658f082e5573d45f0",
+      "runtime": "godot/assets/characters/hero-runtime-v1/hero-archery-up.png"
+    },
+    {
+      "source": "godot/assets/characters/action-redraw-v1/hero-skills-direction-0.png",
+      "sha256": "b34384ab8acd489b22a6ef1fe7e1b218bf08a4286c1486b2e3756906d55979e7",
+      "runtime": "godot/assets/characters/hero-runtime-v1/hero-skills-direction-0.png"
+    },
+    {
+      "source": "godot/assets/characters/action-redraw-v1/hero-skills-direction-1.png",
+      "sha256": "bedbe755414114a5b00b1dcd8a0a24d837175fd83aaf3d4c657a5e48a0d41a26",
+      "runtime": "godot/assets/characters/hero-runtime-v1/hero-skills-direction-1.png"
+    },
+    {
+      "source": "godot/assets/characters/action-redraw-v1/hero-skills-direction-2.png",
+      "sha256": "c63a1059b88d922a732febf7875e88dbec6410dd4fe0c36575916de5bf7702f2",
+      "runtime": "godot/assets/characters/hero-runtime-v1/hero-skills-direction-2.png"
+    },
+    {
+      "source": "godot/assets/characters/action-redraw-v1/hero-skills-direction-3.png",
+      "sha256": "2bc97b8f68cce88b6413fa71aa04c0486776d6b5e4994633f6b75f5e8d50ce3b",
+      "runtime": "godot/assets/characters/hero-runtime-v1/hero-skills-direction-3.png"
+    },
+    {
+      "source": "godot/assets/characters/action-redraw-v1/hero-back-full.png",
+      "sha256": "8c44c49b30aabd679bdeb6d9f9a4e4a88e8e16d793dcdd7d3e6703b94093dd63",
+      "runtime": "godot/assets/characters/hero-runtime-v1/hero-back-full.png"
+    },
+    {
+      "source": "godot/assets/generated/upper.png",
+      "sha256": "1b08ed48d6eb324a07d64babc20241854d6d12a55d0135a4167ed835b72d36f9",
+      "runtime": "godot/assets/characters/hero-runtime-v1/legacy-upper.png"
+    },
+    {
+      "source": "godot/assets/generated/upperDown.png",
+      "sha256": "3c3f596f09252a6035b8e7f103f0421cccdf4b58f2db5f8a405d9db6a75ee288",
+      "runtime": "godot/assets/characters/hero-runtime-v1/legacy-upperDown.png"
+    },
+    {
+      "source": "godot/assets/generated/bow.png",
+      "sha256": "92cee3343dd0c86cee01f4cddacc22af9a2bfc6e7ac0e62893a5d45407f330ca",
+      "runtime": "godot/assets/characters/hero-runtime-v1/legacy-bow.png"
+    },
+    {
+      "source": "godot/assets/generated/lower.png",
+      "sha256": "b5431c80309bebb1c10f03a35073916ebe26553f6c0643afe5d98befc260fa7f",
+      "runtime": "godot/assets/characters/hero-runtime-v1/legacy-lower.png"
+    },
+    {
+      "source": "godot/assets/generated/skills.png",
+      "sha256": "400cea6ef879542e1dbbd27782109333bbee715232efbc6b0f4d5c6b448147e3",
+      "runtime": "godot/assets/characters/hero-runtime-v1/legacy-skills.png"
+    },
+    {
+      "source": "godot/assets/generated/failed.png",
+      "sha256": "287c54106f20018a0df38fb47f0808056b0f7365dda328f07b6a4044d0e00dc1",
+      "runtime": "godot/assets/characters/hero-runtime-v1/legacy-failed.png"
+    }
+  ]
+}

@@ -19,7 +19,7 @@ func _ready() -> void:
 	body=Frames.new(); body.name="Body"; body.z_index=1; add_child(body)
 	head=Sprite2D.new(); head.name="HeadRepair"; head.centered=false
 	head.region_enabled=true; head.region_filter_clip_enabled=true
-	head.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR; head.z_index=2
+	head.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS; head.z_index=2
 	head_material=ShaderMaterial.new()
 	head_material.shader=preload("res://scripts/presentation/head_repair.gdshader")
 	head_overlay_material=ShaderMaterial.new()

@@ -9,6 +9,7 @@ const Effects = preload("res://scripts/presentation/combat_effects.gd")
 const Controls = preload("res://scripts/input/player_controls.gd")
 const QualityPolicy = preload("res://scripts/presentation/quality_policy.gd")
 const ACTOR_VISUAL_SCALE: float = 2.0/3.0
+const HERO_RUNTIME_DIRECTORY: String = "res://assets/characters/hero-runtime-v1/"
 var room: TrainingRoom = Room.new()
 var controls: PlayerControls = Controls.new(room)
 var state: Dictionary = {}
@@ -68,8 +69,10 @@ func _ready() -> void:
 		room=create_room(layout)
 		controls=Controls.new(room)
 	atlas = JSON.parse_string(FileAccess.get_file_as_string("res://assets/generated/atlas.json"))
+	var hero_atlas: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(HERO_RUNTIME_DIRECTORY+"legacy_atlas.json"))
+	atlas.merge(hero_atlas,true)
 	for key in atlas:
-		textures[key] = load("res://assets/generated/%s.png" % key)
+		textures[key] = load(HERO_RUNTIME_DIRECTORY+"legacy-%s.png" % key if hero_atlas.has(key) else "res://assets/generated/%s.png" % key)
 	if has_node("TangguMap"):
 		backdrop=create_backdrop(); add_child(backdrop); backdrop.setup(room.layout,atlas,textures)
 	else:
@@ -80,6 +83,7 @@ func _ready() -> void:
 	torso = sprite("upper")
 	failed = sprite("failed")
 	bow = sprite("bow")
+	for hero_layer in [legs,torso,failed,bow]: hero_layer.texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	nocked_arrow = arrow_sprite()
 	frame_actor=preload("res://scripts/presentation/player_frame_actor.gd").new()
 	frame_actor.scale=Vector2.ONE*ACTOR_VISUAL_SCALE

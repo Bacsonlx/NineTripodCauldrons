@@ -20,6 +20,7 @@
 | 候选 → 接入版本 | hero-run、hero-archery、hero-dodge、hero-skills、thor-walk、thor-swing-v2、thor-throw、thor-lightning 八套 atlas | 用户要求集成；横锤选择有隔离留白的 v2，弃用旧切帧失败版；原型的 loop_seam needs-visual-review 仍保留 |
 | 接入版本 → 运行文件 | [转换脚本](../../../tools/art/action_redraw/prepare.py) → [运行资源](../../../godot/assets/characters/action-redraw-v1/)、[SHA-256](provenance.json) | atlas 逐字节复制；复用 ownership 切帧矩形及透明补边，不重画、重排、逐帧居中、强制贴地或拉伸 |
 | 运行文件 → 场景 | [帧采样器](../../../godot/scripts/presentation/action_frame_sprite.gd)、[主角](../../../godot/scripts/presentation/player_frame_actor.gd)、[Boss](../../../godot/scripts/presentation/thor_frame_actor.gd) | 默认训练／首关共享 training_scene；默认 Boss 的 boss_art_view 已切换到新帧角色；历史关节候选保持独立 |
+| 运行文件 → 统一密度运行图集 | [重采样脚本](../../../tools/art/hero_runtime/build.py) → [hero-runtime-v1](../../../godot/assets/characters/hero-runtime-v1/)、[来源 SHA-256](../../../godot/assets/characters/hero-runtime-v1/provenance.json) | 2026-11-21 用户要求优化人物形象；不重画。主角 11 套逐帧图及旧 upper／upperDown／bow／lower／skills／failed 层按预乘 alpha Lanczos 缩到每显示单位 2 纹素（运行缩放约 0.75），每帧补 8px 透明边并开启 mipmap；像素坐标（根点、原点、箭尖、头框）同步换算，世界尺寸、握点与规则不变。Boss 与原图集保持不变；原生画面待验 |
 | 场景 → 验证 | [接入证据](../../../output/art/action-redraw/2026-10-26-integrated-v1/README.md) | 自动检查、包、离线合成和原生体验分别记录 |
 
 图集的共同根点由原画格内地面参考点加已有透明补边得到，完整尺寸／列数保留在 clips.json。各动作图的绘制体量不同，用每组固定缩放校准中立姿态；同组8帧不按包围盒逐帧缩放。首轮主角普通中立身高约90单位（当前v3各向待机约78—86单位），Boss以原182单位基准校准，再保留外层1.25放大，整体约225—230单位。根点是呈现注册，不更换规则脚点、碰撞体或出箭点。原图的脚点／体量漂移仍可能可见，不能称为已完成语义注册。
